@@ -235,7 +235,7 @@ export default function JobsList() {
 
       {/* Search and Filters */}
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-6 shadow-md">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">

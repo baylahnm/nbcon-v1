@@ -15,6 +15,8 @@ import ClientDashboard from "@/pages/dashboard/ClientDashboard";
 import BrowseEngineers from "@/pages/browse/BrowseEngineers";
 import CreateJob from "@/pages/jobs/CreateJob";
 import JobsList from "@/pages/jobs/JobsList";
+import CheckIn from "@/pages/engineer/CheckIn";
+import UploadDeliverable from "@/pages/jobs/UploadDeliverable";
 import { MessagingPage } from "@/pages/messaging/MessagingPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import ProfilePage from "@/pages/settings/ProfilePage";
@@ -38,12 +40,28 @@ const App = () => (
           <Route path="/auth/verify" element={<VerifyOTP />} />
           <Route path="/auth/role" element={<RoleSelection />} />
           <Route path="/auth/profile/:role" element={<ProfileSetup />} />
+          
+          {/* Browse Route - accessible to all authenticated users */}
+          <Route path="/browse" element={<AppLayout />}>
+            <Route index element={<BrowseEngineers />} />
+          </Route>
 
           {/* Protected Routes with Layout */}
           <Route path="/engineer" element={<AppLayout />}>
             <Route index element={<EngineerDashboard />} />
             <Route path="jobs" element={<JobsList />} />
+            <Route path="checkin" element={<CheckIn />} />
             <Route path="messages" element={<MessagingPage />} />
+          </Route>
+
+          {/* Short alias routes */}
+          <Route path="/e" element={<AppLayout />}>
+            <Route path="checkin" element={<CheckIn />} />
+          </Route>
+
+          {/* Job routes */}
+          <Route path="/job" element={<AppLayout />}>
+            <Route path="upload" element={<UploadDeliverable />} />
           </Route>
           
           <Route path="/client" element={<AppLayout />}>

@@ -8,6 +8,13 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Dashboard Theme Tokens (for CSS var approach) */
+    --color-primary: #27c862;
+    --bg: #ffffff;
+    --surface: #efefef;
+    --fg: #101010;
+    --border: #e6e6e6;
+
     /* Light Theme - New Brand System */
     --background: 0 0% 100%;
     --foreground: 0 0% 6%;
@@ -39,12 +46,15 @@ All colors MUST be HSL.
     --accent-dark: 0 0% 90%;
 
     /* Status colors - Brand System */
-    --success: 142 68% 37%;
+    /* Success matches #1e9e6b → hsl(156 68% 37%) */
+    --success: 156 68% 37%;
     --success-foreground: 0 0% 100%;
     --warning: 32 100% 42%;
     --warning-foreground: 0 0% 100%;
     --destructive: 4 65% 48%;
     --destructive-foreground: 0 0% 100%;
+    /* Alias for components using --danger */
+    --danger: var(--destructive);
     --info: 217 92% 55%;
     --info-foreground: 0 0% 100%;
 
@@ -83,6 +93,13 @@ All colors MUST be HSL.
   }
 
   .dark {
+    /* Dashboard Theme Tokens (Dark) */
+    --color-primary: #27c862;
+    --bg: #000000;
+    --surface: #202020;
+    --fg: #e8e8e8;
+    --border: #202020;
+
     /* Dark Theme - New Brand System */
     --background: 0 0% 0%;
     --foreground: 0 0% 91%;
@@ -114,12 +131,15 @@ All colors MUST be HSL.
     --accent-dark: 0 0% 10%;
 
     /* Status colors - Brand System Dark */
-    --success: 142 68% 37%;
+    /* Success matches #1e9e6b → hsl(156 68% 37%) */
+    --success: 156 68% 37%;
     --success-foreground: 0 0% 100%;
     --warning: 32 100% 42%;
     --warning-foreground: 0 0% 100%;
     --destructive: 4 65% 48%;
     --destructive-foreground: 0 0% 100%;
+    /* Alias for components using --danger */
+    --danger: var(--destructive);
     --info: 217 92% 55%;
     --info-foreground: 0 0% 100%;
 
@@ -159,5 +179,7 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: var(--bg);
+    color: var(--fg);
   }
 }

@@ -1,0 +1,21 @@
+{
+  "en": {
+    "title": "Analytics",
+    "tabs": { "overview":"Overview","finance":"Finance","operations":"Operations","workforce":"Workforce","compliance":"Compliance","custom":"Custom" },
+    "filters": { "date":"Date Range","groupBy":"Group by","company":"Company","category":"Category","region":"Region","city":"City","status":"Status","search":"Search…","hijri":"Hijri dates" },
+    "kpi": { "pipeline":"Pipeline","conversion":"Quote Acceptance","ontime":"On-time Delivery","nps":"NPS","earnings":"Earnings","utilization":"Utilization" },
+    "export": { "csv":"Export CSV","pdf":"Export PDF" },
+    "save":"Save Report","share":"Share",
+    "noData":"No data for this range.","lastSync":"Last sync"
+  },
+  "ar": {
+    "title": "التحليلات",
+    "tabs": { "overview":"نظرة عامة","finance":"المالية","operations":"العمليات","workforce":"القوى العاملة","compliance":"الامتثال","custom":"مخصص" },
+    "filters": { "date":"نطاق التاريخ","groupBy":"تجميع حسب","company":"الشركة","category":"الفئة","region":"المنطقة","city":"المدينة","status":"الحالة","search":"ابحث…","hijri":"التقويم الهجري" },
+    "kpi": { "pipeline":"قيمة الفرص","conversion":"معدل قبول العروض","ontime":"التسليم في الوقت","nps":"صافي نقاط الترويج","earnings":"الأرباح","utilization":"نسبة الاستغلال" },
+    "export": { "csv":"تصدير CSV","pdf":"تصدير PDF" },
+    "save":"حفظ التقرير","share":"مشاركة",
+    "noData":"لا توجد بيانات ضمن هذا النطاق.","lastSync":"آخر مزامنة"
+  }
+}
+

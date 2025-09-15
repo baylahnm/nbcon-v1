@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { useAuthStore, initializeAuth } from '@/stores/auth';
@@ -10,6 +10,7 @@ interface AppLayoutProps {
 export function AppLayout({
   children
 }: AppLayoutProps) {
+  const location = useLocation();
   const {
     user,
     profile,
@@ -64,7 +65,7 @@ export function AppLayout({
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-6">
+          <main className={`flex-1 ${location.pathname.startsWith('/analytics') ? 'p-0' : 'p-6'}`}>
             {children || <Outlet />}
           </main>
         </div>

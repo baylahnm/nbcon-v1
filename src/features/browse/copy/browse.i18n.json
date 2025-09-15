@@ -1,0 +1,53 @@
+{
+  "en": {
+    "title": "Browse Services",
+    "search": "Search engineers or services…",
+    "filters": {
+      "rating": "Minimum rating",
+      "rate": "Hourly rate (SAR)",
+      "radius": "Radius",
+      "sceOnly": "SCE verified only",
+      "availableToday": "Available today"
+    },
+    "sort": {
+      "label": "Sort",
+      "best": "Best match",
+      "nearest": "Nearest",
+      "rating_desc": "Top rated",
+      "price_asc": "Price ↑",
+      "price_desc": "Price ↓"
+    },
+    "categories": "Categories",
+    "noResults": "No engineers match your filters",
+    "resetFilters": "Reset Filters",
+    "broaden": "Broaden search",
+    "startJob": "Start Job",
+    "favorite": { "add": "Add to favorites", "remove": "Remove from favorites" }
+  },
+  "ar": {
+    "title": "تصفّح الخدمات",
+    "search": "ابحث عن مهندس أو خدمة…",
+    "filters": {
+      "rating": "الحد الأدنى للتقييم",
+      "rate": "الأجر بالساعة (ر.س)",
+      "radius": "نطاق البحث",
+      "sceOnly": "المعتمدون فقط من هيئة المهندسين",
+      "availableToday": "متاح اليوم"
+    },
+    "sort": {
+      "label": "الترتيب",
+      "best": "الأفضل مطابقة",
+      "nearest": "الأقرب",
+      "rating_desc": "الأعلى تقييمًا",
+      "price_asc": "السعر تصاعديًا",
+      "price_desc": "السعر تنازليًا"
+    },
+    "categories": "الفئات",
+    "noResults": "لا يوجد مهندسون يطابقون مرشحاتك",
+    "resetFilters": "إعادة تعيين المرشحات",
+    "broaden": "توسيع البحث",
+    "startJob": "ابدأ وظيفة",
+    "favorite": { "add": "أضف إلى المفضلة", "remove": "إزالة من المفضلة" }
+  }
+}
+

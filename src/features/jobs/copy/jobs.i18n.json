@@ -1,0 +1,79 @@
+{
+  "en": {
+    "title": "Jobs / Projects",
+    "toolbar": {
+      "create": "Create Job",
+      "templates": "Templates",
+      "browse": "Browse Jobs",
+      "myBids": "My Bids"
+    },
+    "filters": {
+      "status": "Status",
+      "category": "Category",
+      "date": "Date range",
+      "budget": "Budget (SAR)",
+      "radius": "Radius",
+      "company": "Company",
+      "escrowReady": "Only escrow-ready",
+      "apply": "Apply",
+      "search": "Search jobs…"
+    },
+    "view": { "list": "List", "board": "Board" },
+    "sort": {
+      "recent": "Recent",
+      "dueAsc": "Due soon",
+      "budgetDesc": "Budget (High→Low)",
+      "quotesDesc": "Most quotes",
+      "unreadDesc": "Most unread"
+    },
+    "groups": { "active": "Active", "awaitingQuotes": "Awaiting Quotes", "completed": "Completed", "archived": "Archived" },
+    "empty": {
+      "client": "No jobs found. Start by creating your first job.",
+      "engineer": "No jobs to show. Browse and bid on available jobs."
+    },
+    "actions": {
+      "open": "Open", "invite": "Invite to Quote", "escrow": "Escrow", "duplicate": "Duplicate",
+      "close": "Close", "archive": "Archive", "withdraw": "Withdraw Bid", "export": "Export"
+    },
+    "unread": "Unread"
+  },
+  "ar": {
+    "title": "الوظائف / المشاريع",
+    "toolbar": {
+      "create": "إنشاء وظيفة",
+      "templates": "قوالب",
+      "browse": "تصفّح الوظائف",
+      "myBids": "عروضي"
+    },
+    "filters": {
+      "status": "الحالة",
+      "category": "الفئة",
+      "date": "نطاق التاريخ",
+      "budget": "الميزانية (ر.س)",
+      "radius": "نطاق البحث",
+      "company": "الشركة",
+      "escrowReady": "جاهز للضمان فقط",
+      "apply": "تطبيق",
+      "search": "ابحث في الوظائف…"
+    },
+    "view": { "list": "قائمة", "board": "لوحة" },
+    "sort": {
+      "recent": "الأحدث",
+      "dueAsc": "الأقرب استحقاقًا",
+      "budgetDesc": "الميزانية (من الأعلى إلى الأدنى)",
+      "quotesDesc": "الأكثر عروضًا",
+      "unreadDesc": "الأكثر غير مقروء"
+    },
+    "groups": { "active": "نشطة", "awaitingQuotes": "بانتظار العروض", "completed": "مكتملة", "archived": "مؤرشف" },
+    "empty": {
+      "client": "لا توجد وظائف. ابدأ بإنشاء أول وظيفة.",
+      "engineer": "لا توجد وظائف معروضة. تصفّح وقدّم عروضك."
+    },
+    "actions": {
+      "open": "فتح", "invite": "دعوة لتقديم عرض", "escrow": "الضمان", "duplicate": "استنساخ",
+      "close": "إغلاق", "archive": "أرشفة", "withdraw": "سحب العرض", "export": "تصدير"
+    },
+    "unread": "غير مقروء"
+  }
+}
+

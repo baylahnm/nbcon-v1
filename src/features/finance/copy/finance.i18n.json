@@ -1,0 +1,41 @@
+{
+  "en": {
+    "payments": "Payments",
+    "earnings": "Earnings",
+    "tabs": { "overview": "Overview", "invoices": "Invoices", "escrow": "Escrow", "reports": "Reports", "settings": "Settings", "payouts": "Payouts" },
+    "kpi": {
+      "outstanding": "Total Outstanding",
+      "paidThisMonth": "Paid This Month",
+      "overdue": "Overdue",
+      "escrowHeld": "Escrow Held",
+      "pendingPayout": "Pending Payout",
+      "nextPayout": "Next Payout",
+      "earnedMtd": "Earned (MTD)",
+      "earnedYtd": "Earned (YTD)"
+    },
+    "table": { "date": "Date", "job": "Job", "type": "Type", "total": "Total", "vat": "VAT", "status": "Status", "zatca": "ZATCA" },
+    "actions": { "pay": "Pay", "pdf": "Download PDF", "xml": "Download XML", "details": "Details", "fund": "Fund", "release": "Release", "dispute": "Dispute", "requestPayout": "Request Payout", "exportCsv": "Export CSV", "exportPdf": "Export PDF" },
+    "empty": { "invoices": "No invoices in this range.", "escrow": "No milestones require action." },
+    "lastSync": "Last sync"
+  },
+  "ar": {
+    "payments": "المدفوعات",
+    "earnings": "الأرباح",
+    "tabs": { "overview": "نظرة عامة", "invoices": "الفواتير", "escrow": "الحساب الضامن", "reports": "التقارير", "settings": "الإعدادات", "payouts": "التحويلات" },
+    "kpi": {
+      "outstanding": "إجمالي المستحق",
+      "paidThisMonth": "المدفوع هذا الشهر",
+      "overdue": "متأخر",
+      "escrowHeld": "مبالغ في الضمان",
+      "pendingPayout": "دفعات قيد التنفيذ",
+      "nextPayout": "التحويل القادم",
+      "earnedMtd": "الأرباح (منذ بداية الشهر)",
+      "earnedYtd": "الأرباح (منذ بداية السنة)"
+    },
+    "table": { "date": "التاريخ", "job": "الوظيفة", "type": "النوع", "total": "الإجمالي", "vat": "ضريبة القيمة المضافة", "status": "الحالة", "zatca": "هيئة الزكاة والضريبة" },
+    "actions": { "pay": "ادفع", "pdf": "تنزيل PDF", "xml": "تنزيل XML", "details": "التفاصيل", "fund": "تمويل", "release": "إصدار الدفعة", "dispute": "نزاع", "requestPayout": "طلب تحويل", "exportCsv": "تصدير CSV", "exportPdf": "تصدير PDF" },
+    "empty": { "invoices": "لا توجد فواتير ضمن هذا النطاق.", "escrow": "لا توجد مراحل بحاجة إلى إجراء." },
+    "lastSync": "آخر مزامنة"
+  }
+}
+

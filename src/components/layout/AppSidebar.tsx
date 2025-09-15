@@ -6,16 +6,24 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuthStore } from '@/stores/auth';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 const engineerMenuItems = [{
   title: 'Dashboard',
   url: '/engineer',
   icon: Home
 }, {
+  title: 'Check In',
+  url: '/e/checkin',
+  icon: Clock
+}, {
   title: 'Available Jobs',
   url: '/engineer/jobs',
   icon: Briefcase
+}, {
+  title: 'Upload Deliverable',
+  url: '/job/upload',
+  icon: Upload
 }, {
   title: 'Messages',
   url: '/engineer/messages',
