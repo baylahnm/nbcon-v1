@@ -24,7 +24,7 @@ export function AppLayout({
   useEffect(() => {
     if (isInitialized && !isLoading) {
       if (!user) {
-        navigate('/auth/phone');
+        navigate('/auth');
       } else if (!profile) {
         navigate('/auth/role');
       }

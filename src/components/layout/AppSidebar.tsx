@@ -125,8 +125,8 @@ export function AppSidebar() {
         {/* Logo Section */}
         <div className="p-4 border-b border-sidebar-border py-[12px]">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft">
-              <span className="text-lg font-bold text-primary-foreground">nb</span>
+            <div className={`flex-shrink-0 ${collapsed ? 'w-5 h-5' : 'w-10 h-10'} bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft`}>
+              <span className={`font-bold text-primary-foreground ${collapsed ? 'text-xs' : 'text-lg'}`}>nb</span>
             </div>
             {!collapsed && <div>
                 <h2 className="text-lg font-bold text-sidebar-foreground">nbcon</h2>
@@ -230,10 +230,6 @@ export function AppSidebar() {
                 <DropdownMenuItem onClick={() => navigate('/profile')}>
                   <Settings className="mr-2 h-4 w-4" />
                   Profile Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/settings')}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Account Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive">

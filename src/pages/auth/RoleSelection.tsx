@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,29 +41,97 @@ export default function RoleSelection() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, getCurrentProfile } = useAuthStore();
+  const { user, getCurrentProfile, isLoading: authLoading } = useAuthStore();
+
+  // Debug: Log user state on component mount and changes
+  useEffect(() => {
+    console.log('RoleSelection - User state changed:', { 
+      user: user ? { id: user.id, email: user.email } : null, 
+      isAuthenticated: !!user,
+      authLoading
+    });
+    
+    // If auth is not loading and no user, redirect to auth
+    if (!authLoading && !user) {
+      console.log('No user found and auth not loading, redirecting to auth...');
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
 
   const handleContinue = async () => {
-    if (!selectedRole || !user) return;
+    if (!selectedRole) {
+      console.log('No role selected');
+      return;
+    }
+
+    if (!user) {
+      console.log('No user found, trying to get current session...');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        toast({
+          title: "Authentication Error",
+          description: "Please sign in again to continue.",
+          variant: "destructive",
+        });
+        navigate('/auth');
+        return;
+      }
+    }
 
     setIsLoading(true);
 
     try {
-      // Create or update profile with selected role (avoid duplicate constraint on user_id)
-      const { error } = await supabase
+      const currentUser = user || (await supabase.auth.getUser()).data.user;
+      
+      if (!currentUser) {
+        throw new Error('Unable to authenticate user');
+      }
+
+      console.log('Creating profile for user:', currentUser.id, 'with role:', selectedRole);
+      
+      // First try to check if profile already exists
+      const { data: existingProfile } = await supabase
         .from('profiles')
-        .upsert(
-          {
-            user_id: user.id,
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .single();
+
+      if (existingProfile) {
+        console.log('Profile exists, updating role...');
+        // Update existing profile
+        const { data, error } = await supabase
+          .from('profiles')
+          .update({ role: selectedRole })
+          .eq('user_id', currentUser.id)
+          .select();
+
+        if (error) throw error;
+        console.log('Profile updated:', data);
+        
+        // If profile already exists and is complete, redirect to dashboard
+        if (existingProfile.first_name && existingProfile.last_name) {
+          navigate(`/${selectedRole}`);
+          return;
+        }
+      } else {
+        console.log('No existing profile, creating new one...');
+        // Create new profile
+        const { data, error } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: currentUser.id,
             role: selectedRole,
-            email: user.email,
-            phone: user.phone,
+            email: currentUser.email,
+            phone: currentUser.phone,
             preferred_language: 'en',
             theme_preference: 'light',
             rtl_enabled: false,
-          },
-          { onConflict: 'user_id' }
-        );
+          })
+          .select();
+
+        if (error) throw error;
+        console.log('Profile created:', data);
+      }
 
       // Refresh profile in store
       await getCurrentProfile();
@@ -76,6 +144,7 @@ export default function RoleSelection() {
       // Redirect to profile completion
       navigate(`/auth/profile/${selectedRole}`);
     } catch (error: any) {
+      console.error('Error in handleContinue:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to create profile. Please try again.",
@@ -85,6 +154,21 @@ export default function RoleSelection() {
       setIsLoading(false);
     }
   };
+
+  // Show loading while auth is being checked
+  if (authLoading) {
+    return (
+      <AuthLayout
+        title="Choose Your Role"
+        subtitle="How would you like to use nbcon?"
+        showLogo={false}
+      >
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout

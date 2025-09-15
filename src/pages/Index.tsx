@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
-import LandingPage from './LandingPage';
+import HomePage from './HomePage';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -26,8 +26,8 @@ const Index = () => {
     }
   }, [user, profile, isLoading, navigate]);
 
-  // Show landing page for unauthenticated users
-  return <LandingPage />;
+  // Show home page for unauthenticated users
+  return <HomePage />;
 };
 
 export default Index;
