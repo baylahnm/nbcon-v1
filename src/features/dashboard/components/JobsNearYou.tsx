@@ -5,9 +5,9 @@ export function JobsNearYou({ jobs, onOpen }:{
   return (
     <ul className="space-y-2">
       {jobs.map(j=>(
-        <li key={j.id} className="rounded-lg border border-[var(--border)] p-3 flex items-center justify-between">
+        <li key={j.id} className="rounded-lg border border-[var(--border)] p-3 flex items-center justify-between" style={{boxShadow: 'inset 4px 4px 4px rgba(0,0,0,0.06), inset -4px -4px 4px rgba(0,0,0,0.03)'}}>
           <div className="text-sm">{j.title} {typeof j.distanceKm==="number" && <span className="opacity-60">• {j.distanceKm} km</span>}</div>
-          <button onClick={()=>onOpen?.(j.id)} className="bg-[#27c862] text-black rounded-lg px-3 py-1 text-sm">Details</button>
+          <button onClick={()=>onOpen?.(j.id)} className="bg-[#27c862] text-black rounded-lg px-3 py-1 text-sm jobs-details-btn">Details</button>
         </li>
       ))}
     </ul>

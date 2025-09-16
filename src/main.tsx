@@ -8,7 +8,7 @@ import { initializeAuth } from "@/stores/auth";
 initializeAuth();
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+  <ThemeProvider attribute="class" defaultTheme="light" enableSystem themes={["light", "dark", "warm"]}>
     <App />
   </ThemeProvider>
 );

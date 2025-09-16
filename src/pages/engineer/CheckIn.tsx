@@ -40,8 +40,8 @@ export default function CheckIn() {
   return (
     <div className="space-y-6">
       <div className="border-b pb-6">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <MapPin className="h-8 w-8" style={{ color: '#27c862' }} />
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <MapPin className="h-8 w-8 checkin-map-pin-icon" style={{ color: '#27c862' }} />
           Check In
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -66,7 +66,7 @@ export default function CheckIn() {
                 placeholder="Enter your current work location..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="shadow-sm"
+                className="shadow-sm hover:border-[#27c862] focus:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862] focus:shadow-[0_0_0_1px_#27c862]"
               />
             </div>
             
@@ -77,7 +77,7 @@ export default function CheckIn() {
                 placeholder="Add any notes about your current work..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="shadow-sm"
+                className="shadow-sm hover:border-[#27c862] focus:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862] focus:shadow-[0_0_0_1px_#27c862]"
                 rows={3}
               />
             </div>
@@ -85,7 +85,7 @@ export default function CheckIn() {
             <Button 
               onClick={handleCheckIn}
               disabled={isCheckingIn}
-              className="w-full bg-[#27c862] hover:bg-[#22b358] shadow-md"
+              className="w-full bg-[#27c862] hover:bg-[#22b358] shadow-md checkin-btn"
             >
               {isCheckingIn ? (
                 <div className="flex items-center gap-2">
@@ -108,15 +108,15 @@ export default function CheckIn() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm">
+            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]">
               <Camera className="h-4 w-4" />
               Take Photo
             </Button>
-            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm">
+            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]">
               <FileText className="h-4 w-4" />
               Upload Document
             </Button>
-            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm">
+            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]">
               <MapPin className="h-4 w-4" />
               View Map
             </Button>

@@ -216,7 +216,7 @@ export default function HelpPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
           <HelpCircle className="h-8 w-8 text-primary" />
           Help & Support
         </h1>
@@ -230,36 +230,41 @@ export default function HelpPage() {
         {SUPPORT_CHANNELS.map((channel) => {
           const Icon = channel.icon;
           return (
-            <Card key={channel.title} className="hover:shadow-medium transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className={`p-2 rounded-lg bg-muted ${channel.color}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold">{channel.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {channel.description}
-                    </p>
-                    {channel.contact && (
-                      <p className="text-sm font-mono text-primary mb-1">
-                        {channel.contact}
+            <Card key={channel.title} className="hover:shadow-medium transition-shadow h-full">
+              <CardContent className="p-6 h-full">
+                <div className="h-full">
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex-1">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <span className={`p-2 rounded-lg bg-muted ${channel.color} ${channel.title === 'Phone Support' ? 'phone-support-icon' : ''}`}>
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        {channel.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {channel.description}
                       </p>
-                    )}
-                    {channel.hours && (
-                      <p className="text-xs text-muted-foreground mb-3">
-                        {channel.hours}
-                      </p>
-                    )}
-                    {channel.status && (
-                      <Badge variant="outline" className="text-success border-success/20 bg-success/5 mb-3">
-                        <CheckCircle2 className="h-3 w-3 mr-1" />
-                        {channel.status}
-                      </Badge>
-                    )}
+                      {channel.contact && (
+                        <p className="text-sm font-mono text-primary mb-1">
+                          {channel.contact}
+                        </p>
+                      )}
+                      {channel.hours && (
+                        <p className="text-xs text-muted-foreground mb-3">
+                          {channel.hours}
+                        </p>
+                      )}
+                      {channel.status && (
+                        <Badge variant="outline" className="text-success border-success/20 bg-success/5 mb-3">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          {channel.status}
+                        </Badge>
+                      )}
+                    </div>
                     <Button 
                       variant="outline" 
                       size="sm"
+                      className="mt-auto hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]"
                       onClick={() => {
                         if (channel.title === "Email Support") {
                           setShowContactForm(true);

@@ -193,7 +193,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
           <Settings className="h-8 w-8 text-primary" />
           Settings
         </h1>

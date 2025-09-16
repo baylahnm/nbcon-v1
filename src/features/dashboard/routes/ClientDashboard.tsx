@@ -21,7 +21,7 @@ export default function ClientDashboard() {
     <main className="container mx-auto px-4 py-6 text-[var(--fg)]">
       <header className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <Link to="/notifications" className="text-sm">Notifications</Link>
+        <nav className="flex gap-3 text-sm"><Link to="/client/messages">Messages</Link><Link to="/notifications">Notifications</Link></nav>
       </header>
 
       <KpiStrip items={kpis} />

@@ -115,10 +115,10 @@ export default function PhoneAuth() {
         <div className="w-full max-w-md">
           {/* Logo and Branding */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary to-green-600 rounded-3xl mb-6 shadow-xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary to-green-600 rounded-3xl mb-6 shadow-xl auth-logo">
               <span className="text-3xl font-bold text-white">nb</span>
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{t.title}</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2 auth-title">{t.title}</h1>
             <p className="text-muted-foreground text-sm">{t.subtitle}</p>
           </div>
           
@@ -135,7 +135,7 @@ export default function PhoneAuth() {
                     placeholder={t.phonePlaceholder}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className={`${isRTL ? 'pr-10' : 'pl-10'} h-12 text-lg`}
+                    className={`${isRTL ? 'pr-10' : 'pl-10'} h-12 text-lg hover:border-[#27c862] auth-phone-input`}
                     disabled={isLoading}
                     dir="ltr" // Keep phone numbers LTR even in Arabic
                   />
@@ -147,7 +147,7 @@ export default function PhoneAuth() {
 
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-primary to-green-600 hover:shadow-lg transition-all duration-300 text-lg font-medium" 
+                className="w-full h-12 bg-gradient-to-r from-primary to-green-600 hover:shadow-lg transition-all duration-300 text-lg font-medium auth-submit-btn" 
                 disabled={isLoading}
               >
                 {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
@@ -164,7 +164,7 @@ export default function PhoneAuth() {
               </div>
               
               <Link to="/auth/email">
-                <Button variant="outline" className="w-full h-12 gap-2" type="button">
+                <Button variant="outline" className="w-full h-12 gap-4 mt-[16px] hover:border-[#27c862] auth-email-btn" type="button">
                   <Mail className="w-4 h-4" />
                   {t.emailOption}
                 </Button>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +36,7 @@ import {
 const HomePage = () => {
   const [language, setLanguage] = useState<'en' | 'ar'>('en');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
+  const { theme } = useTheme();
 
   const isRTL = language === 'ar';
 
@@ -307,11 +309,11 @@ const HomePage = () => {
               <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">nb</span>
               </div>
-              <span className="font-bold text-xl">nbcon</span>
+              <span className="font-bold text-xl nbcon-logo">nbcon</span>
             </Link>
 
             {/* Navigation Links */}
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="hidden md:flex items-center space-x-6 nav-links">
               <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.product}
               </Link>
@@ -333,7 +335,7 @@ const HomePage = () => {
             </nav>
 
             {/* Right Side */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 header-buttons">
               {/* Language Toggle */}
               <Button
                 variant="ghost"
@@ -367,7 +369,7 @@ const HomePage = () => {
       <section className="py-[200px] px-[16px]">
         <div className="container mx-auto text-center max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent hero-title">
               {t.hero.title}
             </span>
           </h1>
@@ -384,7 +386,7 @@ const HomePage = () => {
               </Button>
             </Link>
             <Link to="/client/browse">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[#27c862] hover:border-[#27c862] browse-engineers-btn">
                 {t.hero.browse}
               </Button>
             </Link>
@@ -410,7 +412,7 @@ const HomePage = () => {
       {/* Trust Strip */}
       <section className="py-12 bg-muted/50">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-lg font-medium mb-8">{t.trust.title}</p>
+          <p className="text-lg font-medium mb-8 trust-title">{t.trust.title}</p>
           <div className="flex justify-center items-center space-x-8 opacity-60">
             {/* Placeholder for company logos */}
             <div className="w-20 h-8 bg-muted-foreground/20 rounded"></div>
@@ -425,7 +427,7 @@ const HomePage = () => {
       {/* Feature Grid */}
       <section className="py-[200px] px-[16px]">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 feature-cards">
             {/* Feature Card 1 - Verified Talent */}
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <Shield className="w-8 h-8 text-primary mb-4" />
@@ -494,13 +496,13 @@ const HomePage = () => {
       {/* Works With Disciplines */}
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-8">{t.disciplines.title}</h2>
-          <div className="flex flex-wrap justify-center gap-3">
+          <h2 className="text-2xl font-bold mb-8 disciplines-title">{t.disciplines.title}</h2>
+          <div className="flex flex-wrap justify-center gap-3 disciplines-badges">
             {t.disciplines.tags.map((tag, index) => {
               const icons = [Building, Zap, Cog, Home, Search, MapIcon, Shield, Eye];
               const Icon = icons[index % icons.length];
               return (
-                <Badge key={index} variant="outline" className="px-4 py-2">
+                <Badge key={index} variant="outline" className="px-4 py-2 border-0 hover:shadow-[0_0_0_1px_#27c862]">
                   <Icon className="w-4 h-4 mr-2" />
                   {tag}
                 </Badge>
@@ -512,90 +514,16 @@ const HomePage = () => {
 
       {/* Social Proof */}
       <section className="py-[200px] px-[16px]">
-        <div className="container mx-auto text-center max-w-3xl">
-          <h2 className="text-3xl font-bold mb-4">{t.social.title}</h2>
+        <div className="container mx-auto text-center max-w">
+          <h2 className="text-3xl font-bold mb-4 social-title">{t.social.title}</h2>
           <p className="text-lg text-muted-foreground mb-8">{t.social.subtitle}</p>
-          <Button variant="outline">
+          <Button variant="outline" className="border-[#27c862] hover:text-[#27c862] social-cta-btn">
             {t.social.cta}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
       </section>
 
-      {/* Quickstart Section */}
-      <section className="py-[100px] px-[16px] bg-muted/50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Start in seconds</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* For Clients */}
-            <Card className="p-6">
-              <div className="text-center mb-4">
-                <Briefcase className="w-12 h-12 text-primary mx-auto mb-3" />
-                <h3 className="text-xl font-semibold mb-2">{t.quickstart.clients.title}</h3>
-              </div>
-              <div className="space-y-2 mb-6">
-                {t.quickstart.clients.steps.map((step, index) => (
-                  <div key={index} className="flex items-center text-sm">
-                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center mr-3 flex-shrink-0">
-                      {index + 1}
-                    </span>
-                    {step}
-                  </div>
-                ))}
-              </div>
-              <Link to="/client/jobs/create" className="block">
-                <Button className="w-full">
-                  {t.quickstart.clients.cta}
-                </Button>
-              </Link>
-            </Card>
-
-            {/* For Engineers */}
-            <Card className="p-6">
-              <div className="text-center mb-4">
-                <Wrench className="w-12 h-12 text-primary mx-auto mb-3" />
-                <h3 className="text-xl font-semibold mb-2">{t.quickstart.engineers.title}</h3>
-              </div>
-              <div className="space-y-2 mb-6">
-                {t.quickstart.engineers.steps.map((step, index) => (
-                  <div key={index} className="flex items-center text-sm">
-                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center mr-3 flex-shrink-0">
-                      {index + 1}
-                    </span>
-                    {step}
-                  </div>
-                ))}
-              </div>
-              <Link to="/auth/profile/engineer" className="block">
-                <Button className="w-full">
-                  {t.quickstart.engineers.cta}
-                </Button>
-              </Link>
-            </Card>
-
-            {/* For Enterprise */}
-            <Card className="p-6">
-              <div className="text-center mb-4">
-                <Building className="w-12 h-12 text-primary mx-auto mb-3" />
-                <h3 className="text-xl font-semibold mb-2">{t.quickstart.enterprise.title}</h3>
-              </div>
-              <div className="space-y-2 mb-6">
-                {t.quickstart.enterprise.steps.map((step, index) => (
-                  <div key={index} className="flex items-center text-sm">
-                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center mr-3 flex-shrink-0">
-                      {index + 1}
-                    </span>
-                    {step}
-                  </div>
-                ))}
-              </div>
-              <Button className="w-full" variant="outline">
-                {t.quickstart.enterprise.cta}
-              </Button>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Dashboard Showcase */}
       <section className="py-[200px] px-[16px]">
@@ -618,7 +546,11 @@ const HomePage = () => {
               </Button>
             </div>
             <div className="bg-muted rounded-lg p-8 h-64 flex items-center justify-center">
-              <BarChart3 className="w-24 h-24 text-muted-foreground" />
+              <img 
+                src={theme === 'dark' ? "/Dashboard/2.png" : theme === 'warm' ? "/Dashboard/2-warm.png" : "/Dashboard/2-light.png"} 
+                alt="Dashboard" 
+                className="w-100 h-100 shadow-[0_4px_4px_rgba(0,0,0,0.1)]" 
+              />
             </div>
           </div>
         </div>
@@ -627,7 +559,7 @@ const HomePage = () => {
       {/* Pricing Section */}
       <section id="pricing" className="py-[200px] px-[16px]">
         <div className="container mx-auto p-0">
-          <div className="max-w-3xl mx-auto text-center mb-6">
+          <div className="max-w mx-auto text-center mb-6">
             <h2 className="text-3xl font-bold mb-3">Pricing</h2>
             <p className="text-muted-foreground">
               Get started with <strong>nbcon</strong>—the Saudi-first engineering marketplace—for fast hiring, secure payments, and compliant operations.
@@ -638,50 +570,51 @@ const HomePage = () => {
             <button
               type="button"
               onClick={() => setBilling((b)=> b === 'monthly' ? 'annual' : 'monthly')}
-              className={`relative h-6 w-12 rounded-full border border-[var(--border)] transition-colors ${billing==='annual' ? 'bg-[#27c862]' : 'bg-[var(--surface)]'}`}
+              className={`relative h-6 w-12 rounded-full border border-[var(--border)] transition-colors billing-toggle ${billing==='annual' ? 'bg-[#27c862]' : 'bg-[var(--surface)]'}`}
               aria-label="Toggle billing period"
             >
               <span
-                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full shadow transition-transform ${billing==='annual' ? 'translate-x-6 bg-white' : 'bg-white'}`}
+                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full shadow shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform ${billing==='annual' ? 'translate-x-6 bg-[#e8e8e8]' : 'bg-[#e8e8e8]'}`}
               />
             </button>
             <span className="text-sm text-muted-foreground">{billing === 'annual' ? 'Annually' : 'Monthly'}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_#27c862] hover:-translate-y-1 clients-card">
               <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">For Clients</h3>
               {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
               <ul className="text-sm space-y-2 mb-4">
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Post unlimited jobs (quick, advanced, emergency)</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Request & compare quotes; one-tap acceptance</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Escrow funding & releases</strong> with audit trail</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>ZATCA-compliant e-invoices</strong> (PDF + XML) and receipts</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Milestone escrow (fund/release) with full audit trail</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />ZATCA-compliant e-invoices (PDF + XML) and receipts</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Budget & milestone tracking with approvals</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />In-thread messages, files (100MB), and voice notes</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Real-time location check-ins for site visits</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Bilingual experience (EN/AR), full RTL & Hijri dates</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />In-thread messages, files (100 MB), and voice notes</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Real-time site check-ins (geo-verified)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Bilingual (EN/AR), full RTL + optional Hijri dates</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Basic analytics: spend, vendors, on-time delivery</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Email/chat support</li>
               </ul>
-              <div className="text-xs text-muted-foreground mb-4">Best for: Owners, contractors, SMBs who need verified engineers fast.</div>
+              <div className="text-xs text-muted-foreground mb-4">Best for: Owners, contractors, SMBs needing verified engineers fast.</div>
               <div className="mt-auto">
                 <div className="text-2xl font-bold mb-2">{billing === 'annual' ? 'SAR 430' : 'SAR 43'} <span className="text-sm font-normal opacity-70">/ seat {billing === 'annual' ? '/ year' : '/ month'}</span></div>
-                <button className="w-full rounded-md border border-[var(--border)] bg-[var(--bg)] px-4 py-2 transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">Select Plan</button>
+                <Button className="w-full">Select Plan</Button>
               </div>
             </div>
 
-            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_#27c862] hover:-translate-y-1 engineers-card">
               <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">For Engineers <span className="text-xs text-muted-foreground">(+35% from Client)</span></h3>
               {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
+              
               <ul className="text-sm space-y-2 mb-4">
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Smart matching to nearby jobs in your specialty</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Quote & bid manager with templates</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Geofenced check-in / check-out</strong> for visits</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Deliverables hub with version control</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Instant payouts to IBAN</strong> (with statements)</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Issue tax invoices</strong> (if enabled) + PDF/XML downloads</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Ratings & reviews, public portfolio profile</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Quote & bid manager with templates and reminders</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Geofenced check-in/out for site visits</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Deliverables hub with version control & approvals</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Instant payouts to IBAN + monthly statements</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Issue tax invoices (if enabled) with PDF/XML downloads</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Ratings & reviews; public portfolio profile</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Earnings dashboard (MTD/YTD, pending escrow, next payout)</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Bilingual messaging with AR↔EN translation</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Email/chat support</li>
@@ -689,27 +622,29 @@ const HomePage = () => {
               <div className="text-xs text-muted-foreground mb-4">Best for: Certified engineers and small firms building a steady pipeline.</div>
               <div className="mt-auto">
                 <div className="text-2xl font-bold mb-2">{billing === 'annual' ? 'SAR 580.50' : 'SAR 58.05'} <span className="text-sm font-normal opacity-70">/ seat {billing === 'annual' ? '/ year' : '/ month'}</span></div>
-                <button className="w-full rounded-md border border-[var(--border)] bg-[var(--bg)] px-4 py-2 transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">Select Plan</button>
+                <Button className="w-full">Select Plan</Button>
               </div>
             </div>
 
-            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_#27c862] hover:-translate-y-1 enterprise-card">
               <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">Enterprise <span className="text-xs text-muted-foreground">(+100% from Client)</span></h3>
               {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
+              
               <ul className="text-sm space-y-2 mb-4">
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>RFPs & multi-stage approvals</strong> (custom workflows)</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Team roles & seat management</strong> across projects</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />RFPs & multi-stage approvals (custom workflows)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Team roles & seat management across projects</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Portfolio analytics: utilization, SLA, risk & compliance</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>SSO/SAML</strong> & enterprise policy controls</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Custom integrations</strong> (ERP, HR, storage)</li>
-                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Priority support & onboarding</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />SSO/SAML and enterprise policy controls</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Custom integrations (ERP, HR, storage)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Priority support & guided onboarding</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Consolidated billing; cost centers & chargebacks</li>
                 <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Data export & scheduled email reports</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Vendor scorecards and audit-ready trails</li>
               </ul>
               <div className="text-xs text-muted-foreground mb-4">Best for: Large developers, enterprises, and government entities.</div>
               <div className="mt-auto">
                 <div className="text-2xl font-bold mb-2">{billing === 'annual' ? 'SAR 860' : 'SAR 86'} <span className="text-sm font-normal opacity-70">/ seat {billing === 'annual' ? '/ year' : '/ month'}</span></div>
-                <button className="w-full rounded-md border border-[var(--border)] bg-[var(--bg)] px-4 py-2 transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">Contact sales</button>
+                <Button className="w-full">Contact sales</Button>
               </div>
             </div>
           </div>

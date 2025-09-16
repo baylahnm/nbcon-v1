@@ -18,7 +18,10 @@ export default function EnterpriseDashboard() {
 
   return (
     <main className="container mx-auto px-4 py-6 text-[var(--fg)]">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <header className="mb-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <nav className="flex gap-3 text-sm"><a href="/enterprise/messages">Messages</a></nav>
+      </header>
 
       <KpiStrip items={kpis} />
 

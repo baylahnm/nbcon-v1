@@ -25,7 +25,7 @@ export function AuthLayout({ children, title, subtitle, showLogo = true }: AuthL
         <Card className="border-0 shadow-large">
           <CardContent className="p-6">
             <div className="text-center mb-6">
-              <h2 className="text-xl font-semibold mb-2">{title}</h2>
+              <h2 className="text-xl font-semibold mb-2 auth-layout-title">{title}</h2>
               {subtitle && (
                 <p className="text-sm text-muted-foreground">{subtitle}</p>
               )}

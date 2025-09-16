@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuthStore } from '@/stores/auth';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
 const engineerMenuItems = [{
   title: 'Dashboard',
@@ -141,8 +141,8 @@ export function AppSidebar() {
               <span className={`font-bold text-primary-foreground ${collapsed ? 'text-xs' : 'text-lg'}`}>nb</span>
             </div>
             {!collapsed && <div>
-                <h2 className="text-lg font-bold text-sidebar-foreground">nbcon</h2>
-                <p className="text-xs text-sidebar-foreground/70 capitalize">
+                <h2 className="text-lg font-bold text-sidebar-foreground sidebar-logo-title">nbcon</h2>
+                <p className="text-xs text-sidebar-foreground/70 capitalize sidebar-role-portal">
                   {profile?.role} Portal
                 </p>
               </div>}
@@ -150,10 +150,10 @@ export function AppSidebar() {
         </div>
 
         {/* Main Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
+        <SidebarGroup className="sidebar-main-group">
+          <SidebarGroupLabel className="sidebar-main-menu-label">Main Menu</SidebarGroupLabel>
+          <SidebarGroupContent className="sidebar-main-content">
+            <SidebarMenu className="sidebar-main-menu">
               {menuItems.map(item => <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} className={getNavCls(item.url)}>
@@ -166,7 +166,7 @@ export function AppSidebar() {
               {/* Special Create Job button for clients */}
               {profile?.role === 'client' && <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink to="/client/jobs/create" className="hover:bg-accent/10 text-accent hover:text-accent-foreground border border-accent/20 transition-all duration-200">
+                    <NavLink to="/client/jobs/create" className="bg-accent/10 text-accent text-accent-foreground border border-accent/20 transition-all duration-200">
                       <Plus className="mr-3 h-4 w-4 flex-shrink-0" />
                       {!collapsed && <span>Post New Job</span>}
                     </NavLink>
@@ -177,9 +177,9 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Bottom Navigation */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
+        <SidebarGroup className="sidebar-bottom-group">
+          <SidebarGroupContent className="sidebar-bottom-content">
+            <SidebarMenu className="sidebar-bottom-menu">
               {bottomMenuItems.map(item => <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} className={getNavCls(item.url)}>
@@ -194,7 +194,7 @@ export function AppSidebar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <SidebarMenuButton className="hover:bg-sidebar-accent/50">
-                      {theme === 'dark' ? <Moon className="mr-3 h-4 w-4 flex-shrink-0" /> : theme === 'light' ? <Sun className="mr-3 h-4 w-4 flex-shrink-0" /> : <Monitor className="mr-3 h-4 w-4 flex-shrink-0" />}
+                      {theme === 'dark' ? <Moon className="mr-3 h-4 w-4 flex-shrink-0" /> : theme === 'light' ? <Sun className="mr-3 h-4 w-4 flex-shrink-0" /> : theme === 'warm' ? <Palette className="mr-3 h-4 w-4 flex-shrink-0" /> : <Sun className="mr-3 h-4 w-4 flex-shrink-0" />}
                       {!collapsed && <span>Theme</span>}
                     </SidebarMenuButton>
                   </DropdownMenuTrigger>
@@ -207,9 +207,9 @@ export function AppSidebar() {
                       <Moon className="h-4 w-4 mr-2" />
                       Dark
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("system")}>
-                      <Monitor className="h-4 w-4 mr-2" />
-                      System
+                    <DropdownMenuItem onClick={() => setTheme("warm")}>
+                      <Palette className="h-4 w-4 mr-2" />
+                      Warm
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -222,17 +222,17 @@ export function AppSidebar() {
         <div className="mt-auto p-4 border-t border-sidebar-border px-0 py-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={cn("w-full justify-start p-2 h-auto", collapsed && "justify-center")}>
+              <Button variant="ghost" className={cn("w-full justify-start p-3 h-auto", collapsed && "justify-center")}>
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                     {getInitials()}
                   </AvatarFallback>
                 </Avatar>
                 {!collapsed && <div className="ml-3 text-left">
-                    <p className="text-sm font-medium text-sidebar-foreground">
+                    <p className="text-sm font-medium text-sidebar-foreground sidebar-user-display-name">
                       {getDisplayName()}
                     </p>
-                    <p className="text-xs text-sidebar-foreground/70 capitalize">
+                    <p className="text-xs text-sidebar-foreground/70 capitalize sidebar-user-role">
                       {profile?.role}
                     </p>
                   </div>}

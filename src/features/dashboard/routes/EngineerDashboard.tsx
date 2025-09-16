@@ -26,7 +26,7 @@ export default function EngineerDashboard() {
           <LayoutDashboard className="h-6 w-6 text-primary" />
           Dashboard
         </h1>
-        <nav className="flex gap-3 text-sm"><Link to="/messages">Messages</Link><Link to="/settings/profile">Profile</Link></nav>
+        <nav className="flex gap-3 text-sm"><Link to="/engineer/messages">Messages</Link><Link to="/settings/profile">Profile</Link></nav>
       </header>
 
       <KpiStrip items={kpis} />
