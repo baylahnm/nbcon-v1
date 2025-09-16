@@ -34,6 +34,7 @@ import {
 
 const HomePage = () => {
   const [language, setLanguage] = useState<'en' | 'ar'>('en');
+  const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
 
   const isRTL = language === 'ar';
 
@@ -314,9 +315,9 @@ const HomePage = () => {
               <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.product}
               </Link>
-              <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
+              <a href="/#pricing" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.pricing}
-              </Link>
+              </a>
               <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.forClients}
               </Link>
@@ -363,7 +364,7 @@ const HomePage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-[200px] px-[16px]">
         <div className="container mx-auto text-center max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">
@@ -422,7 +423,7 @@ const HomePage = () => {
       </section>
 
       {/* Feature Grid */}
-      <section className="py-20 px-4">
+      <section className="py-[200px] px-[16px]">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature Card 1 - Verified Talent */}
@@ -510,7 +511,7 @@ const HomePage = () => {
       </section>
 
       {/* Social Proof */}
-      <section className="py-20 px-4">
+      <section className="py-[200px] px-[16px]">
         <div className="container mx-auto text-center max-w-3xl">
           <h2 className="text-3xl font-bold mb-4">{t.social.title}</h2>
           <p className="text-lg text-muted-foreground mb-8">{t.social.subtitle}</p>
@@ -522,7 +523,7 @@ const HomePage = () => {
       </section>
 
       {/* Quickstart Section */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-[100px] px-[16px] bg-muted/50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Start in seconds</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -597,7 +598,7 @@ const HomePage = () => {
       </section>
 
       {/* Dashboard Showcase */}
-      <section className="py-20 px-4">
+      <section className="py-[200px] px-[16px]">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -620,6 +621,99 @@ const HomePage = () => {
               <BarChart3 className="w-24 h-24 text-muted-foreground" />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-[200px] px-[16px]">
+        <div className="container mx-auto p-0">
+          <div className="max-w-3xl mx-auto text-center mb-6">
+            <h2 className="text-3xl font-bold mb-3">Pricing</h2>
+            <p className="text-muted-foreground">
+              Get started with <strong>nbcon</strong>—the Saudi-first engineering marketplace—for fast hiring, secure payments, and compliant operations.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <button
+              type="button"
+              onClick={() => setBilling((b)=> b === 'monthly' ? 'annual' : 'monthly')}
+              className={`relative h-6 w-12 rounded-full border border-[var(--border)] transition-colors ${billing==='annual' ? 'bg-[#27c862]' : 'bg-[var(--surface)]'}`}
+              aria-label="Toggle billing period"
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full shadow transition-transform ${billing==='annual' ? 'translate-x-6 bg-white' : 'bg-white'}`}
+              />
+            </button>
+            <span className="text-sm text-muted-foreground">{billing === 'annual' ? 'Annually' : 'Monthly'}</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
+              <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">For Clients</h3>
+              {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
+              <ul className="text-sm space-y-2 mb-4">
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Post unlimited jobs (quick, advanced, emergency)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Request & compare quotes; one-tap acceptance</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Escrow funding & releases</strong> with audit trail</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>ZATCA-compliant e-invoices</strong> (PDF + XML) and receipts</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Budget & milestone tracking with approvals</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />In-thread messages, files (100MB), and voice notes</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Real-time location check-ins for site visits</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Bilingual experience (EN/AR), full RTL & Hijri dates</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Basic analytics: spend, vendors, on-time delivery</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Email/chat support</li>
+              </ul>
+              <div className="text-xs text-muted-foreground mb-4">Best for: Owners, contractors, SMBs who need verified engineers fast.</div>
+              <div className="mt-auto">
+                <div className="text-2xl font-bold mb-2">{billing === 'annual' ? 'SAR 430' : 'SAR 43'} <span className="text-sm font-normal opacity-70">/ seat {billing === 'annual' ? '/ year' : '/ month'}</span></div>
+                <button className="w-full rounded-md border border-[var(--border)] bg-[var(--bg)] px-4 py-2 transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">Select Plan</button>
+              </div>
+            </div>
+
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
+              <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">For Engineers <span className="text-xs text-muted-foreground">(+35% from Client)</span></h3>
+              {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
+              <ul className="text-sm space-y-2 mb-4">
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Smart matching to nearby jobs in your specialty</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Quote & bid manager with templates</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Geofenced check-in / check-out</strong> for visits</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Deliverables hub with version control</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Instant payouts to IBAN</strong> (with statements)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Issue tax invoices</strong> (if enabled) + PDF/XML downloads</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Ratings & reviews, public portfolio profile</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Earnings dashboard (MTD/YTD, pending escrow, next payout)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Bilingual messaging with AR↔EN translation</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Email/chat support</li>
+              </ul>
+              <div className="text-xs text-muted-foreground mb-4">Best for: Certified engineers and small firms building a steady pipeline.</div>
+              <div className="mt-auto">
+                <div className="text-2xl font-bold mb-2">{billing === 'annual' ? 'SAR 580.50' : 'SAR 58.05'} <span className="text-sm font-normal opacity-70">/ seat {billing === 'annual' ? '/ year' : '/ month'}</span></div>
+                <button className="w-full rounded-md border border-[var(--border)] bg-[var(--bg)] px-4 py-2 transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">Select Plan</button>
+              </div>
+            </div>
+
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
+              <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">Enterprise <span className="text-xs text-muted-foreground">(+100% from Client)</span></h3>
+              {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
+              <ul className="text-sm space-y-2 mb-4">
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>RFPs & multi-stage approvals</strong> (custom workflows)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Team roles & seat management</strong> across projects</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Portfolio analytics: utilization, SLA, risk & compliance</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>SSO/SAML</strong> & enterprise policy controls</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" /><strong>Custom integrations</strong> (ERP, HR, storage)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Priority support & onboarding</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Consolidated billing; cost centers & chargebacks</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-primary mt-0.5" />Data export & scheduled email reports</li>
+              </ul>
+              <div className="text-xs text-muted-foreground mb-4">Best for: Large developers, enterprises, and government entities.</div>
+              <div className="mt-auto">
+                <div className="text-2xl font-bold mb-2">{billing === 'annual' ? 'SAR 860' : 'SAR 86'} <span className="text-sm font-normal opacity-70">/ seat {billing === 'annual' ? '/ year' : '/ month'}</span></div>
+                <button className="w-full rounded-md border border-[var(--border)] bg-[var(--bg)] px-4 py-2 transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">Contact sales</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -668,6 +762,7 @@ const HomePage = () => {
       </section>
 
       {/* Footer */}
+
       <footer className="bg-background border-t py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-8">

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CreditCard } from "lucide-react";
 import { useFinanceStore } from "@/features/finance/store/useFinanceStore";
 import { Tabs } from "@/features/finance/components/Tabs";
 import { KpiCard } from "@/features/finance/components/KpiCard";
@@ -30,9 +31,12 @@ export default function PaymentsIndex() {
   ];
 
   return (
-    <main className="container mx-auto px-4 py-6 text-[var(--fg)]">
+    <main className="container mx-auto px-0 py-0 text-[var(--fg)]">
       <header className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Payments</h1>
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <CreditCard className="h-6 w-6 text-primary" />
+          Payments
+        </h1>
       </header>
 
       <Tabs value={tab} onChange={(v)=>setTab(v as any)} items={tabs} />

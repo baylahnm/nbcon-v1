@@ -5,9 +5,9 @@ export function NextMilestones({ items, onRelease }:{
   return (
     <ul className="space-y-2">
       {items.map(m=>(
-        <li key={m.id} className="rounded-lg border border-[var(--border)] p-3 flex items-center justify-between shadow-md">
+        <li key={m.id} className="rounded-lg border border-[var(--border)] p-3 flex items-center justify-between shadow-inner">
           <div className="text-sm">{m.title} — due {m.due}</div>
-          <button onClick={()=>onRelease(m.id)} className="bg-[#27c862] text-white rounded-lg px-3 py-1 text-sm">
+          <button onClick={()=>onRelease(m.id)} className="bg-[#27c862] text-black rounded-lg px-3 py-1 text-sm">
             Release (SAR {m.amount.toLocaleString()})
           </button>
         </li>

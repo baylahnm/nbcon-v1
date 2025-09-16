@@ -160,7 +160,7 @@ const SUPPORT_CHANNELS = [
     action: "Call Now",
     contact: "+966 11 234 5678",
     hours: "Sun-Thu: 9AM-6PM",
-    color: "text-accent"
+    color: "text-[#27c862]"
   }
 ];
 
@@ -477,7 +477,7 @@ export default function HelpPage() {
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isSubmitting} className="bg-gradient-primary">
+                  <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     <Send className="mr-2 h-4 w-4" />
                     Send Message

@@ -17,10 +17,13 @@ import CreateJob from "@/pages/jobs/CreateJob";
 import JobsList from "@/pages/jobs/JobsList";
 import CheckIn from "@/pages/engineer/CheckIn";
 import UploadDeliverable from "@/pages/jobs/UploadDeliverable";
+import JobDetails from "@/pages/jobs/JobDetails";
 import { MessagingPage } from "@/pages/messaging/MessagingPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import ProfilePage from "@/pages/settings/ProfilePage";
+import VerificationPage from "@/pages/settings/VerificationPage";
 import HelpPage from "@/pages/support/HelpPage";
+import PaymentsIndex from "@/routes/c/PaymentsIndex";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -61,6 +64,7 @@ const App = () => (
 
           {/* Job routes */}
           <Route path="/job" element={<AppLayout />}>
+            <Route path=":id" element={<JobDetails />} />
             <Route path="upload" element={<UploadDeliverable />} />
           </Route>
           
@@ -69,6 +73,7 @@ const App = () => (
             <Route path="browse" element={<BrowseEngineers />} />
             <Route path="jobs" element={<JobsList />} />
             <Route path="jobs/create" element={<CreateJob />} />
+            <Route path="payments" element={<PaymentsIndex />} />
             <Route path="messages" element={<MessagingPage />} />
           </Route>
           
@@ -81,6 +86,7 @@ const App = () => (
           <Route path="/settings" element={<AppLayout />}>
             <Route index element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="verification" element={<VerificationPage />} />
           </Route>
           
           <Route path="/profile" element={<AppLayout />}>

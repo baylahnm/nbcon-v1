@@ -60,6 +60,10 @@ const bottomMenuItems = [{
   url: '/settings',
   icon: Settings
 }, {
+  title: 'Payments',
+  url: '/client/payments',
+  icon: DollarSign
+}, {
   title: 'Help & Support',
   url: '/help',
   icon: HelpCircle
