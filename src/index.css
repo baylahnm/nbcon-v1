@@ -8,12 +8,12 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dashboard Theme Tokens (for CSS var approach) */
-    --color-primary: #27c862;
-    --bg: #efefef;
-    --surface: #efefef;
-    --fg: #101010;
-    --border: #e6e6e6;
+    /* Dashboard Theme Tokens (for CSS var approach) - Legacy fallbacks */
+    --color-primary: hsl(var(--primary));
+    --bg: hsl(var(--background));
+    --surface: hsl(var(--card));
+    --fg: hsl(var(--foreground));
+    --border: hsl(var(--border));
 
     /* Light Theme - New Brand System */
     --background: 0 0% 100%;
@@ -93,12 +93,12 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dashboard Theme Tokens (Dark) */
-    --color-primary: #27c862;
-    --bg: #000000;
-    --surface: #202020;
-    --fg: #e8e8e8;
-    --border: #202020;
+    /* Dashboard Theme Tokens (Dark) - Legacy fallbacks */
+    --color-primary: hsl(var(--primary));
+    --bg: hsl(var(--background));
+    --surface: hsl(var(--card));
+    --fg: hsl(var(--foreground));
+    --border: hsl(var(--border));
 
     /* Dark Theme - New Brand System */
     --background: 0 0% 0%;
@@ -155,9 +155,9 @@ All colors MUST be HSL.
     --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
 
     /* Dark mode shadows */
-    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px 0 rgb(0 0 0 / 0.2);
-    --shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -1px rgb(0 0 0 / 0.2);
-    --shadow-large: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -2px rgb(0 0 0 / 0.25);
+    --shadow-soft: 0 1px 3px 0 hsl(var(--foreground) / 0.3), 0 1px 2px 0 hsl(var(--foreground) / 0.2);
+    --shadow-medium: 0 4px 6px -1px hsl(var(--foreground) / 0.3), 0 2px 4px -1px hsl(var(--foreground) / 0.2);
+    --shadow-large: 0 10px 15px -3px hsl(var(--foreground) / 0.3), 0 4px 6px -2px hsl(var(--foreground) / 0.25);
     --shadow-glow: 0 0 20px hsl(var(--primary) / 0.5);
 
     /* Dark sidebar */
@@ -171,13 +171,49 @@ All colors MUST be HSL.
     --sidebar-ring: 142 65% 47%;
   }
 
+  /* Dark theme specific: white bottom border for messaging header */
+  .dark .messaging-header {
+    border-bottom-color: hsl(var(--border)) !important;
+  }
+
+  /* Dark theme specific: black bottom border for threads header */
+  .dark .threads-header {
+    border-bottom-color: hsl(var(--border)) !important;
+  }
+
+  /* Dark theme specific: black bottom border for each thread row */
+  .dark .thread-row {
+    border-bottom-color: hsl(var(--border)) !important;
+  }
+
+  /* Dark theme specific: black top border for composer area */
+  .dark .composer-container {
+    border-top-color: hsl(var(--border)) !important;
+  }
+
+  .light .messaging-header {
+    border-bottom-color: hsl(var(--border)) !important;
+  }
+
+  .light .threads-header {
+    border-bottom-color: hsl(var(--border)) !important;
+  }
+
+  .light .thread-row {
+    border-bottom-color: hsl(var(--border)) !important;
+  }
+
+  .light .composer-container {
+    border-top-color: hsl(var(--border)) !important;
+  }
+
   .warm {
-    /* Dashboard Theme Tokens (Warm) */
-    --color-primary: #2b4c44;
-    --bg: #ffffff;
-    --surface: #eeece8;
-    --fg: #2b4c44;
-    --border: #2b4c44;
+    /* Dashboard Theme Tokens (Warm) - Legacy fallbacks */
+    --color-primary: hsl(var(--primary));
+    --bg: hsl(var(--background));
+    --surface: hsl(var(--card));
+    --fg: hsl(var(--foreground));
+    --border: hsl(var(--border));
 
     /* Warm Theme - Earth Tones */
     --background: 0 0% 100%;
@@ -248,264 +284,1107 @@ All colors MUST be HSL.
     --sidebar-ring: 160 30% 25%;
   }
 
-  /* Warm theme specific navigation styling */
-  .warm .nav-links a {
-    color: #2b4c44 !important;
+  /* Navigation styling - All themes */
+  .light .nav-links a,
+  .dark .nav-links a,
+  .warm .nav-links a,
+  .sunset .nav-links a,
+  .abstract .nav-links a,
+  .dotted-indigo .nav-links a,
+  .lagoon .nav-links a,
+  .dark-nature .nav-links a,
+  .full-gradient .nav-links a,
+  .sea-purple .nav-links a {
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific logo styling */
-  .warm .nbcon-logo {
-    color: #2b4c44 !important;
+  /* Logo styling - All themes */
+  .light .nbcon-logo,
+  .dark .nbcon-logo,
+  .warm .nbcon-logo,
+  .sunset .nbcon-logo,
+  .abstract .nbcon-logo,
+  .dotted-indigo .nbcon-logo,
+  .lagoon .nbcon-logo,
+  .dark-nature .nbcon-logo,
+  .full-gradient .nbcon-logo,
+  .sea-purple .nbcon-logo {
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific header buttons styling (excluding Get Started) */
-  .warm .header-buttons button:not([class*="bg-primary"]) {
-    color: #2b4c44 !important;
+  /* Header buttons styling - All themes */
+  .light .header-buttons button:not([class*="bg-primary"]),
+  .dark .header-buttons button:not([class*="bg-primary"]),
+  .warm .header-buttons button:not([class*="bg-primary"]),
+  .sunset .header-buttons button:not([class*="bg-primary"]),
+  .abstract .header-buttons button:not([class*="bg-primary"]),
+  .dotted-indigo .header-buttons button:not([class*="bg-primary"]),
+  .lagoon .header-buttons button:not([class*="bg-primary"]),
+  .dark-nature .header-buttons button:not([class*="bg-primary"]),
+  .full-gradient .header-buttons button:not([class*="bg-primary"]),
+  .sea-purple .header-buttons button:not([class*="bg-primary"]) {
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific Browse Engineers button border and text */
-  .warm .browse-engineers-btn {
-    border-color: #2b4c44 !important;
-    color: #2b4c44 !important;
+  /* Browse Engineers button - All themes */
+  .light .browse-engineers-btn,
+  .dark .browse-engineers-btn,
+  .warm .browse-engineers-btn,
+  .sunset .browse-engineers-btn,
+  .abstract .browse-engineers-btn,
+  .dotted-indigo .browse-engineers-btn,
+  .lagoon .browse-engineers-btn,
+  .dark-nature .browse-engineers-btn,
+  .full-gradient .browse-engineers-btn,
+  .sea-purple .browse-engineers-btn {
+    border-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary)) !important;
   }
   
-  .warm .browse-engineers-btn:hover {
-    border-color: #2b4c44 !important;
-    color: #2b4c44 !important;
+  .light .browse-engineers-btn:hover,
+  .dark .browse-engineers-btn:hover,
+  .warm .browse-engineers-btn:hover,
+  .sunset .browse-engineers-btn:hover,
+  .abstract .browse-engineers-btn:hover,
+  .dotted-indigo .browse-engineers-btn:hover,
+  .lagoon .browse-engineers-btn:hover,
+  .dark-nature .browse-engineers-btn:hover,
+  .full-gradient .browse-engineers-btn:hover,
+  .sea-purple .browse-engineers-btn:hover {
+    border-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific hero title */
-  .warm .hero-title {
+  /* Hero title - All themes */
+  .light .hero-title,
+  .dark .hero-title,
+  .warm .hero-title,
+  .sunset .hero-title,
+  .abstract .hero-title,
+  .dotted-indigo .hero-title,
+  .lagoon .hero-title,
+  .dark-nature .hero-title,
+  .full-gradient .hero-title,
+  .sea-purple .hero-title {
     background: none !important;
     -webkit-background-clip: unset !important;
     background-clip: unset !important;
-    color: #2b4c44 !important;
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific trust title */
-  .warm .trust-title {
-    color: #2b4c44 !important;
+  /* Trust title - All themes */
+  .light .trust-title,
+  .dark .trust-title,
+  .warm .trust-title,
+  .sunset .trust-title,
+  .abstract .trust-title,
+  .dotted-indigo .trust-title,
+  .lagoon .trust-title,
+  .dark-nature .trust-title,
+  .full-gradient .trust-title,
+  .sea-purple .trust-title {
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific feature card titles */
-  .warm .feature-cards h3 {
-    color: #2b4c44 !important;
+  /* Feature card titles - All themes */
+  .light .feature-cards h3,
+  .dark .feature-cards h3,
+  .warm .feature-cards h3,
+  .sunset .feature-cards h3,
+  .abstract .feature-cards h3,
+  .dotted-indigo .feature-cards h3,
+  .lagoon .feature-cards h3,
+  .dark-nature .feature-cards h3,
+  .full-gradient .feature-cards h3,
+  .sea-purple .feature-cards h3 {
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific disciplines title */
-  .warm .disciplines-title {
-    color: #2b4c44 !important;
+  /* Disciplines title - All themes */
+  .light .disciplines-title,
+  .dark .disciplines-title,
+  .warm .disciplines-title,
+  .sunset .disciplines-title,
+  .abstract .disciplines-title,
+  .dotted-indigo .disciplines-title,
+  .lagoon .disciplines-title,
+  .dark-nature .disciplines-title,
+  .full-gradient .disciplines-title,
+  .sea-purple .disciplines-title {
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific social title */
-  .warm .social-title {
-    color: #2b4c44 !important;
+  /* Social title - All themes */
+  .light .social-title,
+  .dark .social-title,
+  .warm .social-title,
+  .sunset .social-title,
+  .abstract .social-title,
+  .dotted-indigo .social-title,
+  .lagoon .social-title,
+  .dark-nature .social-title,
+  .full-gradient .social-title,
+  .sea-purple .social-title {
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Warm theme specific social CTA button */
-  .warm .social-cta-btn {
-    border-color: #2b4c44 !important;
+  /* Social CTA button - All themes */
+  .light .social-cta-btn,
+  .dark .social-cta-btn,
+  .warm .social-cta-btn,
+  .sunset .social-cta-btn,
+  .abstract .social-cta-btn,
+  .dotted-indigo .social-cta-btn,
+  .lagoon .social-cta-btn,
+  .dark-nature .social-cta-btn,
+  .full-gradient .social-cta-btn,
+  .sea-purple .social-cta-btn {
+    border-color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific enterprise card hover border */
-  .warm .enterprise-card:hover {
-    box-shadow: 0 0 0 1px #2b4c44 !important;
+  /* Enterprise card hover border - All themes */
+  .light .enterprise-card:hover,
+  .dark .enterprise-card:hover,
+  .warm .enterprise-card:hover,
+  .sunset .enterprise-card:hover,
+  .abstract .enterprise-card:hover,
+  .dotted-indigo .enterprise-card:hover,
+  .lagoon .enterprise-card:hover,
+  .dark-nature .enterprise-card:hover,
+  .full-gradient .enterprise-card:hover,
+  .sea-purple .enterprise-card:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific clients card hover border */
-  .warm .clients-card:hover {
-    box-shadow: 0 0 0 1px #2b4c44 !important;
+  /* Clients card hover border - All themes */
+  .light .clients-card:hover,
+  .dark .clients-card:hover,
+  .warm .clients-card:hover,
+  .sunset .clients-card:hover,
+  .abstract .clients-card:hover,
+  .dotted-indigo .clients-card:hover,
+  .lagoon .clients-card:hover,
+  .dark-nature .clients-card:hover,
+  .full-gradient .clients-card:hover,
+  .sea-purple .clients-card:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific engineers card hover border */
-  .warm .engineers-card:hover {
-    box-shadow: 0 0 0 1px #2b4c44 !important;
+  /* Engineers card hover border - All themes */
+  .light .engineers-card:hover,
+  .dark .engineers-card:hover,
+  .warm .engineers-card:hover,
+  .sunset .engineers-card:hover,
+  .abstract .engineers-card:hover,
+  .dotted-indigo .engineers-card:hover,
+  .lagoon .engineers-card:hover,
+  .dark-nature .engineers-card:hover,
+  .full-gradient .engineers-card:hover,
+  .sea-purple .engineers-card:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific discipline badges hover border */
-  .warm .disciplines-badges .badge:hover {
-    box-shadow: 0 0 0 1px #2b4c44 !important;
+  /* Discipline badges hover border - All themes */
+  .light .disciplines-badges .badge:hover,
+  .dark .disciplines-badges .badge:hover,
+  .warm .disciplines-badges .badge:hover,
+  .sunset .disciplines-badges .badge:hover,
+  .abstract .disciplines-badges .badge:hover,
+  .dotted-indigo .disciplines-badges .badge:hover,
+  .lagoon .disciplines-badges .badge:hover,
+  .dark-nature .disciplines-badges .badge:hover,
+  .full-gradient .disciplines-badges .badge:hover,
+  .sea-purple .disciplines-badges .badge:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific auth logo background */
-  .warm .auth-logo {
-    background: #2b4c44 !important;
+  /* Auth logo background - All themes */
+  .light .auth-logo,
+  .dark .auth-logo,
+  .warm .auth-logo,
+  .sunset .auth-logo,
+  .abstract .auth-logo,
+  .dotted-indigo .auth-logo,
+  .lagoon .auth-logo,
+  .dark-nature .auth-logo,
+  .full-gradient .auth-logo,
+  .sea-purple .auth-logo {
+    background: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific auth submit button background */
-  .warm .auth-submit-btn {
-    background: #2b4c44 !important;
+  /* Auth submit button background - All themes */
+  .light .auth-submit-btn,
+  .dark .auth-submit-btn,
+  .warm .auth-submit-btn,
+  .sunset .auth-submit-btn,
+  .abstract .auth-submit-btn,
+  .dotted-indigo .auth-submit-btn,
+  .lagoon .auth-submit-btn,
+  .dark-nature .auth-submit-btn,
+  .full-gradient .auth-submit-btn,
+  .sea-purple .auth-submit-btn {
+    background: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific auth title text color */
-  .warm .auth-title {
-    color: #6c4b3e !important;
+  /* Auth title text color - All themes */
+  .light .auth-title,
+  .dark .auth-title,
+  .warm .auth-title,
+  .sunset .auth-title,
+  .abstract .auth-title,
+  .dotted-indigo .auth-title,
+  .lagoon .auth-title,
+  .dark-nature .auth-title,
+  .full-gradient .auth-title,
+  .sea-purple .auth-title {
+    color: hsl(var(--muted-foreground)) !important;
   }
 
-  /* Warm theme specific auth email button hover border */
-  .warm .auth-email-btn:hover {
-    border-color: #2b4c44 !important;
+  /* Auth email button hover border - All themes */
+  .light .auth-email-btn:hover,
+  .dark .auth-email-btn:hover,
+  .warm .auth-email-btn:hover,
+  .sunset .auth-email-btn:hover,
+  .abstract .auth-email-btn:hover,
+  .dotted-indigo .auth-email-btn:hover,
+  .lagoon .auth-email-btn:hover,
+  .dark-nature .auth-email-btn:hover,
+  .full-gradient .auth-email-btn:hover,
+  .sea-purple .auth-email-btn:hover {
+    border-color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific auth phone input hover border */
-  .warm .auth-phone-input:hover {
-    border-color: #2b4c44 !important;
+  /* Auth phone input hover border - All themes */
+  .light .auth-phone-input:hover,
+  .dark .auth-phone-input:hover,
+  .warm .auth-phone-input:hover,
+  .sunset .auth-phone-input:hover,
+  .abstract .auth-phone-input:hover,
+  .dotted-indigo .auth-phone-input:hover,
+  .lagoon .auth-phone-input:hover,
+  .dark-nature .auth-phone-input:hover,
+  .full-gradient .auth-phone-input:hover,
+  .sea-purple .auth-phone-input:hover {
+    border-color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific auth phone button border */
-  .warm .auth-phone-btn {
-    border-color: #2b4c44 !important;
+  /* Auth phone button border - All themes */
+  .light .auth-phone-btn,
+  .dark .auth-phone-btn,
+  .warm .auth-phone-btn,
+  .sunset .auth-phone-btn,
+  .abstract .auth-phone-btn,
+  .dotted-indigo .auth-phone-btn,
+  .lagoon .auth-phone-btn,
+  .dark-nature .auth-phone-btn,
+  .full-gradient .auth-phone-btn,
+  .sea-purple .auth-phone-btn {
+    border-color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific sidebar content text color */
-  .warm .sidebar-content {
-    color: #6c4b3e !important;
+  /* Sidebar content text color - All themes */
+  .light .sidebar-content,
+  .dark .sidebar-content,
+  .warm .sidebar-content,
+  .sunset .sidebar-content,
+  .abstract .sidebar-content,
+  .dotted-indigo .sidebar-content,
+  .lagoon .sidebar-content,
+  .dark-nature .sidebar-content,
+  .full-gradient .sidebar-content,
+  .sea-purple .sidebar-content {
+    color: hsl(var(--muted-foreground)) !important;
   }
 
-  /* Warm theme specific jobs details button */
-  .warm .jobs-details-btn {
-    background: #2b4c44 !important;
-    color: #eeece8 !important;
-    border: 1px solid #2b4c44 !important;
+  /* Jobs details button - All themes */
+  .light .jobs-details-btn,
+  .dark .jobs-details-btn,
+  .warm .jobs-details-btn,
+  .sunset .jobs-details-btn,
+  .abstract .jobs-details-btn,
+  .dotted-indigo .jobs-details-btn,
+  .lagoon .jobs-details-btn,
+  .dark-nature .jobs-details-btn,
+  .full-gradient .jobs-details-btn,
+  .sea-purple .jobs-details-btn {
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    border: 1px solid hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific jobs details button hover border */
-  .warm .jobs-details-btn:hover {
-    border-color: #eeece8 !important;
+  /* Jobs details button hover border - All themes */
+  .light .jobs-details-btn:hover,
+  .dark .jobs-details-btn:hover,
+  .warm .jobs-details-btn:hover,
+  .sunset .jobs-details-btn:hover,
+  .abstract .jobs-details-btn:hover,
+  .dotted-indigo .jobs-details-btn:hover,
+  .lagoon .jobs-details-btn:hover,
+  .dark-nature .jobs-details-btn:hover,
+  .full-gradient .jobs-details-btn:hover,
+  .sea-purple .jobs-details-btn:hover {
+    border-color: hsl(var(--primary-foreground)) !important;
+  }
+
+  /* Jobs details button - All themes */
+  .light .jobs-details-btn,
+  .dark .jobs-details-btn,
+  .sunset .jobs-details-btn,
+  .abstract .jobs-details-btn,
+  .dotted-indigo .jobs-details-btn,
+  .lagoon .jobs-details-btn,
+  .dark-nature .jobs-details-btn,
+  .full-gradient .jobs-details-btn,
+  .sea-purple .jobs-details-btn {
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    border: 1px solid hsl(var(--primary)) !important;
+  }
+
+  .light .jobs-details-btn:hover,
+  .dark .jobs-details-btn:hover,
+  .sunset .jobs-details-btn:hover,
+  .abstract .jobs-details-btn:hover,
+  .dotted-indigo .jobs-details-btn:hover,
+  .lagoon .jobs-details-btn:hover,
+  .dark-nature .jobs-details-btn:hover,
+  .full-gradient .jobs-details-btn:hover,
+  .sea-purple .jobs-details-btn:hover {
+    background: hsl(var(--primary-dark)) !important;
+    border-color: hsl(var(--primary-dark)) !important;
   }
 
   /* Warm theme specific milestones release button */
   .warm .milestones-release-btn {
-    background: #2b4c44 !important;
-    color: #eeece8 !important;
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  /* Milestones release button - All themes */
+  .light .milestones-release-btn,
+  .dark .milestones-release-btn,
+  .sunset .milestones-release-btn,
+  .abstract .milestones-release-btn,
+  .dotted-indigo .milestones-release-btn,
+  .lagoon .milestones-release-btn,
+  .dark-nature .milestones-release-btn,
+  .full-gradient .milestones-release-btn,
+  .sea-purple .milestones-release-btn {
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
   }
 
   /* Warm theme specific checkin button */
   .warm .checkin-btn {
-    background: #2b4c44 !important;
-    color: #eeece8 !important;
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
   }
 
   /* Warm theme specific verification start button */
   .warm .verification-start-btn {
-    background: #2b4c44 !important;
-    color: #eeece8 !important;
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
   }
 
   /* Warm theme specific quick actions primary button */
   .warm .quick-actions-primary-btn {
-    background: #2b4c44 !important;
-    color: #eeece8 !important;
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
   }
 
   /* Warm theme specific sidebar user name */
   .warm .sidebar-user-name {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific sidebar logo text */
   .warm .sidebar-logo-text {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific theme toggle menu */
   .warm .theme-toggle-menu {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   .warm .theme-toggle-menu svg {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific billing toggle when in annually state */
   .warm .billing-toggle.bg-\[#27c862\] {
-    background-color: #2b4c44 !important;
+    background-color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific auth layout title */
   .warm .auth-layout-title {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific sidebar logo text and icon */
   .warm .sidebar-logo-text h2 {
-    color: #6c4b3e !important;
+    color: hsl(var(--muted-foreground)) !important;
   }
 
   .warm .sidebar-logo-text ~ div span,
   .warm .sidebar-logo-text + div span {
-    color: #6c4b3e !important;
+    color: hsl(var(--muted-foreground)) !important;
   }
 
   /* Warm theme specific sidebar main menu label */
   .warm .sidebar-main-menu-label {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific sidebar main menu items */
   .warm .sidebar-main-menu a {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   .warm .sidebar-main-menu svg {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific sidebar bottom menu items */
   .warm .sidebar-bottom-menu a {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   .warm .sidebar-bottom-menu button {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   .warm .sidebar-bottom-menu svg {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific sidebar logo title */
   .warm .sidebar-logo-title {
-    color: #6c4b3e !important;
+    color: hsl(var(--muted-foreground)) !important;
   }
 
   /* Warm theme specific sidebar user display name */
   .warm .sidebar-user-display-name {
-    color: #6c4b3e !important;
+    color: hsl(var(--muted-foreground)) !important;
   }
 
   /* Warm theme specific sidebar role portal text */
   .warm .sidebar-role-portal {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific sidebar user role text */
   .warm .sidebar-user-role {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific checkin map pin icon */
   .warm .checkin-map-pin-icon {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific upload deliverable icon */
   .warm .upload-deliverable-icon {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
   }
 
   /* Warm theme specific submit deliverable button */
   .warm .submit-deliverable-btn {
-    background-color: #2b4c44 !important;
+    background-color: hsl(var(--primary)) !important;
   }
 
   .warm .submit-deliverable-btn:hover {
-    background-color: #1e3a32 !important;
+    background-color: hsl(var(--primary-dark)) !important;
   }
 
   /* Warm theme specific phone support icon */
   .warm .phone-support-icon {
-    color: #2b4c44 !important;
+    color: hsl(var(--primary)) !important;
+  }
+
+  /* Warm theme specific CheckIn subtitle */
+  .warm .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* Warm theme specific CheckIn card title */
+  .warm .checkin-card-title {
+    color: hsl(var(--primary)) !important;
+  }
+
+  /* CheckIn components - Light theme */
+  .light .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .light .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .light .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .light .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .light .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Dark theme */
+  .dark .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .dark .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .dark .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .dark .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .dark .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Sunset theme */
+  .sunset .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .sunset .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .sunset .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .sunset .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .sunset .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Abstract theme */
+  .abstract .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .abstract .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .abstract .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .abstract .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .abstract .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Dotted Indigo theme */
+  .dotted-indigo .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .dotted-indigo .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .dotted-indigo .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .dotted-indigo .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .dotted-indigo .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Lagoon theme */
+  .lagoon .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .lagoon .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .lagoon .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .lagoon .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .lagoon .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Dark Nature theme */
+  .dark-nature .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .dark-nature .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .dark-nature .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .dark-nature .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .dark-nature .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Full Gradient theme */
+  .full-gradient .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .full-gradient .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .full-gradient .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .full-gradient .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .full-gradient .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* CheckIn components - Sea Purple theme */
+  .sea-purple .checkin-map-pin-icon {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .sea-purple .checkin-subtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .sea-purple .checkin-card-title {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .sea-purple .checkin-btn {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .sea-purple .checkin-btn:hover {
+    background-color: hsl(var(--primary-dark)) !important;
+  }
+
+  /* Warm theme specific earnings charts range buttons */
+  .warm .earnings-range-group .earnings-range-btn.active {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  /* Theme-specific theme toggle menu - All themes */
+  .light .theme-toggle-menu,
+  .dark .theme-toggle-menu,
+  .warm .theme-toggle-menu,
+  .sunset .theme-toggle-menu,
+  .abstract .theme-toggle-menu,
+  .dotted-indigo .theme-toggle-menu,
+  .lagoon .theme-toggle-menu,
+  .dark-nature .theme-toggle-menu,
+  .full-gradient .theme-toggle-menu,
+  .sea-purple .theme-toggle-menu {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .light .theme-toggle-menu svg,
+  .dark .theme-toggle-menu svg,
+  .warm .theme-toggle-menu svg,
+  .sunset .theme-toggle-menu svg,
+  .abstract .theme-toggle-menu svg,
+  .dotted-indigo .theme-toggle-menu svg,
+  .lagoon .theme-toggle-menu svg,
+  .dark-nature .theme-toggle-menu svg,
+  .full-gradient .theme-toggle-menu svg,
+  .sea-purple .theme-toggle-menu svg {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  /* Theme-specific dropdown menu items text color - All themes */
+  .light [data-radix-menu-content] [role="menuitem"],
+  .dark [data-radix-menu-content] [role="menuitem"],
+  .warm [data-radix-menu-content] [role="menuitem"],
+  .sunset [data-radix-menu-content] [role="menuitem"],
+  .abstract [data-radix-menu-content] [role="menuitem"],
+  .dotted-indigo [data-radix-menu-content] [role="menuitem"],
+  .lagoon [data-radix-menu-content] [role="menuitem"],
+  .dark-nature [data-radix-menu-content] [role="menuitem"],
+  .full-gradient [data-radix-menu-content] [role="menuitem"],
+  .sea-purple [data-radix-menu-content] [role="menuitem"] {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  /* Sunset Theme */
+  .sunset {
+    --background: 0 0% 100%;
+    --foreground: 20 15% 20%;
+    --card: 25 20% 95%;
+    --card-foreground: 20 15% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 15% 20%;
+    --primary: 15 85% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 15 80% 60%;
+    --primary-dark: 15 90% 40%;
+    --secondary: 25 20% 90%;
+    --secondary-foreground: 20 15% 20%;
+    --muted: 25 20% 95%;
+    --muted-foreground: 20 15% 50%;
+    --accent: 25 20% 90%;
+    --accent-foreground: 20 15% 20%;
+    --success: 120 60% 40%;
+    --warning: 35 100% 50%;
+    --destructive: 0 70% 50%;
+    --info: 200 80% 50%;
+    --border: 25 20% 85%;
+    --input: 25 20% 85%;
+    --ring: 15 85% 50%;
+    --sidebar-background: 25 20% 95%;
+    --sidebar-foreground: 20 15% 20%;
+    --sidebar-primary: 15 85% 50%;
+    --sidebar-accent: 25 20% 90%;
+    --sidebar-border: 25 20% 85%;
+    --sidebar-ring: 15 85% 50%;
+  }
+
+  /* Abstract Theme */
+  .abstract {
+    --background: 0 0% 100%;
+    --foreground: 280 20% 20%;
+    --card: 280 15% 95%;
+    --card-foreground: 280 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 280 20% 20%;
+    --primary: 280 60% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 280 55% 60%;
+    --primary-dark: 280 65% 40%;
+    --secondary: 280 15% 90%;
+    --secondary-foreground: 280 20% 20%;
+    --muted: 280 15% 95%;
+    --muted-foreground: 280 20% 50%;
+    --accent: 280 15% 90%;
+    --accent-foreground: 280 20% 20%;
+    --success: 120 60% 40%;
+    --warning: 35 100% 50%;
+    --destructive: 0 70% 50%;
+    --info: 200 80% 50%;
+    --border: 280 15% 85%;
+    --input: 280 15% 85%;
+    --ring: 280 60% 50%;
+    --sidebar-background: 280 15% 95%;
+    --sidebar-foreground: 280 20% 20%;
+    --sidebar-primary: 280 60% 50%;
+    --sidebar-accent: 280 15% 90%;
+    --sidebar-border: 280 15% 85%;
+    --sidebar-ring: 280 60% 50%;
+  }
+
+  /* Dotted Indigo Theme */
+  .dotted-indigo {
+    --background: 0 0% 100%;
+    --foreground: 240 20% 20%;
+    --card: 240 15% 95%;
+    --card-foreground: 240 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 20% 20%;
+    --primary: 240 60% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 240 55% 60%;
+    --primary-dark: 240 65% 40%;
+    --secondary: 240 15% 90%;
+    --secondary-foreground: 240 20% 20%;
+    --muted: 240 15% 95%;
+    --muted-foreground: 240 20% 50%;
+    --accent: 240 15% 90%;
+    --accent-foreground: 240 20% 20%;
+    --success: 120 60% 40%;
+    --warning: 35 100% 50%;
+    --destructive: 0 70% 50%;
+    --info: 200 80% 50%;
+    --border: 240 15% 85%;
+    --input: 240 15% 85%;
+    --ring: 240 60% 50%;
+    --sidebar-background: 240 15% 95%;
+    --sidebar-foreground: 240 20% 20%;
+    --sidebar-primary: 240 60% 50%;
+    --sidebar-accent: 240 15% 90%;
+    --sidebar-border: 240 15% 85%;
+    --sidebar-ring: 240 60% 50%;
+  }
+
+  /* Lagoon Theme */
+  .lagoon {
+    --background: 0 0% 100%;
+    --foreground: 180 20% 20%;
+    --card: 180 15% 95%;
+    --card-foreground: 180 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 180 20% 20%;
+    --primary: 180 60% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 180 55% 60%;
+    --primary-dark: 180 65% 40%;
+    --secondary: 180 15% 90%;
+    --secondary-foreground: 180 20% 20%;
+    --muted: 180 15% 95%;
+    --muted-foreground: 180 20% 50%;
+    --accent: 180 15% 90%;
+    --accent-foreground: 180 20% 20%;
+    --success: 120 60% 40%;
+    --warning: 35 100% 50%;
+    --destructive: 0 70% 50%;
+    --info: 200 80% 50%;
+    --border: 180 15% 85%;
+    --input: 180 15% 85%;
+    --ring: 180 60% 50%;
+    --sidebar-background: 180 15% 95%;
+    --sidebar-foreground: 180 20% 20%;
+    --sidebar-primary: 180 60% 50%;
+    --sidebar-accent: 180 15% 90%;
+    --sidebar-border: 180 15% 85%;
+    --sidebar-ring: 180 60% 50%;
+  }
+
+  /* Dark Nature Theme */
+  .dark-nature {
+    --background: 0 0% 100%;
+    --foreground: 120 20% 20%;
+    --card: 120 15% 95%;
+    --card-foreground: 120 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 120 20% 20%;
+    --primary: 120 60% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 120 55% 60%;
+    --primary-dark: 120 65% 40%;
+    --secondary: 120 15% 90%;
+    --secondary-foreground: 120 20% 20%;
+    --muted: 120 15% 95%;
+    --muted-foreground: 120 20% 50%;
+    --accent: 120 15% 90%;
+    --accent-foreground: 120 20% 20%;
+    --success: 120 60% 40%;
+    --warning: 35 100% 50%;
+    --destructive: 0 70% 50%;
+    --info: 200 80% 50%;
+    --border: 120 15% 85%;
+    --input: 120 15% 85%;
+    --ring: 120 60% 50%;
+    --sidebar-background: 120 15% 95%;
+    --sidebar-foreground: 120 20% 20%;
+    --sidebar-primary: 120 60% 50%;
+    --sidebar-accent: 120 15% 90%;
+    --sidebar-border: 120 15% 85%;
+    --sidebar-ring: 120 60% 50%;
+  }
+
+  /* Full Gradient Theme */
+  .full-gradient {
+    --background: 0 0% 100%;
+    --foreground: 300 20% 20%;
+    --card: 300 15% 95%;
+    --card-foreground: 300 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 300 20% 20%;
+    --primary: 300 60% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 300 55% 60%;
+    --primary-dark: 300 65% 40%;
+    --secondary: 300 15% 90%;
+    --secondary-foreground: 300 20% 20%;
+    --muted: 300 15% 95%;
+    --muted-foreground: 300 20% 50%;
+    --accent: 300 15% 90%;
+    --accent-foreground: 300 20% 20%;
+    --success: 120 60% 40%;
+    --warning: 35 100% 50%;
+    --destructive: 0 70% 50%;
+    --info: 200 80% 50%;
+    --border: 300 15% 85%;
+    --input: 300 15% 85%;
+    --ring: 300 60% 50%;
+    --sidebar-background: 300 15% 95%;
+    --sidebar-foreground: 300 20% 20%;
+    --sidebar-primary: 300 60% 50%;
+    --sidebar-accent: 300 15% 90%;
+    --sidebar-border: 300 15% 85%;
+    --sidebar-ring: 300 60% 50%;
+  }
+
+  /* Sea Purple Theme */
+  .sea-purple {
+    --background: 0 0% 100%;
+    --foreground: 250 20% 20%;
+    --card: 250 15% 95%;
+    --card-foreground: 250 20% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 250 20% 20%;
+    --primary: 250 60% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 250 55% 60%;
+    --primary-dark: 250 65% 40%;
+    --secondary: 250 15% 90%;
+    --secondary-foreground: 250 20% 20%;
+    --muted: 250 15% 95%;
+    --muted-foreground: 250 20% 50%;
+    --accent: 250 15% 90%;
+    --accent-foreground: 250 20% 20%;
+    --success: 120 60% 40%;
+    --warning: 35 100% 50%;
+    --destructive: 0 70% 50%;
+    --info: 200 80% 50%;
+    --border: 250 15% 85%;
+    --input: 250 15% 85%;
+    --ring: 250 60% 50%;
+    --sidebar-background: 250 15% 95%;
+    --sidebar-foreground: 250 20% 20%;
+    --sidebar-primary: 250 60% 50%;
+    --sidebar-accent: 250 15% 90%;
+    --sidebar-border: 250 15% 85%;
+    --sidebar-ring: 250 60% 50%;
+  }
+
+  /* Theme page specific styling */
+  .theme-page-container {
+    padding-left: 160px;
+    padding-right: 160px;
+  }
+
+  @media (max-width: 1280px) {
+    .theme-page-container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  .theme-vertical-rhythm > * + * {
+    margin-top: 16px;
+  }
+
+  .theme-section-spacing {
+    margin-bottom: 16px;
+  }
+
+  /* Scrollbar hide/show on hover */
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* WebKit */
+  }
+
+  .scrollbar-show {
+    scrollbar-width: thin; /* Firefox */
+    -ms-overflow-style: auto; /* Internet Explorer 10+ */
+  }
+
+  .scrollbar-show::-webkit-scrollbar {
+    display: block; /* WebKit */
+    height: 6px;
+  }
+
+  .scrollbar-show::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-show::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+
+  .scrollbar-show::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Responsive theme buttons container */
+  .theme-buttons-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .theme-buttons-container .flex {
+    width: max-content;
+    flex-wrap: nowrap;
+  }
+
+  /* Responsive breakpoints for theme buttons */
+  @media (max-width: 640px) {
+    .theme-buttons-container .flex {
+      gap: 0.5rem;
+    }
+    
+    .theme-buttons-container .flex button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 768px) {
+    .theme-buttons-container .flex {
+      gap: 0.75rem;
+    }
+    
+    .theme-buttons-container .flex button {
+      flex-shrink: 0;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .theme-buttons-container .flex {
+      gap: 0.75rem;
+    }
+    
+    .theme-buttons-container .flex button {
+      flex-shrink: 0;
+    }
   }
 }
 

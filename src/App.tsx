@@ -22,6 +22,7 @@ import { MessagingPage } from "@/pages/messaging/MessagingPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import ProfilePage from "@/pages/settings/ProfilePage";
 import VerificationPage from "@/pages/settings/VerificationPage";
+import ThemePage from "@/pages/settings/ThemePage";
 import HelpPage from "@/pages/support/HelpPage";
 import PaymentsIndex from "@/routes/c/PaymentsIndex";
 import NotFound from "./pages/NotFound";
@@ -87,6 +88,7 @@ const App = () => (
             <Route index element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="verification" element={<VerificationPage />} />
+            <Route path="theme" element={<ThemePage />} />
           </Route>
           
           <Route path="/profile" element={<AppLayout />}>

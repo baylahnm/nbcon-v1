@@ -44,7 +44,7 @@ export default function CheckIn() {
           <MapPin className="h-8 w-8 checkin-map-pin-icon" style={{ color: '#27c862' }} />
           Check In
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1 checkin-subtitle">
           Record your location and update your work status.
         </p>
       </div>
@@ -53,7 +53,7 @@ export default function CheckIn() {
         {/* Check In Form */}
         <Card className="shadow-md">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 checkin-card-title">
               <Clock className="h-5 w-5 text-primary" />
               Location Check In
             </CardTitle>
@@ -66,7 +66,7 @@ export default function CheckIn() {
                 placeholder="Enter your current work location..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="shadow-sm hover:border-[#27c862] focus:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862] focus:shadow-[0_0_0_1px_#27c862]"
+                className="shadow-sm hover:border-[var(--primary)] focus:border-[var(--primary)] hover:shadow-[0_0_0_1px_var(--primary)] focus:shadow-[0_0_0_1px_var(--primary)]"
               />
             </div>
             
@@ -77,7 +77,7 @@ export default function CheckIn() {
                 placeholder="Add any notes about your current work..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="shadow-sm hover:border-[#27c862] focus:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862] focus:shadow-[0_0_0_1px_#27c862]"
+                className="shadow-sm hover:border-[var(--primary)] focus:border-[var(--primary)] hover:shadow-[0_0_0_1px_var(--primary)] focus:shadow-[0_0_0_1px_var(--primary)]"
                 rows={3}
               />
             </div>
@@ -85,7 +85,7 @@ export default function CheckIn() {
             <Button 
               onClick={handleCheckIn}
               disabled={isCheckingIn}
-              className="w-full bg-[#27c862] hover:bg-[#22b358] shadow-md checkin-btn"
+              className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] shadow-md checkin-btn"
             >
               {isCheckingIn ? (
                 <div className="flex items-center gap-2">
@@ -108,15 +108,15 @@ export default function CheckIn() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]">
+            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[var(--primary)] hover:shadow-[0_0_0_1px_var(--primary)]">
               <Camera className="h-4 w-4" />
               Take Photo
             </Button>
-            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]">
+            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[var(--primary)] hover:shadow-[0_0_0_1px_var(--primary)]">
               <FileText className="h-4 w-4" />
               Upload Document
             </Button>
-            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]">
+            <Button variant="outline" className="w-full justify-start gap-2 shadow-sm hover:border-[var(--primary)] hover:shadow-[0_0_0_1px_var(--primary)]">
               <MapPin className="h-4 w-4" />
               View Map
             </Button>

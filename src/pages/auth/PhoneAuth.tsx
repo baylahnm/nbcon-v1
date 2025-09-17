@@ -135,7 +135,7 @@ export default function PhoneAuth() {
                     placeholder={t.phonePlaceholder}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className={`${isRTL ? 'pr-10' : 'pl-10'} h-12 text-lg hover:border-[#27c862] auth-phone-input`}
+                    className={`${isRTL ? 'pr-10' : 'pl-10'} h-12 text-lg hover:border-[var(--primary)] auth-phone-input`}
                     disabled={isLoading}
                     dir="ltr" // Keep phone numbers LTR even in Arabic
                   />
@@ -164,7 +164,7 @@ export default function PhoneAuth() {
               </div>
               
               <Link to="/auth/email">
-                <Button variant="outline" className="w-full h-12 gap-4 mt-[16px] hover:border-[#27c862] auth-email-btn" type="button">
+                <Button variant="outline" className="w-full h-12 gap-4 mt-[16px] hover:border-[var(--primary)] auth-email-btn" type="button">
                   <Mail className="w-4 h-4" />
                   {t.emailOption}
                 </Button>

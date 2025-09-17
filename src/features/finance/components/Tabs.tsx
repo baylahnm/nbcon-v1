@@ -4,7 +4,7 @@ export function Tabs({
   value, onChange, items
 }:{ value:string; onChange:(v:string)=>void; items:{key:string; label:string}[] }) {
   return (
-    <div role="tablist" aria-label="Sections" className="inline-flex h-12 items-center justify-start rounded-none border-0 bg-transparent p-0 w-full shadow-[0_2px_0_0_rgba(0,0,0,0.08)]" style={{ display: "table", minWidth: "100%" }}>
+    <div role="tablist" aria-label="Sections" className="inline-flex h-12 items-center justify-start rounded-none border-0 bg-transparent p-0 w-full shadow-[0_2px_0_0_hsl(var(--foreground)/0.08)]" style={{ display: "table", minWidth: "100%" }}>
       {items.map(t=>{
         const isActive = value===t.key;
         const Icon = t.key==="overview" ? LayoutDashboard

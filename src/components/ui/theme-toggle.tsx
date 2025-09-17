@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Moon, Sun, Palette } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Moon, Sun, Palette, Sunset, Paintbrush, CircleDot, Waves, TreePine, Layers, Sparkles } from "lucide-react";
+import { useThemeStore } from "@/stores/theme";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,20 +10,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const themes = [
+  { key: 'light', label: 'Light', icon: Sun },
+  { key: 'dark', label: 'Dark', icon: Moon },
+  { key: 'warm', label: 'Warm', icon: Palette },
+  { key: 'sunset', label: 'Sunset', icon: Sunset },
+  { key: 'abstract', label: 'Abstract', icon: Paintbrush },
+  { key: 'dotted-indigo', label: 'Dotted Indigo', icon: CircleDot },
+  { key: 'lagoon', label: 'Lagoon', icon: Waves },
+  { key: 'dark-nature', label: 'Dark Nature', icon: TreePine },
+  { key: 'full-gradient', label: 'Full Gradient', icon: Layers },
+  { key: 'sea-purple', label: 'Sea Purple', icon: Sparkles },
+];
+
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme();
+  const { preset, applyPreset } = useThemeStore();
 
   const getIcon = () => {
-    switch (theme) {
-      case 'light':
-        return <Sun className="h-[1.2rem] w-[1.2rem]" />;
-      case 'dark':
-        return <Moon className="h-[1.2rem] w-[1.2rem]" />;
-      case 'warm':
-        return <Palette className="h-[1.2rem] w-[1.2rem]" />;
-      default:
-        return <Sun className="h-[1.2rem] w-[1.2rem]" />;
+    const currentTheme = themes.find(t => t.key === preset);
+    if (currentTheme) {
+      const IconComponent = currentTheme.icon;
+      return <IconComponent className="h-[1.2rem] w-[1.2rem]" />;
     }
+    return <Sun className="h-[1.2rem] w-[1.2rem]" />;
   };
 
   return (
@@ -35,18 +44,18 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-popover border theme-toggle-menu">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          <Sun className="h-4 w-4 mr-2" />
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <Moon className="h-4 w-4 mr-2" />
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("warm")}>
-          <Palette className="h-4 w-4 mr-2" />
-          Warm
-        </DropdownMenuItem>
+        {themes.map((themeOption) => {
+          const IconComponent = themeOption.icon;
+          return (
+            <DropdownMenuItem 
+              key={themeOption.key} 
+              onClick={() => applyPreset(themeOption.key as any)}
+            >
+              <IconComponent className="h-4 w-4 mr-2" />
+              {themeOption.label}
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );

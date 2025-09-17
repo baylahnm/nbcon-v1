@@ -20,10 +20,10 @@ export default function EngineerDashboard() {
   if (error)   return <div className="p-6"><div className="mb-2">Failed to load</div><button className="border border-[var(--border)] rounded-lg px-3 py-1" onClick={refresh}>Retry</button></div>;
 
   return (
-    <main className="container mx-auto p-0 text-[var(--fg)]">
+    <main className="w-full mx-auto p-0 text-[var(--fg)]">
       <header className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <LayoutDashboard className="h-6 w-6 text-primary" />
+          <LayoutDashboard className="h-8 w-8 text-primary" />
           Dashboard
         </h1>
         <nav className="flex gap-3 text-sm"><Link to="/engineer/messages">Messages</Link><Link to="/settings/profile">Profile</Link></nav>

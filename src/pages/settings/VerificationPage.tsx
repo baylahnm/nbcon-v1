@@ -191,7 +191,7 @@ export default function VerificationPage() {
                         <Button
                           onClick={() => handleStepAction(step)}
                           disabled={isUploading}
-                          className="bg-[#27c862] hover:bg-[#22b358] text-black"
+                          className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-[var(--primary-foreground)]"
                         >
                           {isUploading ? (
                             <div className="flex items-center gap-2">

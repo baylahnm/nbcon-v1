@@ -31,10 +31,10 @@ export default function PaymentsIndex() {
   ];
 
   return (
-    <main className="container mx-auto px-0 py-0 text-[var(--fg)]">
+    <main className="w-full mx-auto p-0 text-[var(--fg)]">
       <header className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <CreditCard className="h-6 w-6 text-primary" />
+          <CreditCard className="h-8 w-8 text-primary" />
           Payments
         </h1>
       </header>

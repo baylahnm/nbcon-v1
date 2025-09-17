@@ -229,7 +229,7 @@ export default function EmailAuth() {
               </div>
               
               <Link to="/auth">
-                <Button variant="outline" className="w-full h-12 gap-2 mt-4 border-[#27c862] auth-phone-btn" type="button">
+                <Button variant="outline" className="w-full h-12 gap-2 mt-4 border-[var(--primary)] auth-phone-btn" type="button">
                   <Phone className="w-4 h-4" />
                   {t.phoneOption}
                 </Button>

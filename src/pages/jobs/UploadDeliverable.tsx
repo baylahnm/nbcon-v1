@@ -206,7 +206,7 @@ export default function UploadDeliverable() {
             <Button 
               onClick={handleSubmit}
               disabled={isUploading || uploadedFiles.length === 0}
-              className="w-full bg-[#27c862] hover:bg-[#22b358] shadow-md submit-deliverable-btn"
+              className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] shadow-md submit-deliverable-btn"
             >
               {isUploading ? (
                 <div className="flex items-center gap-2">

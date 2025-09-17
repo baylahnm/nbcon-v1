@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuthStore } from '@/stores/auth';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Palette } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 const engineerMenuItems = [{
   title: 'Dashboard',
@@ -137,8 +137,8 @@ export function AppSidebar() {
         {/* Logo Section */}
         <div className="p-4 border-b border-sidebar-border py-[12px]">
           <div className="flex items-center gap-3">
-            <div className={`flex-shrink-0 ${collapsed ? 'w-5 h-5' : 'w-10 h-10'} bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft`}>
-              <span className={`font-bold text-primary-foreground ${collapsed ? 'text-xs' : 'text-lg'}`}>nb</span>
+            <div className={`flex-shrink-0 ${collapsed ? 'w-5 h-5' : 'w-8 h-8'} bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft`}>
+              <span className={`font-bold text-primary-foreground ${collapsed ? 'text-xs' : 'text-base'}`}>nb</span>
             </div>
             {!collapsed && <div>
                 <h2 className="text-lg font-bold text-sidebar-foreground sidebar-logo-title">nbcon</h2>
@@ -189,30 +189,15 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>)}
               
-              {/* Theme Toggle */}
+
+              {/* Profile link */}
               <SidebarMenuItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton className="hover:bg-sidebar-accent/50">
-                      {theme === 'dark' ? <Moon className="mr-3 h-4 w-4 flex-shrink-0" /> : theme === 'light' ? <Sun className="mr-3 h-4 w-4 flex-shrink-0" /> : theme === 'warm' ? <Palette className="mr-3 h-4 w-4 flex-shrink-0" /> : <Sun className="mr-3 h-4 w-4 flex-shrink-0" />}
-                      {!collapsed && <span>Theme</span>}
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" side="right" className="bg-popover border">
-                    <DropdownMenuItem onClick={() => setTheme("light")}>
-                      <Sun className="h-4 w-4 mr-2" />
-                      Light
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("dark")}>
-                      <Moon className="h-4 w-4 mr-2" />
-                      Dark
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("warm")}>
-                      <Palette className="h-4 w-4 mr-2" />
-                      Warm
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/profile" className={getNavCls('/profile')}>
+                    <User className="mr-3 h-4 w-4 flex-shrink-0" />
+                    {!collapsed && <span>Profile</span>}
+                  </NavLink>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -238,7 +223,7 @@ export function AppSidebar() {
                   </div>}
               </Button>
             </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" className="w-56" align={collapsed ? "center" : "start"}>
+              <DropdownMenuContent side="top" className="w-56" align={collapsed ? "center" : "start"} alignOffset={12}>
                 <DropdownMenuItem onClick={() => navigate('/profile')}>
                   <Settings className="mr-2 h-4 w-4" />
                   Profile Settings

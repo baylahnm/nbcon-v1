@@ -386,7 +386,7 @@ const HomePage = () => {
               </Button>
             </Link>
             <Link to="/client/browse">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[#27c862] hover:border-[#27c862] browse-engineers-btn">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[var(--primary)] hover:border-[var(--primary)] browse-engineers-btn">
                 {t.hero.browse}
               </Button>
             </Link>
@@ -502,7 +502,7 @@ const HomePage = () => {
               const icons = [Building, Zap, Cog, Home, Search, MapIcon, Shield, Eye];
               const Icon = icons[index % icons.length];
               return (
-                <Badge key={index} variant="outline" className="px-4 py-2 border-0 hover:shadow-[0_0_0_1px_#27c862]">
+                <Badge key={index} variant="outline" className="px-4 py-2 border-0 hover:shadow-[0_0_0_1px_var(--primary)]">
                   <Icon className="w-4 h-4 mr-2" />
                   {tag}
                 </Badge>
@@ -517,7 +517,7 @@ const HomePage = () => {
         <div className="container mx-auto text-center max-w">
           <h2 className="text-3xl font-bold mb-4 social-title">{t.social.title}</h2>
           <p className="text-lg text-muted-foreground mb-8">{t.social.subtitle}</p>
-          <Button variant="outline" className="border-[#27c862] hover:text-[#27c862] social-cta-btn">
+          <Button variant="outline" className="border-[var(--primary)] hover:text-[var(--primary)] social-cta-btn">
             {t.social.cta}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
@@ -545,12 +545,56 @@ const HomePage = () => {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
-            <div className="bg-muted rounded-lg p-8 h-64 flex items-center justify-center">
-              <img 
-                src={theme === 'dark' ? "/Dashboard/2.png" : theme === 'warm' ? "/Dashboard/2-warm.png" : "/Dashboard/2-light.png"} 
-                alt="Dashboard" 
-                className="w-100 h-100 shadow-[0_4px_4px_rgba(0,0,0,0.1)]" 
-              />
+            <div className="bg-muted rounded-lg p-6 h-64 flex items-center justify-center">
+              <div className="w-full h-full bg-card rounded-lg shadow-lg p-4 space-y-4">
+                {/* Dashboard Header */}
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-foreground">Dashboard</h3>
+                  <div className="flex space-x-2">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  </div>
+                </div>
+                
+                {/* KPI Cards */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-primary/10 rounded-lg p-3">
+                    <div className="text-xs text-muted-foreground">Active Jobs</div>
+                    <div className="text-lg font-bold text-primary">12</div>
+                  </div>
+                  <div className="bg-primary/10 rounded-lg p-3">
+                    <div className="text-xs text-muted-foreground">Earnings</div>
+                    <div className="text-lg font-bold text-primary">$2,450</div>
+                  </div>
+                </div>
+                
+                {/* Chart Area */}
+                <div className="flex-1 bg-muted rounded-lg p-3 flex items-end space-x-1">
+                  <div className="bg-primary h-8 w-4 rounded-t"></div>
+                  <div className="bg-primary h-12 w-4 rounded-t"></div>
+                  <div className="bg-primary h-6 w-4 rounded-t"></div>
+                  <div className="bg-primary h-10 w-4 rounded-t"></div>
+                  <div className="bg-primary h-14 w-4 rounded-t"></div>
+                  <div className="bg-primary h-8 w-4 rounded-t"></div>
+                  <div className="bg-primary h-11 w-4 rounded-t"></div>
+                </div>
+                
+                {/* Recent Activity */}
+                <div className="space-y-2">
+                  <div className="text-xs text-muted-foreground">Recent Activity</div>
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2 text-xs">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-foreground">Job completed</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-xs">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-foreground">New message</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -570,18 +614,18 @@ const HomePage = () => {
             <button
               type="button"
               onClick={() => setBilling((b)=> b === 'monthly' ? 'annual' : 'monthly')}
-              className={`relative h-6 w-12 rounded-full border border-[var(--border)] transition-colors billing-toggle ${billing==='annual' ? 'bg-[#27c862]' : 'bg-[var(--surface)]'}`}
+              className={`relative h-6 w-12 rounded-full border border-[var(--border)] transition-colors billing-toggle ${billing==='annual' ? 'bg-[var(--primary)]' : 'bg-[var(--surface)]'}`}
               aria-label="Toggle billing period"
             >
               <span
-                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full shadow shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform ${billing==='annual' ? 'translate-x-6 bg-[#e8e8e8]' : 'bg-[#e8e8e8]'}`}
+                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full shadow shadow-[inset_0_4px_4px_hsl(var(--foreground)/0.1)] transition-transform ${billing==='annual' ? 'translate-x-6 bg-[var(--primary-foreground)]' : 'bg-[var(--muted)]'}`}
               />
             </button>
             <span className="text-sm text-muted-foreground">{billing === 'annual' ? 'Annually' : 'Monthly'}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_#27c862] hover:-translate-y-1 clients-card">
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_hsl(var(--foreground)/0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_var(--primary)] hover:-translate-y-1 clients-card">
               <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">For Clients</h3>
               {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
               <ul className="text-sm space-y-2 mb-4">
@@ -603,7 +647,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_#27c862] hover:-translate-y-1 engineers-card">
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_hsl(var(--foreground)/0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_var(--primary)] hover:-translate-y-1 engineers-card">
               <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">For Engineers <span className="text-xs text-muted-foreground">(+35% from Client)</span></h3>
               {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
               
@@ -626,7 +670,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_#27c862] hover:-translate-y-1 enterprise-card">
+            <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_hsl(var(--foreground)/0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_var(--primary)] hover:-translate-y-1 enterprise-card">
               <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">Enterprise <span className="text-xs text-muted-foreground">(+100% from Client)</span></h3>
               {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}
               

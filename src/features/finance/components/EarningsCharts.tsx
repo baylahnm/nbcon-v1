@@ -9,13 +9,13 @@ export function EarningsCharts({
     <section className="rounded-2xl border-0 bg-[var(--surface)] p-4 shadow-inner">
       <header className="mb-2 flex items-center justify-between">
         <h3 className="font-semibold">Cashflow</h3>
-        <div className="inline-flex overflow-hidden rounded-xl border-0 shadow-[inset_0_2px_6px_rgba(0,0,0,0.12),inset_0_0_0_2px_rgba(0,0,0,0.06)]">
+        <div className="inline-flex overflow-hidden rounded-xl border-0 shadow-[inset_0_2px_6px_hsl(var(--foreground)/0.12),inset_0_0_0_2px_hsl(var(--foreground)/0.06)] earnings-range-group">
           {(["D","W","M"] as RangeKey[]).map(k=>{
             const active = range===k;
             const Icon = k==="D" ? Calendar : k==="W" ? CalendarRange : CalendarDays;
             return (
               <button key={k}
-                className={`inline-flex items-center gap-2 rounded-xl px-3 py-1 font-medium transition-colors ${active ? "bg-[var(--color-primary)] text-black" : "text-muted-foreground hover:text-foreground"}`}
+                className={`inline-flex items-center gap-2 rounded-xl px-3 py-1 font-medium transition-colors earnings-range-btn ${active ? "active bg-[var(--color-primary)] text-black" : "text-muted-foreground hover:text-foreground"}`}
                 onClick={()=>onRange(k)}>
                 <Icon className="h-4 w-4" /> {k}
               </button>

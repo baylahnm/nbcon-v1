@@ -160,7 +160,7 @@ const SUPPORT_CHANNELS = [
     action: "Call Now",
     contact: "+966 11 234 5678",
     hours: "Sun-Thu: 9AM-6PM",
-    color: "text-[#27c862]"
+    color: "text-[var(--primary)]"
   }
 ];
 
@@ -264,7 +264,7 @@ export default function HelpPage() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="mt-auto hover:border-[#27c862] hover:shadow-[0_0_0_1px_#27c862]"
+                      className="mt-auto hover:border-[var(--primary)] hover:shadow-[0_0_0_1px_var(--primary)]"
                       onClick={() => {
                         if (channel.title === "Email Support") {
                           setShowContactForm(true);
