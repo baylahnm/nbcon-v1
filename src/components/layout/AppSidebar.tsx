@@ -135,10 +135,10 @@ export function AppSidebar() {
   return <Sidebar className={collapsed ? 'w-16' : 'w-64'} collapsible="icon">
       <SidebarContent>
         {/* Logo Section */}
-        <div className="p-4 border-b border-sidebar-border py-[12px]">
-          <div className="flex items-center gap-3">
-            <div className={`flex-shrink-0 ${collapsed ? 'w-5 h-5' : 'w-8 h-8'} bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft`}>
-              <span className={`font-bold text-primary-foreground ${collapsed ? 'text-xs' : 'text-base'}`}>nb</span>
+        <div className={`border-b border-sidebar-border ${collapsed ? 'px-4 py-[18px]' : 'p-4 py-[12px]'}`}>
+          <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
+            <div className={`flex-shrink-0 ${collapsed ? 'w-8 h-8' : 'w-8 h-8'} bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft`}>
+              <span className={`font-bold text-primary-foreground ${collapsed ? 'text-sm' : 'text-base'}`}>nb</span>
             </div>
             {!collapsed && <div>
                 <h2 className="text-lg font-bold text-sidebar-foreground sidebar-logo-title">nbcon</h2>

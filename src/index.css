@@ -596,6 +596,117 @@ All colors MUST be HSL.
     color: hsl(var(--muted-foreground)) !important;
   }
 
+  /* Sidebar border - All themes */
+  .light .border-sidebar-border,
+  .dark .border-sidebar-border,
+  .warm .border-sidebar-border,
+  .sunset .border-sidebar-border,
+  .abstract .border-sidebar-border,
+  .dotted-indigo .border-sidebar-border,
+  .lagoon .border-sidebar-border,
+  .dark-nature .border-sidebar-border,
+  .full-gradient .border-sidebar-border,
+  .sea-purple .border-sidebar-border {
+    border-color: hsl(var(--sidebar-border)) !important;
+  }
+
+  /* Sidebar main group bottom border - All themes */
+  .light .sidebar-main-group,
+  .dark .sidebar-main-group,
+  .warm .sidebar-main-group,
+  .sunset .sidebar-main-group,
+  .abstract .sidebar-main-group,
+  .dotted-indigo .sidebar-main-group,
+  .lagoon .sidebar-main-group,
+  .dark-nature .sidebar-main-group,
+  .full-gradient .sidebar-main-group,
+  .sea-purple .sidebar-main-group {
+    border-bottom: 1px solid hsl(var(--sidebar-border)) !important;
+  }
+
+  /* Sidebar menu button accent colors - All themes */
+  .light .bg-sidebar-accent,
+  .dark .bg-sidebar-accent,
+  .warm .bg-sidebar-accent,
+  .sunset .bg-sidebar-accent,
+  .abstract .bg-sidebar-accent,
+  .dotted-indigo .bg-sidebar-accent,
+  .lagoon .bg-sidebar-accent,
+  .dark-nature .bg-sidebar-accent,
+  .full-gradient .bg-sidebar-accent,
+  .sea-purple .bg-sidebar-accent {
+    background-color: hsl(var(--sidebar-accent)) !important;
+  }
+
+  .light .text-sidebar-accent-foreground,
+  .dark .text-sidebar-accent-foreground,
+  .warm .text-sidebar-accent-foreground,
+  .sunset .text-sidebar-accent-foreground,
+  .abstract .text-sidebar-accent-foreground,
+  .dotted-indigo .text-sidebar-accent-foreground,
+  .lagoon .text-sidebar-accent-foreground,
+  .dark-nature .text-sidebar-accent-foreground,
+  .full-gradient .text-sidebar-accent-foreground,
+  .sea-purple .text-sidebar-accent-foreground {
+    color: hsl(var(--sidebar-accent-foreground)) !important;
+  }
+
+  .light .hover\\:bg-sidebar-accent:hover,
+  .dark .hover\\:bg-sidebar-accent:hover,
+  .warm .hover\\:bg-sidebar-accent:hover,
+  .sunset .hover\\:bg-sidebar-accent:hover,
+  .abstract .hover\\:bg-sidebar-accent:hover,
+  .dotted-indigo .hover\\:bg-sidebar-accent:hover,
+  .lagoon .hover\\:bg-sidebar-accent:hover,
+  .dark-nature .hover\\:bg-sidebar-accent:hover,
+  .full-gradient .hover\\:bg-sidebar-accent:hover,
+  .sea-purple .hover\\:bg-sidebar-accent:hover {
+    background-color: hsl(var(--sidebar-accent)) !important;
+  }
+
+  .light .hover\\:text-sidebar-accent-foreground:hover,
+  .dark .hover\\:text-sidebar-accent-foreground:hover,
+  .warm .hover\\:text-sidebar-accent-foreground:hover,
+  .sunset .hover\\:text-sidebar-accent-foreground:hover,
+  .abstract .hover\\:text-sidebar-accent-foreground:hover,
+  .dotted-indigo .hover\\:text-sidebar-accent-foreground:hover,
+  .lagoon .hover\\:text-sidebar-accent-foreground:hover,
+  .dark-nature .hover\\:text-sidebar-accent-foreground:hover,
+  .full-gradient .hover\\:text-sidebar-accent-foreground:hover,
+  .sea-purple .hover\\:text-sidebar-accent-foreground:hover {
+    color: hsl(var(--sidebar-accent-foreground)) !important;
+  }
+
+  /* Warm theme specific active sidebar menu button text and icons */
+  .warm .bg-sidebar-accent,
+  .warm .text-sidebar-accent-foreground,
+  .warm .hover\\:bg-sidebar-accent:hover,
+  .warm .hover\\:text-sidebar-accent-foreground:hover {
+    color: #ffffff !important;
+  }
+
+  .warm .bg-sidebar-accent svg,
+  .warm .text-sidebar-accent-foreground svg,
+  .warm .hover\\:bg-sidebar-accent:hover svg,
+  .warm .hover\\:text-sidebar-accent-foreground:hover svg {
+    color: #ffffff !important;
+  }
+
+  /* Warm theme specific selected sidebar menu button text and icons */
+  .warm [data-active="true"].bg-sidebar-accent,
+  .warm [data-active="true"].text-sidebar-accent-foreground,
+  .warm [data-active="true"] .bg-sidebar-accent,
+  .warm [data-active="true"] .text-sidebar-accent-foreground {
+    color: #ffffff !important;
+  }
+
+  .warm [data-active="true"].bg-sidebar-accent svg,
+  .warm [data-active="true"].text-sidebar-accent-foreground svg,
+  .warm [data-active="true"] .bg-sidebar-accent svg,
+  .warm [data-active="true"] .text-sidebar-accent-foreground svg {
+    color: #ffffff !important;
+  }
+
   /* Jobs details button - All themes */
   .light .jobs-details-btn,
   .dark .jobs-details-btn,
@@ -711,10 +822,6 @@ All colors MUST be HSL.
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific billing toggle when in annually state */
-  .warm .billing-toggle.bg-\[#27c862\] {
-    background-color: hsl(var(--primary)) !important;
-  }
 
   /* Warm theme specific auth layout title */
   .warm .auth-layout-title {
@@ -1014,6 +1121,15 @@ All colors MUST be HSL.
   .warm .earnings-range-group .earnings-range-btn.active {
     background-color: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
+  }
+
+  /* Billing toggle transition animations - All themes */
+  .billing-toggle {
+    transition: background-color 0.3s ease, border-color 0.3s ease !important;
+  }
+
+  .billing-toggle span {
+    transition: transform 0.3s ease, background-color 0.3s ease !important;
   }
 
   /* Theme-specific theme toggle menu - All themes */
@@ -1385,6 +1501,78 @@ All colors MUST be HSL.
     .theme-buttons-container .flex button {
       flex-shrink: 0;
     }
+  }
+}
+
+/* New Landing Page Styles */
+.landing-serif-title {
+  font-family: 'Playfair Display', 'Crimson Text', 'Times New Roman', serif;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.landing-section-spacing {
+  margin-bottom: 4rem; /* 64px */
+}
+
+.landing-card-hover {
+  transition: all 0.3s ease;
+}
+
+.landing-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.landing-gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)) 40%, hsl(var(--primary)) 60%, hsl(var(--primary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.landing-image-placeholder {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05));
+  border: 2px dashed hsl(var(--border));
+}
+
+.landing-stats-card {
+  background: hsl(var(--background) / 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(var(--border) / 0.5);
+}
+
+.landing-job-card {
+  background: hsl(var(--background) / 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(var(--border) / 0.5);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive adjustments for new landing page */
+@media (max-width: 1024px) {
+  .landing-two-column {
+    flex-direction: column;
+  }
+  
+  .landing-left-column {
+    width: 100%;
+    padding: 2rem 1rem;
+  }
+  
+  .landing-right-column {
+    width: 100%;
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-serif-title {
+    font-size: 2.5rem;
+  }
+  
+  .landing-section-spacing {
+    margin-bottom: 3rem;
   }
 }
 

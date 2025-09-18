@@ -204,7 +204,7 @@ export function MessagingPage() {
                             <span className="text-xs px-2 py-0.5 rounded bg-accent text-accent-foreground">{formatDateLabel(m.createdAt)}</span>
                           </div>
                         )}
-                        <div className={`group max-w-[78%] rounded-2xl px-3 py-2 ${m.authorId==='me' ? (isRTL ? 'mr-auto' : 'ml-auto') + ' bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                        <div className={`group max-w-[78%] rounded-2xl px-3 py-2 mb-2 ${m.authorId==='me' ? (isRTL ? 'mr-auto' : 'ml-auto') + ' bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                           {m.quotedId && (
                             <div className="mb-1 text-xs opacity-80 border-l-2 pl-2">
                               Replying to …

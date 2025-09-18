@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "@/pages/Index";
+import HomePage from "@/pages/HomePage";
 import EmailAuth from "@/pages/auth/EmailAuth";
 import PhoneAuth from "@/pages/auth/PhoneAuth";
 import VerifyOTP from "@/pages/auth/VerifyOTP";
@@ -38,6 +39,7 @@ const App = () => (
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/auth" element={<PhoneAuth />} />
           <Route path="/auth/phone" element={<PhoneAuth />} />
           <Route path="/auth/email" element={<EmailAuth />} />

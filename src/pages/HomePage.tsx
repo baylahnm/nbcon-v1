@@ -30,7 +30,8 @@ import {
   Search,
   Map as MapIcon,
   Eye,
-  TestTube
+  TestTube,
+  Heart
 } from 'lucide-react';
 
 const HomePage = () => {
@@ -365,20 +366,32 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="py-[200px] px-[16px]">
-        <div className="container mx-auto text-center max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      {/* Hero Section - Two Column Layout */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Content */}
+            <div className="space-y-8">
+              {/* Trust Badge */}
+              <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-sm font-medium text-primary">
+                <Shield className="w-4 h-4 mr-2" />
+                100% Trusted Engineering Platform in Saudi Arabia
+              </div>
+              
+              {/* Main Title */}
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent hero-title">
               {t.hero.title}
             </span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+              
+              {/* Subtitle */}
+              <p className="text-xl text-muted-foreground leading-relaxed">
             {t.hero.subtitle}
           </p>
           
-          {/* Primary CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row gap-4">
             <Link to="/client/jobs/create">
               <Button size="lg" className="w-full sm:w-auto">
                 {t.hero.postJob}
@@ -386,14 +399,14 @@ const HomePage = () => {
               </Button>
             </Link>
             <Link to="/client/browse">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-[var(--primary)] hover:border-[var(--primary)] browse-engineers-btn">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-[var(--primary)] hover:border-[var(--primary)] browse-engineers-btn">
                 {t.hero.browse}
               </Button>
             </Link>
           </div>
 
-          {/* Support Bullets */}
-          <div className="flex flex-wrap justify-center gap-4 mb-4">
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap gap-4">
             {t.hero.features.map((feature, index) => (
               <Badge key={index} variant="secondary" className="px-3 py-1">
                 <CheckCircle className="w-3 h-3 mr-1" />
@@ -406,6 +419,167 @@ const HomePage = () => {
           <p className="text-sm text-muted-foreground">
             {t.hero.microcopy}
           </p>
+            </div>
+            
+            {/* Right Column - Visual */}
+            <div className="relative">
+              <div className="bg-gradient-to-br from-primary/10 to-green-600/10 rounded-2xl p-8 h-96 flex items-center justify-center">
+                {/* Dashboard Preview */}
+                <div className="w-full h-full bg-card rounded-xl shadow-2xl p-6 space-y-4">
+                  {/* Dashboard Header */}
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-foreground">Live Dashboard</h3>
+                    <div className="flex space-x-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                  </div>
+                  
+                  {/* KPI Cards */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-primary/10 rounded-lg p-3">
+                      <div className="text-xs text-muted-foreground">Active Jobs</div>
+                      <div className="text-lg font-bold text-primary">12</div>
+                    </div>
+                    <div className="bg-primary/10 rounded-lg p-3">
+                      <div className="text-xs text-muted-foreground">Earnings</div>
+                      <div className="text-lg font-bold text-primary">$2,450</div>
+                    </div>
+                  </div>
+                  
+                  {/* Chart Area */}
+                  <div className="flex-1 bg-muted rounded-lg p-3 flex items-end space-x-1">
+                    <div className="bg-primary h-8 w-4 rounded-t"></div>
+                    <div className="bg-primary h-12 w-4 rounded-t"></div>
+                    <div className="bg-primary h-6 w-4 rounded-t"></div>
+                    <div className="bg-primary h-10 w-4 rounded-t"></div>
+                    <div className="bg-primary h-14 w-4 rounded-t"></div>
+                    <div className="bg-primary h-8 w-4 rounded-t"></div>
+                    <div className="bg-primary h-11 w-4 rounded-t"></div>
+                  </div>
+                  
+                  {/* Recent Activity */}
+                  <div className="space-y-2">
+                    <div className="text-xs text-muted-foreground">Recent Activity</div>
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-foreground">Job completed</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span className="text-foreground">New message</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Job Search Form */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-card rounded-2xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-center mb-8">Find Your Perfect Engineering Solution</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Project Type Selection */}
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center">
+                      <input type="radio" id="quick-job" name="project-type" className="mr-2" defaultChecked />
+                      <label htmlFor="quick-job" className="text-sm font-medium">Quick Job</label>
+                    </div>
+                    <div className="flex items-center">
+                      <input type="radio" id="advanced-project" name="project-type" className="mr-2" />
+                      <label htmlFor="advanced-project" className="text-sm font-medium">Advanced Project</label>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Project Type</label>
+                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                        <option>Select engineering discipline</option>
+                        <option>Civil Engineering</option>
+                        <option>Electrical Engineering</option>
+                        <option>Mechanical Engineering</option>
+                        <option>Architecture</option>
+                        <option>Surveying</option>
+                        <option>HSE</option>
+                        <option>QA/QC</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Location</label>
+                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                        <option>Select your city</option>
+                        <option>Riyadh</option>
+                        <option>Jeddah</option>
+                        <option>Dammam</option>
+                        <option>Mecca</option>
+                        <option>Medina</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Timeline and Budget */}
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center">
+                      <input type="radio" id="urgent" name="timeline" className="mr-2" />
+                      <label htmlFor="urgent" className="text-sm font-medium">Urgent</label>
+                    </div>
+                    <div className="flex items-center">
+                      <input type="radio" id="flexible" name="timeline" className="mr-2" defaultChecked />
+                      <label htmlFor="flexible" className="text-sm font-medium">Flexible</label>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Timeline</label>
+                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                        <option>Select timeline</option>
+                        <option>Within 1 week</option>
+                        <option>1-2 weeks</option>
+                        <option>1 month</option>
+                        <option>2-3 months</option>
+                        <option>6+ months</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Budget Range</label>
+                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                        <option>Select budget range</option>
+                        <option>Under SAR 1,000</option>
+                        <option>SAR 1,000 - 5,000</option>
+                        <option>SAR 5,000 - 10,000</option>
+                        <option>SAR 10,000 - 25,000</option>
+                        <option>SAR 25,000+</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <Button size="lg" className="w-full sm:w-auto">
+                  <Search className="w-4 h-4 mr-2" />
+                  Search Engineers
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -424,109 +598,385 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Feature Grid */}
-      <section className="py-[200px] px-[16px]">
+      {/* How It Works Section */}
+      <section className="py-20 px-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 feature-cards">
-            {/* Feature Card 1 - Verified Talent */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Shield className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.verified.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.verified.desc}</p>
-            </Card>
-
-            {/* Feature Card 2 - Jobs & Quotes */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Briefcase className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.jobs.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.jobs.desc}</p>
-            </Card>
-
-            {/* Feature Card 3 - Escrow & Invoicing */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <CreditCard className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.escrow.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.escrow.desc}</p>
-            </Card>
-
-            {/* Feature Card 4 - Messaging & Files */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <MessageSquare className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.messaging.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.messaging.desc}</p>
-            </Card>
-
-            {/* Feature Card 5 - Location & Check-ins */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <MapPin className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.location.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.location.desc}</p>
-            </Card>
-
-            {/* Feature Card 6 - Analytics Dashboards */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <BarChart3 className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.analytics.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.analytics.desc}</p>
-            </Card>
-
-            {/* Feature Card 7 - Enterprise Controls */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Users className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.enterprise.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.enterprise.desc}</p>
-            </Card>
-
-            {/* Feature Card 8 - APIs & Exports */}
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Database className="w-8 h-8 text-primary mb-4" />
-              <h3 className="font-semibold mb-2">{t.features.apis.title}</h3>
-              <p className="text-sm text-muted-foreground">{t.features.apis.desc}</p>
-            </Card>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              A high-performing web-based engineering marketplace for any project size and complexity
+            </p>
           </div>
-
-          <div className="text-center mt-8">
-            <Link to="/features" className="text-primary hover:underline">
-              Learn more →
-            </Link>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {/* Step 1 */}
+            <div className="text-center relative">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
+                <MapPin className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-4">Choose Your Project</h3>
+              <p className="text-muted-foreground">
+                Post your engineering project with detailed requirements, timeline, and budget. Our AI will match you with verified engineers.
+              </p>
+              
+              {/* Connecting Line */}
+              <div className="hidden md:block absolute top-8 left-1/2 w-full h-0.5 bg-gradient-to-r from-primary to-transparent transform translate-x-8"></div>
+            </div>
+            
+            {/* Step 2 */}
+            <div className="text-center relative">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
+                <Clock className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-4">Review & Select</h3>
+              <p className="text-muted-foreground">
+                Compare quotes from qualified engineers, check their SCE credentials, and select the best match for your project.
+              </p>
+              
+              {/* Connecting Line */}
+              <div className="hidden md:block absolute top-8 left-1/2 w-full h-0.5 bg-gradient-to-r from-primary to-transparent transform translate-x-8"></div>
+            </div>
+            
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-4">Track & Complete</h3>
+              <p className="text-muted-foreground">
+                Monitor progress with real-time updates, milestone tracking, and secure payments. Get your project delivered on time.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Works With Disciplines */}
-      <section className="py-16 bg-muted/50">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-8 disciplines-title">{t.disciplines.title}</h2>
-          <div className="flex flex-wrap justify-center gap-3 disciplines-badges">
-            {t.disciplines.tags.map((tag, index) => {
-              const icons = [Building, Zap, Cog, Home, Search, MapIcon, Shield, Eye];
-              const Icon = icons[index % icons.length];
-              return (
-                <Badge key={index} variant="outline" className="px-4 py-2 border-0 hover:shadow-[0_0_0_1px_var(--primary)]">
-                  <Icon className="w-4 h-4 mr-2" />
-                  {tag}
-                </Badge>
-              );
-            })}
+      {/* Popular Services Section */}
+      <section className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Popular Engineering Services</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              A high-performing web-based engineering marketplace for any project size and complexity
+            </p>
+          </div>
+          
+          {/* Service Tabs */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <Button variant="default" className="px-6 py-3">Popular</Button>
+            <Button variant="outline" className="px-6 py-3">Civil Engineering</Button>
+            <Button variant="outline" className="px-6 py-3">Electrical</Button>
+            <Button variant="outline" className="px-6 py-3">Mechanical</Button>
+            <Button variant="outline" className="px-6 py-3">Architecture</Button>
+          </div>
+          
+          {/* Service Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {/* Service Card 1 */}
+            <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold">Site Inspection</h3>
+                <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 cursor-pointer" />
+              </div>
+              <div className="w-full h-32 bg-muted rounded-lg mb-4 flex items-center justify-center">
+                <Building className="w-12 h-12 text-muted-foreground" />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-2xl font-bold text-primary">SAR 150/day</span>
+                <Button size="sm">Hire Now</Button>
+              </div>
+            </Card>
+
+            {/* Service Card 2 */}
+            <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold">Electrical Design</h3>
+                <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 cursor-pointer" />
+              </div>
+              <div className="w-full h-32 bg-muted rounded-lg mb-4 flex items-center justify-center">
+                <Zap className="w-12 h-12 text-muted-foreground" />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-2xl font-bold text-primary">SAR 300/day</span>
+                <Button size="sm">Hire Now</Button>
+              </div>
+            </Card>
+
+            {/* Service Card 3 */}
+            <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold">Structural Analysis</h3>
+                <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 cursor-pointer" />
+              </div>
+              <div className="w-full h-32 bg-muted rounded-lg mb-4 flex items-center justify-center">
+                <Cog className="w-12 h-12 text-muted-foreground" />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-2xl font-bold text-primary">SAR 500/day</span>
+                <Button size="sm">Hire Now</Button>
+              </div>
+            </Card>
+
+            {/* Service Card 4 */}
+            <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold">HVAC Design</h3>
+                <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 cursor-pointer" />
+              </div>
+              <div className="w-full h-32 bg-muted rounded-lg mb-4 flex items-center justify-center">
+                <Home className="w-12 h-12 text-muted-foreground" />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-2xl font-bold text-primary">SAR 250/day</span>
+                <Button size="sm">Hire Now</Button>
+              </div>
+            </Card>
+
+            {/* Service Card 5 */}
+            <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold">Surveying</h3>
+                <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 cursor-pointer" />
+              </div>
+              <div className="w-full h-32 bg-muted rounded-lg mb-4 flex items-center justify-center">
+                <MapIcon className="w-12 h-12 text-muted-foreground" />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-2xl font-bold text-primary">SAR 200/day</span>
+                <Button size="sm">Hire Now</Button>
+              </div>
+            </Card>
+
+            {/* Service Card 6 */}
+            <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold">HSE Consulting</h3>
+                <Heart className="w-5 h-5 text-muted-foreground hover:text-red-500 cursor-pointer" />
+              </div>
+              <div className="w-full h-32 bg-muted rounded-lg mb-4 flex items-center justify-center">
+                <Shield className="w-12 h-12 text-muted-foreground" />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-2xl font-bold text-primary">SAR 180/day</span>
+                <Button size="sm">Hire Now</Button>
+              </div>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button variant="outline" size="lg">
+              Show More Services
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-[200px] px-[16px]">
-        <div className="container mx-auto text-center max-w">
-          <h2 className="text-3xl font-bold mb-4 social-title">{t.social.title}</h2>
-          <p className="text-lg text-muted-foreground mb-8">{t.social.subtitle}</p>
-          <Button variant="outline" className="border-[var(--primary)] hover:text-[var(--primary)] social-cta-btn">
-            {t.social.cta}
-            <ArrowRight className="w-4 h-4 ml-2" />
+      {/* Why Choose Us Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left Column - Visual */}
+            <div className="relative">
+              <div className="bg-gradient-to-br from-primary/10 to-green-600/10 rounded-2xl p-8 h-96 flex items-center justify-center">
+                {/* Platform Preview */}
+                <div className="w-full h-full bg-card rounded-xl shadow-2xl p-6 space-y-4">
+                  {/* Header */}
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-foreground">Platform Overview</h3>
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-primary/10 rounded-lg p-3 text-center">
+                      <div className="text-xs text-muted-foreground">Verified Engineers</div>
+                      <div className="text-lg font-bold text-primary">2,500+</div>
+                    </div>
+                    <div className="bg-primary/10 rounded-lg p-3 text-center">
+                      <div className="text-xs text-muted-foreground">Projects Completed</div>
+                      <div className="text-lg font-bold text-primary">15,000+</div>
+                    </div>
+                    <div className="bg-primary/10 rounded-lg p-3 text-center">
+                      <div className="text-xs text-muted-foreground">Success Rate</div>
+                      <div className="text-lg font-bold text-primary">98.5%</div>
+                    </div>
+                    <div className="bg-primary/10 rounded-lg p-3 text-center">
+                      <div className="text-xs text-muted-foreground">Avg. Response</div>
+                      <div className="text-lg font-bold text-primary">2.3h</div>
+                    </div>
+                  </div>
+                  
+                  {/* Feature List */}
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-xs">
+                      <CheckCircle className="w-3 h-3 text-green-500" />
+                      <span className="text-foreground">SCE Verified</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-xs">
+                      <CheckCircle className="w-3 h-3 text-green-500" />
+                      <span className="text-foreground">Secure Payments</span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-xs">
+                      <CheckCircle className="w-3 h-3 text-green-500" />
+                      <span className="text-foreground">24/7 Support</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Column - Content */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose nbcon?</h2>
+                <p className="text-xl text-muted-foreground">
+                  A high-performing web-based engineering marketplace for any project size and complexity
+                </p>
+              </div>
+              
+              <div className="space-y-6">
+                {/* Feature 1 */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">24/7 Customer Support</h3>
+                    <p className="text-muted-foreground">
+                      Get instant help whenever you need it. Our dedicated support team is available around the clock to assist with any questions or issues.
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Feature 2 */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Award className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Best Price Guaranteed</h3>
+                    <p className="text-muted-foreground">
+                      We ensure competitive pricing for all engineering services. If you find a better price elsewhere, we'll match it.
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Feature 3 */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Nationwide Coverage</h3>
+                    <p className="text-muted-foreground">
+                      Access verified engineers across all major cities in Saudi Arabia. From Riyadh to Jeddah, we've got you covered.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 px-4 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted by Thousands of Happy Customers</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              A high-performing web-based engineering marketplace for any project size and complexity
+            </p>
+          </div>
+          
+          {/* Testimonial Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {/* Testimonial 1 */}
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-primary font-bold text-lg">AR</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold">Ahmed Al-Rashid</h4>
+                  <p className="text-sm text-muted-foreground">Riyadh, Saudi Arabia</p>
+                </div>
+                <div className="ml-auto flex items-center">
+                  <Star className="w-4 h-4 fill-primary text-primary" />
+                  <span className="ml-1 text-sm font-medium">4.8</span>
+                </div>
+              </div>
+              <p className="text-muted-foreground italic">
+                "Wow... I am very happy to use this platform, it turned out to be more than my expectations and so far there have been no problems. nbcon always the best."
+              </p>
+            </Card>
+            
+            {/* Testimonial 2 */}
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-primary font-bold text-lg">SM</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold">Sarah Mohammed</h4>
+                  <p className="text-sm text-muted-foreground">Jeddah, Saudi Arabia</p>
+                </div>
+                <div className="ml-auto flex items-center">
+                  <Star className="w-4 h-4 fill-primary text-primary" />
+                  <span className="ml-1 text-sm font-medium">5.0</span>
+                </div>
+              </div>
+              <p className="text-muted-foreground italic">
+                "The verification process and milestone payments gave me complete confidence. I found the perfect engineer for my project within hours."
+              </p>
+            </Card>
+            
+            {/* Testimonial 3 */}
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-primary font-bold text-lg">KA</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold">Khalid Al-Mansouri</h4>
+                  <p className="text-sm text-muted-foreground">Dammam, Saudi Arabia</p>
+                </div>
+                <div className="ml-auto flex items-center">
+                  <Star className="w-4 h-4 fill-primary text-primary" />
+                  <span className="ml-1 text-sm font-medium">4.9</span>
+                </div>
+              </div>
+              <p className="text-muted-foreground italic">
+                "As an engineer, this platform has transformed my business. Steady work, secure payments, and professional clients. Highly recommended!"
+              </p>
+            </Card>
+          </div>
+          
+          {/* Pagination Controls */}
+          <div className="flex justify-center items-center space-x-4">
+            <Button variant="outline" size="sm">
+              <ArrowRight className="w-4 h-4 rotate-180" />
           </Button>
+            <div className="flex space-x-2">
+              <div className="w-2 h-2 bg-primary rounded-full"></div>
+              <div className="w-2 h-2 bg-muted-foreground/30 rounded-full"></div>
+              <div className="w-2 h-2 bg-muted-foreground/30 rounded-full"></div>
+            </div>
+            <Button variant="outline" size="sm">
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </section>
 
 
       {/* Dashboard Showcase */}
-      <section className="py-[200px] px-[16px]">
+      <section className="pt-[200px] pb-0 px-[16px]">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -741,17 +1191,43 @@ const HomePage = () => {
       </section>
 
       {/* Footer */}
-
-      <footer className="bg-background border-t py-12">
+      <footer className="bg-background border-t py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+            {/* Company Info */}
+            <div className="lg:col-span-2">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-sm">nb</span>
+                </div>
+                <span className="font-bold text-xl">nbcon</span>
+              </div>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                Saudi Arabia's premier engineering marketplace connecting verified professionals with clients through AI-powered matching and secure milestone payments.
+              </p>
+              <div className="flex space-x-4">
+                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
+                  <Globe className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
+                  <MessageSquare className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
+                  <Users className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
+                  <Phone className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
             {/* Product */}
             <div>
-              <h4 className="font-semibold mb-3">{t.footer.product.title}</h4>
-              <ul className="space-y-2">
+              <h4 className="font-semibold mb-4">{t.footer.product.title}</h4>
+              <ul className="space-y-3">
                 {t.footer.product.links.map((link, index) => (
                   <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground">
+                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                       {link}
                     </Link>
                   </li>
@@ -761,11 +1237,11 @@ const HomePage = () => {
 
             {/* For Clients */}
             <div>
-              <h4 className="font-semibold mb-3">{t.footer.clients.title}</h4>
-              <ul className="space-y-2">
+              <h4 className="font-semibold mb-4">{t.footer.clients.title}</h4>
+              <ul className="space-y-3">
                 {t.footer.clients.links.map((link, index) => (
                   <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground">
+                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                       {link}
                     </Link>
                   </li>
@@ -775,39 +1251,11 @@ const HomePage = () => {
 
             {/* For Engineers */}
             <div>
-              <h4 className="font-semibold mb-3">{t.footer.engineers.title}</h4>
-              <ul className="space-y-2">
+              <h4 className="font-semibold mb-4">{t.footer.engineers.title}</h4>
+              <ul className="space-y-3">
                 {t.footer.engineers.links.map((link, index) => (
                   <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground">
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="font-semibold mb-3">{t.footer.company.title}</h4>
-              <ul className="space-y-2">
-                {t.footer.company.links.map((link, index) => (
-                  <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground">
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="font-semibold mb-3">{t.footer.legal.title}</h4>
-              <ul className="space-y-2">
-                {t.footer.legal.links.map((link, index) => (
-                  <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground">
+                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                       {link}
                     </Link>
                   </li>
@@ -819,15 +1267,36 @@ const HomePage = () => {
           <Separator className="mb-8" />
 
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xs">nb</span>
-              </div>
-              <span className="font-semibold">nbcon</span>
-            </div>
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 mb-4 md:mb-0">
             <p className="text-sm text-muted-foreground">
               {t.footer.copyright}
             </p>
+              <div className="flex space-x-6">
+                <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Terms of Service
+                </Link>
+                <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Cookie Policy
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-muted-foreground">Follow us:</span>
+              <div className="flex space-x-2">
+                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                  <Globe className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                  <MessageSquare className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                  <Users className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
