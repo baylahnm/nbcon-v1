@@ -22,6 +22,7 @@ import CalendarContent from './CalendarContent';
 import CalendarMini from '@/components/calendar/CalendarMini';
 import CalendarFilters from '@/components/calendar/CalendarFilters';
 import { useCalendarStore, CalendarView, UserRole } from '@/stores/useCalendarStore';
+import { useThemeStore } from '@/stores/theme';
 
 export default function CalendarPage() {
   const { 
@@ -39,6 +40,8 @@ export default function CalendarPage() {
     setIsHijri,
     updateFilters
   } = useCalendarStore();
+
+  const { applied: themeTokens } = useThemeStore();
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -77,9 +80,20 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div 
+      className="h-full flex flex-col"
+      style={{
+        backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
+      }}
+    >
       {/* Header Section */}
-      <div className="p-6 border-b border-gray-200">
+      <div 
+        className="p-6 border-b"
+        style={{
+          backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
+          borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
+        }}
+      >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -156,7 +170,14 @@ export default function CalendarPage() {
       </div>
 
       {/* Search and Filter Section */}
-      <div className="p-6 border-b border-gray-200">
+      <div 
+        className="p-6 border-b"
+        style={{
+          backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
+          borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`,
+          paddingBottom: '44px'
+        }}
+      >
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -204,8 +225,24 @@ export default function CalendarPage() {
 
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar - Mini Calendar */}
-        <div className="w-80 bg-gray-50 border-r border-gray-200 p-4 overflow-y-auto">
+        {/* Left Main Area - Calendar Grid */}
+        <div 
+          className="flex-1 overflow-hidden"
+          style={{
+            backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
+          }}
+        >
+          <CalendarContent />
+        </div>
+        
+        {/* Right Sidebar - Mini Calendar */}
+        <div 
+          className="w-80 p-4 overflow-y-auto border-l"
+          style={{
+            backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
+            borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
+          }}
+        >
           <CalendarMini
             currentDate={currentDate}
             onDateSelect={handleDateSelect}
@@ -214,11 +251,6 @@ export default function CalendarPage() {
             userRole={userRole}
             onEventSelect={handleEventSelect}
           />
-        </div>
-        
-        {/* Right Main Area - Calendar Grid */}
-        <div className="flex-1 overflow-hidden">
-          <CalendarContent />
         </div>
       </div>
       

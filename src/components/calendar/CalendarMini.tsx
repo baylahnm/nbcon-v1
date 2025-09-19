@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { CalendarEvent, UserRole } from '@/stores/useCalendarStore';
 import { CalendarEventCard } from './CalendarEventCard';
+import { useThemeStore } from '@/stores/theme';
 
 interface CalendarMiniProps {
   currentDate: Date;
@@ -22,6 +23,7 @@ export default function CalendarMini({
   userRole,
   onEventSelect
 }: CalendarMiniProps) {
+  const { applied: themeTokens } = useThemeStore();
 
   const [miniDate, setMiniDate] = useState(new Date(currentDate));
 
@@ -136,7 +138,13 @@ export default function CalendarMini({
   const allDayEvents = getAllDayEvents();
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4">
+    <div 
+      className="rounded-lg p-4 border"
+      style={{
+        backgroundColor: `hsl(${themeTokens['--card'] || '0 0% 100%'})`,
+        borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
+      }}
+    >
       {/* Mini Calendar Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium">
@@ -165,7 +173,13 @@ export default function CalendarMini({
       {/* Day Names Grid */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
-          <div key={day} className="text-xs text-center text-gray-500 font-medium">
+          <div 
+            key={day} 
+            className="text-xs text-center font-medium"
+            style={{
+              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+            }}
+          >
             {day}
           </div>
         ))}
@@ -184,19 +198,40 @@ export default function CalendarMini({
               key={index}
               className={`h-8 w-8 text-xs rounded flex items-center justify-center relative font-medium ${
                 !isCurrentMonth 
-                  ? 'text-gray-300' 
+                  ? '' 
                   : isSelected 
-                    ? 'bg-teal-700 text-white' 
+                    ? '' 
                     : isToday 
-                      ? 'bg-teal-100 text-teal-700 hover:bg-teal-200'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? ''
+                      : ''
               }`}
+              style={{
+                backgroundColor: !isCurrentMonth 
+                  ? 'transparent'
+                  : isSelected 
+                    ? `hsl(${themeTokens['--primary'] || '142 65% 47%'})`
+                    : isToday 
+                      ? `hsl(${themeTokens['--primary'] || '142 65% 47%'} / 0.1)`
+                      : 'transparent',
+                color: !isCurrentMonth 
+                  ? `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'} / 0.5)`
+                  : isSelected 
+                    ? `hsl(${themeTokens['--primary-foreground'] || '0 0% 100%'})`
+                    : isToday 
+                      ? `hsl(${themeTokens['--primary'] || '142 65% 47%'})`
+                      : `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`,
+              }}
               onClick={() => handleDateClick(date)}
             >
               {date.getDate()}
               {hasEvents && (
                 <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                  <div className="h-1 w-1 bg-teal-500 rounded-full"></div>
+                  <div 
+                    className="h-1 w-1 rounded-full"
+                    style={{
+                      backgroundColor: `hsl(${themeTokens['--primary'] || '142 65% 47%'})`
+                    }}
+                  ></div>
                 </div>
               )}
             </button>
@@ -205,25 +240,79 @@ export default function CalendarMini({
       </div>
 
       {/* Quick Stats Section */}
-      <div className="border-t border-gray-200 pt-4 mt-4 space-y-3">
+      <div 
+        className="pt-4 mt-4 space-y-3 border-t"
+        style={{
+          borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
+        }}
+      >
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Active Jobs:</span>
-          <span className="text-sm font-medium">{getActiveJobsCount()}</span>
+          <span 
+            className="text-sm"
+            style={{
+              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+            }}
+          >
+            Active Jobs:
+          </span>
+          <span 
+            className="text-sm font-medium"
+            style={{
+              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+            }}
+          >
+            {getActiveJobsCount()}
+          </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Pending Invoices:</span>
-          <span className="text-sm font-medium">{getPendingInvoicesCount()}</span>
+          <span 
+            className="text-sm"
+            style={{
+              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+            }}
+          >
+            Pending Invoices:
+          </span>
+          <span 
+            className="text-sm font-medium"
+            style={{
+              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+            }}
+          >
+            {getPendingInvoicesCount()}
+          </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">This Month:</span>
-          <span className="text-sm font-medium">{getThisMonthCount()}</span>
+          <span 
+            className="text-sm"
+            style={{
+              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+            }}
+          >
+            This Month:
+          </span>
+          <span 
+            className="text-sm font-medium"
+            style={{
+              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+            }}
+          >
+            {getThisMonthCount()}
+          </span>
         </div>
       </div>
 
       {/* All Day Events Section */}
       {allDayEvents.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-sm font-medium mb-3">All Day Events</h3>
+          <h3 
+            className="text-sm font-medium mb-3"
+            style={{
+              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+            }}
+          >
+            All Day Events
+          </h3>
           <div className="space-y-2">
             {allDayEvents.slice(0, 3).map(event => (
               <CalendarEventCard
@@ -236,7 +325,12 @@ export default function CalendarMini({
               />
             ))}
             {allDayEvents.length > 3 && (
-              <div className="text-xs text-blue-600 hover:text-blue-800 cursor-pointer">
+              <div 
+                className="text-xs cursor-pointer"
+                style={{
+                  color: `hsl(${themeTokens['--primary'] || '142 65% 47%'})`
+                }}
+              >
                 +{allDayEvents.length - 3} more
               </div>
             )}
@@ -245,15 +339,39 @@ export default function CalendarMini({
       )}
 
       {/* User Profile */}
-      <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200">
+      <div 
+        className="flex items-center gap-3 mt-4 pt-4 border-t"
+        style={{
+          borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
+        }}
+      >
         <Avatar className="h-10 w-10">
-          <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+          <AvatarFallback 
+            style={{
+              backgroundColor: `hsl(${themeTokens['--primary'] || '142 65% 47%'})`,
+              color: `hsl(${themeTokens['--primary-foreground'] || '0 0% 100%'})`
+            }}
+          >
             NB
           </AvatarFallback>
         </Avatar>
         <div>
-          <div className="font-medium text-sm">Nasser Baylah</div>
-          <div className="text-xs text-gray-500 capitalize">{userRole}</div>
+          <div 
+            className="font-medium text-sm"
+            style={{
+              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+            }}
+          >
+            Nasser Baylah
+          </div>
+          <div 
+            className="text-xs capitalize"
+            style={{
+              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+            }}
+          >
+            {userRole}
+          </div>
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { useCalendarStore, EventType, EventStatus } from '@/stores/useCalendarStore';
+import { useThemeStore } from '@/stores/theme';
 
 export default function CalendarContent() {
   const {
@@ -30,6 +31,8 @@ export default function CalendarContent() {
     getStatusColor,
     formatCurrency
   } = useCalendarStore();
+
+  const { applied: themeTokens } = useThemeStore();
 
   const getWeekDays = () => {
     const startDate = new Date(currentDate);
@@ -78,10 +81,22 @@ export default function CalendarContent() {
     const monthEvents = getEventsForMonth(currentDate);
     
     return (
-      <div className="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
+      <div 
+        className="grid grid-cols-7 gap-px rounded-lg overflow-hidden"
+        style={{
+          backgroundColor: `hsl(${themeTokens['--muted'] || '0 0% 96%'})`
+        }}
+      >
         {/* Header */}
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="bg-gray-100 p-3 text-center font-medium text-sm">
+          <div 
+            key={day} 
+            className="p-3 text-center font-medium text-sm"
+            style={{
+              backgroundColor: `hsl(${themeTokens['--muted'] || '0 0% 96%'})`,
+              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+            }}
+          >
             {day}
           </div>
         ))}
@@ -95,12 +110,23 @@ export default function CalendarContent() {
           return (
             <div
               key={index}
-              className={`bg-white p-2 min-h-[120px] ${
-                !isCurrentMonth ? 'text-gray-400' : ''
-              } ${isToday ? 'bg-green-50 border-2 border-green-200' : ''}`}
+              className={`p-2 min-h-[120px] ${isToday ? 'border-2' : ''}`}
+              style={{
+                backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
+                borderColor: isToday ? `hsl(${themeTokens['--primary'] || '142 65% 47%'} / 0.3)` : 'transparent'
+              }}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className={`text-sm font-medium ${isToday ? 'text-green-700' : ''}`}>
+                <span 
+                  className="text-sm font-medium"
+                  style={{
+                    color: !isCurrentMonth 
+                      ? `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'} / 0.5)`
+                      : isToday 
+                        ? `hsl(${themeTokens['--primary'] || '142 65% 47%'})`
+                        : `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+                  }}
+                >
                   {date.getDate()}
                 </span>
                 {dayEvents.length > 0 && (
@@ -128,7 +154,12 @@ export default function CalendarContent() {
                   </div>
                 ))}
                 {dayEvents.length > 3 && (
-                  <div className="text-xs text-gray-500">
+                  <div 
+                    className="text-xs"
+                    style={{
+                      color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+                    }}
+                  >
                     +{dayEvents.length - 3} more
                   </div>
                 )}
@@ -149,8 +180,20 @@ export default function CalendarContent() {
       <div className="flex flex-col">
         {/* All Day Events */}
         {weekEvents.filter(event => event.allDay).length > 0 && (
-          <div className="border-b pb-4 mb-4">
-            <div className="text-sm font-medium text-gray-600 mb-2">All Day Events</div>
+          <div 
+            className="pb-4 mb-4 border-b"
+            style={{
+              borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
+            }}
+          >
+            <div 
+              className="text-sm font-medium mb-2"
+              style={{
+                color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+              }}
+            >
+              All Day Events
+            </div>
             <div className="space-y-1">
               {weekEvents.filter(event => event.allDay).map(event => (
                 <div
@@ -175,14 +218,25 @@ export default function CalendarContent() {
           <div className="w-16 flex-shrink-0">
             <div className="h-12"></div>
             {timeSlots.map(slot => (
-              <div key={slot.hour} className="h-16 text-xs text-gray-500 pr-2 text-right">
+              <div 
+                key={slot.hour} 
+                className="h-16 text-xs pr-2 text-right"
+                style={{
+                  color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
+                }}
+              >
                 {slot.display}
               </div>
             ))}
           </div>
           
           {/* Days */}
-          <div className="flex-1 grid grid-cols-7 gap-px bg-gray-200">
+          <div 
+            className="flex-1 grid grid-cols-7 gap-px"
+            style={{
+              backgroundColor: `hsl(${themeTokens['--muted'] || '0 0% 96%'})`
+            }}
+          >
             {weekDays.map((date, dayIndex) => {
               const dayEvents = weekEvents.filter(event => {
                 const eventDate = new Date(event.startTime);
@@ -191,11 +245,38 @@ export default function CalendarContent() {
               const isToday = date.toDateString() === new Date().toDateString();
               
               return (
-                <div key={dayIndex} className="bg-white">
+                <div 
+                  key={dayIndex} 
+                  style={{
+                    backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
+                  }}
+                >
                   {/* Day Header */}
-                  <div className={`p-2 text-center border-b ${isToday ? 'bg-green-50' : ''}`}>
-                    <div className="text-sm font-medium">{date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
-                    <div className={`text-lg ${isToday ? 'text-green-700 font-bold' : ''}`}>
+                  <div 
+                    className="p-2 text-center border-b"
+                    style={{
+                      backgroundColor: isToday 
+                        ? `hsl(${themeTokens['--primary'] || '142 65% 47%'} / 0.1)`
+                        : 'transparent',
+                      borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
+                    }}
+                  >
+                    <div 
+                      className="text-sm font-medium"
+                      style={{
+                        color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+                      }}
+                    >
+                      {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                    </div>
+                    <div 
+                      className={`text-lg ${isToday ? 'font-bold' : ''}`}
+                      style={{
+                        color: isToday 
+                          ? `hsl(${themeTokens['--primary'] || '142 65% 47%'})`
+                          : `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
+                      }}
+                    >
                       {date.getDate()}
                     </div>
                   </div>
@@ -203,7 +284,13 @@ export default function CalendarContent() {
                   {/* Time Slots */}
                   <div className="relative">
                     {timeSlots.map(slot => (
-                      <div key={slot.hour} className="h-16 border-b border-gray-100"></div>
+                      <div 
+                        key={slot.hour} 
+                        className="h-16 border-b"
+                        style={{
+                          borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'} / 0.5)`
+                        }}
+                      ></div>
                     ))}
                     
                     {/* Events */}
@@ -428,7 +515,12 @@ export default function CalendarContent() {
   return (
     <div className="h-full flex flex-col">
       {/* Calendar View */}
-      <div className="flex-1 p-6 overflow-auto bg-white">
+      <div 
+        className="flex-1 p-6 overflow-auto"
+        style={{
+          backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
+        }}
+      >
         {view === 'month' && renderMonthView()}
         {view === 'week' && renderWeekView()}
         {view === 'day' && renderDayView()}
