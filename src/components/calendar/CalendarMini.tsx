@@ -1,0 +1,261 @@
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarEvent, UserRole } from '@/stores/useCalendarStore';
+import { CalendarEventCard } from './CalendarEventCard';
+
+interface CalendarMiniProps {
+  currentDate: Date;
+  onDateSelect: (date: Date) => void;
+  events: CalendarEvent[];
+  isHijri: boolean;
+  userRole: UserRole;
+  onEventSelect: (event: CalendarEvent) => void;
+}
+
+export default function CalendarMini({
+  currentDate,
+  onDateSelect,
+  events,
+  isHijri,
+  userRole,
+  onEventSelect
+}: CalendarMiniProps) {
+
+  const [miniDate, setMiniDate] = useState(new Date(currentDate));
+
+  const formatMonthYear = (date: Date, hijri: boolean) => {
+    if (hijri) {
+      // Simplified Hijri formatting - in a real app, you'd use a proper Hijri library
+      const hijriMonths = [
+        'Muharram', 'Safar', 'Rabi\' al-awwal', 'Rabi\' al-thani',
+        'Jumada al-awwal', 'Jumada al-thani', 'Rajab', 'Sha\'ban',
+        'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'
+      ];
+      const year = date.getFullYear() - 579; // Approximate Hijri year
+      const month = hijriMonths[date.getMonth()];
+      return `${month} ${year}`;
+    }
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long'
+    });
+  };
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newDate = new Date(miniDate);
+    if (direction === 'prev') {
+      newDate.setMonth(newDate.getMonth() - 1);
+    } else {
+      newDate.setMonth(newDate.getMonth() + 1);
+    }
+    setMiniDate(newDate);
+  };
+
+  const handleDateClick = (date: Date) => {
+    onDateSelect(date);
+  };
+
+  const getMonthDays = () => {
+    const year = miniDate.getFullYear();
+    const month = miniDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    
+    const days = [];
+    for (let i = 0; i < 42; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      days.push(date);
+    }
+    return days;
+  };
+
+  const isSameDay = (date1: Date, date2: Date) => {
+    return date1.toDateString() === date2.toDateString();
+  };
+
+  const hasEventsOnDate = (date: Date) => {
+    return events.some(event => {
+      const eventDate = new Date(event.startTime);
+      return isSameDay(eventDate, date);
+    });
+  };
+
+  const getAllDayEvents = () => {
+    return events.filter(event => event.allDay);
+  };
+
+  const getActiveJobsCount = () => {
+    return events.filter(event => 
+      event.type === 'job' && 
+      (event.status === 'open' || event.status === 'in-progress')
+    ).length;
+  };
+
+  const getPendingInvoicesCount = () => {
+    return events.filter(event => 
+      event.type === 'invoice' && 
+      event.status === 'open'
+    ).length;
+  };
+
+  const getThisMonthCount = () => {
+    const monthStart = new Date(miniDate.getFullYear(), miniDate.getMonth(), 1);
+    const monthEnd = new Date(miniDate.getFullYear(), miniDate.getMonth() + 1, 0);
+    
+    return events.filter(event => {
+      const eventDate = new Date(event.startTime);
+      return eventDate >= monthStart && eventDate <= monthEnd;
+    }).length;
+  };
+
+  const getEventTypeColor = (type: string) => {
+    const colors = {
+      job: 'bg-blue-100 text-blue-800 border-blue-200',
+      milestone: 'bg-green-100 text-green-800 border-green-200',
+      visit: 'bg-orange-100 text-orange-800 border-orange-200',
+      invoice: 'bg-red-100 text-red-800 border-red-200',
+      call: 'bg-purple-100 text-purple-800 border-purple-200',
+      payout: 'bg-teal-100 text-teal-800 border-teal-200'
+    };
+    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('ar-SA', {
+      style: 'currency',
+      currency: 'SAR',
+      minimumFractionDigits: 0
+    }).format(amount);
+  };
+
+  const monthDays = getMonthDays();
+  const allDayEvents = getAllDayEvents();
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-4">
+      {/* Mini Calendar Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium">
+          {formatMonthYear(miniDate, isHijri)}
+        </h3>
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={() => navigateMonth('prev')}
+          >
+            <ChevronLeft className="h-3 w-3" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={() => navigateMonth('next')}
+          >
+            <ChevronRight className="h-3 w-3" />
+          </Button>
+        </div>
+      </div>
+      
+      {/* Day Names Grid */}
+      <div className="grid grid-cols-7 gap-1 mb-2">
+        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+          <div key={day} className="text-xs text-center text-gray-500 font-medium">
+            {day}
+          </div>
+        ))}
+      </div>
+      
+      {/* Calendar Date Grid */}
+      <div className="grid grid-cols-7 gap-1">
+        {monthDays.map((date, index) => {
+          const isCurrentMonth = date.getMonth() === miniDate.getMonth();
+          const isToday = isSameDay(date, new Date());
+          const isSelected = isSameDay(date, currentDate);
+          const hasEvents = hasEventsOnDate(date);
+          
+          return (
+            <button
+              key={index}
+              className={`h-8 w-8 text-xs rounded flex items-center justify-center relative font-medium ${
+                !isCurrentMonth 
+                  ? 'text-gray-300' 
+                  : isSelected 
+                    ? 'bg-teal-700 text-white' 
+                    : isToday 
+                      ? 'bg-teal-100 text-teal-700 hover:bg-teal-200'
+                      : 'text-gray-700 hover:bg-gray-100'
+              }`}
+              onClick={() => handleDateClick(date)}
+            >
+              {date.getDate()}
+              {hasEvents && (
+                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
+                  <div className="h-1 w-1 bg-teal-500 rounded-full"></div>
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Quick Stats Section */}
+      <div className="border-t border-gray-200 pt-4 mt-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600">Active Jobs:</span>
+          <span className="text-sm font-medium">{getActiveJobsCount()}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600">Pending Invoices:</span>
+          <span className="text-sm font-medium">{getPendingInvoicesCount()}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600">This Month:</span>
+          <span className="text-sm font-medium">{getThisMonthCount()}</span>
+        </div>
+      </div>
+
+      {/* All Day Events Section */}
+      {allDayEvents.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-sm font-medium mb-3">All Day Events</h3>
+          <div className="space-y-2">
+            {allDayEvents.slice(0, 3).map(event => (
+              <CalendarEventCard
+                key={event.id}
+                event={event}
+                isCompact={true}
+                onEventSelect={onEventSelect}
+                getEventTypeColor={getEventTypeColor}
+                formatCurrency={formatCurrency}
+              />
+            ))}
+            {allDayEvents.length > 3 && (
+              <div className="text-xs text-blue-600 hover:text-blue-800 cursor-pointer">
+                +{allDayEvents.length - 3} more
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* User Profile */}
+      <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200">
+        <Avatar className="h-10 w-10">
+          <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+            NB
+          </AvatarFallback>
+        </Avatar>
+        <div>
+          <div className="font-medium text-sm">Nasser Baylah</div>
+          <div className="text-xs text-gray-500 capitalize">{userRole}</div>
+        </div>
+      </div>
+    </div>
+  );
+}

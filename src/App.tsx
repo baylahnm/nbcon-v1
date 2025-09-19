@@ -26,6 +26,7 @@ import VerificationPage from "@/pages/settings/VerificationPage";
 import ThemePage from "@/pages/settings/ThemePage";
 import HelpPage from "@/pages/support/HelpPage";
 import MyNetwork from "@/pages/network/MyNetwork";
+import CalendarPage from "@/pages/calendar/CalendarPage";
 import PaymentsIndex from "@/routes/c/PaymentsIndex";
 import NotFound from "./pages/NotFound";
 
@@ -57,6 +58,7 @@ const App = () => (
           <Route path="/engineer" element={<AppLayout />}>
             <Route index element={<EngineerDashboard />} />
             <Route path="jobs" element={<JobsList />} />
+            <Route path="calendar" element={<CalendarPage />} />
             <Route path="checkin" element={<CheckIn />} />
             <Route path="messages" element={<MessagingPage />} />
           </Route>
@@ -77,6 +79,7 @@ const App = () => (
             <Route path="browse" element={<BrowseEngineers />} />
             <Route path="jobs" element={<JobsList />} />
             <Route path="jobs/create" element={<CreateJob />} />
+            <Route path="calendar" element={<CalendarPage />} />
             <Route path="payments" element={<PaymentsIndex />} />
             <Route path="messages" element={<MessagingPage />} />
           </Route>
