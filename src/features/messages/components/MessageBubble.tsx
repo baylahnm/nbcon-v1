@@ -2,7 +2,7 @@ import { Message } from "../store/useMessagingStore";
 
 export function MessageBubble({ msg, translationEnabled }:{ msg:Message; translationEnabled:boolean }) {
   const mine = msg.mine;
-  const tone = mine ? "bg-[var(--color-primary)] text-black" : "bg-[var(--bg)]";
+  const tone = mine ? "bg-primary text-primary-foreground" : "bg-[var(--bg)]";
   return (
     <div className={`max-w-[80%] rounded-2xl border border-[var(--border)] ${tone} px-3 py-2 ${mine ? "ml-auto" : "mr-auto"}`}>
       {msg.kind==="text" && (

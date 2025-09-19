@@ -15,7 +15,7 @@ export function EarningsCharts({
             const Icon = k==="D" ? Calendar : k==="W" ? CalendarRange : CalendarDays;
             return (
               <button key={k}
-                className={`inline-flex items-center gap-2 rounded-xl px-3 py-1 font-medium transition-colors earnings-range-btn ${active ? "active bg-[var(--color-primary)] text-black" : "text-muted-foreground hover:text-foreground"}`}
+                className={`inline-flex items-center gap-2 rounded-xl px-3 py-1 font-medium transition-colors earnings-range-btn ${active ? "active bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 onClick={()=>onRange(k)}>
                 <Icon className="h-4 w-4" /> {k}
               </button>
@@ -25,7 +25,7 @@ export function EarningsCharts({
       </header>
       <div className="grid grid-cols-12 items-end gap-1" aria-label="chart">
         {series.map((p,i)=>(
-          <div key={i} className="bg-[var(--color-primary)]" style={{ height: `${Math.max(4, Math.min(p.y/300, 120))}px` }} />
+          <div key={i} className="bg-primary" style={{ height: `${Math.max(4, Math.min(p.y/300, 120))}px` }} />
         ))}
       </div>
     </section>

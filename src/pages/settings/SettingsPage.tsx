@@ -539,7 +539,10 @@ export default function SettingsPage() {
                     </div>
                     <Select 
                       value={preferences.theme_preference} 
-                      onValueChange={(value) => setPreferences({ ...preferences, theme_preference: value })}
+                      onValueChange={(value) => {
+                        setPreferences({ ...preferences, theme_preference: value });
+                        handlePresetChange(value as ThemePreset);
+                      }}
                     >
                       <SelectTrigger className="w-32">
                         <SelectValue />
@@ -557,7 +560,54 @@ export default function SettingsPage() {
                             Dark
                           </div>
                         </SelectItem>
-                        <SelectItem value="system">System</SelectItem>
+                        <SelectItem value="wazeer">
+                          <div className="flex items-center gap-2">
+                            <Palette className="h-4 w-4" />
+                            Wazeer
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="sunset">
+                          <div className="flex items-center gap-2">
+                            <Sunset className="h-4 w-4" />
+                            Sunset
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="abstract">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="h-4 w-4" />
+                            Abstract
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="dotted-indigo">
+                          <div className="flex items-center gap-2">
+                            <Circle className="h-4 w-4" />
+                            Dotted Indigo
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="lagoon">
+                          <div className="flex items-center gap-2">
+                            <Waves className="h-4 w-4" />
+                            Lagoon
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="dark-nature">
+                          <div className="flex items-center gap-2">
+                            <TreePine className="h-4 w-4" />
+                            Dark Nature
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="full-gradient">
+                          <div className="flex items-center gap-2">
+                            <Paintbrush className="h-4 w-4" />
+                            Full Gradient
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="sea-purple">
+                          <div className="flex items-center gap-2">
+                            <Droplets className="h-4 w-4" />
+                            Sea Purple
+                          </div>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -656,12 +706,12 @@ export default function SettingsPage() {
                         Dark
                       </Button>
                       <Button
-                        variant={preset === 'warm' ? 'default' : 'outline'}
-                        onClick={() => handlePresetChange('warm')}
+                        variant={preset === 'wazeer' ? 'default' : 'outline'}
+                        onClick={() => handlePresetChange('wazeer')}
                         className="flex items-center gap-2 whitespace-nowrap"
                       >
                         <Palette className="h-4 w-4" />
-                        Warm
+                        Wazeer
                       </Button>
                       <Button
                         variant={preset === 'sunset' ? 'default' : 'outline'}

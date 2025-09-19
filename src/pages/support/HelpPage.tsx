@@ -236,7 +236,7 @@ export default function HelpPage() {
                   <div className="flex-1 flex flex-col">
                     <div className="flex-1">
                       <h3 className="font-semibold flex items-center gap-2">
-                        <span className={`p-2 rounded-lg bg-muted ${channel.color} ${channel.title === 'Phone Support' ? 'phone-support-icon' : ''}`}>
+                        <span className={`p-2 rounded-lg bg-primary/10 text-primary ${channel.title === 'Phone Support' ? 'phone-support-icon' : ''}`}>
                           <Icon className="h-5 w-5" />
                         </span>
                         {channel.title}
@@ -255,7 +255,7 @@ export default function HelpPage() {
                         </p>
                       )}
                       {channel.status && (
-                        <Badge variant="outline" className="text-success border-success/20 bg-success/5 mb-3">
+                        <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 mb-3">
                           <CheckCircle2 className="h-3 w-3 mr-1" />
                           {channel.status}
                         </Badge>
@@ -298,7 +298,7 @@ export default function HelpPage() {
                   <TabsTrigger
                     key={category.id}
                     value={category.id}
-                    className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
+                    className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                   >
                     <Icon className="h-4 w-4" />
                     {category.label}

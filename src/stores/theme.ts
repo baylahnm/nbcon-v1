@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { useTheme } from 'next-themes';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
-export type ThemePreset = 'light' | 'dark' | 'warm' | 'sunset' | 'abstract' | 'dotted-indigo' | 'lagoon' | 'dark-nature' | 'full-gradient' | 'sea-purple';
+export type ThemePreset = 'light' | 'dark' | 'wazeer' | 'sunset' | 'abstract' | 'dotted-indigo' | 'lagoon' | 'dark-nature' | 'full-gradient' | 'sea-purple';
 
 export interface ThemeToken {
   key: string;
@@ -165,7 +165,7 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
     '--sidebar-border': '0 0% 15%',
     '--sidebar-ring': '142 65% 47%',
   },
-  warm: {
+  wazeer: {
     '--background': '0 0% 100%',
     '--foreground': '160 30% 25%',
     '--card': '30 15% 92%',
@@ -465,12 +465,14 @@ export const useThemeStore = create<ThemeState>()(
         
         // Update next-themes if available
         if (typeof window !== 'undefined' && window.document) {
-          // Set the theme class on the document element
-          const themeClass = preset === 'light' ? 'light' : preset === 'dark' ? 'dark' : preset;
+          // Set the theme classes on the document element (both raw and theme- prefixed for compatibility)
+          const rawClass = preset;
+          const aliasClass = preset === 'wazeer' ? 'wazeer' : '';
           document.documentElement.className = document.documentElement.className
+            .replace(/(?:^|\s)(light|dark|wazeer|wazeer|sunset|abstract|dotted-indigo|lagoon|dark-nature|full-gradient|sea-purple)(?=\s|$)/g, '')
             .replace(/theme-\w+/g, '')
             .replace(/\s+/g, ' ')
-            .trim() + ` theme-${preset}`;
+            .trim() + ` ${rawClass} ${aliasClass} theme-${preset}`;
         }
         
         set({ preset, applied });

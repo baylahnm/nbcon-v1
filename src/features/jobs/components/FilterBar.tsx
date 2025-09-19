@@ -57,7 +57,7 @@ export function FilterBar({
       </div>
       <div className="mt-3">
         <button onClick={onApply}
-          className="rounded-xl bg-[var(--color-primary)] px-4 py-2 font-semibold text-black">
+          className="rounded-xl bg-primary px-4 py-2 font-semibold text-primary-foreground">
           Apply
         </button>
       </div>

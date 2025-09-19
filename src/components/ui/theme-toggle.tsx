@@ -13,7 +13,7 @@ import {
 const themes = [
   { key: 'light', label: 'Light', icon: Sun },
   { key: 'dark', label: 'Dark', icon: Moon },
-  { key: 'warm', label: 'Warm', icon: Palette },
+  { key: 'wazeer', label: 'Wazeer', icon: Palette },
   { key: 'sunset', label: 'Sunset', icon: Sunset },
   { key: 'abstract', label: 'Abstract', icon: Paintbrush },
   { key: 'dotted-indigo', label: 'Dotted Indigo', icon: CircleDot },

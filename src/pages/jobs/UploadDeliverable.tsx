@@ -119,7 +119,7 @@ export default function UploadDeliverable() {
     <div className="space-y-6">
       <div className="border-b pb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Upload className="h-8 w-8 upload-deliverable-icon" style={{ color: '#27c862' }} />
+          <Upload className="h-8 w-8 upload-deliverable-icon text-primary" />
           Upload Deliverable
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -206,7 +206,7 @@ export default function UploadDeliverable() {
             <Button 
               onClick={handleSubmit}
               disabled={isUploading || uploadedFiles.length === 0}
-              className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] shadow-md submit-deliverable-btn"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md submit-deliverable-btn"
             >
               {isUploading ? (
                 <div className="flex items-center gap-2">

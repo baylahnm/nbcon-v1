@@ -56,9 +56,13 @@ const enterpriseMenuItems = [{
   icon: MessageSquare
 }];
 const bottomMenuItems = [{
-  title: 'Settings',
-  url: '/settings',
-  icon: Settings
+  title: 'Profile',
+  url: '/profile',
+  icon: User
+}, {
+  title: 'My Network',
+  url: '/network',
+  icon: Users
 }, {
   title: 'Payments',
   url: '/client/payments',
@@ -67,6 +71,10 @@ const bottomMenuItems = [{
   title: 'Help & Support',
   url: '/help',
   icon: HelpCircle
+}, {
+  title: 'Settings',
+  url: '/settings',
+  icon: Settings
 }];
 export function AppSidebar() {
   const {
@@ -103,7 +111,10 @@ export function AppSidebar() {
     }
     return currentPath.startsWith(path);
   };
-  const getNavCls = (path: string) => isActive(path) ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "hover:bg-sidebar-accent/50";
+  const getNavCls = (path: string) =>
+    isActive(path)
+      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+      : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground";
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -150,7 +161,7 @@ export function AppSidebar() {
         </div>
 
         {/* Main Navigation */}
-        <SidebarGroup className="sidebar-main-group">
+        <SidebarGroup className="sidebar-main-group border-b border-sidebar-border">
           <SidebarGroupLabel className="sidebar-main-menu-label">Main Menu</SidebarGroupLabel>
           <SidebarGroupContent className="sidebar-main-content">
             <SidebarMenu className="sidebar-main-menu">
@@ -166,7 +177,7 @@ export function AppSidebar() {
               {/* Special Create Job button for clients */}
               {profile?.role === 'client' && <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink to="/client/jobs/create" className="bg-accent/10 text-accent text-accent-foreground border border-accent/20 transition-all duration-200">
+                    <NavLink to="/client/jobs/create" className="bg-primary/10 text-primary border border-primary/20 transition-all duration-200 hover:bg-primary/20">
                       <Plus className="mr-3 h-4 w-4 flex-shrink-0" />
                       {!collapsed && <span>Post New Job</span>}
                     </NavLink>
@@ -190,15 +201,6 @@ export function AppSidebar() {
                 </SidebarMenuItem>)}
               
 
-              {/* Profile link */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/profile" className={getNavCls('/profile')}>
-                    <User className="mr-3 h-4 w-4 flex-shrink-0" />
-                    {!collapsed && <span>Profile</span>}
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

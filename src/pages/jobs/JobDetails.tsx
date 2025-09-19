@@ -68,7 +68,7 @@ export default function JobDetails(){
             <div className="text-sm opacity-80">Budget</div>
             <div className="text-xl font-bold">SAR {job.budgetSar.toLocaleString()}</div>
             <div className="h-px bg-[var(--border)] my-2" />
-            <Button onClick={()=>location.assign("/job/upload")} className="w-full bg-[var(--color-primary)] text-black shadow-md inline-flex items-center justify-center gap-2">
+            <Button onClick={()=>location.assign("/job/upload")} className="w-full">
               <Upload className="h-4 w-4" /> Upload Deliverable
             </Button>
           </CardContent>

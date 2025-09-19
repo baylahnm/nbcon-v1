@@ -211,12 +211,12 @@ export default function ThemePage() {
                     Dark
                   </Button>
                   <Button
-                    variant={preset === 'warm' ? 'default' : 'outline'}
-                    onClick={() => handlePresetChange('warm')}
+                    variant={preset === 'wazeer' ? 'default' : 'outline'}
+                    onClick={() => handlePresetChange('wazeer')}
                     className="flex items-center gap-2 whitespace-nowrap"
                   >
                     <Palette className="h-4 w-4" />
-                    Warm
+                    Wazeer
                   </Button>
                   <Button
                     variant={preset === 'sunset' ? 'default' : 'outline'}

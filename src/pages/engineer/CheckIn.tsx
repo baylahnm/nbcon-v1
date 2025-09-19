@@ -41,7 +41,7 @@ export default function CheckIn() {
     <div className="space-y-6">
       <div className="border-b pb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <MapPin className="h-8 w-8 checkin-map-pin-icon" style={{ color: '#27c862' }} />
+          <MapPin className="h-8 w-8 checkin-map-pin-icon text-primary" />
           Check In
         </h1>
         <p className="text-muted-foreground mt-1 checkin-subtitle">
@@ -85,7 +85,7 @@ export default function CheckIn() {
             <Button 
               onClick={handleCheckIn}
               disabled={isCheckingIn}
-              className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] shadow-md checkin-btn"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md checkin-btn"
             >
               {isCheckingIn ? (
                 <div className="flex items-center gap-2">
@@ -136,7 +136,7 @@ export default function CheckIn() {
                 <p className="font-medium">Al Olaya Project Site</p>
                 <p className="text-sm text-muted-foreground">Today, 2:30 PM</p>
               </div>
-              <span className="text-sm text-green-600 font-medium">Active</span>
+              <span className="text-sm text-success font-medium">Active</span>
             </div>
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div>

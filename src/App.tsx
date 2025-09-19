@@ -25,6 +25,7 @@ import ProfilePage from "@/pages/settings/ProfilePage";
 import VerificationPage from "@/pages/settings/VerificationPage";
 import ThemePage from "@/pages/settings/ThemePage";
 import HelpPage from "@/pages/support/HelpPage";
+import MyNetwork from "@/pages/network/MyNetwork";
 import PaymentsIndex from "@/routes/c/PaymentsIndex";
 import NotFound from "./pages/NotFound";
 
@@ -103,6 +104,10 @@ const App = () => (
 
           <Route path="/support" element={<AppLayout />}>
             <Route index element={<HelpPage />} />
+          </Route>
+
+          <Route path="/network" element={<AppLayout />}>
+            <Route index element={<MyNetwork />} />
           </Route>
 
           {/* Catch-all route */}

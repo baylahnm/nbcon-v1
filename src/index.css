@@ -207,15 +207,15 @@ All colors MUST be HSL.
     border-top-color: hsl(var(--border)) !important;
   }
 
-  .warm {
-    /* Dashboard Theme Tokens (Warm) - Legacy fallbacks */
+  .wazeer {
+    /* Dashboard Theme Tokens (wazeer) - Legacy fallbacks */
     --color-primary: hsl(var(--primary));
     --bg: hsl(var(--background));
     --surface: hsl(var(--card));
     --fg: hsl(var(--foreground));
     --border: hsl(var(--border));
 
-    /* Warm Theme - Earth Tones */
+    /* wazeer Theme - Earth Tones */
     --background: 0 0% 100%;
     --foreground: 30 15% 75%;
 
@@ -245,7 +245,7 @@ All colors MUST be HSL.
     --accent-light: 30 15% 95%;
     --accent-dark: 30 15% 88%;
 
-    /* Status colors - Warm Theme */
+    /* Status colors - wazeer Theme */
     --success: 160 30% 25%;
     --success-foreground: 0 0% 100%;
     --warning: 32 100% 42%;
@@ -261,19 +261,19 @@ All colors MUST be HSL.
     --input: 30 15% 75%;
     --ring: 160 30% 25%;
 
-    /* Warm gradients */
+    /* wazeer gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
     --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)));
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
     --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
 
-    /* Warm shadows */
+    /* wazeer shadows */
     --shadow-soft: 0 1px 3px 0 hsl(var(--primary) / 0.1), 0 1px 2px 0 hsl(var(--primary) / 0.06);
     --shadow-medium: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
     --shadow-large: 0 10px 15px -3px hsl(var(--primary) / 0.1), 0 4px 6px -2px hsl(var(--primary) / 0.05);
     --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
 
-    /* Warm sidebar */
+    /* wazeer sidebar */
     --sidebar-background: 30 15% 92%;
     --sidebar-foreground: 30 15% 75%;
     --sidebar-primary: 160 30% 25%;
@@ -287,7 +287,7 @@ All colors MUST be HSL.
   /* Navigation styling - All themes */
   .light .nav-links a,
   .dark .nav-links a,
-  .warm .nav-links a,
+  .wazeer .nav-links a,
   .sunset .nav-links a,
   .abstract .nav-links a,
   .dotted-indigo .nav-links a,
@@ -301,7 +301,7 @@ All colors MUST be HSL.
   /* Logo styling - All themes */
   .light .nbcon-logo,
   .dark .nbcon-logo,
-  .warm .nbcon-logo,
+  .wazeer .nbcon-logo,
   .sunset .nbcon-logo,
   .abstract .nbcon-logo,
   .dotted-indigo .nbcon-logo,
@@ -315,7 +315,7 @@ All colors MUST be HSL.
   /* Header buttons styling - All themes */
   .light .header-buttons button:not([class*="bg-primary"]),
   .dark .header-buttons button:not([class*="bg-primary"]),
-  .warm .header-buttons button:not([class*="bg-primary"]),
+  .wazeer .header-buttons button:not([class*="bg-primary"]),
   .sunset .header-buttons button:not([class*="bg-primary"]),
   .abstract .header-buttons button:not([class*="bg-primary"]),
   .dotted-indigo .header-buttons button:not([class*="bg-primary"]),
@@ -329,7 +329,7 @@ All colors MUST be HSL.
   /* Browse Engineers button - All themes */
   .light .browse-engineers-btn,
   .dark .browse-engineers-btn,
-  .warm .browse-engineers-btn,
+  .wazeer .browse-engineers-btn,
   .sunset .browse-engineers-btn,
   .abstract .browse-engineers-btn,
   .dotted-indigo .browse-engineers-btn,
@@ -343,7 +343,7 @@ All colors MUST be HSL.
   
   .light .browse-engineers-btn:hover,
   .dark .browse-engineers-btn:hover,
-  .warm .browse-engineers-btn:hover,
+  .wazeer .browse-engineers-btn:hover,
   .sunset .browse-engineers-btn:hover,
   .abstract .browse-engineers-btn:hover,
   .dotted-indigo .browse-engineers-btn:hover,
@@ -358,7 +358,7 @@ All colors MUST be HSL.
   /* Hero title - All themes */
   .light .hero-title,
   .dark .hero-title,
-  .warm .hero-title,
+  .wazeer .hero-title,
   .sunset .hero-title,
   .abstract .hero-title,
   .dotted-indigo .hero-title,
@@ -375,7 +375,7 @@ All colors MUST be HSL.
   /* Trust title - All themes */
   .light .trust-title,
   .dark .trust-title,
-  .warm .trust-title,
+  .wazeer .trust-title,
   .sunset .trust-title,
   .abstract .trust-title,
   .dotted-indigo .trust-title,
@@ -389,7 +389,7 @@ All colors MUST be HSL.
   /* Feature card titles - All themes */
   .light .feature-cards h3,
   .dark .feature-cards h3,
-  .warm .feature-cards h3,
+  .wazeer .feature-cards h3,
   .sunset .feature-cards h3,
   .abstract .feature-cards h3,
   .dotted-indigo .feature-cards h3,
@@ -403,7 +403,7 @@ All colors MUST be HSL.
   /* Disciplines title - All themes */
   .light .disciplines-title,
   .dark .disciplines-title,
-  .warm .disciplines-title,
+  .wazeer .disciplines-title,
   .sunset .disciplines-title,
   .abstract .disciplines-title,
   .dotted-indigo .disciplines-title,
@@ -417,7 +417,7 @@ All colors MUST be HSL.
   /* Social title - All themes */
   .light .social-title,
   .dark .social-title,
-  .warm .social-title,
+  .wazeer .social-title,
   .sunset .social-title,
   .abstract .social-title,
   .dotted-indigo .social-title,
@@ -431,7 +431,7 @@ All colors MUST be HSL.
   /* Social CTA button - All themes */
   .light .social-cta-btn,
   .dark .social-cta-btn,
-  .warm .social-cta-btn,
+  .wazeer .social-cta-btn,
   .sunset .social-cta-btn,
   .abstract .social-cta-btn,
   .dotted-indigo .social-cta-btn,
@@ -445,7 +445,7 @@ All colors MUST be HSL.
   /* Enterprise card hover border - All themes */
   .light .enterprise-card:hover,
   .dark .enterprise-card:hover,
-  .warm .enterprise-card:hover,
+  .wazeer .enterprise-card:hover,
   .sunset .enterprise-card:hover,
   .abstract .enterprise-card:hover,
   .dotted-indigo .enterprise-card:hover,
@@ -459,7 +459,7 @@ All colors MUST be HSL.
   /* Clients card hover border - All themes */
   .light .clients-card:hover,
   .dark .clients-card:hover,
-  .warm .clients-card:hover,
+  .wazeer .clients-card:hover,
   .sunset .clients-card:hover,
   .abstract .clients-card:hover,
   .dotted-indigo .clients-card:hover,
@@ -473,7 +473,7 @@ All colors MUST be HSL.
   /* Engineers card hover border - All themes */
   .light .engineers-card:hover,
   .dark .engineers-card:hover,
-  .warm .engineers-card:hover,
+  .wazeer .engineers-card:hover,
   .sunset .engineers-card:hover,
   .abstract .engineers-card:hover,
   .dotted-indigo .engineers-card:hover,
@@ -487,7 +487,7 @@ All colors MUST be HSL.
   /* Discipline badges hover border - All themes */
   .light .disciplines-badges .badge:hover,
   .dark .disciplines-badges .badge:hover,
-  .warm .disciplines-badges .badge:hover,
+  .wazeer .disciplines-badges .badge:hover,
   .sunset .disciplines-badges .badge:hover,
   .abstract .disciplines-badges .badge:hover,
   .dotted-indigo .disciplines-badges .badge:hover,
@@ -501,7 +501,7 @@ All colors MUST be HSL.
   /* Auth logo background - All themes */
   .light .auth-logo,
   .dark .auth-logo,
-  .warm .auth-logo,
+  .wazeer .auth-logo,
   .sunset .auth-logo,
   .abstract .auth-logo,
   .dotted-indigo .auth-logo,
@@ -515,7 +515,7 @@ All colors MUST be HSL.
   /* Auth submit button background - All themes */
   .light .auth-submit-btn,
   .dark .auth-submit-btn,
-  .warm .auth-submit-btn,
+  .wazeer .auth-submit-btn,
   .sunset .auth-submit-btn,
   .abstract .auth-submit-btn,
   .dotted-indigo .auth-submit-btn,
@@ -529,7 +529,7 @@ All colors MUST be HSL.
   /* Auth title text color - All themes */
   .light .auth-title,
   .dark .auth-title,
-  .warm .auth-title,
+  .wazeer .auth-title,
   .sunset .auth-title,
   .abstract .auth-title,
   .dotted-indigo .auth-title,
@@ -543,7 +543,7 @@ All colors MUST be HSL.
   /* Auth email button hover border - All themes */
   .light .auth-email-btn:hover,
   .dark .auth-email-btn:hover,
-  .warm .auth-email-btn:hover,
+  .wazeer .auth-email-btn:hover,
   .sunset .auth-email-btn:hover,
   .abstract .auth-email-btn:hover,
   .dotted-indigo .auth-email-btn:hover,
@@ -557,7 +557,7 @@ All colors MUST be HSL.
   /* Auth phone input hover border - All themes */
   .light .auth-phone-input:hover,
   .dark .auth-phone-input:hover,
-  .warm .auth-phone-input:hover,
+  .wazeer .auth-phone-input:hover,
   .sunset .auth-phone-input:hover,
   .abstract .auth-phone-input:hover,
   .dotted-indigo .auth-phone-input:hover,
@@ -571,7 +571,7 @@ All colors MUST be HSL.
   /* Auth phone button border - All themes */
   .light .auth-phone-btn,
   .dark .auth-phone-btn,
-  .warm .auth-phone-btn,
+  .wazeer .auth-phone-btn,
   .sunset .auth-phone-btn,
   .abstract .auth-phone-btn,
   .dotted-indigo .auth-phone-btn,
@@ -585,7 +585,7 @@ All colors MUST be HSL.
   /* Sidebar content text color - All themes */
   .light .sidebar-content,
   .dark .sidebar-content,
-  .warm .sidebar-content,
+  .wazeer .sidebar-content,
   .sunset .sidebar-content,
   .abstract .sidebar-content,
   .dotted-indigo .sidebar-content,
@@ -599,7 +599,7 @@ All colors MUST be HSL.
   /* Sidebar border - All themes */
   .light .border-sidebar-border,
   .dark .border-sidebar-border,
-  .warm .border-sidebar-border,
+  .wazeer .border-sidebar-border,
   .sunset .border-sidebar-border,
   .abstract .border-sidebar-border,
   .dotted-indigo .border-sidebar-border,
@@ -613,7 +613,7 @@ All colors MUST be HSL.
   /* Sidebar main group bottom border - All themes */
   .light .sidebar-main-group,
   .dark .sidebar-main-group,
-  .warm .sidebar-main-group,
+  .wazeer .sidebar-main-group,
   .sunset .sidebar-main-group,
   .abstract .sidebar-main-group,
   .dotted-indigo .sidebar-main-group,
@@ -627,7 +627,7 @@ All colors MUST be HSL.
   /* Sidebar menu button accent colors - All themes */
   .light .bg-sidebar-accent,
   .dark .bg-sidebar-accent,
-  .warm .bg-sidebar-accent,
+  .wazeer .bg-sidebar-accent,
   .sunset .bg-sidebar-accent,
   .abstract .bg-sidebar-accent,
   .dotted-indigo .bg-sidebar-accent,
@@ -640,7 +640,7 @@ All colors MUST be HSL.
 
   .light .text-sidebar-accent-foreground,
   .dark .text-sidebar-accent-foreground,
-  .warm .text-sidebar-accent-foreground,
+  .wazeer .text-sidebar-accent-foreground,
   .sunset .text-sidebar-accent-foreground,
   .abstract .text-sidebar-accent-foreground,
   .dotted-indigo .text-sidebar-accent-foreground,
@@ -653,7 +653,7 @@ All colors MUST be HSL.
 
   .light .hover\\:bg-sidebar-accent:hover,
   .dark .hover\\:bg-sidebar-accent:hover,
-  .warm .hover\\:bg-sidebar-accent:hover,
+  .wazeer .hover\\:bg-sidebar-accent:hover,
   .sunset .hover\\:bg-sidebar-accent:hover,
   .abstract .hover\\:bg-sidebar-accent:hover,
   .dotted-indigo .hover\\:bg-sidebar-accent:hover,
@@ -666,7 +666,7 @@ All colors MUST be HSL.
 
   .light .hover\\:text-sidebar-accent-foreground:hover,
   .dark .hover\\:text-sidebar-accent-foreground:hover,
-  .warm .hover\\:text-sidebar-accent-foreground:hover,
+  .wazeer .hover\\:text-sidebar-accent-foreground:hover,
   .sunset .hover\\:text-sidebar-accent-foreground:hover,
   .abstract .hover\\:text-sidebar-accent-foreground:hover,
   .dotted-indigo .hover\\:text-sidebar-accent-foreground:hover,
@@ -677,40 +677,40 @@ All colors MUST be HSL.
     color: hsl(var(--sidebar-accent-foreground)) !important;
   }
 
-  /* Warm theme specific active sidebar menu button text and icons */
-  .warm .bg-sidebar-accent,
-  .warm .text-sidebar-accent-foreground,
-  .warm .hover\\:bg-sidebar-accent:hover,
-  .warm .hover\\:text-sidebar-accent-foreground:hover {
+  /* wazeer theme specific active sidebar menu button text and icons */
+  .wazeer .bg-sidebar-accent,
+  .wazeer .text-sidebar-accent-foreground,
+  .wazeer .hover\\:bg-sidebar-accent:hover,
+  .wazeer .hover\\:text-sidebar-accent-foreground:hover {
     color: #ffffff !important;
   }
 
-  .warm .bg-sidebar-accent svg,
-  .warm .text-sidebar-accent-foreground svg,
-  .warm .hover\\:bg-sidebar-accent:hover svg,
-  .warm .hover\\:text-sidebar-accent-foreground:hover svg {
+  .wazeer .bg-sidebar-accent svg,
+  .wazeer .text-sidebar-accent-foreground svg,
+  .wazeer .hover\\:bg-sidebar-accent:hover svg,
+  .wazeer .hover\\:text-sidebar-accent-foreground:hover svg {
     color: #ffffff !important;
   }
 
-  /* Warm theme specific selected sidebar menu button text and icons */
-  .warm [data-active="true"].bg-sidebar-accent,
-  .warm [data-active="true"].text-sidebar-accent-foreground,
-  .warm [data-active="true"] .bg-sidebar-accent,
-  .warm [data-active="true"] .text-sidebar-accent-foreground {
+  /* wazeer theme specific selected sidebar menu button text and icons */
+  .wazeer [data-active="true"].bg-sidebar-accent,
+  .wazeer [data-active="true"].text-sidebar-accent-foreground,
+  .wazeer [data-active="true"] .bg-sidebar-accent,
+  .wazeer [data-active="true"] .text-sidebar-accent-foreground {
     color: #ffffff !important;
   }
 
-  .warm [data-active="true"].bg-sidebar-accent svg,
-  .warm [data-active="true"].text-sidebar-accent-foreground svg,
-  .warm [data-active="true"] .bg-sidebar-accent svg,
-  .warm [data-active="true"] .text-sidebar-accent-foreground svg {
+  .wazeer [data-active="true"].bg-sidebar-accent svg,
+  .wazeer [data-active="true"].text-sidebar-accent-foreground svg,
+  .wazeer [data-active="true"] .bg-sidebar-accent svg,
+  .wazeer [data-active="true"] .text-sidebar-accent-foreground svg {
     color: #ffffff !important;
   }
 
   /* Jobs details button - All themes */
   .light .jobs-details-btn,
   .dark .jobs-details-btn,
-  .warm .jobs-details-btn,
+  .wazeer .jobs-details-btn,
   .sunset .jobs-details-btn,
   .abstract .jobs-details-btn,
   .dotted-indigo .jobs-details-btn,
@@ -726,7 +726,7 @@ All colors MUST be HSL.
   /* Jobs details button hover border - All themes */
   .light .jobs-details-btn:hover,
   .dark .jobs-details-btn:hover,
-  .warm .jobs-details-btn:hover,
+  .wazeer .jobs-details-btn:hover,
   .sunset .jobs-details-btn:hover,
   .abstract .jobs-details-btn:hover,
   .dotted-indigo .jobs-details-btn:hover,
@@ -765,8 +765,8 @@ All colors MUST be HSL.
     border-color: hsl(var(--primary-dark)) !important;
   }
 
-  /* Warm theme specific milestones release button */
-  .warm .milestones-release-btn {
+  /* wazeer theme specific milestones release button */
+  .wazeer .milestones-release-btn {
     background: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
   }
@@ -785,137 +785,137 @@ All colors MUST be HSL.
     color: hsl(var(--primary-foreground)) !important;
   }
 
-  /* Warm theme specific checkin button */
-  .warm .checkin-btn {
+  /* wazeer theme specific checkin button */
+  .wazeer .checkin-btn {
     background: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
   }
 
-  /* Warm theme specific verification start button */
-  .warm .verification-start-btn {
+  /* wazeer theme specific verification start button */
+  .wazeer .verification-start-btn {
     background: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
   }
 
-  /* Warm theme specific quick actions primary button */
-  .warm .quick-actions-primary-btn {
+  /* wazeer theme specific quick actions primary button */
+  .wazeer .quick-actions-primary-btn {
     background: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
   }
 
-  /* Warm theme specific sidebar user name */
-  .warm .sidebar-user-name {
+  /* wazeer theme specific sidebar user name */
+  .wazeer .sidebar-user-name {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific sidebar logo text */
-  .warm .sidebar-logo-text {
+  /* wazeer theme specific sidebar logo text */
+  .wazeer .sidebar-logo-text {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific theme toggle menu */
-  .warm .theme-toggle-menu {
+  /* wazeer theme specific theme toggle menu */
+  .wazeer .theme-toggle-menu {
     color: hsl(var(--primary)) !important;
   }
 
-  .warm .theme-toggle-menu svg {
+  .wazeer .theme-toggle-menu svg {
     color: hsl(var(--primary)) !important;
   }
 
 
-  /* Warm theme specific auth layout title */
-  .warm .auth-layout-title {
+  /* wazeer theme specific auth layout title */
+  .wazeer .auth-layout-title {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific sidebar logo text and icon */
-  .warm .sidebar-logo-text h2 {
+  /* wazeer theme specific sidebar logo text and icon */
+  .wazeer .sidebar-logo-text h2 {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  .warm .sidebar-logo-text ~ div span,
-  .warm .sidebar-logo-text + div span {
+  .wazeer .sidebar-logo-text ~ div span,
+  .wazeer .sidebar-logo-text + div span {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  /* Warm theme specific sidebar main menu label */
-  .warm .sidebar-main-menu-label {
+  /* wazeer theme specific sidebar main menu label */
+  .wazeer .sidebar-main-menu-label {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific sidebar main menu items */
-  .warm .sidebar-main-menu a {
+  /* wazeer theme specific sidebar main menu items */
+  .wazeer .sidebar-main-menu a {
     color: hsl(var(--primary)) !important;
   }
 
-  .warm .sidebar-main-menu svg {
+  .wazeer .sidebar-main-menu svg {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific sidebar bottom menu items */
-  .warm .sidebar-bottom-menu a {
+  /* wazeer theme specific sidebar bottom menu items */
+  .wazeer .sidebar-bottom-menu a {
     color: hsl(var(--primary)) !important;
   }
 
-  .warm .sidebar-bottom-menu button {
+  .wazeer .sidebar-bottom-menu button {
     color: hsl(var(--primary)) !important;
   }
 
-  .warm .sidebar-bottom-menu svg {
+  .wazeer .sidebar-bottom-menu svg {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific sidebar logo title */
-  .warm .sidebar-logo-title {
+  /* wazeer theme specific sidebar logo title */
+  .wazeer .sidebar-logo-title {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  /* Warm theme specific sidebar user display name */
-  .warm .sidebar-user-display-name {
+  /* wazeer theme specific sidebar user display name */
+  .wazeer .sidebar-user-display-name {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  /* Warm theme specific sidebar role portal text */
-  .warm .sidebar-role-portal {
+  /* wazeer theme specific sidebar role portal text */
+  .wazeer .sidebar-role-portal {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific sidebar user role text */
-  .warm .sidebar-user-role {
+  /* wazeer theme specific sidebar user role text */
+  .wazeer .sidebar-user-role {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific checkin map pin icon */
-  .warm .checkin-map-pin-icon {
+  /* wazeer theme specific checkin map pin icon */
+  .wazeer .checkin-map-pin-icon {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific upload deliverable icon */
-  .warm .upload-deliverable-icon {
+  /* wazeer theme specific upload deliverable icon */
+  .wazeer .upload-deliverable-icon {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific submit deliverable button */
-  .warm .submit-deliverable-btn {
+  /* wazeer theme specific submit deliverable button */
+  .wazeer .submit-deliverable-btn {
     background-color: hsl(var(--primary)) !important;
   }
 
-  .warm .submit-deliverable-btn:hover {
+  .wazeer .submit-deliverable-btn:hover {
     background-color: hsl(var(--primary-dark)) !important;
   }
 
-  /* Warm theme specific phone support icon */
-  .warm .phone-support-icon {
+  /* wazeer theme specific phone support icon */
+  .wazeer .phone-support-icon {
     color: hsl(var(--primary)) !important;
   }
 
-  /* Warm theme specific CheckIn subtitle */
-  .warm .checkin-subtitle {
+  /* wazeer theme specific CheckIn subtitle */
+  .wazeer .checkin-subtitle {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  /* Warm theme specific CheckIn card title */
-  .warm .checkin-card-title {
+  /* wazeer theme specific CheckIn card title */
+  .wazeer .checkin-card-title {
     color: hsl(var(--primary)) !important;
   }
 
@@ -1117,8 +1117,8 @@ All colors MUST be HSL.
     background-color: hsl(var(--primary-dark)) !important;
   }
 
-  /* Warm theme specific earnings charts range buttons */
-  .warm .earnings-range-group .earnings-range-btn.active {
+  /* wazeer theme specific earnings charts range buttons */
+  .wazeer .earnings-range-group .earnings-range-btn.active {
     background-color: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
   }
@@ -1135,7 +1135,7 @@ All colors MUST be HSL.
   /* Theme-specific theme toggle menu - All themes */
   .light .theme-toggle-menu,
   .dark .theme-toggle-menu,
-  .warm .theme-toggle-menu,
+  .wazeer .theme-toggle-menu,
   .sunset .theme-toggle-menu,
   .abstract .theme-toggle-menu,
   .dotted-indigo .theme-toggle-menu,
@@ -1148,7 +1148,7 @@ All colors MUST be HSL.
 
   .light .theme-toggle-menu svg,
   .dark .theme-toggle-menu svg,
-  .warm .theme-toggle-menu svg,
+  .wazeer .theme-toggle-menu svg,
   .sunset .theme-toggle-menu svg,
   .abstract .theme-toggle-menu svg,
   .dotted-indigo .theme-toggle-menu svg,
@@ -1162,7 +1162,7 @@ All colors MUST be HSL.
   /* Theme-specific dropdown menu items text color - All themes */
   .light [data-radix-menu-content] [role="menuitem"],
   .dark [data-radix-menu-content] [role="menuitem"],
-  .warm [data-radix-menu-content] [role="menuitem"],
+  .wazeer [data-radix-menu-content] [role="menuitem"],
   .sunset [data-radix-menu-content] [role="menuitem"],
   .abstract [data-radix-menu-content] [role="menuitem"],
   .dotted-indigo [data-radix-menu-content] [role="menuitem"],

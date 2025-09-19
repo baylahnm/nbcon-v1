@@ -25,7 +25,7 @@ export default function ClientJobs() {
       <header className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Jobs / Projects</h1>
         <div className="flex gap-2">
-          <button className="rounded-xl bg-[var(--color-primary)] px-4 py-2 font-semibold text-black">Create Job</button>
+          <button className="rounded-xl bg-primary px-4 py-2 font-semibold text-primary-foreground">Create Job</button>
           <button className="rounded-xl border border-[var(--border)] px-4 py-2">Templates</button>
         </div>
       </header>
@@ -63,7 +63,7 @@ export default function ClientJobs() {
         ) : !list.length ? (
           <EmptyState
             message="No jobs found. Start by creating your first job."
-            action={<button className="mt-3 rounded-xl bg-[var(--color-primary)] px-4 py-2 text-black">Create Job</button>}
+            action={<button className="mt-3 rounded-xl bg-primary px-4 py-2 text-primary-foreground">Create Job</button>}
           />
         ) : view==="list" ? (
           <div className="grid gap-3">

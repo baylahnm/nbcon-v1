@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuthStore } from '@/stores/auth';
 import { supabase } from '@/integrations/supabase/client';
@@ -211,407 +213,406 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-12">
-        {/* Profile Navigation */}
-        <div className="lg:col-span-3">
-          <Card>
-            <CardContent className="p-0">
-              <div className="space-y-1 p-2">
-                {sections.map((section) => {
-                  const Icon = section.icon;
-                  return (
-                    <Button
-                      key={section.id}
-                      variant={activeSection === section.id ? "secondary" : "ghost"}
-                      className="w-full justify-start"
-                      onClick={() => setActiveSection(section.id)}
-                    >
-                      <Icon className="h-4 w-4 mr-2" />
-                      {section.label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Profile Preview */}
-          <Card className="mt-4">
-            <CardHeader>
-              <CardTitle className="text-sm">Profile Preview</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <Avatar className="h-20 w-20 mx-auto">
-                <AvatarImage src={basicData.avatar_url} />
-                <AvatarFallback className="bg-gradient-primary text-primary-foreground text-lg">
-                  {getInitials()}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold">
-                  {basicData.first_name} {basicData.last_name}
-                </h3>
-                <p className="text-sm text-muted-foreground capitalize">
-                  {profile?.role}
-                </p>
-                {basicData.location_city && (
-                  <p className="text-xs text-muted-foreground flex items-center justify-center gap-1 mt-1">
-                    <MapPin className="h-3 w-3" />
-                    {basicData.location_city}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+      <Tabs value={activeSection} onValueChange={setActiveSection} className="w-full">
+        <div className="border-b">
+          <ScrollArea className="w-full whitespace-nowrap">
+            <TabsList className="inline-flex h-12 items-center justify-start rounded-none border-0 bg-transparent p-0">
+              {sections.map((section) => {
+                const Icon = section.icon;
+                return (
+                  <TabsTrigger
+                    key={section.id}
+                    value={section.id}
+                    className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {section.label}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </ScrollArea>
         </div>
 
-        {/* Profile Content */}
-        <div className="lg:col-span-9">
-          {/* Basic Information */}
-          {activeSection === 'basic' && (
+        <div className="mt-6 grid gap-6 lg:grid-cols-12">
+          {/* Profile Preview */}
+          <div className="lg:col-span-3">
             <Card>
               <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
-                <CardDescription>
-                  Update your personal information and contact details
-                </CardDescription>
+                <CardTitle className="text-sm">Profile Preview</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Avatar Section */}
-                <div className="flex items-center gap-6">
-                  <Avatar className="h-24 w-24">
-                    <AvatarImage src={basicData.avatar_url} />
-                    <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xl">
-                      {getInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-2">
-                    <Button onClick={handleAvatarUpload} variant="outline">
-                      <Camera className="h-4 w-4 mr-2" />
-                      Change Avatar
-                    </Button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Recommended: Square image, at least 400x400px
-                    </p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Name Fields */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="first_name">First Name *</Label>
-                    <Input
-                      id="first_name"
-                      value={basicData.first_name}
-                      onChange={(e) => setBasicData({ ...basicData, first_name: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="last_name">Last Name *</Label>
-                    <Input
-                      id="last_name"
-                      value={basicData.last_name}
-                      onChange={(e) => setBasicData({ ...basicData, last_name: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                {/* Bio */}
-                <div className="space-y-2">
-                  <Label htmlFor="bio">Professional Bio</Label>
-                  <Textarea
-                    id="bio"
-                    placeholder="Tell clients about your experience and expertise..."
-                    value={basicData.bio}
-                    onChange={(e) => setBasicData({ ...basicData, bio: e.target.value })}
-                    rows={4}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    {basicData.bio.length}/500 characters
+              <CardContent className="text-center space-y-4">
+                <Avatar className="h-20 w-20 mx-auto">
+                  <AvatarImage src={basicData.avatar_url} />
+                  <AvatarFallback className="bg-gradient-primary text-primary-foreground text-lg">
+                    {getInitials()}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="font-semibold">
+                    {basicData.first_name} {basicData.last_name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground capitalize">
+                    {profile?.role}
                   </p>
+                  {basicData.location_city && (
+                    <p className="text-xs text-muted-foreground flex items-center justify-center gap-1 mt-1">
+                      <MapPin className="h-3 w-3" />
+                      {basicData.location_city}
+                    </p>
+                  )}
                 </div>
-
-                {/* Location */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Select 
-                      value={basicData.location_city} 
-                      onValueChange={(value) => setBasicData({ ...basicData, location_city: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SAUDI_CITIES.map((city) => (
-                          <SelectItem key={city} value={city}>{city}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="region">Region</Label>
-                    <Input
-                      id="region"
-                      placeholder="e.g., Riyadh Region"
-                      value={basicData.location_region}
-                      onChange={(e) => setBasicData({ ...basicData, location_region: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <Separator />
-
-                <Button onClick={handleBasicUpdate} disabled={isLoading} className="bg-gradient-primary">
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Basic Information
-                </Button>
               </CardContent>
             </Card>
-          )}
+          </div>
 
-          {/* Professional Details */}
-          {activeSection === 'professional' && (
-            <div className="space-y-6">
-              {/* Engineer Professional Details */}
-              {profile?.role === 'engineer' && (
-                <>
+          <div className="lg:col-span-9">
+            {/* Basic Information */}
+            <TabsContent value="basic" className="mt-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Basic Information</CardTitle>
+                  <CardDescription>
+                    Update your personal information and contact details
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Avatar Section */}
+                  <div className="flex items-center gap-6">
+                    <Avatar className="h-24 w-24">
+                      <AvatarImage src={basicData.avatar_url} />
+                      <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xl">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-2">
+                      <Button onClick={handleAvatarUpload} variant="outline">
+                        <Camera className="h-4 w-4 mr-2" />
+                        Change Avatar
+                      </Button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Recommended: Square image, at least 400x400px
+                      </p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Name Fields */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="first_name">First Name *</Label>
+                      <Input
+                        id="first_name"
+                        value={basicData.first_name}
+                        onChange={(e) => setBasicData({ ...basicData, first_name: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="last_name">Last Name *</Label>
+                      <Input
+                        id="last_name"
+                        value={basicData.last_name}
+                        onChange={(e) => setBasicData({ ...basicData, last_name: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Bio */}
+                  <div className="space-y-2">
+                    <Label htmlFor="bio">Professional Bio</Label>
+                    <Textarea
+                      id="bio"
+                      placeholder="Tell clients about your experience and expertise..."
+                      value={basicData.bio}
+                      onChange={(e) => setBasicData({ ...basicData, bio: e.target.value })}
+                      rows={4}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {basicData.bio.length}/500 characters
+                    </p>
+                  </div>
+
+                  {/* Location */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="city">City</Label>
+                      <Select 
+                        value={basicData.location_city} 
+                        onValueChange={(value) => setBasicData({ ...basicData, location_city: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select city" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SAUDI_CITIES.map((city) => (
+                            <SelectItem key={city} value={city}>{city}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="region">Region</Label>
+                      <Input
+                        id="region"
+                        placeholder="e.g., Riyadh Region"
+                        value={basicData.location_region}
+                        onChange={(e) => setBasicData({ ...basicData, location_region: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <Button onClick={handleBasicUpdate} disabled={isLoading} className="bg-gradient-primary">
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Basic Information
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Professional Details */}
+            <TabsContent value="professional" className="mt-0">
+              <div className="space-y-6">
+                {/* Engineer Professional Details */}
+                {profile?.role === 'engineer' && (
+                  <>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Engineering Credentials</CardTitle>
+                        <CardDescription>
+                          Your professional qualifications and licensing information
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="sce_license">SCE License Number</Label>
+                          <div className="flex gap-2">
+                            <Input
+                              id="sce_license"
+                              placeholder="Your Saudi Council of Engineers license"
+                              value={engineerData.sce_license_number}
+                              onChange={(e) => setEngineerData({ ...engineerData, sce_license_number: e.target.value })}
+                            />
+                            <Badge variant="outline" className="whitespace-nowrap">
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              Verified
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="experience">Years of Experience</Label>
+                            <Input
+                              id="experience"
+                              type="number"
+                              min="0"
+                              value={engineerData.years_experience}
+                              onChange={(e) => setEngineerData({ ...engineerData, years_experience: parseInt(e.target.value) || 0 })}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="hourly_rate">Hourly Rate (SAR)</Label>
+                            <Input
+                              id="hourly_rate"
+                              type="number"
+                              min="0"
+                              value={engineerData.hourly_rate}
+                              onChange={(e) => setEngineerData({ ...engineerData, hourly_rate: parseFloat(e.target.value) || 0 })}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="service_radius">Service Radius (km)</Label>
+                            <Input
+                              id="service_radius"
+                              type="number"
+                              min="1"
+                              value={engineerData.service_radius}
+                              onChange={(e) => setEngineerData({ ...engineerData, service_radius: parseInt(e.target.value) || 50 })}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Availability Status</Label>
+                          <Select 
+                            value={engineerData.availability_status} 
+                            onValueChange={(value) => setEngineerData({ ...engineerData, availability_status: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="available">Available Now</SelectItem>
+                              <SelectItem value="busy">Busy</SelectItem>
+                              <SelectItem value="unavailable">Unavailable</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Specializations</CardTitle>
+                        <CardDescription>
+                          Select your areas of engineering expertise
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex flex-wrap gap-2">
+                          {engineerData.specializations.map((spec) => (
+                            <Badge key={spec} variant="secondary" className="cursor-pointer">
+                              {spec}
+                              <X 
+                                className="h-3 w-3 ml-1" 
+                                onClick={() => removeSpecialization(spec)}
+                              />
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          {ENGINEERING_SPECIALIZATIONS.map((spec) => (
+                            <label key={spec} className="flex items-center space-x-2 p-2 rounded border hover:bg-muted/50 cursor-pointer">
+                              <Checkbox
+                                checked={engineerData.specializations.includes(spec)}
+                                onCheckedChange={() => {
+                                  if (engineerData.specializations.includes(spec)) {
+                                    removeSpecialization(spec);
+                                  } else {
+                                    addSpecialization(spec);
+                                  }
+                                }}
+                              />
+                              <span className="text-sm">{spec}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </>
+                )}
+
+                {/* Client Professional Details */}
+                {profile?.role === 'client' && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Engineering Credentials</CardTitle>
+                      <CardTitle>Client Information</CardTitle>
                       <CardDescription>
-                        Your professional qualifications and licensing information
+                        Your preferences and project requirements
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="sce_license">SCE License Number</Label>
-                        <div className="flex gap-2">
-                          <Input
-                            id="sce_license"
-                            placeholder="Your Saudi Council of Engineers license"
-                            value={engineerData.sce_license_number}
-                            onChange={(e) => setEngineerData({ ...engineerData, sce_license_number: e.target.value })}
-                          />
-                          <Badge variant="outline" className="whitespace-nowrap">
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Verified
-                          </Badge>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="experience">Years of Experience</Label>
-                          <Input
-                            id="experience"
-                            type="number"
-                            min="0"
-                            value={engineerData.years_experience}
-                            onChange={(e) => setEngineerData({ ...engineerData, years_experience: parseInt(e.target.value) || 0 })}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="hourly_rate">Hourly Rate (SAR)</Label>
-                          <Input
-                            id="hourly_rate"
-                            type="number"
-                            min="0"
-                            value={engineerData.hourly_rate}
-                            onChange={(e) => setEngineerData({ ...engineerData, hourly_rate: parseFloat(e.target.value) || 0 })}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="service_radius">Service Radius (km)</Label>
-                          <Input
-                            id="service_radius"
-                            type="number"
-                            min="1"
-                            value={engineerData.service_radius}
-                            onChange={(e) => setEngineerData({ ...engineerData, service_radius: parseInt(e.target.value) || 50 })}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Availability Status</Label>
+                        <Label>Client Type</Label>
                         <Select 
-                          value={engineerData.availability_status} 
-                          onValueChange={(value) => setEngineerData({ ...engineerData, availability_status: value })}
+                          value={clientData.client_type} 
+                          onValueChange={(value) => setClientData({ ...clientData, client_type: value })}
                         >
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="available">Available Now</SelectItem>
-                            <SelectItem value="busy">Busy</SelectItem>
-                            <SelectItem value="unavailable">Unavailable</SelectItem>
+                            {CLIENT_TYPES.map((type) => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
-                    </CardContent>
-                  </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Specializations</CardTitle>
-                      <CardDescription>
-                        Select your areas of engineering expertise
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex flex-wrap gap-2">
-                        {engineerData.specializations.map((spec) => (
-                          <Badge key={spec} variant="secondary" className="cursor-pointer">
-                            {spec}
-                            <X 
-                              className="h-3 w-3 ml-1" 
-                              onClick={() => removeSpecialization(spec)}
-                            />
-                          </Badge>
-                        ))}
+                      <div className="space-y-2">
+                        <Label>Typical Budget Range</Label>
+                        <Select 
+                          value={clientData.budget_range} 
+                          onValueChange={(value) => setClientData({ ...clientData, budget_range: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select budget range" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BUDGET_RANGES.map((range) => (
+                              <SelectItem key={range} value={range}>
+                                {range}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2">
-                        {ENGINEERING_SPECIALIZATIONS.map((spec) => (
-                          <label key={spec} className="flex items-center space-x-2 p-2 rounded border hover:bg-muted/50 cursor-pointer">
-                            <Checkbox
-                              checked={engineerData.specializations.includes(spec)}
-                              onCheckedChange={() => {
-                                if (engineerData.specializations.includes(spec)) {
-                                  removeSpecialization(spec);
-                                } else {
-                                  addSpecialization(spec);
-                                }
-                              }}
-                            />
-                            <span className="text-sm">{spec}</span>
-                          </label>
-                        ))}
+                      <div className="space-y-2">
+                        <Label htmlFor="payment_method">Preferred Payment Method</Label>
+                        <Input
+                          id="payment_method"
+                          placeholder="e.g., Bank transfer, Credit card"
+                          value={clientData.preferred_payment_method}
+                          onChange={(e) => setClientData({ ...clientData, preferred_payment_method: e.target.value })}
+                        />
                       </div>
                     </CardContent>
                   </Card>
-                </>
-              )}
-
-              {/* Client Professional Details */}
-              {profile?.role === 'client' && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Client Information</CardTitle>
-                    <CardDescription>
-                      Your preferences and project requirements
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Client Type</Label>
-                      <Select 
-                        value={clientData.client_type} 
-                        onValueChange={(value) => setClientData({ ...clientData, client_type: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {CLIENT_TYPES.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Typical Budget Range</Label>
-                      <Select 
-                        value={clientData.budget_range} 
-                        onValueChange={(value) => setClientData({ ...clientData, budget_range: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select budget range" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {BUDGET_RANGES.map((range) => (
-                            <SelectItem key={range} value={range}>
-                              {range}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="payment_method">Preferred Payment Method</Label>
-                      <Input
-                        id="payment_method"
-                        placeholder="e.g., Bank transfer, Credit card"
-                        value={clientData.preferred_payment_method}
-                        onChange={(e) => setClientData({ ...clientData, preferred_payment_method: e.target.value })}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              <Button onClick={handleRoleSpecificUpdate} disabled={isLoading} className="bg-gradient-primary">
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                <Save className="mr-2 h-4 w-4" />
-                Save Professional Details
-              </Button>
-            </div>
-          )}
-
-          {/* Portfolio & Skills */}
-          {activeSection === 'portfolio' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Portfolio & Skills</CardTitle>
-                <CardDescription>
-                  Showcase your work and highlight your expertise
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="portfolio_summary">Portfolio Summary</Label>
-                  <Textarea
-                    id="portfolio_summary"
-                    placeholder="Describe your key projects and achievements..."
-                    value={engineerData.portfolio_summary}
-                    onChange={(e) => setEngineerData({ ...engineerData, portfolio_summary: e.target.value })}
-                    rows={4}
-                  />
-                </div>
-
-                <div className="text-center py-8 border-2 border-dashed border-muted rounded-lg">
-                  <Award className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="font-medium mb-2">Portfolio Coming Soon</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Project galleries, certifications, and file uploads will be available in a future update.
-                  </p>
-                </div>
+                )}
 
                 <Button onClick={handleRoleSpecificUpdate} disabled={isLoading} className="bg-gradient-primary">
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   <Save className="mr-2 h-4 w-4" />
-                  Save Portfolio Information
+                  Save Professional Details
                 </Button>
-              </CardContent>
-            </Card>
-          )}
+              </div>
+            </TabsContent>
+
+            {/* Portfolio & Skills */}
+            <TabsContent value="portfolio" className="mt-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Portfolio & Skills</CardTitle>
+                  <CardDescription>
+                    Showcase your work and highlight your expertise
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="portfolio_summary">Portfolio Summary</Label>
+                    <Textarea
+                      id="portfolio_summary"
+                      placeholder="Describe your key projects and achievements..."
+                      value={engineerData.portfolio_summary}
+                      onChange={(e) => setEngineerData({ ...engineerData, portfolio_summary: e.target.value })}
+                      rows={4}
+                    />
+                  </div>
+
+                  <div className="text-center py-8 border-2 border-dashed border-muted rounded-lg">
+                    <Award className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="font-medium mb-2">Portfolio Coming Soon</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Project galleries, certifications, and file uploads will be available in a future update.
+                    </p>
+                  </div>
+
+                  <Button onClick={handleRoleSpecificUpdate} disabled={isLoading} className="bg-gradient-primary">
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Portfolio Information
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </div>
         </div>
-      </div>
+      </Tabs>
     </div>
   );
 }
