@@ -65,7 +65,7 @@ export function AppLayout({
           </header>
 
           {/* Main Content */}
-          <main className={`flex-1 ${location.pathname.startsWith('/analytics') ? 'p-0' : location.pathname.includes('/calendar') ? 'p-0' : 'p-6'}`}>
+          <main className="flex-1" style={{ padding: '24px' }}>
             {children || <Outlet />}
           </main>
         </div>

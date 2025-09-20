@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -100,6 +100,65 @@ export default function ProfilePage() {
 
   const [newSkill, setNewSkill] = useState('');
 
+  // Load existing profile data
+  useEffect(() => {
+    const loadProfileData = async () => {
+      if (!user) return;
+
+      try {
+        if (profile?.role === 'engineer') {
+          const { data: engineerProfile, error } = await supabase
+            .from('engineer_profiles')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+
+          if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+            console.error('Error loading engineer profile:', error);
+            return;
+          }
+
+          if (engineerProfile) {
+            setEngineerData({
+              sce_license_number: engineerProfile.sce_license_number || '',
+              specializations: engineerProfile.specializations || [],
+              years_experience: engineerProfile.years_experience || 0,
+              hourly_rate: engineerProfile.hourly_rate || 0,
+              daily_rate: engineerProfile.daily_rate || 0,
+              service_radius: engineerProfile.service_radius || 50,
+              availability_status: engineerProfile.availability_status || 'available',
+              certifications: engineerProfile.certifications || [],
+              portfolio_summary: engineerProfile.portfolio_summary || '',
+            });
+          }
+        } else if (profile?.role === 'client') {
+          const { data: clientProfile, error } = await supabase
+            .from('client_profiles')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+
+          if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+            console.error('Error loading client profile:', error);
+            return;
+          }
+
+          if (clientProfile) {
+            setClientData({
+              client_type: clientProfile.client_type || 'individual',
+              budget_range: clientProfile.budget_range || '',
+              preferred_payment_method: clientProfile.preferred_payment_method || '',
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading profile data:', error);
+      }
+    };
+
+    loadProfileData();
+  }, [user, profile?.role]);
+
   const handleBasicUpdate = async () => {
     setIsLoading(true);
     try {
@@ -130,6 +189,8 @@ export default function ProfilePage() {
           .upsert({
             user_id: user.id,
             ...engineerData,
+          }, {
+            onConflict: 'user_id'
           });
         if (error) throw error;
       } else if (profile?.role === 'client') {
@@ -138,6 +199,8 @@ export default function ProfilePage() {
           .upsert({
             user_id: user.id,
             ...clientData,
+          }, {
+            onConflict: 'user_id'
           });
         if (error) throw error;
       }
