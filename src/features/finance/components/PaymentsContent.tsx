@@ -85,14 +85,12 @@ export function PaymentsContent() {
       {/* Header */}
       <div className="bg-background p-0">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold text-foreground">Finance</h1>
-              <p className="text-sm text-muted-foreground">Manage your payments and financial transactions</p>
-            </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-primary" />
+              Finance
+            </h1>
+            <p className="text-sm text-muted-foreground">Manage your payments and financial transactions</p>
           </div>
         </div>
       </div>

@@ -65,7 +65,7 @@ export function AppLayout({
           </header>
 
           {/* Main Content */}
-          <main className="flex-1" style={{ padding: '24px' }}>
+          <main className="flex-1" style={{ padding: location.pathname.includes('/messaging') ? '0px' : '24px' }}>
             {children || <Outlet />}
           </main>
         </div>

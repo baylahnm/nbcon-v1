@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { MessagingPage } from '@/pages/messaging/MessagingPage';
 import { 
   Users, 
   UserPlus, 
@@ -40,8 +41,8 @@ export default function MyNetwork() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Users className="h-8 w-8 text-primary" />
+        <h1 className="text-xl font-bold flex items-center gap-2">
+          <Users className="h-5 w-5 text-primary" />
           My Network
         </h1>
         <p className="text-muted-foreground">
@@ -89,6 +90,13 @@ export default function MyNetwork() {
                 <Mail className="h-4 w-4" />
                 Newsletters
               </TabsTrigger>
+              <TabsTrigger
+                value="messaging"
+                className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
+              >
+                <MessageSquare className="h-4 w-4" />
+                Messaging
+              </TabsTrigger>
             </TabsList>
           </ScrollArea>
         </div>
@@ -118,6 +126,9 @@ export default function MyNetwork() {
           {/* Newsletters Tab */}
           <TabsContent value="newsletters" className="mt-0">
             <NewslettersTab />
+          </TabsContent>
+          <TabsContent value="messaging" className="mt-0">
+            <MessagingPage />
           </TabsContent>
         </div>
       </Tabs>
@@ -150,9 +161,6 @@ function MyFeedTab() {
           <Button variant="outline" size="icon">
             <Settings className="h-4 w-4" />
           </Button>
-          <Avatar className="h-8 w-8">
-            <AvatarFallback>NB</AvatarFallback>
-          </Avatar>
         </div>
 
         {/* Stories */}
@@ -440,7 +448,7 @@ function FollowingTab() {
           <Card key={engineer.id}>
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
-                <Avatar className="h-16 w-16">
+                <Avatar className="h-16 w-16 border-2 border-border">
                   <AvatarImage src={engineer.avatar} />
                   <AvatarFallback className="bg-gradient-primary text-primary-foreground">{engineer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>

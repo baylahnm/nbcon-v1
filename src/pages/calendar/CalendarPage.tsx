@@ -88,7 +88,7 @@ export default function CalendarPage() {
     >
       {/* Header Section */}
       <div 
-        className="p-6 border-b"
+        className="p-0 mb-4 border-b"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
@@ -96,15 +96,15 @@ export default function CalendarPage() {
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Calendar className="h-6 w-6" />
+            <h1 className="text-xl font-bold flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
               Calendar
             </h1>
             <p className="text-muted-foreground">Manage your engineering projects and milestones</p>
           </div>
         </div>
         
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-4 mb-4">
           <div className="flex items-center gap-4">
             <div className="text-lg font-medium">
               {formatDate(currentDate)}
@@ -171,14 +171,13 @@ export default function CalendarPage() {
 
       {/* Search and Filter Section */}
       <div 
-        className="p-6 border-b"
+        className="p-0 border-b"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
-          borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`,
-          paddingBottom: '44px'
+          borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 mb-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />

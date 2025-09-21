@@ -72,7 +72,7 @@ const bottomMenuItems = [{
   url: '/network',
   icon: Users
 }, {
-  title: 'Payments',
+  title: 'Finance',
   url: '/client/payments',
   icon: DollarSign
 }, {
@@ -185,7 +185,7 @@ export function AppSidebar() {
               {/* Special Create Job button for clients */}
               {profile?.role === 'client' && <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink to="/client/jobs/create" className="bg-primary/10 text-primary border border-primary/20 transition-all duration-200 hover:bg-primary/20">
+                    <NavLink to="/client/jobs/create" className="bg-accent text-accent-foreground border border-border transition-all duration-200 hover:bg-accent/80">
                       <Plus className="mr-3 h-4 w-4 flex-shrink-0" />
                       {!collapsed && <span>Post New Job</span>}
                     </NavLink>

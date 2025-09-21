@@ -6,7 +6,7 @@ import {
   ArrowDownRight, Target, Shield, Bell, Upload, UserCheck, Navigation,
   CreditCard, Building2, Smartphone, Settings, Eye
 } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ export function DashboardContent() {
   const [mapCenter, setMapCenter] = useState([24.7136, 46.6753]); // Riyadh
   const [activeTab, setActiveTab] = useState("overview");
   const [engineerSpecializations, setEngineerSpecializations] = useState<string[]>([]);
+  const [revenueView, setRevenueView] = useState<'monthly' | 'yearly'>('monthly');
   const { profile, user } = useAuthStore();
 
   // Load engineer specializations
@@ -144,7 +145,9 @@ export function DashboardContent() {
   // Financial data
   const financialData = {
     monthlyRevenue: "594,900 SAR",
+    yearlyRevenue: "5,200,000 SAR",
     growth: "+22%",
+    yearlyGrowth: "+27%",
     totalEscrow: "280,000 SAR",
     availableEarnings: "156,750 SAR",
     pendingRelease: "123,250 SAR",
@@ -156,18 +159,31 @@ export function DashboardContent() {
 
   // Project status data for charts
   const projectStatusData = [
-    { name: 'In Progress', value: 3, color: '#3b82f6' },
+    { name: 'All Jobs', value: 12, color: '#6b7280' },
+    { name: 'Draft', value: 2, color: '#9ca3af' },
+    { name: 'Open', value: 3, color: '#3b82f6' },
+    { name: 'Quoted', value: 2, color: '#8b5cf6' },
+    { name: 'In Progress', value: 3, color: '#f59e0b' },
     { name: 'Completed', value: 4, color: '#10b981' },
-    { name: 'On Hold', value: 2, color: '#f59e0b' },
     { name: 'Cancelled', value: 1, color: '#ef4444' }
   ];
 
   // Monthly revenue trend data
-  const revenueTrendData = [
+  const monthlyRevenueData = [
     { month: 'Oct', revenue: 415000 },
     { month: 'Nov', revenue: 487000 },
     { month: 'Dec', revenue: 594900 }
   ];
+
+  // Yearly revenue trend data
+  const yearlyRevenueData = [
+    { year: '2021', revenue: 3200000 },
+    { year: '2022', revenue: 4100000 },
+    { year: '2023', revenue: 5200000 }
+  ];
+
+  // Current revenue data based on view
+  const revenueTrendData = revenueView === 'monthly' ? monthlyRevenueData : yearlyRevenueData;
 
   // Escrow breakdown data
   const escrowData = [
@@ -375,14 +391,14 @@ export function DashboardContent() {
   return (
     <div className="flex-1 bg-background min-h-screen">
       <div className="p-0" style={{ padding: '0px' }}>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto">
+        <div className="space-y-4 max-w mx-auto">
           
           {/* Row 1: Header & Search */}
-          
-          {/* Welcome Header */}
-          <div className="lg:col-span-8">
-            <Card>
-              <CardContent className="p-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+           {/* Welcome Header */}
+           <div className="flex-1 lg:w-2/3">
+             <Card className="h-full">
+               <CardContent className="p-4 flex flex-col h-full">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -397,20 +413,16 @@ export function DashboardContent() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm text-muted-foreground">Current Projects</div>
-                    <div className="text-2xl font-bold text-primary">{projects.length}</div>
-                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Quick Search */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-4">
+           {/* Quick Search */}
+           <div className="lg:w-1/3">
+             <Card className="h-full">
+               <CardContent className="p-4 flex flex-col h-full">
+                <div className="space-y-4 flex-1">
                   <div>
                     <h3 className="text-lg font-semibold text-foreground mb-2">Quick Search</h3>
                     <div className="relative">
@@ -435,19 +447,20 @@ export function DashboardContent() {
               </CardContent>
             </Card>
           </div>
+          </div>
 
           {/* Row 2: Project Overview */}
-          
-          {/* Active Projects Card */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  Active Projects
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+          <div className="flex flex-col lg:flex-row gap-4">
+           {/* Active Projects Card */}
+           <div className="lg:w-1/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <BarChart3 className="w-5 h-5" />
+                   Active Projects
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="text-center mb-4">
                   <div className="text-3xl font-bold text-primary">{projects.length}</div>
                   <p className="text-sm text-muted-foreground">Total Active Projects</p>
@@ -489,119 +502,152 @@ export function DashboardContent() {
             </Card>
           </div>
 
-          {/* Project Progress */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  Current Project
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+           {/* Current Projects */}
+           <div className="lg:w-2/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="px-4 pt-4 pb-0">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <Target className="w-5 h-5" />
+                   Current Projects
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-4">
-                  <div>
-                    <h3 className="font-semibold text-foreground">{projects[0].name}</h3>
-                    <p className="text-sm text-muted-foreground">{projects[0].client}</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progress</span>
-                      <span className="font-medium">{projects[0].progress}%</span>
-                    </div>
-                    <Progress value={projects[0].progress} className="h-2" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Value</span>
-                      <p className="font-medium text-success">{projects[0].value}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Due Date</span>
-                      <p className="font-medium">{projects[0].dueDate}</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Project Status Breakdown */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="w-5 h-5" />
-                  Status Breakdown
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-32 mb-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={projectStatusData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={20}
-                        outerRadius={50}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        {projectStatusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="space-y-3">
-                  {projectStatusData.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                        <span className="text-sm">{item.name}</span>
+                  {projects.slice(0, 3).map((project, index) => (
+                    <div key={project.id} className="space-y-4">
+                      <div className="mt-2">
+                        <h3 className="font-semibold text-foreground">{project.name}</h3>
+                        <p className="text-sm text-muted-foreground">{project.client}</p>
                       </div>
-                      <div className="text-right">
-                        <div className="font-medium">{item.value}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {Math.round((item.value / projectStatusData.reduce((sum, item) => sum + item.value, 0)) * 100)}%
+                      
+                      <div className="space-y-2 mt-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Progress</span>
+                          <span className="font-medium">{project.progress}%</span>
+                        </div>
+                        <Progress value={project.progress} className="h-2" />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Value</span>
+                          <p className="font-medium text-success">{project.value}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Due Date</span>
+                          <p className="font-medium">{project.dueDate}</p>
                         </div>
                       </div>
+                      
+                      {index < 2 && <hr className="border-border" />}
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
           </div>
+          </div>
 
-          {/* Row 3: Jobs & Location */}
-          
-          {/* Nearby Jobs Map */}
-          <div className="lg:col-span-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  Nearby Jobs (50km radius)
+          {/* Row 3: Job Recommendations & Browse Jobs */}
+          <div className="flex gap-4">
+             {/* AI Job Recommendations */}
+             <div className="flex-1">
+               <Card className="h-full flex flex-col">
+                 <CardHeader className="p-4">
+                   <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                     <Briefcase className="w-5 h-5" />
+                     AI Job Recommendations
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent className="flex-1 flex flex-col p-4">
+                  <div className="space-y-3 flex-1">
+                    {jobRecommendations.map((job) => (
+                      <div key={job.id} className="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div className="flex items-start justify-between mb-0">
+                          <h4 className="font-medium text-foreground text-sm">{job.title}</h4>
+                          <Badge variant="secondary" className="text-xs">
+                            {job.match}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">{job.company}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium text-success">{job.salary.split(' - ')[0]}</span>
+                          <span className="text-xs text-muted-foreground">{job.postedAt}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Button variant="outline" className="w-full mt-3">
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    View All Jobs
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+             {/* Browse Jobs */}
+             <div className="flex-1">
+               <Card className="h-full flex flex-col">
+                 <CardHeader className="p-4">
+                <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                  <Navigation className="w-5 h-5" />
+                  Available Jobs
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="relative h-64 bg-gradient-to-br from-blue-50 to-green-50 rounded-lg border border-border overflow-hidden">
-                  {/* Map Background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-green-50 to-blue-50"></div>
-                  
-                  {/* Grid Pattern */}
-                  <div className="absolute inset-0 opacity-20" style={{
-                    backgroundImage: `
-                      linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '20px 20px'
-                  }}></div>
+                 </CardHeader>
+                 <CardContent className="flex-1 flex flex-col p-4">
+                  <div className="space-y-3 flex-1">
+                    {nearbyJobs.map((job) => (
+                      <div key={job.id} className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Briefcase className="w-5 h-5 text-primary" />
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-medium text-foreground truncate">{job.title}</h4>
+                          <p className="text-xs text-muted-foreground">{job.company}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs font-medium text-success">{job.salary}</span>
+                            <Badge variant="secondary" className="text-xs">{job.type}</Badge>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <MapPin className="w-3 h-3" />
+                          <span>{job.distance}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Button variant="outline" className="w-full mt-3">
+                    <Navigation className="w-4 h-4 mr-2" />
+                    View All Nearby Jobs
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Row 4: Nearby Jobs Map - Full Width */}
+          <div className="w-full">
+           {/* Nearby Jobs Map */}
+           <div className="w-full">
+             <Card>
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <MapPin className="w-5 h-5" />
+                   Nearby Jobs (50km radius)
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4">
+                <div className="relative h-64 rounded-lg border border-border overflow-hidden">
+                  {/* Real Map */}
+                  <iframe
+                    className="absolute inset-0 w-full h-full border-0"
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=46.5,24.4,46.8,24.7&layer=mapnik&marker=24.6,46.6"
+                    title="Nearby Jobs Map"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
 
                   {/* Job Location Markers */}
                   {nearbyJobs.map((job, index) => (
@@ -651,54 +697,20 @@ export function DashboardContent() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Job Recommendations */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Briefcase className="w-5 h-5" />
-                  AI Job Recommendations
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {jobRecommendations.map((job) => (
-                    <div key={job.id} className="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-medium text-foreground text-sm">{job.title}</h4>
-                        <Badge variant="secondary" className="text-xs">
-                          {job.match}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2">{job.company}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-success">{job.salary.split(' - ')[0]}</span>
-                        <span className="text-xs text-muted-foreground">{job.postedAt}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full mt-3">
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  View All Jobs
-                </Button>
-              </CardContent>
-            </Card>
           </div>
 
-          {/* Row 4: Financial Overview */}
-          
-          {/* Invoice Overview */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  Invoice Overview
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+          {/* Row 5: Financial Overview */}
+          <div className="flex flex-col lg:flex-row gap-4">
+           {/* Invoice Overview */}
+           <div className="lg:w-1/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <FileText className="w-5 h-5" />
+                   Invoice Overview
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-foreground">{financialData.totalInvoices}</div>
@@ -750,45 +762,88 @@ export function DashboardContent() {
             </Card>
           </div>
 
-          {/* Monthly Revenue */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  Monthly Revenue
-                </CardTitle>
+           {/* Monthly Revenue */}
+           <div className="lg:w-1/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="p-4">
+                 <div className="flex items-center justify-between">
+                   <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                     <TrendingUp className="w-5 h-5" />
+                     {revenueView === 'monthly' ? 'Monthly Revenue' : 'Yearly Revenue'}
+                   </CardTitle>
+                   <div className="flex bg-muted rounded-lg p-1">
+                     <Button
+                       variant={revenueView === 'monthly' ? 'default' : 'ghost'}
+                       size="sm"
+                       onClick={() => setRevenueView('monthly')}
+                       className="h-7 px-3 text-xs"
+                     >
+                       Monthly
+                     </Button>
+                     <Button
+                       variant={revenueView === 'yearly' ? 'default' : 'ghost'}
+                       size="sm"
+                       onClick={() => setRevenueView('yearly')}
+                       className="h-7 px-3 text-xs"
+                     >
+                       Yearly
+                     </Button>
+                   </div>
+                 </div>
                 
                 {/* Revenue Trend Chart */}
                 <div className="mt-4 h-20">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={revenueTrendData}>
-                      <Line 
+                    <AreaChart data={revenueTrendData}>
+                      <defs>
+                        <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0.05}/>
+                        </linearGradient>
+                      </defs>
+                      <Area 
                         type="monotone" 
                         dataKey="revenue" 
                         stroke="hsl(var(--success))" 
-                        strokeWidth={3}
-                        dot={{ fill: "hsl(var(--success))", strokeWidth: 2, r: 4 }}
+                        strokeWidth={2}
+                        fill="url(#revenueGradient)"
+                        dot={{ fill: "hsl(var(--success))", strokeWidth: 2, r: 3 }}
                       />
-                    </LineChart>
+                      <XAxis 
+                        dataKey={revenueView === 'monthly' ? 'month' : 'year'} 
+                        axisLine={false} 
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                      />
+                    </AreaChart>
                   </ResponsiveContainer>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4">
-                  <div className="text-3xl font-bold text-success">{financialData.monthlyRevenue}</div>
-                  <p className="text-sm text-muted-foreground">This Month</p>
-                </div>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
+                 <div className="mb-4">
+                   <div className="text-3xl font-bold text-success">
+                     {revenueView === 'monthly' ? financialData.monthlyRevenue : financialData.yearlyRevenue}
+                   </div>
+                   <p className="text-sm text-muted-foreground">
+                     {revenueView === 'monthly' ? 'This Month' : 'This Year'}
+                   </p>
+                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Last Month</span>
-                    <span className="text-sm font-medium">487,300 SAR</span>
+                    <span className="text-sm text-muted-foreground">
+                      {revenueView === 'monthly' ? 'Last Month' : 'Last Year'}
+                    </span>
+                    <span className="text-sm font-medium">
+                      {revenueView === 'monthly' ? '487,300 SAR' : '4,100,000 SAR'}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Growth</span>
                     <div className="flex items-center gap-1">
                       <ArrowUpRight className="w-3 h-3 text-success" />
-                      <span className="text-sm font-medium text-success">{financialData.growth}</span>
+                      <span className="text-sm font-medium text-success">
+                        {revenueView === 'monthly' ? financialData.growth : financialData.yearlyGrowth}
+                      </span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
@@ -800,14 +855,14 @@ export function DashboardContent() {
             </Card>
           </div>
 
-          {/* Escrow & Earnings */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  Escrow & Earnings
-                </CardTitle>
+           {/* Escrow & Earnings */}
+           <div className="lg:w-1/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <Shield className="w-5 h-5" />
+                   Escrow & Earnings
+                 </CardTitle>
                 
                 {/* Escrow Breakdown Chart */}
                 <div className="mt-4 h-20">
@@ -828,13 +883,13 @@ export function DashboardContent() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-2xl font-bold text-info">{financialData.totalEscrow}</div>
-                    <p className="text-sm text-muted-foreground">Total in Escrow</p>
-                  </div>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
+                 <div className="space-y-4">
+                   <div>
+                     <div className="text-2xl font-bold text-info">{financialData.totalEscrow}</div>
+                     <p className="text-sm text-muted-foreground">Total in Escrow</p>
+                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Available Earnings</span>
@@ -846,26 +901,27 @@ export function DashboardContent() {
                     </div>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full mt-3">
+                <Button variant="outline" className="w-full mt-auto">
                   <DollarSign className="w-4 h-4 mr-2" />
                   Request Payout
                 </Button>
               </CardContent>
             </Card>
           </div>
+          </div>
 
-          {/* Row 5: Activity & Management */}
-          
-          {/* Activity & Alerts */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="w-5 h-5" />
-                  Activity & Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+          {/* Row 6: Activity & Management */}
+          <div className="flex flex-col lg:flex-row gap-4">
+           {/* Activity & Alerts */}
+           <div className="lg:w-1/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <Bell className="w-5 h-5" />
+                   Activity & Alerts
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-3">
                   {activities.map((activity) => (
                     <div key={activity.id} className="flex items-start gap-3 p-3 border border-border rounded-lg">
@@ -877,7 +933,7 @@ export function DashboardContent() {
                     </div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-3">
+                <Button variant="outline" className="w-full mt-4" style={{ marginTop: 'auto' }}>
                   <Activity className="w-4 h-4 mr-2" />
                   View All Activity
                 </Button>
@@ -885,16 +941,16 @@ export function DashboardContent() {
             </Card>
           </div>
 
-          {/* Next Milestones Due */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5" />
-                  Next Milestones Due
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+           {/* Next Milestones Due */}
+           <div className="lg:w-1/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <Target className="w-5 h-5" />
+                   Next Milestones Due
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-3">
                   {milestonesDue.map((milestone) => (
                     <div key={milestone.id} className="p-3 border border-border rounded-lg">
@@ -912,7 +968,7 @@ export function DashboardContent() {
                     </div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-3">
+                <Button variant="outline" className="w-full mt-auto mt-4">
                   <Target className="w-4 h-4 mr-2" />
                   View All Milestones
                 </Button>
@@ -920,16 +976,16 @@ export function DashboardContent() {
             </Card>
           </div>
 
-          {/* My Tasks */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  My Tasks
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+           {/* My Tasks */}
+           <div className="lg:w-1/3">
+             <Card className="h-full flex flex-col">
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <CheckCircle className="w-5 h-5" />
+                   My Tasks
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-3">
                   {myTasks.map((task) => (
                     <div key={task.id} className="p-3 border border-border rounded-lg">
@@ -949,67 +1005,27 @@ export function DashboardContent() {
                     </div>
                   ))}
                 </div>
-                <Button variant="outline" className="w-full mt-3">
+                <Button variant="outline" className="w-full mt-auto">
                   <CheckCircle className="w-4 h-4 mr-2" />
                   View All Tasks
                 </Button>
               </CardContent>
             </Card>
           </div>
-
-          {/* Row 6: Quick Actions */}
-          
-          {/* Browse Jobs */}
-          <div className="lg:col-span-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Navigation className="w-5 h-5" />
-                  Browse Jobs
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {nearbyJobs.map((job) => (
-                    <div key={job.id} className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Briefcase className="w-5 h-5 text-primary" />
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-foreground truncate">{job.title}</h4>
-                        <p className="text-xs text-muted-foreground">{job.company}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs font-medium text-success">{job.salary}</span>
-                          <Badge variant="secondary" className="text-xs">{job.type}</Badge>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <MapPin className="w-3 h-3" />
-                        <span>{job.distance}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full mt-3">
-                  <Navigation className="w-4 h-4 mr-2" />
-                  View All Nearby Jobs
-                </Button>
-              </CardContent>
-            </Card>
           </div>
 
-          {/* Quick Actions */}
-          <div className="lg:col-span-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Plus className="w-5 h-5" />
-                  Quick Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+          {/* Row 7: Quick Actions */}
+          <div className="w-full">
+           {/* Quick Actions */}
+           <div className="w-full">
+             <Card>
+               <CardHeader className="p-4">
+                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                   <Plus className="w-5 h-5" />
+                   Quick Actions
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="p-4">
                 <div className="grid grid-cols-1 gap-3">
                   
                   {/* Browse Jobs */}
@@ -1056,9 +1072,32 @@ export function DashboardContent() {
                     </div>
                   </Button>
 
+                  {/* Settings */}
+                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
+                    <div className="w-10 h-10 bg-muted/10 rounded-lg flex items-center justify-center">
+                      <Settings className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-medium">Settings</p>
+                      <p className="text-xs text-muted-foreground">Account preferences</p>
+                    </div>
+                  </Button>
+
+                  {/* Profile */}
+                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <User className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-medium">Profile</p>
+                      <p className="text-xs text-muted-foreground">Manage your profile</p>
+                    </div>
+                  </Button>
+
                 </div>
               </CardContent>
             </Card>
+          </div>
           </div>
 
         </div>

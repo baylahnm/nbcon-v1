@@ -26,7 +26,7 @@ export default function JobDetails(){
   return (
     <main className="container mx-auto p-0 text-[var(--fg)]">
       <header className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Job Details</h1>
+        <h1 className="text-xl font-bold">Job Details</h1>
         <Link to={-1 as unknown as string} className="text-sm inline-flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>

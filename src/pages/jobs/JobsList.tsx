@@ -10,10 +10,12 @@ import {
 } from '@/components/ui/tabs';
 import { 
   Briefcase,
-  Plus
+  Plus,
+  Brain
 } from 'lucide-react';
 import KanbanBoard from '@/components/jobs/KanbanBoard';
 import JobListings from '@/components/jobs/JobListings';
+import { AIJobRecommendationsContent } from '@/components/jobs/AIJobRecommendationsContent';
 
 export default function JobsList() {
   const navigate = useNavigate();
@@ -25,8 +27,8 @@ export default function JobsList() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Briefcase className="h-8 w-8 text-primary" />
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <Briefcase className="h-5 w-5 text-primary" />
             {profile?.role === 'client' ? 'My Jobs' : 'Jobs'}
           </h1>
           <p className="text-muted-foreground">
@@ -55,6 +57,10 @@ export default function JobsList() {
             <TabsTrigger value="available" onClick={() => setActiveTab('available')}>
               Available Jobs
             </TabsTrigger>
+            <TabsTrigger value="ai-recommendations" onClick={() => setActiveTab('ai-recommendations')}>
+              <Brain className="w-4 h-4 mr-2" />
+              AI Job Recommendations
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="my-jobs" className="mt-6">
@@ -63,6 +69,10 @@ export default function JobsList() {
 
           <TabsContent value="available" className="mt-6">
             <JobListings />
+          </TabsContent>
+
+          <TabsContent value="ai-recommendations" className="mt-6">
+            <AIJobRecommendationsContent />
           </TabsContent>
         </Tabs>
       )}

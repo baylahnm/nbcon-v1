@@ -11,7 +11,7 @@ export default function NotFound() {
       <Card className="max-w-md w-full text-center border-0 shadow-large">
         <CardContent className="p-8">
           <div className="text-6xl font-bold text-primary mb-4">404</div>
-          <h1 className="text-2xl font-bold mb-2">Page Not Found</h1>
+          <h1 className="text-xl font-bold mb-2">Page Not Found</h1>
           <p className="text-muted-foreground mb-6">
             The page you're looking for doesn't exist or has been moved.
           </p>
