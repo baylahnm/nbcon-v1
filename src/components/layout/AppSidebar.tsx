@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuthStore } from '@/stores/auth';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 const engineerMenuItems = [{
   title: 'Dashboard',
@@ -32,6 +32,10 @@ const engineerMenuItems = [{
   title: 'Messages',
   url: '/engineer/messages',
   icon: MessageSquare
+}, {
+  title: 'AI Assistant',
+  url: '/ai',
+  icon: Bot
 }];
 const clientMenuItems = [{
   title: 'Dashboard',
@@ -53,6 +57,10 @@ const clientMenuItems = [{
   title: 'Messages',
   url: '/client/messages',
   icon: MessageSquare
+}, {
+  title: 'AI Assistant',
+  url: '/ai',
+  icon: Bot
 }];
 const enterpriseMenuItems = [{
   title: 'Dashboard',
@@ -62,6 +70,10 @@ const enterpriseMenuItems = [{
   title: 'Messages',
   url: '/enterprise/messages',
   icon: MessageSquare
+}, {
+  title: 'AI Assistant',
+  url: '/ai',
+  icon: Bot
 }];
 const bottomMenuItems = [{
   title: 'Profile',
@@ -71,6 +83,10 @@ const bottomMenuItems = [{
   title: 'My Network',
   url: '/network',
   icon: Users
+}, {
+  title: 'Learning',
+  url: '/learning',
+  icon: BookOpen
 }, {
   title: 'Finance',
   url: '/client/payments',
@@ -185,7 +201,7 @@ export function AppSidebar() {
               {/* Special Create Job button for clients */}
               {profile?.role === 'client' && <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink to="/client/jobs/create" className="bg-accent text-accent-foreground border border-border transition-all duration-200 hover:bg-accent/80">
+                    <NavLink to="/client/jobs/create" className="bg-accent text-accent-foreground border border-sidebar-border transition-all duration-200 hover:bg-accent/80">
                       <Plus className="mr-3 h-4 w-4 flex-shrink-0" />
                       {!collapsed && <span>Post New Job</span>}
                     </NavLink>

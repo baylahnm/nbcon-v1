@@ -35,11 +35,11 @@ const formatDate = (date: Date) => {
 };
 
 const paymentTypeColors = {
-  invoice: "bg-blue-100 text-blue-700 border-blue-200",
-  milestone: "bg-green-100 text-green-700 border-green-200",
-  escrow: "bg-purple-100 text-purple-700 border-purple-200",
-  payout: "bg-teal-100 text-teal-700 border-teal-200",
-  refund: "bg-orange-100 text-orange-700 border-orange-200"
+  invoice: "bg-info/10 text-info border-info/20",
+  milestone: "bg-success/10 text-success border-success/20",
+  escrow: "bg-primary/10 text-primary border-primary/20",
+  payout: "bg-info/10 text-info border-info/20",
+  refund: "bg-warning/10 text-warning border-warning/20"
 };
 
 const paymentStatusColors = {
@@ -164,7 +164,7 @@ export function PaymentsOverview() {
             <CardContent>
               <div className="space-y-4">
                 {recentPayments.map((payment) => (
-                  <div key={payment.id} className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div key={payment.id} className="flex items-center justify-between p-4 border border-sidebar-border rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="flex items-center gap-4">
                       <Avatar className="w-10 h-10">
                         <AvatarImage src={payment.client.avatar} />
@@ -240,7 +240,7 @@ export function PaymentsOverview() {
               <CardTitle>Payment Methods</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-info/10 rounded-lg flex items-center justify-center">
                     <DollarSign className="w-4 h-4 text-info" />
@@ -255,7 +255,7 @@ export function PaymentsOverview() {
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-success/10 rounded-lg flex items-center justify-center">
                     <DollarSign className="w-4 h-4 text-success" />

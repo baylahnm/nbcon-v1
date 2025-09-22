@@ -286,7 +286,7 @@ export function PaymentsReports() {
         <CardContent>
           <div className="space-y-4">
             {topClients.map((client, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg">
+              <div key={index} className="flex items-center justify-between p-4 border border-sidebar-border rounded-lg">
                 <div className="flex items-center gap-4">
                   <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-sm font-medium">
                     {index + 1}

@@ -16,7 +16,7 @@ interface KPICardProps {
 }
 
 const variantStyles = {
-  default: "border-border",
+  default: "border-sidebar-border",
   primary: "border-primary/20 bg-primary/5",
   accent: "border-accent/20 bg-accent/5",
   success: "border-success/20 bg-success/5",

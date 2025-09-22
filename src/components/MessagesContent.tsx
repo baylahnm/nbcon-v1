@@ -311,10 +311,10 @@ export function MessagesContent() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "online": return "bg-green-500";
-      case "away": return "bg-yellow-500";
-      case "offline": return "bg-gray-400";
-      default: return "bg-gray-400";
+      case "online": return "bg-success";
+      case "away": return "bg-warning";
+      case "offline": return "bg-muted";
+      default: return "bg-muted";
     }
   };
 
@@ -337,9 +337,9 @@ export function MessagesContent() {
   return (
     <div className="flex-1 flex h-screen overflow-hidden">
       {/* Conversations Sidebar */}
-      <div className={`${isCollapsed ? 'w-20' : 'w-80'} bg-white border-r border-gray-200 flex flex-col transition-all duration-300`}>
+      <div className={`${isCollapsed ? 'w-20' : 'w-80'} bg-background flex flex-col transition-all duration-300`}>
         {/* Header */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center justify-between mb-4">
             {!isCollapsed && (
               <h1 className="text-xl font-bold flex items-center gap-2">
@@ -417,13 +417,13 @@ export function MessagesContent() {
 
         {/* Conversations List */}
         <ScrollArea className="flex-1">
-          <div className={`${isCollapsed ? 'p-1' : 'p-2'} space-y-1`}>
+          <div className={`${isCollapsed ? 'p-1' : 'p-6'} space-y-1`}>
             {filteredConversations.map((conversation) => (
               <div
                 key={conversation.id}
                 className={`${isCollapsed ? 'p-2' : 'p-3'} rounded-lg cursor-pointer transition-colors ${
                   selectedConversation.id === conversation.id
-                    ? 'bg-primary/10 border border-primary/20'
+                    ? 'bg-primary/10 border border-sidebar-border'
                     : 'hover:bg-muted'
                 }`}
                 onClick={() => setSelectedConversation(conversation)}
@@ -442,7 +442,7 @@ export function MessagesContent() {
                           )}
                         </AvatarFallback>
                       </Avatar>
-                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor(conversation.status)}`} />
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background ${getStatusColor(conversation.status)}`} />
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -496,7 +496,7 @@ export function MessagesContent() {
                         )}
                       </AvatarFallback>
                     </Avatar>
-                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor(conversation.status)}`} />
+                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background ${getStatusColor(conversation.status)}`} />
                     {conversation.unreadCount > 0 && (
                       <Badge className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs min-w-4 h-4 rounded-full flex items-center justify-center p-0">
                         {conversation.unreadCount > 9 ? '9+' : conversation.unreadCount}
@@ -514,9 +514,9 @@ export function MessagesContent() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col border-l border-sidebar-border">
         {/* Chat Header */}
-        <div className="p-4 border-b border-gray-200 bg-white">
+         <div className="p-6 border-b border-sidebar-border bg-background">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10">
@@ -624,7 +624,7 @@ export function MessagesContent() {
                     <div className={`rounded-lg px-4 py-2 ${
                       isCurrentUser 
                         ? 'bg-primary text-primary-foreground' 
-                        : 'bg-background border border-border'
+                        : 'bg-background border border-sidebar-border'
                     }`}>
                       {message.type === "file" ? (
                         <div className="flex items-center gap-3">
@@ -674,7 +674,7 @@ export function MessagesContent() {
         </ScrollArea>
 
         {/* Message Input */}
-        <div className="p-4 bg-background border-t border-border">
+        <div className="p-4 bg-background border-t border-sidebar-border">
           <div className="flex items-end gap-3 w-full max-w-full mx-auto">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
@@ -724,7 +724,7 @@ export function MessagesContent() {
       </div>
 
       {/* Participants Sidebar (Optional) */}
-      <div className="w-64 bg-background border-l border-border p-4 hidden xl:block">
+      <div className="w-64 bg-background border-l border-sidebar-border p-6 hidden xl:block">
         <h3 className="font-medium mb-4">
           {selectedConversation.type === "project" ? "Project Team" : "Participants"}
         </h3>

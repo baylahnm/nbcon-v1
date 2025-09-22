@@ -610,6 +610,20 @@ All colors MUST be HSL.
     border-color: hsl(var(--sidebar-border)) !important;
   }
 
+  /* Global unified border styling - All themes */
+  .light .border-b,
+  .dark .border-b,
+  .wazeer .border-b,
+  .sunset .border-b,
+  .abstract .border-b,
+  .dotted-indigo .border-b,
+  .lagoon .border-b,
+  .dark-nature .border-b,
+  .full-gradient .border-b,
+  .sea-purple .border-b {
+    border-bottom-color: hsl(var(--sidebar-border)) !important;
+  }
+
   /* Sidebar main group bottom border - All themes */
   .light .sidebar-main-group,
   .dark .sidebar-main-group,
@@ -682,14 +696,14 @@ All colors MUST be HSL.
   .wazeer .text-sidebar-accent-foreground,
   .wazeer .hover\\:bg-sidebar-accent:hover,
   .wazeer .hover\\:text-sidebar-accent-foreground:hover {
-    color: #ffffff !important;
+    color: hsl(var(--sidebar-accent-foreground)) !important;
   }
 
   .wazeer .bg-sidebar-accent svg,
   .wazeer .text-sidebar-accent-foreground svg,
   .wazeer .hover\\:bg-sidebar-accent:hover svg,
   .wazeer .hover\\:text-sidebar-accent-foreground:hover svg {
-    color: #ffffff !important;
+    color: hsl(var(--sidebar-accent-foreground)) !important;
   }
 
   /* wazeer theme specific selected sidebar menu button text and icons */
@@ -697,14 +711,14 @@ All colors MUST be HSL.
   .wazeer [data-active="true"].text-sidebar-accent-foreground,
   .wazeer [data-active="true"] .bg-sidebar-accent,
   .wazeer [data-active="true"] .text-sidebar-accent-foreground {
-    color: #ffffff !important;
+    color: hsl(var(--sidebar-accent-foreground)) !important;
   }
 
   .wazeer [data-active="true"].bg-sidebar-accent svg,
   .wazeer [data-active="true"].text-sidebar-accent-foreground svg,
   .wazeer [data-active="true"] .bg-sidebar-accent svg,
   .wazeer [data-active="true"] .text-sidebar-accent-foreground svg {
-    color: #ffffff !important;
+    color: hsl(var(--sidebar-accent-foreground)) !important;
   }
 
   /* Jobs details button - All themes */
@@ -1579,6 +1593,11 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
+  }
+
+  /* Global border-bottom styling using sidebar border color */
+  .border-b {
+    border-bottom-color: hsl(var(--sidebar-border));
   }
 
   body {

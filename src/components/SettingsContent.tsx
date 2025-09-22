@@ -325,7 +325,7 @@ export function SettingsContent() {
   ];
 
   return (
-    <div className="flex-1 p-0 overflow-auto">
+    <div className="flex-1 p-6 overflow-auto">
       <div className="w-full space-y-6">
         {/* Header */}
         <div className="space-y-2">
@@ -1228,7 +1228,7 @@ export function SettingsContent() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {securityLogs.map((log) => (
-                  <div key={log.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={log.id} className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full ${log.success ? "bg-success" : "bg-destructive"}`} />
                       <div>
@@ -1417,7 +1417,7 @@ export function SettingsContent() {
                 const hsl = `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
                 onChange(hsl);
               }}
-              className="w-8 h-8 rounded border border-border cursor-pointer"
+              className="w-8 h-8 rounded border border-sidebar-border cursor-pointer"
               title={`Click to change color (${displayValue})`}
             />
           )}

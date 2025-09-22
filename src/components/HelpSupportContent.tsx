@@ -321,7 +321,7 @@ export function HelpSupportContent() {
       case "high": return "bg-destructive/10 text-destructive border-destructive/20";
       case "medium": return "bg-warning/10 text-warning border-warning/20";
       case "low": return "bg-success/10 text-success border-success/20";
-      default: return "bg-muted text-muted-foreground border-border";
+      default: return "bg-muted text-muted-foreground border-sidebar-border";
     }
   };
 
@@ -352,7 +352,7 @@ export function HelpSupportContent() {
   };
 
   return (
-    <div className="flex-1 p-0 overflow-auto">
+    <div className="flex-1 p-6 pb-6 overflow-auto">
       <div className="w-full space-y-6">
         {/* Header */}
         <div className="space-y-2">
@@ -474,7 +474,7 @@ export function HelpSupportContent() {
                   {filteredArticles.map((article) => (
                     <div 
                       key={article.id}
-                      className="flex items-start justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                      className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors border-sidebar-border"
                       onClick={() => setSelectedArticle(article)}
                     >
                       <div className="flex-1">
@@ -555,7 +555,7 @@ export function HelpSupportContent() {
                   ].map((item) => {
                     const Icon = item.icon;
                     return (
-                      <div key={item.step} className="text-center p-4 border rounded-lg">
+                      <div key={item.step} className="text-center p-4 border border-sidebar-border rounded-lg">
                         <div className={`w-12 h-12 rounded-full ${item.color} flex items-center justify-center mx-auto mb-3`}>
                           <Icon className="w-6 h-6" />
                         </div>
@@ -628,7 +628,7 @@ export function HelpSupportContent() {
                   {supportContacts.map((contact, index) => {
                     const Icon = getContactIcon(contact.type);
                     return (
-                      <div key={index} className="flex items-start justify-between p-4 border rounded-lg">
+                      <div key={index} className="flex items-start justify-between p-4 border border-sidebar-border rounded-lg">
                         <div className="flex items-start gap-3">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             contact.type === 'emergency' ? 'bg-destructive/10' : 'bg-primary/10'
@@ -776,7 +776,7 @@ export function HelpSupportContent() {
                     { name: "Payment Dispute Form", type: "PDF", size: "650 KB", downloads: 320, language: "Arabic/English" },
                     { name: "Site Check-in Procedures", type: "PDF", size: "1.2 MB", downloads: 1500, language: "English/Arabic" }
                   ].map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                       <div className="flex items-center gap-3">
                         <FileText className="w-5 h-5 text-info" />
                         <div>
@@ -810,7 +810,7 @@ export function HelpSupportContent() {
                     { title: "Upload Deliverables Guide", duration: "7:45", views: 2600, language: "English" },
                     { title: "Emergency Procedures", duration: "5:30", views: 1800, language: "Arabic/English" }
                   ].map((video, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                       <div className="flex items-center gap-3">
                         <PlayCircle className="w-5 h-5 text-destructive" />
                         <div>
@@ -859,7 +859,7 @@ export function HelpSupportContent() {
                       { date: "2024-12-24", title: "Scheduled maintenance completed successfully", type: "maintenance" },
                       { date: "2024-12-22", title: "SCE verification process streamlined", type: "improvement" }
                     ].map((update, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
+                      <div key={index} className="flex items-center gap-3 p-3 border border-sidebar-border rounded-lg">
                         <div className={`w-2 h-2 rounded-full ${
                           update.type === "improvement" ? "bg-info" :
                           update.type === "feature" ? "bg-success" : "bg-warning"
@@ -885,7 +885,7 @@ export function HelpSupportContent() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border border-sidebar-border rounded-lg">
                     <MessageSquare className="w-8 h-8 text-info mx-auto mb-3" />
                     <h4 className="mb-2">Discussion Forum</h4>
                     <p className="text-sm text-muted-foreground mb-3">Connect with fellow Saudi engineers</p>
@@ -895,7 +895,7 @@ export function HelpSupportContent() {
                     </Button>
                   </div>
 
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border border-sidebar-border rounded-lg">
                     <Calendar className="w-8 h-8 text-success mx-auto mb-3" />
                     <h4 className="mb-2">Webinars</h4>
                     <p className="text-sm text-muted-foreground mb-3">Monthly engineering webinars</p>
@@ -905,7 +905,7 @@ export function HelpSupportContent() {
                     </Button>
                   </div>
 
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border border-sidebar-border rounded-lg">
                     <BookOpen className="w-8 h-8 text-primary mx-auto mb-3" />
                     <h4 className="mb-2">Knowledge Base</h4>
                     <p className="text-sm text-muted-foreground mb-3">Engineering best practices</p>

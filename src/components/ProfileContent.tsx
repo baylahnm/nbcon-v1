@@ -333,14 +333,14 @@ export function ProfileContent() {
       case "verified":
       case "active":
       case "completed":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "bg-success/10 text-success border-success/20";
       case "pending":
       case "ongoing":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "bg-warning/10 text-warning border-warning/20";
       case "expired":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "bg-destructive/10 text-destructive border-destructive/20";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-muted text-muted-foreground border-sidebar-border";
     }
   };
 
@@ -371,7 +371,7 @@ export function ProfileContent() {
   };
 
   return (
-      <div className="flex-1 p-0 overflow-auto">
+      <div className="flex-1 p-6 overflow-auto">
       <div className="max-w mx-auto space-y-6">
         {/* Header */}
         <div>
@@ -886,7 +886,7 @@ export function ProfileContent() {
                 <CardContent>
                   <div className="space-y-4">
                     {profileData.professionalInfo.licenses.map((license) => (
-                      <div key={license.id} className="p-4 border rounded-lg">
+                      <div key={license.id} className="p-4 border border-sidebar-border rounded-lg">
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <h4 className="font-medium">{license.name}</h4>
@@ -923,7 +923,7 @@ export function ProfileContent() {
                 <CardContent>
                   <div className="space-y-4">
                     {profileData.professionalInfo.certifications.map((cert) => (
-                      <div key={cert.id} className="p-4 border rounded-lg">
+                      <div key={cert.id} className="p-4 border border-sidebar-border rounded-lg">
                         <div className="mb-2">
                           <h4 className="font-medium">{cert.name}</h4>
                           <p className="text-sm text-muted-foreground">{cert.issuer}</p>
@@ -1009,7 +1009,7 @@ export function ProfileContent() {
               <CardContent>
                 <div className="space-y-6">
                   {profileData.portfolio.projects.map((project) => (
-                    <div key={project.id} className="p-6 border rounded-lg">
+                    <div key={project.id} className="p-6 border border-sidebar-border rounded-lg">
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
@@ -1051,7 +1051,7 @@ export function ProfileContent() {
                 <CardContent>
                   <div className="space-y-4">
                     {profileData.portfolio.reviews.map((review) => (
-                      <div key={review.id} className="p-4 border rounded-lg">
+                      <div key={review.id} className="p-4 border border-sidebar-border rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             {renderStars(review.rating)}

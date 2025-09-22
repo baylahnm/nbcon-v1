@@ -107,7 +107,7 @@ export function PaymentsSettings() {
         </CardHeader>
         <CardContent className="space-y-4">
           {paymentMethods.map((method) => (
-            <div key={method.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+            <div key={method.id} className="flex items-center justify-between p-4 border border-sidebar-border rounded-lg">
               <div className="flex items-center gap-4">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getPaymentMethodColor(method.type)}`}>
                   {getPaymentMethodIcon(method.type)}

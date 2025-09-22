@@ -123,7 +123,7 @@ export function PaymentsMilestone() {
             <Progress value={progress} className="h-2" />
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div className="flex items-center justify-between pt-4 border-t border-sidebar-border">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
@@ -181,7 +181,7 @@ export function PaymentsMilestone() {
 
           {/* Fees Breakdown */}
           {milestone.fees && (
-            <div className="mt-4 pt-4 border-t border-border">
+            <div className="mt-4 pt-4 border-t border-sidebar-border">
               <div className="text-sm text-muted-foreground">
                 <div className="flex justify-between">
                   <span>Milestone Amount:</span>
@@ -195,7 +195,7 @@ export function PaymentsMilestone() {
                   <span>Processing Fee:</span>
                   <span>-{formatCurrency(milestone.fees.processing)}</span>
                 </div>
-                <div className="flex justify-between font-medium text-foreground pt-2 border-t border-border">
+                <div className="flex justify-between font-medium text-foreground pt-2 border-t border-sidebar-border">
                   <span>You'll Receive:</span>
                   <span>{formatCurrency(milestone.amount - milestone.fees.total)}</span>
                 </div>

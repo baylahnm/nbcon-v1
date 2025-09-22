@@ -371,7 +371,7 @@ export default function CalendarContent() {
           {/* Time Slots */}
           <div className="relative">
             {timeSlots.map(slot => (
-              <div key={slot.hour} className="h-16 border-b border-gray-100"></div>
+              <div key={slot.hour} className="h-16 border-b border-sidebar-border"></div>
             ))}
             
             {/* Events */}
@@ -516,7 +516,7 @@ export default function CalendarContent() {
     <div className="h-full flex flex-col">
       {/* Calendar View */}
       <div 
-        className="flex-1 p-6 overflow-auto"
+        className="flex-1 p-0 overflow-auto"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
         }}

@@ -118,7 +118,7 @@ export function PaymentsRefund() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div className="flex items-center justify-between pt-4 border-t border-sidebar-border">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
@@ -272,7 +272,7 @@ export function PaymentsRefund() {
             />
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div className="flex items-center justify-between pt-4 border-t border-sidebar-border">
             <div className="text-sm text-muted-foreground">
               <p>Processing time: 3-5 business days</p>
               <p>Refunds are processed to the original payment method</p>

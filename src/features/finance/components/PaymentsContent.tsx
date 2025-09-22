@@ -81,7 +81,7 @@ export function PaymentsContent() {
   ];
 
   return (
-    <div className="flex-1 bg-background">
+    <div className="flex-1 bg-background p-6">
       {/* Header */}
       <div className="bg-background p-0">
         <div className="flex items-center justify-between">
@@ -99,7 +99,7 @@ export function PaymentsContent() {
       <div className="p-0 mt-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Tab Navigation */}
-          <TabsList className="h-auto bg-transparent p-0 border-b border-border rounded-none w-full mb-6">
+          <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
             <div className="flex items-center w-full overflow-x-auto">
               {tabs.map((tab) => {
                 const Icon = tab.icon;

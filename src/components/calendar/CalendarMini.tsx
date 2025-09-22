@@ -116,14 +116,14 @@ export default function CalendarMini({
 
   const getEventTypeColor = (type: string) => {
     const colors = {
-      job: 'bg-blue-100 text-blue-800 border-blue-200',
-      milestone: 'bg-green-100 text-green-800 border-green-200',
-      visit: 'bg-orange-100 text-orange-800 border-orange-200',
-      invoice: 'bg-red-100 text-red-800 border-red-200',
-      call: 'bg-purple-100 text-purple-800 border-purple-200',
-      payout: 'bg-teal-100 text-teal-800 border-teal-200'
+      job: 'bg-info/10 text-info border-info/20',
+      milestone: 'bg-success/10 text-success border-success/20',
+      visit: 'bg-warning/10 text-warning border-warning/20',
+      invoice: 'bg-destructive/10 text-destructive border-destructive/20',
+      call: 'bg-primary/10 text-primary border-primary/20',
+      payout: 'bg-info/10 text-info border-info/20'
     };
-    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
+    return colors[type as keyof typeof colors] || 'bg-muted text-muted-foreground border-sidebar-border';
   };
 
   const formatCurrency = (amount: number) => {

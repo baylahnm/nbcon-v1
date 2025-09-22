@@ -1,9 +1,12 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { useAuthStore, initializeAuth } from '@/stores/auth';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Bot } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { AiDrawer } from '@/features/ai/Drawer';
+import { useAiStore } from '@/features/ai/store/useAiStore';
 interface AppLayoutProps {
   children?: ReactNode;
 }
@@ -18,6 +21,16 @@ export function AppLayout({
     isInitialized
   } = useAuthStore();
   const navigate = useNavigate();
+  
+  // AI Drawer state
+  const { drawerOpen, setDrawerOpen } = useAiStore();
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
+
+  // Check if current route is a dashboard route
+  const isDashboardRoute = ['/e', '/c', '/x', '/admin'].some(route => 
+    location.pathname.startsWith(route)
+  );
+
   useEffect(() => {
     const unsubscribe = initializeAuth();
     return unsubscribe;
@@ -50,7 +63,7 @@ export function AppLayout({
         <AppSidebar />
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b">
+          <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-sidebar-border">
             <div className="flex items-center justify-between px-6 py-[12px]">
               <div className="flex items-center gap-3">
                 <SidebarTrigger />
@@ -61,14 +74,36 @@ export function AppLayout({
                   </p>
                 </div>
               </div>
+              
+              {/* AI Button - Only show on dashboard routes */}
+              {isDashboardRoute && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAiDrawerOpen(!isAiDrawerOpen)}
+                  className="flex items-center gap-2"
+                >
+                  <Bot className="w-4 h-4" />
+                  AI
+                </Button>
+              )}
             </div>
           </header>
 
           {/* Main Content */}
-          <main className="flex-1" style={{ padding: location.pathname.includes('/messaging') ? '0px' : '24px' }}>
+          <main className="flex-1 bg-background" style={{ padding: '0px' }}>
             {children || <Outlet />}
           </main>
         </div>
+        
+        {/* AI Drawer - Only show on dashboard routes */}
+        {isDashboardRoute && (
+          <AiDrawer
+            isOpen={isAiDrawerOpen}
+            onClose={() => setIsAiDrawerOpen(false)}
+            onOpenFull={() => navigate('/ai')}
+          />
+        )}
       </div>
     </SidebarProvider>;
 }

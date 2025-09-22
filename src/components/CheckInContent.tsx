@@ -240,10 +240,10 @@ export function CheckInContent() {
 
   const getSafetyLevelColor = (level: string) => {
     switch (level) {
-      case "high": return "bg-red-100 text-red-800 border-red-200";
-      case "medium": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "low": return "bg-green-100 text-green-800 border-green-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
+      case "high": return "bg-destructive/10 text-destructive border-destructive/20";
+      case "medium": return "bg-warning/10 text-warning border-warning/20";
+      case "low": return "bg-success/10 text-success border-success/20";
+      default: return "bg-muted text-muted-foreground border-sidebar-border";
     }
   };
 
@@ -260,7 +260,7 @@ export function CheckInContent() {
   const allSafetyItemsChecked = Object.values(safetyChecklist).every(Boolean);
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="border-b pb-6">
         <div className="flex items-center justify-between">
@@ -290,20 +290,20 @@ export function CheckInContent() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className={`text-2xl font-bold ${isCheckedIn ? 'text-green-600' : 'text-gray-400'}`}>
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
+              <div className={`text-2xl font-bold ${isCheckedIn ? 'text-success' : 'text-muted-foreground'}`}>
                 {isCheckedIn ? 'CHECKED IN' : 'NOT CHECKED IN'}
               </div>
               <p className="text-sm text-muted-foreground">Work Status</p>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-info">
                 {checkInTime ? checkInTime.split(' ')[1] : '--:--:--'}
               </div>
               <p className="text-sm text-muted-foreground">Check-in Time</p>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className={`text-2xl font-bold ${locationPermission === 'granted' ? 'text-green-600' : 'text-red-600'}`}>
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
+              <div className={`text-2xl font-bold ${locationPermission === 'granted' ? 'text-success' : 'text-destructive'}`}>
                 {locationPermission === 'granted' ? 'ENABLED' : 'DISABLED'}
               </div>
               <p className="text-sm text-muted-foreground">Location Services</p>
@@ -479,8 +479,8 @@ export function CheckInContent() {
                   key={key}
                   className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     safetyChecklist[key as keyof typeof safetyChecklist] 
-                      ? 'border-green-200 bg-green-50' 
-                      : 'border-border hover:border-muted-foreground'
+                      ? 'border-success/20 bg-success/10' 
+                      : 'border-sidebar-border hover:border-muted-foreground'
                   }`}
                   onClick={() => setSafetyChecklist(prev => ({
                     ...prev,

@@ -88,7 +88,7 @@ export default function CalendarPage() {
     >
       {/* Header Section */}
       <div 
-        className="p-0 mb-4 border-b"
+        className="p-6 mb-4 border-b"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
@@ -177,7 +177,7 @@ export default function CalendarPage() {
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <div className="flex flex-col lg:flex-row gap-4 mb-4">
+        <div className="flex flex-col lg:flex-row gap-4 mb-4 p-6">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -236,7 +236,7 @@ export default function CalendarPage() {
         
         {/* Right Sidebar - Mini Calendar */}
         <div 
-          className="w-80 p-4 overflow-y-auto border-l"
+          className="w-80 p-6 overflow-y-auto border-l"
           style={{
             backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
             borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`

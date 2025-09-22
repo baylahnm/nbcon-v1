@@ -27,6 +27,8 @@ import ThemePage from "@/pages/settings/ThemePage";
 import HelpPage from "@/pages/support/HelpPage";
 import MyNetwork from "@/pages/network/MyNetwork";
 import CalendarPage from "@/pages/calendar/CalendarPage";
+import LearningPage from "@/pages/learning/LearningPage";
+import AiIndex from "@/routes/ai/Index";
 import PaymentsIndex from "@/routes/c/PaymentsIndex";
 import NotFound from "./pages/NotFound";
 
@@ -111,6 +113,14 @@ const App = () => (
 
           <Route path="/network" element={<AppLayout />}>
             <Route index element={<MyNetwork />} />
+          </Route>
+
+          <Route path="/learning" element={<AppLayout />}>
+            <Route index element={<LearningPage />} />
+          </Route>
+
+          <Route path="/ai" element={<AppLayout />}>
+            <Route index element={<AiIndex />} />
           </Route>
 
           {/* Catch-all route */}

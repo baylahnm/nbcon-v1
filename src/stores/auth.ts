@@ -1,177 +1,250 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { supabase } from '@/integrations/supabase/client';
-import type { User, Session } from '@supabase/supabase-js';
 
-export type UserRole = 'engineer' | 'client' | 'enterprise' | 'admin';
+const STORAGE_KEY = 'nbcon_user';
 
-export interface Profile {
+export interface AuthenticatedUser {
   id: string;
-  user_id: string;
-  role: UserRole;
+  email: string;
+  name: string;
+  role: 'engineer' | 'client' | 'enterprise' | 'admin';
+  isVerified: boolean;
+  sceNumber?: string;
+  company?: string;
+  location: string;
+  phone: string;
+  language: 'ar' | 'en';
+  avatar?: string;
+  email_confirmed_at?: string | null;
+  phone_confirmed_at?: string | null;
+}
+
+export interface EngineerProfileDetails {
+  specializations?: string[];
+  years_experience?: number;
+  hourly_rate?: number;
+  daily_rate?: number;
+  availability_status?: string;
+  sce_license_number?: string;
+}
+
+export interface UserProfile extends AuthenticatedUser {
+  user_id?: string;
   first_name?: string;
   last_name?: string;
-  phone?: string;
-  email?: string;
-  avatar_url?: string;
   bio?: string;
   location_city?: string;
   location_region?: string;
-  preferred_language: string;
-  theme_preference: string;
-  rtl_enabled: boolean;
-  created_at: string;
-  updated_at: string;
-  last_seen_at?: string;
+  avatar_url?: string;
+  preferred_language?: string;
+  theme_preference?: string;
+  rtl_enabled?: boolean;
+  engineer_profiles?: EngineerProfileDetails | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface AuthState {
-  user: User | null;
-  session: Session | null;
-  profile: Profile | null;
+  user: AuthenticatedUser | null;
+  profile: UserProfile | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
   isInitialized: boolean;
-  
-  // Actions
-  setUser: (user: User | null) => void;
-  setSession: (session: Session | null) => void;
-  setProfile: (profile: Profile | null) => void;
+  setUser: (user: AuthenticatedUser | null) => void;
+  setProfile: (profile: UserProfile | null) => void;
+  login: (user: AuthenticatedUser) => void;
+  logout: () => void;
+  signOut: () => Promise<void>;
   setLoading: (loading: boolean) => void;
   setInitialized: (initialized: boolean) => void;
-  signOut: () => Promise<void>;
-  updateProfile: (updates: Partial<Profile>) => Promise<void>;
-  getCurrentProfile: () => Promise<Profile | null>;
+  updateUser: (updates: Partial<AuthenticatedUser>) => void;
 }
+
+const safeLocalStorageSet = (user: AuthenticatedUser | null) => {
+  if (typeof window === 'undefined') return;
+  if (user) {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  } else {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
+};
+
+const createProfileFromUser = (user: AuthenticatedUser): UserProfile => {
+  const nameParts = (user.name || '').trim().split(/\s+/).filter(Boolean);
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(' ')
+    || undefined;
+  const locationParts = (user.location || '').split(',').map(part => part.trim()).filter(Boolean);
+  const city = locationParts[0];
+  const region = locationParts.slice(1).join(', ') || undefined;
+
+  return {
+    ...user,
+    user_id: user.id,
+    first_name: firstName || user.name,
+    last_name: lastName,
+    location_city: city,
+    location_region: region,
+    avatar_url: user.avatar,
+    preferred_language: user.language,
+    theme_preference: 'light',
+    rtl_enabled: false,
+    engineer_profiles: null,
+  };
+};
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      session: null,
       profile: null,
+      isAuthenticated: false,
       isLoading: true,
       isInitialized: false,
 
-      setUser: (user) => set({ user }),
-      
-      setSession: (session) => {
-        set({ session });
-        if (session?.user) {
-          set({ user: session.user });
+      setUser: (user) => {
+        if (user) {
+          const profile = createProfileFromUser(user);
+          set({
+            user,
+            profile,
+            isAuthenticated: true,
+          });
+          safeLocalStorageSet(user);
         } else {
-          set({ user: null, profile: null });
+          set({
+            user: null,
+            profile: null,
+            isAuthenticated: false,
+          });
+          safeLocalStorageSet(null);
         }
       },
-      
+
       setProfile: (profile) => set({ profile }),
-      setLoading: (isLoading) => set({ isLoading }),
-      setInitialized: (isInitialized) => set({ isInitialized }),
+
+      login: (user) => {
+        const profile = createProfileFromUser(user);
+        set({
+          user,
+          profile,
+          isAuthenticated: true,
+          isLoading: false,
+          isInitialized: true,
+        });
+        safeLocalStorageSet(user);
+      },
+
+      logout: () => {
+        set({
+          user: null,
+          profile: null,
+          isAuthenticated: false,
+          isLoading: false,
+          isInitialized: true,
+        });
+        safeLocalStorageSet(null);
+      },
 
       signOut: async () => {
-        try {
-          set({ isLoading: true });
-          await supabase.auth.signOut();
-          set({ user: null, session: null, profile: null });
-        } catch (error) {
-          console.error('Error signing out:', error);
-        } finally {
-          set({ isLoading: false });
-        }
+        get().logout();
       },
 
-      updateProfile: async (updates) => {
-        const { profile, user } = get();
-        if (!profile || !user) return;
+      setLoading: (loading) => set({ isLoading: loading }),
 
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .update(updates)
-            .eq('user_id', user.id)
-            .select()
-            .single();
+      setInitialized: (initialized) => set({ isInitialized: initialized }),
 
-          if (error) throw error;
-          
-          set({ profile: data });
-        } catch (error) {
-          console.error('Error updating profile:', error);
-          throw error;
-        }
-      },
+      updateUser: (updates) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const updatedUser: AuthenticatedUser = { ...currentUser, ...updates };
+        const currentProfile = get().profile;
+        const baseProfile = createProfileFromUser(updatedUser);
+        const updatedProfile: UserProfile = {
+          ...baseProfile,
+          ...currentProfile,
+          ...updates,
+        };
 
-      getCurrentProfile: async () => {
-        const { user } = get();
-        if (!user) return null;
-
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('user_id', user.id)
-            .single();
-
-          if (error) {
-            if (error.code === 'PGRST116') {
-              // No profile found
-              return null;
-            }
-            throw error;
-          }
-
-          set({ profile: data });
-          return data;
-        } catch (error) {
-          console.error('Error fetching profile:', error);
-          return null;
-        }
+        set({
+          user: updatedUser,
+          profile: updatedProfile,
+          isAuthenticated: true,
+        });
+        safeLocalStorageSet(updatedUser);
       },
     }),
     {
       name: 'nbcon-auth-storage',
       partialize: (state) => ({
         user: state.user,
-        session: state.session,
         profile: state.profile,
+        isAuthenticated: state.isAuthenticated,
+        isInitialized: state.isInitialized,
       }),
     }
   )
 );
 
-// Initialize auth state listener
+export const getStoredUser = (): AuthenticatedUser | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) as AuthenticatedUser : null;
+  } catch {
+    return null;
+  }
+};
+
+export const clearStoredUser = (): void => {
+  safeLocalStorageSet(null);
+  if (typeof window !== 'undefined') {
+    window.localStorage.removeItem('nbcon-auth-storage');
+  }
+};
+
+export const isAuthenticated = (): boolean => {
+  const user = getStoredUser();
+  return !!(user && user.isVerified);
+};
+
+export const getUserRole = (): string | null => {
+  const user = getStoredUser();
+  return user?.role || null;
+};
+
+export const requiresAuth = (path: string): boolean => {
+  const publicPaths = ['/', '/home', '/auth', '/auth/email', '/auth/phone', '/auth/verify', '/auth/role', '/auth/profile'];
+  return !publicPaths.includes(path);
+};
+
 export const initializeAuth = () => {
-  const { setSession, setLoading, setInitialized, getCurrentProfile } = useAuthStore.getState();
+  const { setUser, setLoading, setInitialized } = useAuthStore.getState();
 
-  // Set up auth state listener
-  const { data: { subscription } } = supabase.auth.onAuthStateChange(
-    async (event, session) => {
-      setSession(session);
-      
-      if (session?.user) {
-        // Get profile after user is authenticated
-        setTimeout(async () => {
-          await getCurrentProfile();
-          setLoading(false);
-        }, 0);
-      } else {
-        setLoading(false);
-      }
+  const syncFromStorage = () => {
+    const storedUser = getStoredUser();
+    setUser(storedUser);
+    setLoading(false);
+    setInitialized(true);
+  };
+
+  if (typeof window === 'undefined') {
+    syncFromStorage();
+    return () => {};
+  }
+
+  setLoading(true);
+  syncFromStorage();
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === STORAGE_KEY) {
+      syncFromStorage();
     }
-  );
+  };
 
-  // Get initial session
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    setSession(session);
-    if (session?.user) {
-      getCurrentProfile().finally(() => {
-        setLoading(false);
-        setInitialized(true);
-      });
-    } else {
-      setLoading(false);
-      setInitialized(true);
-    }
-  });
+  window.addEventListener('storage', handleStorage);
 
-  return () => subscription.unsubscribe();
+  return () => {
+    window.removeEventListener('storage', handleStorage);
+  };
 };

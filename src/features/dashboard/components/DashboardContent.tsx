@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
+import { ChatComposer } from "@/features/ai/components/ChatComposer";
+import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/stores/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -375,7 +377,7 @@ export function DashboardContent() {
       case 'low':
         return 'bg-success/10 text-success border-success/20';
       default:
-        return 'bg-muted text-muted-foreground border-border';
+        return 'bg-muted text-muted-foreground border-sidebar-border';
     }
   };
 
@@ -389,8 +391,8 @@ export function DashboardContent() {
   };
 
   return (
-    <div className="flex-1 bg-background min-h-screen">
-      <div className="p-0" style={{ padding: '0px' }}>
+    <div className="flex-1 min-h-screen">
+      <div className="p-6">
         <div className="space-y-4 max-w mx-auto">
           
           {/* Row 1: Header & Search */}
@@ -398,8 +400,8 @@ export function DashboardContent() {
            {/* Welcome Header */}
            <div className="flex-1 lg:w-2/3">
              <Card className="h-full">
-               <CardContent className="p-4 flex flex-col h-full">
-                <div className="flex items-center justify-between">
+    <CardContent className="p-4 flex flex-col h-full">
+      <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                       <Home className="w-6 h-6 text-primary" />
@@ -412,41 +414,23 @@ export function DashboardContent() {
                         {getCurrentDate()} • {getRoleDisplayName()}
                       </p>
                     </div>
-                  </div>
+        </div>
                 </div>
+      {/* Inline AI Assistant */}
+      <div className="mt-4">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-sm font-medium">AI Assistant</h3>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/ai">Open</Link>
+          </Button>
+        </div>
+        <ChatComposer isCompact />
+      </div>
               </CardContent>
             </Card>
           </div>
-
-           {/* Quick Search */}
-           <div className="lg:w-1/3">
-             <Card className="h-full">
-               <CardContent className="p-4 flex flex-col h-full">
-                <div className="space-y-4 flex-1">
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">Quick Search</h3>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                      <Input 
-                        placeholder="Search projects, jobs, engineers..."
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Briefcase className="w-4 h-4 mr-2" />
-                      Projects
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Users className="w-4 h-4 mr-2" />
-                      Engineers
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          
+          {/* (moved AI Assistant into header card) */}
           </div>
 
           {/* Row 2: Project Overview */}
@@ -539,7 +523,7 @@ export function DashboardContent() {
                         </div>
                       </div>
                       
-                      {index < 2 && <hr className="border-border" />}
+                      {index < 2 && <hr className="border-sidebar-border" />}
                     </div>
                   ))}
                 </div>
@@ -562,7 +546,7 @@ export function DashboardContent() {
                  <CardContent className="flex-1 flex flex-col p-4">
                   <div className="space-y-3 flex-1">
                     {jobRecommendations.map((job) => (
-                      <div key={job.id} className="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div key={job.id} className="p-3 border border-sidebar-border rounded-lg hover:bg-muted/50 transition-colors">
                         <div className="flex items-start justify-between mb-0">
                           <h4 className="font-medium text-foreground text-sm">{job.title}</h4>
                           <Badge variant="secondary" className="text-xs">
@@ -597,7 +581,7 @@ export function DashboardContent() {
                  <CardContent className="flex-1 flex flex-col p-4">
                   <div className="space-y-3 flex-1">
                     {nearbyJobs.map((job) => (
-                      <div key={job.id} className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div key={job.id} className="flex items-center gap-3 p-3 border border-sidebar-border rounded-lg hover:bg-muted/50 transition-colors">
                         <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                           <Briefcase className="w-5 h-5 text-primary" />
                         </div>
@@ -639,45 +623,70 @@ export function DashboardContent() {
                  </CardTitle>
                </CardHeader>
                <CardContent className="p-4">
-                <div className="relative h-64 rounded-lg border border-border overflow-hidden">
-                  {/* Real Map */}
-                  <iframe
-                    className="absolute inset-0 w-full h-full border-0"
-                    src="https://www.openstreetmap.org/export/embed.html?bbox=46.5,24.4,46.8,24.7&layer=mapnik&marker=24.6,46.6"
-                    title="Nearby Jobs Map"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
+                <div className="flex gap-4">
+                  {/* Map */}
+                  <div className="relative h-64 rounded-lg border border-sidebar-border overflow-hidden flex-1">
+                    {/* Real Map */}
+                    <iframe
+                      className="absolute inset-0 w-full h-full border-0"
+                      src="https://www.openstreetmap.org/export/embed.html?bbox=46.5,24.4,46.8,24.7&layer=mapnik&marker=24.6,46.6"
+                      title="Nearby Jobs Map"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
 
-                  {/* Job Location Markers */}
-                  {nearbyJobs.map((job, index) => (
-                    <div 
-                      key={job.id}
-                      className="absolute w-4 h-4 bg-primary rounded-full border-2 border-background shadow-lg animate-pulse"
-                      style={{
-                        top: `${20 + (index * 25)}%`,
-                        left: `${30 + (index * 20)}%`
-                      }}
-                    >
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-background px-2 py-1 rounded text-xs font-medium shadow-md whitespace-nowrap border border-border">
-                        {job.title.split(' - ')[0]} ({job.distance})
+                    {/* Job Location Markers */}
+                    {nearbyJobs.map((job, index) => (
+                      <div 
+                        key={job.id}
+                        className="absolute w-4 h-4 bg-primary rounded-full border-2 border-background shadow-lg animate-pulse"
+                        style={{
+                          top: `${20 + (index * 25)}%`,
+                          left: `${30 + (index * 20)}%`
+                        }}
+                      >
+                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-background px-2 py-1 rounded text-xs font-medium shadow-md whitespace-nowrap border border-sidebar-border">
+                          {job.title.split(' - ')[0]} ({job.distance})
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Your Location */}
+                    <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-primary rounded-full border-2 border-background shadow-lg">
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium shadow-md whitespace-nowrap">
+                        Your Location
                       </div>
                     </div>
-                  ))}
 
-                  {/* Your Location */}
-                  <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-primary rounded-full border-2 border-background shadow-lg">
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium shadow-md whitespace-nowrap">
-                      Your Location
-                    </div>
+                    {/* Distance Circles */}
+                    <div className="absolute top-1/2 left-1/2 w-20 h-20 border border-primary/30 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute top-1/2 left-1/2 w-32 h-32 border border-primary/20 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute top-1/2 left-1/2 w-44 h-44 border border-primary/10 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
                   </div>
 
-                  {/* Distance Circles */}
-                  <div className="absolute top-1/2 left-1/2 w-20 h-20 border border-primary/30 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-                  <div className="absolute top-1/2 left-1/2 w-32 h-32 border border-primary/20 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-                  <div className="absolute top-1/2 left-1/2 w-44 h-44 border border-primary/10 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                  {/* Leads List */}
+                  <div className="w-64 h-64 rounded-lg border border-sidebar-border bg-background p-3 overflow-auto">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-medium">Leads</h4>
+                      <span className="text-xs text-muted-foreground">{nearbyJobs.length} nearby</span>
+                    </div>
+                    <div className="space-y-2">
+                      {nearbyJobs.map((job) => (
+                        <div key={job.id} className="p-2 rounded border hover:bg-muted/50 cursor-pointer">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">{job.title.split(' - ')[0]}</span>
+                            <span className="text-xs text-muted-foreground">{job.distance}</span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge variant="outline" className="text-[10px]">{job.type || 'Job'}</Badge>
+                            <span className="text-xs text-muted-foreground">{job.location || 'Riyadh'}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-1">
@@ -718,7 +727,7 @@ export function DashboardContent() {
                   </div>
                   
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                    <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className="w-3 h-3 bg-success rounded-full"></div>
                         <div>
@@ -731,7 +740,7 @@ export function DashboardContent() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                    <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className="w-3 h-3 bg-warning rounded-full"></div>
                         <div>
@@ -744,7 +753,7 @@ export function DashboardContent() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+                    <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className="w-3 h-3 bg-destructive rounded-full"></div>
                         <div>
@@ -924,7 +933,7 @@ export function DashboardContent() {
                <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-3">
                   {activities.map((activity) => (
-                    <div key={activity.id} className="flex items-start gap-3 p-3 border border-border rounded-lg">
+                    <div key={activity.id} className="flex items-start gap-3 p-3 border border-sidebar-border rounded-lg">
                       <div className="text-lg">{activity.icon}</div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-foreground">{activity.message}</p>
@@ -953,7 +962,7 @@ export function DashboardContent() {
                <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-3">
                   {milestonesDue.map((milestone) => (
-                    <div key={milestone.id} className="p-3 border border-border rounded-lg">
+                    <div key={milestone.id} className="p-3 border border-sidebar-border rounded-lg">
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="text-sm font-medium text-foreground">{milestone.title}</h4>
                         <span className="text-xs text-muted-foreground">{milestone.dueDate}</span>
@@ -988,7 +997,7 @@ export function DashboardContent() {
                <CardContent className="p-4 flex-1 flex flex-col">
                 <div className="space-y-3">
                   {myTasks.map((task) => (
-                    <div key={task.id} className="p-3 border border-border rounded-lg">
+                    <div key={task.id} className="p-3 border border-sidebar-border rounded-lg">
                       <div className="flex items-start gap-3">
                         {getStatusIcon(task.status)}
                         <div className="flex-1 min-w-0">

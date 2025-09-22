@@ -141,7 +141,7 @@ export default function ThemePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="theme-page-container p-0">
+      <div className="theme-page-container p-6">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">

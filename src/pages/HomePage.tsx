@@ -33,11 +33,20 @@ import {
   TestTube,
   Heart
 } from 'lucide-react';
+import CalendarMini from '@/components/calendar/CalendarMini';
+import { useCalendarStore } from '@/stores/useCalendarStore';
 
 const HomePage = () => {
   const [language, setLanguage] = useState<'en' | 'ar'>('en');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
   const { theme } = useTheme();
+  const {
+    currentDate,
+    setCurrentDate,
+    events,
+    userRole,
+    isHijri
+  } = useCalendarStore();
 
   const isRTL = language === 'ar';
 
@@ -504,7 +513,7 @@ const HomePage = () => {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium mb-2">Project Type</label>
-                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                      <select className="w-full p-3 border border-sidebar-border rounded-lg bg-background">
                         <option>Select engineering discipline</option>
                         <option>Civil Engineering</option>
                         <option>Electrical Engineering</option>
@@ -518,7 +527,7 @@ const HomePage = () => {
                     
                     <div>
                       <label className="block text-sm font-medium mb-2">Location</label>
-                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                      <select className="w-full p-3 border border-sidebar-border rounded-lg bg-background">
                         <option>Select your city</option>
                         <option>Riyadh</option>
                         <option>Jeddah</option>
@@ -547,7 +556,7 @@ const HomePage = () => {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium mb-2">Timeline</label>
-                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                      <select className="w-full p-3 border border-sidebar-border rounded-lg bg-background">
                         <option>Select timeline</option>
                         <option>Within 1 week</option>
                         <option>1-2 weeks</option>
@@ -559,7 +568,7 @@ const HomePage = () => {
                     
                     <div>
                       <label className="block text-sm font-medium mb-2">Budget Range</label>
-                      <select className="w-full p-3 border border-input rounded-lg bg-background">
+                      <select className="w-full p-3 border border-sidebar-border rounded-lg bg-background">
                         <option>Select budget range</option>
                         <option>Under SAR 1,000</option>
                         <option>SAR 1,000 - 5,000</option>
@@ -976,7 +985,7 @@ const HomePage = () => {
 
 
       {/* Dashboard Showcase */}
-      <section className="pt-[200px] pb-0 px-[16px]">
+      <section className="pt-[200px] pb-[400px] px-[16px]">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -996,54 +1005,15 @@ const HomePage = () => {
               </Button>
             </div>
             <div className="bg-muted rounded-lg p-6 h-64 flex items-center justify-center">
-              <div className="w-full h-full bg-card rounded-lg shadow-lg p-4 space-y-4">
-                {/* Dashboard Header */}
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-foreground">Dashboard</h3>
-                  <div className="flex space-x-2">
-                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  </div>
-                </div>
-                
-                {/* KPI Cards */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-primary/10 rounded-lg p-3">
-                    <div className="text-xs text-muted-foreground">Active Jobs</div>
-                    <div className="text-lg font-bold text-primary">12</div>
-                  </div>
-                  <div className="bg-primary/10 rounded-lg p-3">
-                    <div className="text-xs text-muted-foreground">Earnings</div>
-                    <div className="text-lg font-bold text-primary">$2,450</div>
-                  </div>
-                </div>
-                
-                {/* Chart Area */}
-                <div className="flex-1 bg-muted rounded-lg p-3 flex items-end space-x-1">
-                  <div className="bg-primary h-8 w-4 rounded-t"></div>
-                  <div className="bg-primary h-12 w-4 rounded-t"></div>
-                  <div className="bg-primary h-6 w-4 rounded-t"></div>
-                  <div className="bg-primary h-10 w-4 rounded-t"></div>
-                  <div className="bg-primary h-14 w-4 rounded-t"></div>
-                  <div className="bg-primary h-8 w-4 rounded-t"></div>
-                  <div className="bg-primary h-11 w-4 rounded-t"></div>
-                </div>
-                
-                {/* Recent Activity */}
-                <div className="space-y-2">
-                  <div className="text-xs text-muted-foreground">Recent Activity</div>
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2 text-xs">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span className="text-foreground">Job completed</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-xs">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span className="text-foreground">New message</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="w-full h-full bg-card rounded-lg shadow-lg p-4">
+                <CalendarMini
+                  currentDate={currentDate}
+                  onDateSelect={(d)=> setCurrentDate(d)}
+                  events={events}
+                  isHijri={isHijri}
+                  userRole={userRole}
+                  onEventSelect={() => {}}
+                />
               </div>
             </div>
           </div>
@@ -1074,7 +1044,7 @@ const HomePage = () => {
             <span className="text-sm text-muted-foreground">{billing === 'annual' ? 'Annually' : 'Monthly'}</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 p-6 rounded-xl transition-all duration-300 ${billing === 'annual' ? 'bg-[var(--primary)]' : 'bg-transparent'}`}>
             <div className="rounded-xl border-0 bg-[var(--surface)] p-6 h-full flex flex-col shadow-md shadow-[inset_0_4px_4px_hsl(var(--foreground)/0.1)] transition-transform duration-300 hover:shadow-[0_0_0_1px_var(--primary)] hover:-translate-y-1 clients-card">
               <h3 className="text-xl font-semibold mb-6 border-b-[0.5px] border-[var(--border)] pb-3">For Clients</h3>
               {billing === 'annual' && <div className="text-xs mb-3">(2 months free)</div>}

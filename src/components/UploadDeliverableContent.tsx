@@ -294,12 +294,12 @@ export function UploadDeliverableContent() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "approved": return "bg-green-100 text-green-800 border-green-200";
-      case "rejected": return "bg-red-100 text-red-800 border-red-200";
-      case "submitted": return "bg-blue-100 text-blue-800 border-blue-200";
-      case "in-progress": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "pending": return "bg-gray-100 text-gray-800 border-gray-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
+      case "approved": return "bg-success/10 text-success border-success/20";
+      case "rejected": return "bg-destructive/10 text-destructive border-destructive/20";
+      case "submitted": return "bg-info/10 text-info border-info/20";
+      case "in-progress": return "bg-warning/10 text-warning border-warning/20";
+      case "pending": return "bg-muted text-muted-foreground border-sidebar-border";
+      default: return "bg-muted text-muted-foreground border-sidebar-border";
     }
   };
 
@@ -338,7 +338,7 @@ export function UploadDeliverableContent() {
   const allQualityItemsChecked = Object.values(qualityChecklist).every(Boolean);
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="border-b pb-6">
         <div className="flex items-center justify-between">
@@ -454,7 +454,7 @@ export function UploadDeliverableContent() {
           )}
 
           {selectedMilestone && (
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-3">
+            <div className="p-4 bg-info/10 rounded-lg border border-info/20 space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium">{selectedMilestone.name}</h4>
                 <Badge className={getStatusColor(selectedMilestone.status)}>

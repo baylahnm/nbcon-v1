@@ -101,7 +101,7 @@ export function PaymentsPayout() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div className="flex items-center justify-between pt-4 border-t border-sidebar-border">
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
@@ -242,7 +242,7 @@ export function PaymentsPayout() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div className="flex items-center justify-between pt-4 border-t border-sidebar-border">
             <div className="text-sm text-muted-foreground">
               <p>Processing time: 1-3 business days</p>
               <p>Minimum payout: SAR 100</p>
@@ -270,7 +270,7 @@ export function PaymentsPayout() {
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+          <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-info/10 rounded-lg flex items-center justify-center">
                 <Building2 className="w-4 h-4 text-info" />
@@ -285,7 +285,7 @@ export function PaymentsPayout() {
             </Badge>
           </div>
 
-          <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+          <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-success/10 rounded-lg flex items-center justify-center">
                 <Smartphone className="w-4 h-4 text-success" />
