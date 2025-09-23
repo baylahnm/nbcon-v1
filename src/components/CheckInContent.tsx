@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useAuthStore } from "@/stores/auth";
+import { getUserDisplayName } from "@/lib/userUtils";
 import { 
   MapPin,
   Clock,
@@ -78,52 +80,58 @@ interface CheckInData {
   };
 }
 
-const sampleProjects: Project[] = [
-  {
-    id: "1",
-    name: "NEOM Smart City Infrastructure Phase 2",
-    location: "NEOM, Tabuk Province",
-    client: "NEOM Development Company",
-    coordinates: { lat: 28.2639, lng: 35.3789 },
-    radius: 500,
-    status: "active",
-    safetyLevel: "high",
-    shiftStart: "07:00",
-    shiftEnd: "15:00",
-    supervisor: "Ahmed Al-Rashid",
-    emergencyContact: "+966-11-234-5678"
-  },
-  {
-    id: "2", 
-    name: "Aramco Ras Tanura Refinery Expansion",
-    location: "Ras Tanura, Eastern Province",
-    client: "Saudi Aramco",
-    coordinates: { lat: 26.7367, lng: 50.0267 },
-    radius: 300,
-    status: "active",
-    safetyLevel: "high",
-    shiftStart: "06:00",
-    shiftEnd: "14:00",
-    supervisor: "Mohammad Al-Fahad",
-    emergencyContact: "+966-13-567-8901"
-  },
-  {
-    id: "3",
-    name: "Red Sea Development Marina Infrastructure",
-    location: "Red Sea Coast, Tabuk",
-    client: "Red Sea Global",
-    coordinates: { lat: 22.3964, lng: 39.0403 },
-    radius: 400,
-    status: "active",
-    safetyLevel: "medium",
-    shiftStart: "06:30",
-    shiftEnd: "14:30",
-    supervisor: "Khalid Al-Mutairi",
-    emergencyContact: "+966-14-345-6789"
-  }
-];
+// Sample data moved inside component to access current user data
 
 export function CheckInContent() {
+  const { profile } = useAuthStore();
+  const currentUserName = getUserDisplayName(profile);
+  
+  // Create dynamic sample data with current user info
+  const sampleProjects: Project[] = [
+    {
+      id: "1",
+      name: "NEOM Smart City Infrastructure Phase 2",
+      location: "NEOM, Tabuk Province",
+      client: "NEOM Development Company",
+      coordinates: { lat: 28.2639, lng: 35.3789 },
+      radius: 500,
+      status: "active",
+      safetyLevel: "high",
+      shiftStart: "07:00",
+      shiftEnd: "15:00",
+      supervisor: currentUserName,
+      emergencyContact: "+966-11-234-5678"
+    },
+    {
+      id: "2", 
+      name: "Aramco Ras Tanura Refinery Expansion",
+      location: "Ras Tanura, Eastern Province",
+      client: "Saudi Aramco",
+      coordinates: { lat: 26.7367, lng: 50.0267 },
+      radius: 300,
+      status: "active",
+      safetyLevel: "high",
+      shiftStart: "06:00",
+      shiftEnd: "14:00",
+      supervisor: "Mohammad Al-Fahad",
+      emergencyContact: "+966-13-567-8901"
+    },
+    {
+      id: "3",
+      name: "Red Sea Development Marina Infrastructure",
+      location: "Red Sea Coast, Tabuk",
+      client: "Red Sea Global",
+      coordinates: { lat: 22.3964, lng: 39.0403 },
+      radius: 400,
+      status: "active",
+      safetyLevel: "medium",
+      shiftStart: "06:30",
+      shiftEnd: "14:30",
+      supervisor: "Khalid Al-Mutairi",
+      emergencyContact: "+966-14-345-6789"
+    }
+  ];
+  
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number, accuracy: number} | null>(null);
   const [isWithinGeofence, setIsWithinGeofence] = useState(false);

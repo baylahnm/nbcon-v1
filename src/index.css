@@ -2,6 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Enhanced Scrollbar Styling for Kanban Board */
+@layer utilities {
+  .kanban-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--card));
+  }
+  
+  .kanban-scrollbar::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .kanban-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--card));
+    border-radius: 4px;
+  }
+  
+  .kanban-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .kanban-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.8);
+  }
+
+  /* Emoji Picker Scrollbar Styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--card));
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: hsl(var(--card));
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.8);
+  }
+
+  .scrollbar-track-transparent::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thumb-muted-foreground\/30::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+  
+  .scrollbar-thumb-muted-foreground\/50::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+  
+  .hover\:scrollbar-thumb-muted-foreground\/50:hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Primary and Background Scrollbar Variants */
+  .scrollbar-thumb-primary {
+    scrollbar-color: hsl(var(--primary)) hsl(var(--card));
+  }
+
+  .scrollbar-thumb-primary::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .scrollbar-thumb-primary\/80::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.8);
+  }
+  
+  .hover\:scrollbar-thumb-primary\/80:hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.8);
+  }
+  
+  .scrollbar-track-background::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  
+  .scrollbar-track-card::-webkit-scrollbar-track {
+    background: hsl(var(--card));
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -1452,6 +1547,7 @@ All colors MUST be HSL.
   .scrollbar-show {
     scrollbar-width: thin; /* Firefox */
     -ms-overflow-style: auto; /* Internet Explorer 10+ */
+    scrollbar-color: hsl(var(--primary)) hsl(var(--card));
   }
 
   .scrollbar-show::-webkit-scrollbar {
@@ -1460,16 +1556,17 @@ All colors MUST be HSL.
   }
 
   .scrollbar-show::-webkit-scrollbar-track {
-    background: transparent;
+    background: hsl(var(--card));
   }
 
   .scrollbar-show::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground) / 0.3);
+    background-color: hsl(var(--primary));
     border-radius: 3px;
+    transition: background-color 0.2s ease;
   }
 
   .scrollbar-show::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--primary) / 0.8);
   }
 
   /* Responsive theme buttons container */
@@ -1516,6 +1613,30 @@ All colors MUST be HSL.
       flex-shrink: 0;
     }
   }
+  /* Global Scrollbar Defaults */
+  * {
+    scrollbar-color: hsl(var(--primary)) hsl(var(--card));
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: hsl(var(--card));
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.8);
+  }
+
 }
 
 /* New Landing Page Styles */

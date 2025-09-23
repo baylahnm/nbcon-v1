@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { 
   Select, 
   SelectContent, 
@@ -21,8 +23,10 @@ import {
 import CalendarContent from './CalendarContent';
 import CalendarMini from '@/components/calendar/CalendarMini';
 import CalendarFilters from '@/components/calendar/CalendarFilters';
+import CreateEventDialog from '@/components/calendar/CreateEventDialog';
 import { useCalendarStore, CalendarView, UserRole } from '@/stores/useCalendarStore';
 import { useThemeStore } from '@/stores/theme';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function CalendarPage() {
   const { 
@@ -38,12 +42,23 @@ export default function CalendarPage() {
     setView,
     setUserRole,
     setIsHijri,
-    updateFilters
+    updateFilters,
+    addEvent
   } = useCalendarStore();
 
   const { applied: themeTokens } = useThemeStore();
+  const { toast } = useToast();
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+
+  // Debounce search updates to filters
+  useEffect(() => {
+    const t = setTimeout(() => {
+      updateFilters({ searchTerm });
+    }, 300);
+    return () => clearTimeout(t);
+  }, [searchTerm, updateFilters]);
 
   const handleDateSelect = (date: Date) => {
     setCurrentDate(date);
@@ -55,10 +70,14 @@ export default function CalendarPage() {
 
   const navigateDate = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
-    if (direction === 'prev') {
-      newDate.setDate(newDate.getDate() - 1);
+    const step = direction === 'prev' ? -1 : 1;
+    if (view === 'month') {
+      newDate.setMonth(newDate.getMonth() + step);
+    } else if (view === 'week') {
+      newDate.setDate(newDate.getDate() + step * 7);
     } else {
-      newDate.setDate(newDate.getDate() + 1);
+      // day and agenda
+      newDate.setDate(newDate.getDate() + step);
     }
     setCurrentDate(newDate);
   };
@@ -77,6 +96,53 @@ export default function CalendarPage() {
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     updateFilters({ searchTerm: value });
+  };
+
+  const handleCreateEvent = async (eventData: any) => {
+    try {
+      // optimistic add to local store
+      addEvent(eventData);
+      setShowCreateDialog(false);
+      toast({ title: 'Event created', description: 'Your event has been added to the calendar.' });
+      // TODO: persist to backend here and handle errors/rollback if needed
+    } catch (e) {
+      toast({ title: 'Failed to create event', description: 'Please try again.', variant: 'destructive' });
+    }
+  };
+
+  const exportICS = () => {
+    try {
+      const lines: string[] = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//nbcon//Calendar//EN'
+      ];
+      events.forEach((evt: any, idx: number) => {
+        const uid = `nbcon-${idx}-${Date.now()}@nbcon`;
+        const dtStamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        const toICS = (d: Date) => new Date(d).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        lines.push('BEGIN:VEVENT');
+        lines.push(`UID:${uid}`);
+        lines.push(`DTSTAMP:${dtStamp}`);
+        lines.push(`DTSTART:${toICS(evt.startTime)}`);
+        lines.push(`DTEND:${toICS(evt.endTime)}`);
+        lines.push(`SUMMARY:${(evt.title || '').replace(/\n/g, ' ')}`);
+        if (evt.location) lines.push(`LOCATION:${String(evt.location).replace(/\n/g, ' ')}`);
+        if (evt.description) lines.push(`DESCRIPTION:${String(evt.description).replace(/\n/g, ' ')}`);
+        lines.push('END:VEVENT');
+      });
+      lines.push('END:VCALENDAR');
+      const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'nbcon-calendar.ics';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: 'Exported', description: 'Downloaded nbcon-calendar.ics' });
+    } catch {
+      toast({ title: 'Export failed', description: 'Could not generate ICS file.', variant: 'destructive' });
+    }
   };
 
   return (
@@ -110,26 +176,21 @@ export default function CalendarPage() {
               {formatDate(currentDate)}
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigateDate('prev')}>
+              <Button variant="outline" size="sm" onClick={() => navigateDate('prev')} aria-label={`Previous ${view}`}>
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" onClick={goToToday}>
+              <Button variant="outline" size="sm" onClick={goToToday} aria-label="Go to today">
                 Today
               </Button>
-              <Button variant="outline" size="sm" onClick={() => navigateDate('next')}>
+              <Button variant="outline" size="sm" onClick={() => navigateDate('next')} aria-label={`Next ${view}`}>
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm">Hijri</span>
-              <input
-                type="checkbox"
-                checked={isHijri}
-                onChange={(e) => setIsHijri(e.target.checked)}
-                className="rounded"
-              />
+              <Switch id="hijri-switch" checked={isHijri} onCheckedChange={setIsHijri} />
+              <Label htmlFor="hijri-switch" className="text-sm">Hijri</Label>
             </div>
             <Select value={userRole} onValueChange={(value) => setUserRole(value as UserRole)}>
               <SelectTrigger className="w-[120px]">
@@ -153,15 +214,25 @@ export default function CalendarPage() {
                 <SelectItem value="agenda">Agenda</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" aria-label="Export calendar" onClick={exportICS}>
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              aria-label="Sync calendar"
+              onClick={() => toast({ title: 'Connect Calendar', description: 'Calendar sync requires connecting Google or Microsoft. Coming soon.' })}
+            >
               <Globe className="h-4 w-4 mr-2" />
               Sync
             </Button>
-            <Button size="sm" className="bg-gradient-primary">
+            <Button 
+              size="sm" 
+              className="bg-gradient-primary"
+              onClick={() => setShowCreateDialog(true)}
+              aria-label="Create event"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create
             </Button>
@@ -257,6 +328,14 @@ export default function CalendarPage() {
       <CalendarFilters 
         isOpen={showFilters} 
         onClose={() => setShowFilters(false)} 
+      />
+      
+      {/* Create Event Dialog */}
+      <CreateEventDialog
+        isOpen={showCreateDialog}
+        onClose={() => setShowCreateDialog(false)}
+        onSave={handleCreateEvent}
+        initialDate={currentDate}
       />
     </div>
   );

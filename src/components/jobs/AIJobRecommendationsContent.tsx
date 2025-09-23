@@ -467,12 +467,12 @@ export function AIJobRecommendationsContent() {
 
               <p className="text-muted-foreground mb-4">{job.description}</p>
 
-              <div className="bg-blue-50 p-3 rounded-lg mb-4">
+              <div className="bg-info/10 p-3 rounded-lg mb-4 border border-info/20">
                 <div className="flex items-start gap-2">
-                  <Brain className="w-4 h-4 text-blue-600 mt-0.5" />
+                  <Brain className="w-4 h-4 text-info mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-blue-900">AI Recommendation Insight</p>
-                    <p className="text-sm text-blue-700">{job.aiReason}</p>
+                    <p className="text-sm font-medium text-info">AI Recommendation Insight</p>
+                    <p className="text-sm text-info/80">{job.aiReason}</p>
                   </div>
                 </div>
               </div>

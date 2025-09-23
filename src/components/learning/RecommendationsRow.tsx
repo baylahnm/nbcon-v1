@@ -114,7 +114,7 @@ export function RecommendationsRow({
         </div>
       </div>
 
-      <div className="relative">
+      <div className="relative overflow-hidden">
         {/* Left Arrow */}
         <button
           type="button"
@@ -139,9 +139,9 @@ export function RecommendationsRow({
         <div
           ref={scrollRef}
           onScroll={updateScrollButtons}
-          className="overflow-x-auto scroll-smooth"
+          className="overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80"
         >
-          <div className="flex gap-4 snap-x snap-mandatory">
+          <div className="flex gap-4 snap-x snap-mandatory pb-3">
             {courses.map((course) => (
               <div key={course.id} className="flex-none basis-full sm:basis-1/2 lg:basis-1/3 snap-start">
                 <Card className="group hover:shadow-lg transition-all duration-200 border-sidebar-border hover:border-primary h-full">
@@ -294,4 +294,5 @@ export function RecommendationsRow({
     </div>
   );
 }
+
 

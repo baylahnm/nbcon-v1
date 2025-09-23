@@ -30,7 +30,11 @@ export function DashboardContent() {
   // Load engineer specializations
   useEffect(() => {
     const loadEngineerSpecializations = async () => {
-      if (!user || profile?.role !== 'engineer') return;
+      if (!user || profile?.role !== 'engineer' || user.source === 'mock') return;
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(user.id)) {
+        return;
+      }
 
       try {
         const { data: engineerProfile, error } = await supabase

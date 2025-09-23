@@ -516,7 +516,7 @@ export default function CalendarContent() {
     <div className="h-full flex flex-col">
       {/* Calendar View */}
       <div 
-        className="flex-1 p-0 overflow-auto"
+        className="flex-1 p-6 overflow-auto"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
         }}

@@ -334,6 +334,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         value={loginData.email}
                         onChange={(e) => setLoginData({...loginData, email: e.target.value})}
                         className="pl-10 bg-input-background border-border"
+                        autoComplete="username"
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                       />
                     </div>
@@ -353,6 +354,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         value={loginData.password}
                         onChange={(e) => setLoginData({...loginData, password: e.target.value})}
                         className="pl-10 pr-10 bg-input-background border-border"
+                        autoComplete="current-password"
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                       />
                       <Button
@@ -439,6 +441,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         value={signupData.email}
                         onChange={(e) => setSignupData({...signupData, email: e.target.value})}
                         className="pl-10 bg-input-background border-border"
+                        autoComplete="email"
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                       />
                     </div>
@@ -459,6 +462,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                           value={signupData.password}
                           onChange={(e) => setSignupData({...signupData, password: e.target.value})}
                           className="pl-10 pr-10 bg-input-background border-border"
+                          autoComplete="new-password"
                           dir={language === 'ar' ? 'rtl' : 'ltr'}
                         />
                         <Button
@@ -487,6 +491,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                           value={signupData.confirmPassword}
                           onChange={(e) => setSignupData({...signupData, confirmPassword: e.target.value})}
                           className="pl-10 pr-10 bg-input-background border-border"
+                          autoComplete="new-password"
                           dir={language === 'ar' ? 'rtl' : 'ltr'}
                         />
                         <Button

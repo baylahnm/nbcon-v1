@@ -35,7 +35,7 @@ export interface Message {
   conversation_id: string;
   sender_id: string;
   content: string;
-  message_type: 'text' | 'file' | 'system';
+  message_type: 'text' | 'file' | 'image' | 'audio' | 'system';
   file_url?: string;
   read_at?: string;
   created_at: string;

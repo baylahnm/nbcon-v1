@@ -16,6 +16,7 @@ export interface AuthenticatedUser {
   language: 'ar' | 'en';
   avatar?: string;
   email_confirmed_at?: string | null;
+  source?: 'mock' | 'supabase';
   phone_confirmed_at?: string | null;
 }
 
@@ -44,6 +45,12 @@ export interface UserProfile extends AuthenticatedUser {
   updated_at?: string;
 }
 
+
+const normalizeUser = (user: AuthenticatedUser): AuthenticatedUser => ({
+  ...user,
+  source: user.source ?? 'mock',
+});
+
 interface AuthState {
   user: AuthenticatedUser | null;
   profile: UserProfile | null;
@@ -63,7 +70,8 @@ interface AuthState {
 const safeLocalStorageSet = (user: AuthenticatedUser | null) => {
   if (typeof window === 'undefined') return;
   if (user) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    const normalized = normalizeUser(user);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
   } else {
     window.localStorage.removeItem(STORAGE_KEY);
   }
@@ -104,13 +112,14 @@ export const useAuthStore = create<AuthState>()(
 
       setUser: (user) => {
         if (user) {
-          const profile = createProfileFromUser(user);
+          const normalizedUser = normalizeUser(user);
+          const profile = createProfileFromUser(normalizedUser);
           set({
-            user,
+            user: normalizedUser,
             profile,
             isAuthenticated: true,
           });
-          safeLocalStorageSet(user);
+          safeLocalStorageSet(normalizedUser);
         } else {
           set({
             user: null,
@@ -124,15 +133,16 @@ export const useAuthStore = create<AuthState>()(
       setProfile: (profile) => set({ profile }),
 
       login: (user) => {
-        const profile = createProfileFromUser(user);
+        const normalizedUser = normalizeUser(user);
+        const profile = createProfileFromUser(normalizedUser);
         set({
-          user,
+          user: normalizedUser,
           profile,
           isAuthenticated: true,
           isLoading: false,
           isInitialized: true,
         });
-        safeLocalStorageSet(user);
+        safeLocalStorageSet(normalizedUser);
       },
 
       logout: () => {
@@ -157,9 +167,10 @@ export const useAuthStore = create<AuthState>()(
       updateUser: (updates) => {
         const currentUser = get().user;
         if (!currentUser) return;
-        const updatedUser: AuthenticatedUser = { ...currentUser, ...updates };
+        const mergedUser: AuthenticatedUser = { ...currentUser, ...updates };
+        const normalizedUser = normalizeUser(mergedUser);
         const currentProfile = get().profile;
-        const baseProfile = createProfileFromUser(updatedUser);
+        const baseProfile = createProfileFromUser(normalizedUser);
         const updatedProfile: UserProfile = {
           ...baseProfile,
           ...currentProfile,
@@ -167,11 +178,11 @@ export const useAuthStore = create<AuthState>()(
         };
 
         set({
-          user: updatedUser,
+          user: normalizedUser,
           profile: updatedProfile,
           isAuthenticated: true,
         });
-        safeLocalStorageSet(updatedUser);
+        safeLocalStorageSet(normalizedUser);
       },
     }),
     {
@@ -190,7 +201,11 @@ export const getStoredUser = (): AuthenticatedUser | null => {
   if (typeof window === 'undefined') return null;
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) as AuthenticatedUser : null;
+    if (!stored) {
+      return null;
+    }
+    const parsed = JSON.parse(stored) as AuthenticatedUser;
+    return normalizeUser(parsed);
   } catch {
     return null;
   }

@@ -22,19 +22,19 @@ export default function RoleSelection() {
     // Redirect based on user role
     switch (user.role) {
       case 'engineer':
-        navigate('/engineer');
+        navigate('/engineer/dashboard', { replace: true });
         break;
       case 'client':
-        navigate('/client');
+        navigate('/client/dashboard', { replace: true });
         break;
       case 'enterprise':
-        navigate('/enterprise');
+        navigate('/enterprise/dashboard', { replace: true });
         break;
       case 'admin':
-        navigate('/admin');
+        navigate('/admin/dashboard', { replace: true });
         break;
       default:
-        navigate('/home');
+        navigate('/home', { replace: true });
     }
   };
 

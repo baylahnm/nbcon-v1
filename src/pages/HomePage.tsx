@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from 'next-themes';
+import { useAuthStore } from '@/stores/auth';
+import { getUserDisplayName, getUserInitials } from '@/lib/userUtils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +42,7 @@ const HomePage = () => {
   const [language, setLanguage] = useState<'en' | 'ar'>('en');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
   const { theme } = useTheme();
+  const { profile } = useAuthStore();
   const {
     currentDate,
     setCurrentDate,
@@ -47,6 +50,10 @@ const HomePage = () => {
     userRole,
     isHijri
   } = useCalendarStore();
+  
+  // Get current user data
+  const currentUserName = getUserDisplayName(profile);
+  const currentUserInitials = getUserInitials(profile);
 
   const isRTL = language === 'ar';
 
@@ -909,10 +916,10 @@ const HomePage = () => {
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-primary font-bold text-lg">AR</span>
+                  <span className="text-primary font-bold text-lg">{currentUserInitials}</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold">Ahmed Al-Rashid</h4>
+                  <h4 className="font-semibold">{currentUserName}</h4>
                   <p className="text-sm text-muted-foreground">Riyadh, Saudi Arabia</p>
                 </div>
                 <div className="ml-auto flex items-center">

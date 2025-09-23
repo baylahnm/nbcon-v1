@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useAuthStore } from '@/stores/auth';
+import { getUserDisplayName, getUserInitials } from '@/lib/userUtils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -204,7 +206,7 @@ interface Newsletter {
 const saudiConnections: NetworkConnection[] = [
   {
     id: "1",
-    name: "Eng. Ahmed Al-Rashid",
+    name: "Eng. Nasser Baylah",
     title: "Senior Structural Engineer",
     company: "NEOM Development Company",
     location: "Tabuk, Saudi Arabia",
@@ -539,8 +541,21 @@ const sampleNewsletters: Newsletter[] = [
 ];
 
 export default function MyNetwork() {
+  const { profile } = useAuthStore();
   const [activeTab, setActiveTab] = useState("connections");
-  const [connections, setConnections] = useState<NetworkConnection[]>(saudiConnections);
+  
+  // Get current user data
+  const currentUserName = getUserDisplayName(profile);
+  const currentUserInitials = getUserInitials(profile);
+  
+  // Create dynamic connections with current user info
+  const dynamicConnections = saudiConnections.map(conn => 
+    conn.name === "Eng. Nasser Baylah" 
+      ? { ...conn, name: `Eng. ${currentUserName}` }
+      : conn
+  );
+  
+  const [connections, setConnections] = useState<NetworkConnection[]>(dynamicConnections);
   const [requests, setRequests] = useState<ConnectionRequest[]>(connectionRequests);
   const [events, setEvents] = useState<ProfessionalEvent[]>(professionalEvents);
   const [updates, setUpdates] = useState<IndustryUpdate[]>(industryUpdates);

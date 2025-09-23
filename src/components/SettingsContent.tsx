@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Settings,
   User,
@@ -187,7 +188,8 @@ const securityLogs: SecurityLog[] = [
 ];
 
 export function SettingsContent() {
-  const [activeTab, setActiveTab] = useState("profile");
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("account");
   const [language, setLanguage] = useState("english");
   const [timezone, setTimezone] = useState("riyadh");
   const [calendarType, setCalendarType] = useState("gregorian");
@@ -339,147 +341,13 @@ export function SettingsContent() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="preferences">Preferences</TabsTrigger>
             <TabsTrigger value="themes">Themes</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="privacy">Privacy & Security</TabsTrigger>
           </TabsList>
-
-          {/* Profile Tab */}
-          <TabsContent value="profile" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Profile Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Profile Photo */}
-                <div className="flex items-center gap-6">
-                  <Avatar className="w-20 h-20">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-lg">NB</AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-2">
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <Camera className="w-4 h-4" />
-                      Change Photo
-                    </Button>
-                    <p className="text-sm text-muted-foreground">
-                      JPG, PNG up to 10MB. Recommended 400x400px
-                    </p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Basic Information */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label>First Name</Label>
-                    <Input defaultValue="Nasser" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Last Name</Label>
-                    <Input defaultValue="Baylah" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Professional Title</Label>
-                    <Input defaultValue="Senior Civil Engineer" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Company</Label>
-                    <Input defaultValue="NEOM Development Authority" />
-                  </div>
-                </div>
-
-                {/* Contact Information */}
-                <div className="space-y-4">
-                  <h4>Contact Information</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label>Email Address</Label>
-                      <Input defaultValue="nasser.baylah@neom.com" type="email" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Phone Number</Label>
-                      <Input defaultValue="+966 55 123 4567" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>City</Label>
-                      <Select defaultValue="riyadh">
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="riyadh">Riyadh</SelectItem>
-                          <SelectItem value="jeddah">Jeddah</SelectItem>
-                          <SelectItem value="dammam">Dammam</SelectItem>
-                          <SelectItem value="tabuk">Tabuk (NEOM)</SelectItem>
-                          <SelectItem value="mecca">Mecca</SelectItem>
-                          <SelectItem value="medina">Medina</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Region</Label>
-                      <Select defaultValue="riyadh-region">
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="riyadh-region">Riyadh Region</SelectItem>
-                          <SelectItem value="makkah-region">Makkah Region</SelectItem>
-                          <SelectItem value="eastern-province">Eastern Province</SelectItem>
-                          <SelectItem value="tabuk-region">Tabuk Region</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Professional Summary */}
-                <div className="space-y-2">
-                  <Label>Professional Summary</Label>
-                  <Textarea 
-                    placeholder="Describe your engineering expertise and experience..."
-                    defaultValue="Senior Civil Engineer with 8+ years of experience in large-scale infrastructure projects. Currently leading foundation design for NEOM smart city development. Specialized in sustainable construction methods and Saudi building codes."
-                    className="min-h-[120px]"
-                  />
-                </div>
-
-                {/* Skills */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label>Engineering Skills</Label>
-                    <Button variant="outline" size="sm">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Skill
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {["Civil Engineering", "Structural Design", "AutoCAD", "Revit", "Project Management", "Saudi Building Codes", "Geotechnical Analysis", "Construction Management"].map((skill) => (
-                      <Badge key={skill} variant="secondary" className="flex items-center gap-2">
-                        {skill}
-                        <X className="w-3 h-3 cursor-pointer hover:text-destructive" />
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-3 pt-4">
-                  <Button variant="outline">Cancel</Button>
-                  <Button>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Changes
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           {/* Account Tab */}
           <TabsContent value="account" className="space-y-6">
@@ -503,7 +371,7 @@ export function SettingsContent() {
                   
                   <Separator />
                   
-                  <div className="space-y-4">
+                  <form className="space-y-4" onSubmit={(event) => event.preventDefault()}>
                     <h4>Change Password</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -512,8 +380,10 @@ export function SettingsContent() {
                           <Input 
                             type={showPassword ? "text" : "password"} 
                             placeholder="Enter current password"
+                            autoComplete="current-password"
                           />
                           <Button
+                            type="button"
                             variant="ghost"
                             size="sm"
                             className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
@@ -525,15 +395,15 @@ export function SettingsContent() {
                       </div>
                       <div className="space-y-2">
                         <Label>New Password</Label>
-                        <Input type="password" placeholder="Enter new password" />
+                        <Input type="password" placeholder="Enter new password" autoComplete="new-password" />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label>Confirm New Password</Label>
-                      <Input type="password" placeholder="Confirm new password" />
+                      <Input type="password" placeholder="Confirm new password" autoComplete="new-password" />
                     </div>
-                    <Button>Update Password</Button>
-                  </div>
+                    <Button type="submit">Update Password</Button>
+                  </form>
                 </div>
               </CardContent>
             </Card>

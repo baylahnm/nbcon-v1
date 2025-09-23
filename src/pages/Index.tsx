@@ -12,16 +12,16 @@ const Index = () => {
       // Redirect authenticated users to their dashboard
       switch (profile.role) {
         case 'engineer':
-          navigate('/engineer');
+          navigate('/engineer/dashboard', { replace: true });
           break;
         case 'client':
-          navigate('/client');
+          navigate('/client/dashboard', { replace: true });
           break;
         case 'enterprise':
-          navigate('/enterprise');
+          navigate('/enterprise/dashboard', { replace: true });
           break;
         default:
-          navigate('/auth/role');
+          navigate('/auth/role', { replace: true });
       }
     }
   }, [user, profile, isLoading, navigate]);

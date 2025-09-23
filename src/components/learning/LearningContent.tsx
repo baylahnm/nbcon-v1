@@ -301,7 +301,7 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
   };
 
   return (
-    <div className="flex-1 bg-background p-6">
+    <div className="w-full max-w-full bg-background p-6 overflow-x-hidden">
       {/* Header */}
       <div className="p-0 pb-6 border-b border-sidebar-border">
         <div className="flex items-center justify-between">
@@ -334,7 +334,7 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
 
       {/* Content */}
       <div className="pt-6 px-0 pb-0">
-        <div className="w-full space-y-6">
+        <div className="w-full max-w-full space-y-6">
           {/* Search */}
           <Card>
             <CardContent className="p-6">
@@ -352,7 +352,7 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
 
           {/* Tabs */}
           <Tabs defaultValue="discover" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
               <TabsTrigger value="discover">Discover</TabsTrigger>
               <TabsTrigger value="paths">Learning Paths</TabsTrigger>
               <TabsTrigger value="my-learning">My Learning</TabsTrigger>
@@ -464,8 +464,8 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
                     Structured learning journeys to master complete skill sets
                   </p>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent>
+                  <div className="grid gap-4 w-full" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(240px, 1fr))` }}>
                     {samplePaths.map((path) => (
                       <Card key={path.id} className="hover:shadow-md transition-shadow">
                         <CardContent className="p-6">
@@ -585,8 +585,8 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
                     Test your knowledge and earn certifications
                   </p>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent>
+                  <div className="grid gap-4 w-full" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(240px, 1fr))` }}>
                     {sampleAssessments.map((assessment) => (
                       <Card key={assessment.id} className="hover:shadow-md transition-shadow">
                         <CardContent className="p-4">

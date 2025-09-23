@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useAuthStore } from "@/stores/auth";
+import { getUserDisplayName, getUserInitials } from "@/lib/userUtils";
 import { 
   MessageSquare,
   Search,
@@ -26,11 +28,27 @@ import {
   Shield,
   Camera,
   Mic,
+  StopCircle,
   MapPin,
   Calendar,
   User,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  X,
+  Upload,
+  File,
+  PhoneCall,
+  VideoIcon,
+  Play,
+  Pause,
+  UserPlus,
+  Settings,
+  Info,
+  Heart,
+  ThumbsUp,
+  Laugh,
+  Frown,
+  Angry
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,6 +60,12 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useConversations, useMessages, type Message as HookMessage } from "@/hooks/useMessaging";
+import { ConversationList } from "@/components/messaging/ConversationList";
+import { useEffect, useRef, useState as useStateAlias } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: string;
@@ -50,7 +74,7 @@ interface Message {
   senderRole: string;
   content: string;
   timestamp: string;
-  type: "text" | "file" | "image" | "system";
+  type: "text" | "file" | "image" | "audio" | "system";
   fileUrl?: string;
   fileName?: string;
   fileSize?: number;
@@ -82,209 +106,260 @@ interface Participant {
   company?: string;
 }
 
-const sampleConversations: Conversation[] = [
-  {
-    id: "1",
-    name: "NEOM Smart City - Project Team",
-    type: "project",
-    participants: [
-      { id: "u1", name: "Ahmed Al-Rashid", role: "Project Manager", status: "online", company: "NEOM Development" },
-      { id: "u2", name: "Sarah Johnson", role: "Lead Engineer", status: "online", company: "NEOM Development" },
-      { id: "u3", name: "Mohammad Al-Fahad", role: "Site Supervisor", status: "away", company: "NEOM Development" }
-    ],
-    lastMessage: {
-      id: "m1",
-      senderId: "u1",
-      senderName: "Ahmed Al-Rashid",
-      senderRole: "Project Manager",
-      content: "The site survey report has been approved. Please proceed with Phase 2 design submissions.",
-      timestamp: "2024-01-15T10:30:00Z",
-      type: "text",
-      isRead: false
-    },
-    unreadCount: 3,
-    isPinned: true,
-    isArchived: false,
-    projectId: "p1",
-    projectName: "NEOM Smart City Infrastructure",
-    status: "online"
-  },
-  {
-    id: "2",
-    name: "Dr. Khalid Al-Mutairi",
-    type: "direct",
-    participants: [
-      { id: "u4", name: "Dr. Khalid Al-Mutairi", role: "Technical Reviewer", status: "online", company: "Saudi Aramco" }
-    ],
-    lastMessage: {
-      id: "m2",
-      senderId: "u4",
-      senderName: "Dr. Khalid Al-Mutairi",
-      senderRole: "Technical Reviewer",
-      content: "I've reviewed your mechanical systems design. Minor revisions needed on sections 3.2 and 4.1.",
-      timestamp: "2024-01-15T09:45:00Z",
-      type: "text",
-      isRead: true
-    },
-    unreadCount: 0,
-    isPinned: false,
-    isArchived: false,
-    status: "online"
-  },
-  {
-    id: "3",
-    name: "Red Sea Development - Engineering",
-    type: "group",
-    participants: [
-      { id: "u5", name: "Fatima Al-Zahra", role: "Environmental Engineer", status: "online", company: "Red Sea Global" },
-      { id: "u6", name: "Omar Hassan", role: "Marine Engineer", status: "offline", company: "Red Sea Global" },
-      { id: "u7", name: "Nadia Rahman", role: "Project Coordinator", status: "away", company: "Red Sea Global" }
-    ],
-    lastMessage: {
-      id: "m3",
-      senderId: "u5",
-      senderName: "Fatima Al-Zahra",
-      senderRole: "Environmental Engineer",
-      content: "Environmental impact assessment completed. Uploading final report now.",
-      timestamp: "2024-01-15T08:20:00Z",
-      type: "file",
-      fileName: "Environmental_Impact_Assessment_RedSea_Final.pdf",
-      fileSize: 2.4 * 1024 * 1024,
-      isRead: true
-    },
-    unreadCount: 0,
-    isPinned: false,
-    isArchived: false,
-    status: "online"
-  },
-  {
-    id: "4",
-    name: "Aramco Refinery - Safety Team",
-    type: "project",
-    participants: [
-      { id: "u8", name: "Hassan Al-Qahtani", role: "Safety Manager", status: "online", company: "Saudi Aramco" },
-      { id: "u9", name: "Ali Bin Rashid", role: "Safety Inspector", status: "online", company: "Saudi Aramco" }
-    ],
-    lastMessage: {
-      id: "m4",
-      senderId: "u8",
-      senderName: "Hassan Al-Qahtani",
-      senderRole: "Safety Manager",
-      content: "Safety protocols have been updated. Please review before tomorrow's site visit.",
-      timestamp: "2024-01-14T16:15:00Z",
-      type: "text",
-      isRead: true
-    },
-    unreadCount: 0,
-    isPinned: false,
-    isArchived: false,
-    projectId: "p2",
-    projectName: "Aramco Refinery Expansion",
-    status: "online"
-  }
-];
+// NOTE: Demo data removed. Data is now provided by Supabase hooks.
 
-const sampleMessages: Message[] = [
-  {
-    id: "msg1",
-    senderId: "u1",
-    senderName: "Ahmed Al-Rashid",
-    senderRole: "Project Manager",
-    content: "Good morning team! I hope everyone is ready for today's milestone review meeting.",
-    timestamp: "2024-01-15T08:00:00Z",
-    type: "text",
-    isRead: true
-  },
-  {
-    id: "msg2",
-    senderId: "current",
-    senderName: "Nasser Baylah",
-    senderRole: "Engineer",
-    content: "Good morning Ahmed! Yes, I have the structural analysis report ready for presentation.",
-    timestamp: "2024-01-15T08:05:00Z",
-    type: "text",
-    isRead: true
-  },
-  {
-    id: "msg3",
-    senderId: "u2",
-    senderName: "Sarah Johnson",
-    senderRole: "Lead Engineer",
-    content: "I've uploaded the updated architectural drawings to the project folder.",
-    timestamp: "2024-01-15T08:10:00Z",
-    type: "file",
-    fileName: "NEOM_Architectural_Drawings_v2.3.dwg",
-    fileSize: 15.7 * 1024 * 1024,
-    isRead: true
-  },
-  {
-    id: "msg4",
-    senderId: "system",
-    senderName: "System",
-    senderRole: "System",
-    content: "Nasser Baylah has checked in to the NEOM site at 08:15 AM",
-    timestamp: "2024-01-15T08:15:00Z",
-    type: "system",
-    isRead: true
-  },
-  {
-    id: "msg5",
-    senderId: "u3",
-    senderName: "Mohammad Al-Fahad",
-    senderRole: "Site Supervisor",
-    content: "Site conditions are good for today's inspection. Weather is clear and all safety protocols are in place.",
-    timestamp: "2024-01-15T08:30:00Z",
-    type: "text",
-    isRead: true
-  },
-  {
-    id: "msg6",
-    senderId: "current",
-    senderName: "Nasser Baylah",
-    senderRole: "Engineer",
-    content: "Perfect! I'll start with the foundation inspection and work my way up to the structural elements.",
-    timestamp: "2024-01-15T08:35:00Z",
-    type: "text",
-    isRead: true
-  },
-  {
-    id: "msg7",
-    senderId: "u1",
-    senderName: "Ahmed Al-Rashid",
-    senderRole: "Project Manager",
-    content: "The site survey report has been approved. Please proceed with Phase 2 design submissions.",
-    timestamp: "2024-01-15T10:30:00Z",
-    type: "text",
-    isRead: false,
-    reactions: [{ emoji: "👍", count: 2, users: ["u2", "u3"] }]
-  }
+const emojiData = {
+  faces: ["😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😋","😎","😍","😘","🥰","😗","😙","😚","🙂","🤗","🤩","🤔","🤨","😐","😑","😶","🙄","😏","😣","😥","😮","🤐","😯","😪","😫","😴","😌","😛","😜","😝","🤤","😒","😓","😔","😕","🙃","🤑","😲","☹️","🙁","😖","😞","😟","😤","😢","😭","😦","😧","😨","😩","🤯","😬","😰","😱","🥵","🥶","😳","🤪","😵","😡","😠","🤬","😷","🤒","🤕","🤢","🤮","🤧","🥴","😈","👿","💀","☠️","💩","🤡","👹","👺","👻","👽","👾","🤖"],
+  animals: ["😺","😸","😹","😻","😼","😽","🙀","😿","😾","🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐒","🐔","🐧","🐦","🐤","🐣","🐥","🦆","🦅","🦉","🦇","🐺","🐗","🐴","🦄","🐝","🐛","🦋","🐌","🐞","🐜","🦟","🦗","🕷️","🕸️","🦂","🐢","🐍","🦎","🦖","🦕","🐙","🦑","🦐","🦞","🦀","🐡","🐠","🐟","🐬","🐳","🐋","🦈","🐊","🐅","🐆","🦓","🦍","🐘","🦛","🦏","🐪","🐫","🦒","🦘","🐃","🐂","🐄","🐎","🐖","🐏","🐑","🦙","🐐","🦌","🐕","🐩","🦮","🐕‍🦺","🐈","🐓","🦃","🦚","🦜","🦢","🦩","🕊️","🐇","🐁","🐀","🐿️","🦔"],
+  gestures: ["👍","👎","👌","✌️","🤞","🤟","🤘","🤙","👈","👉","👆","🖕","👇","☝️","✋","🤚","🖐️","🖖","👋","🤝","👏","🙌","👐","🤲","🤜","🤛","✊","👊"],
+  hearts: ["❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓","💗","💖","💘","💝","💟"],
+  symbols: ["☮️","✝️","☪️","🕉️","☸️","✡️","🔯","🕎","☯️","☦️","🛐","⛎","♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓","🆔","⚛️","🉑","☢️","☣️","📴","📳","🈶","🈚","🈸","🈺","🈷️","✴️","🆚","💮","🉐","㊙️","㊗️","🈴","🈵","🈹","🈲","🅰️","🅱️","🆎","🆑","🅾️","🆘","❌","⭕","🛑","⛔","📛","🚫","💯","💢","♨️","🚷","🚯","🚳","🚱","🔞","📵","🚭","❗","❕","❓","❔","‼️","⁉️","🔅","🔆","〽️","⚠️","🚸","🔱","⚜️","🔰","♻️","✅","🈯","💹","❇️","✳️","❎","🌐","💠","Ⓜ️","🌀","💤","🏧","🚾","♿","🅿️","🈳","🈂️","🛂","🛃","🛄","🛅","🚹","🚺","🚼","🚻","🚮","🎦","📶","🈁","🔣","🔤","🔡","🔠","🆖","🆗","🆙","🆒","🆕","🆓"],
+  numbers: ["0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"]
+};
+
+const emojiCategories = [
+  { id: "all", name: "All", icon: "😀" },
+  { id: "faces", name: "Faces", icon: "😀" },
+  { id: "animals", name: "Animals", icon: "🐶" },
+  { id: "gestures", name: "Gestures", icon: "👍" },
+  { id: "hearts", name: "Hearts", icon: "❤️" },
+  { id: "symbols", name: "Symbols", icon: "☮️" },
+  { id: "numbers", name: "Numbers", icon: "0️⃣" }
 ];
 
 export function MessagesContent() {
-  const [selectedConversation, setSelectedConversation] = useState<Conversation>(sampleConversations[0]);
-  const [messages, setMessages] = useState<Message[]>(sampleMessages);
+  const { profile } = useAuthStore();
+  
+  // Get current user data
+  const currentUserName = getUserDisplayName(profile);
+  const currentUserInitials = getUserInitials(profile);
+  
+  const { conversations, isLoading: convLoading } = useConversations();
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const { messages, isLoading: msgLoading, sendMessage } = useMessages(selectedConversationId);
+  const selectedConversation = conversations.find(c => c.id === selectedConversationId);
   const [newMessage, setNewMessage] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "unread" | "pinned" | "projects">("all");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showAllEmojis, setShowAllEmojis] = useState(false);
+  const [emojiSearchQuery, setEmojiSearchQuery] = useState("");
+  const [emojiCategory, setEmojiCategory] = useState("all");
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [showVideoCall, setShowVideoCall] = useState(false);
+  const [showVoiceCall, setShowVoiceCall] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingIntervalRef = useRef<number | null>(null);
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
-
-    const message: Message = {
-      id: `msg-${Date.now()}`,
-      senderId: "current",
-      senderName: "Nasser Baylah",
-      senderRole: "Engineer",
-      content: newMessage,
-      timestamp: new Date().toISOString(),
-      type: "text",
-      isRead: true
-    };
-
-    setMessages(prev => [...prev, message]);
-    setNewMessage("");
+  // Get filtered emojis based on search and category
+  const getFilteredEmojis = () => {
+    let emojis = [];
+    
+    if (emojiCategory === "all") {
+      emojis = Object.values(emojiData).flat();
+    } else {
+      emojis = emojiData[emojiCategory as keyof typeof emojiData] || [];
+    }
+    
+    if (emojiSearchQuery) {
+      // Simple search - you could enhance this with more sophisticated matching
+      emojis = emojis.filter(emoji => 
+        emoji.includes(emojiSearchQuery) || 
+        emojiSearchQuery.toLowerCase().includes(emoji)
+      );
+    }
+    
+    return emojis;
   };
+
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return;
+    setIsSending(true);
+    try {
+      await sendMessage(newMessage);
+      setNewMessage("");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleEmojiPickerClose = (open: boolean) => {
+    setShowEmojiPicker(open);
+    if (!open) {
+      // Reset search and category when closing
+      setEmojiSearchQuery("");
+      setEmojiCategory("all");
+      setShowAllEmojis(false);
+    }
+  };
+
+  const uploadAndSendFile = async (file: File) => {
+    if (!selectedConversationId || !file) return;
+    setIsSending(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const userId = auth.user?.id;
+      if (!userId) return;
+
+      const path = `${selectedConversationId}/${userId}-${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('messages').upload(path, file, { upsert: false });
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrl } = supabase.storage.from('messages').getPublicUrl(path);
+
+      const isImage = file.type?.startsWith('image/');
+      const isAudio = file.type?.startsWith('audio/');
+      const { error: insertError } = await supabase.from('messages').insert([
+        {
+          conversation_id: selectedConversationId,
+          sender_id: userId,
+          content: file.name,
+          message_type: isImage ? 'image' : isAudio ? 'audio' : 'file',
+          file_url: publicUrl.publicUrl
+        }
+      ]);
+      if (insertError) throw insertError;
+    } catch (e) {
+      console.error('File send failed', e);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // Voice recording controls
+  const startVoiceRecording = async () => {
+    if (isRecording) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const chunks: BlobPart[] = [];
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        try {
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          const file = Object.assign(blob, { name: `voice-${Date.now()}.webm` }) as File;
+          await uploadAndSendFile(file);
+        } catch (err) {
+          console.error('Failed to save voice message', err);
+        } finally {
+          // stop all tracks
+          stream.getTracks().forEach(t => t.stop());
+        }
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+      recordingIntervalRef.current = window.setInterval(() => {
+        setRecordingTime((t) => t + 1);
+      }, 1000);
+    } catch (err) {
+      console.error('Microphone permission denied or unavailable', err);
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    if (!isRecording) return;
+    if (recordingIntervalRef.current) {
+      window.clearInterval(recordingIntervalRef.current);
+      recordingIntervalRef.current = null;
+    }
+    setIsRecording(false);
+    mediaRecorderRef.current?.stop();
+  };
+
+  const createNewConversation = async (name: string, type: "direct" | "group" | "project"): Promise<void> => {
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const userId = auth.user?.id;
+      if (!userId) return;
+
+      // For now, create a simple conversation with the current user
+      // In a real app, you'd select participants
+      const { error } = await supabase
+        .from('conversations')
+        .insert([
+          {
+            client_id: userId,
+            engineer_id: userId, // For demo, same user
+            name: name,
+            type: type
+          }
+        ]);
+
+      if (error) throw error;
+
+      // The conversations will be refreshed automatically by the useConversations hook
+      // due to the real-time subscription
+    } catch (error) {
+      console.error('Failed to create conversation:', error);
+      throw error;
+    }
+  };
+
+  // Voice/Video call functions
+  const startCall = (type: "voice" | "video") => {
+    if (type === "voice") {
+      setShowVoiceCall(true);
+    } else {
+      setShowVideoCall(true);
+    }
+  };
+
+  const endCall = () => {
+    setShowVoiceCall(false);
+    setShowVideoCall(false);
+  };
+
+  // Message reactions
+  const addReaction = (messageId: string, emoji: string) => {
+    // This would update the database in a real implementation
+    console.log(`Adding reaction ${emoji} to message ${messageId}`);
+  };
+
+  // Conversation management
+  const handleConversationAction = (action: "pin" | "archive" | "delete") => {
+    // This would update the database in a real implementation
+    console.log(`Conversation action: ${action}`);
+  };
+
+  // File download
+  const downloadFile = (fileName: string, fileUrl?: string) => {
+    if (fileUrl) {
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = fileName;
+      link.click();
+    }
+  };
+
+  useEffect(() => {
+    const markRead = async () => {
+      if (!selectedConversationId) return;
+      const { data: auth } = await supabase.auth.getUser();
+      const userId = auth.user?.id;
+      if (!userId) return;
+      await supabase
+        .from('messages')
+        .update({ read_at: new Date().toISOString() })
+        .eq('conversation_id', selectedConversationId)
+        .neq('sender_id', userId)
+        .is('read_at', null);
+    };
+    markRead();
+  }, [selectedConversationId]);
 
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -318,200 +393,91 @@ export function MessagesContent() {
     }
   };
 
-  const filteredConversations = sampleConversations.filter(conv => {
-    const matchesSearch = conv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         conv.participants.some(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesFilter = (() => {
-      switch (filterType) {
-        case "unread": return conv.unreadCount > 0;
-        case "pinned": return conv.isPinned;
-        case "projects": return conv.type === "project";
-        default: return true;
-      }
-    })();
+  // Auto-select the first conversation when available
+  useEffect(() => {
+    if (!selectedConversationId && conversations.length > 0) {
+      setSelectedConversationId(conversations[0].id);
+    }
+  }, [conversations, selectedConversationId]);
 
-    return matchesSearch && matchesFilter;
-  });
 
   return (
-    <div className="flex-1 flex h-screen overflow-hidden">
-      {/* Conversations Sidebar */}
-      <div className={`${isCollapsed ? 'w-20' : 'w-80'} bg-background flex flex-col transition-all duration-300`}>
-        {/* Header */}
-        <div className="p-6 border-b border-sidebar-border">
-          <div className="flex items-center justify-between mb-4">
-            {!isCollapsed && (
-              <h1 className="text-xl font-bold flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-primary" />
-                Messages
-              </h1>
-            )}
-            {isCollapsed && (
-              <div className="flex justify-center w-full">
-                <MessageSquare className="w-5 h-5 text-primary" />
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              {!isCollapsed && (
-                <Button size="sm" variant="outline">
-                  <Plus className="w-4 h-4" />
-                </Button>
-              )}
+    <>
+
+      {/* Voice Call Modal */}
+      {showVoiceCall && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 text-center">
+            <div className="mb-6">
+              <Avatar className="w-20 h-20 mx-auto mb-4">
+                <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+                  {selectedConversation?.job?.title ? (
+                    <Building className="w-10 h-10" />
+                  ) : (selectedConversation as any)?.type === "group" ? (
+                    <Users className="w-10 h-10" />
+                  ) : (
+                    (selectedConversation?.client_profile?.first_name || selectedConversation?.engineer_profile?.first_name || '?').charAt(0)
+                  )}
+                </AvatarFallback>
+              </Avatar>
+              <h3 className="text-lg font-medium">
+                {selectedConversation?.job?.title || `${selectedConversation?.client_profile?.first_name ?? ''} ${selectedConversation?.client_profile?.last_name ?? ''}`.trim() || `${selectedConversation?.engineer_profile?.first_name ?? ''} ${selectedConversation?.engineer_profile?.last_name ?? ''}`.trim()}
+              </h3>
+              <p className="text-sm text-muted-foreground">Voice call in progress...</p>
+            </div>
+            <div className="flex justify-center gap-4">
               <Button 
-                size="sm" 
-                variant="outline"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="mr-2"
+                size="lg"
+                className="bg-red-600 hover:bg-red-700 rounded-full"
+                onClick={endCall}
               >
-                {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                <PhoneCall className="w-6 h-6" />
               </Button>
             </div>
           </div>
-          
-          {/* Search */}
-          <div className="relative mb-3">
-            {!isCollapsed ? (
-              <>
-                <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
-                <Input
-                  placeholder="Search conversations..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </>
-            ) : (
-              <div className="flex justify-center">
-                <Button size="sm" variant="outline" className="p-2">
-                  <Search className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Filters */}
-          {!isCollapsed && (
-            <div className="flex gap-2">
-              <Select value={filterType} onValueChange={(value: any) => setFilterType(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Conversations</SelectItem>
-                  <SelectItem value="unread">Unread</SelectItem>
-                  <SelectItem value="pinned">Pinned</SelectItem>
-                  <SelectItem value="projects">Projects</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-          {isCollapsed && (
-            <div className="flex justify-center">
-              <Button size="sm" variant="outline" className="p-2">
-                <Filter className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
         </div>
+      )}
 
-        {/* Conversations List */}
-        <ScrollArea className="flex-1">
-          <div className={`${isCollapsed ? 'p-1' : 'p-6'} space-y-1`}>
-            {filteredConversations.map((conversation) => (
-              <div
-                key={conversation.id}
-                className={`${isCollapsed ? 'p-2' : 'p-3'} rounded-lg cursor-pointer transition-colors ${
-                  selectedConversation.id === conversation.id
-                    ? 'bg-primary/10 border border-sidebar-border'
-                    : 'hover:bg-muted'
-                }`}
-                onClick={() => setSelectedConversation(conversation)}
+      {/* Video Call Modal */}
+      {showVideoCall && (
+        <div className="fixed inset-0 bg-background/45 flex items-center justify-center z-50">
+          <div className="bg-muted rounded-lg overflow-hidden max-w-4xl w-full mx-4 h-[600px] relative">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80" />
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
+              <Button size="lg" variant="outline" className="rounded-full bg-background/20 border-border/30">
+                <Mic className="w-6 h-6" />
+              </Button>
+              <Button size="lg" variant="outline" className="rounded-full bg-background/20 border-border/30">
+                <VideoIcon className="w-6 h-6" />
+              </Button>
+              <Button 
+                size="lg"
+                className="bg-red-600 hover:bg-red-700 rounded-full"
+                onClick={endCall}
               >
-                {!isCollapsed ? (
-                  <div className="flex items-start gap-3">
-                    <div className="relative">
-                      <Avatar className="w-10 h-10">
-                        <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                          {conversation.type === "project" ? (
-                            <Building className="w-5 h-5" />
-                          ) : conversation.type === "group" ? (
-                            <Users className="w-5 h-5" />
-                          ) : (
-                            conversation.name.split(' ').map(n => n[0]).join('').slice(0, 2)
-                          )}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background ${getStatusColor(conversation.status)}`} />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-1">
-                          <h4 className="font-medium truncate">{conversation.name}</h4>
-                          {conversation.isPinned && <Pin className="w-3 h-3 text-muted-foreground" />}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-muted-foreground">
-                            {formatTime(conversation.lastMessage.timestamp)}
-                          </span>
-                          {conversation.unreadCount > 0 && (
-                            <Badge className="bg-primary text-primary-foreground text-xs min-w-5 h-5 rounded-full flex items-center justify-center">
-                              {conversation.unreadCount}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      {conversation.projectName && (
-                        <div className="text-xs text-muted-foreground mb-1">
-                          {conversation.projectName}
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm text-muted-foreground truncate flex-1">
-                          {conversation.lastMessage.type === "file" ? (
-                            <span className="flex items-center gap-1">
-                              <Paperclip className="w-3 h-3" />
-                              {conversation.lastMessage.fileName}
-                            </span>
-                          ) : (
-                            conversation.lastMessage.content
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex justify-center relative">
-                    <Avatar className="w-10 h-10">
-                      <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                        {conversation.type === "project" ? (
-                          <Building className="w-5 h-5" />
-                        ) : conversation.type === "group" ? (
-                          <Users className="w-5 h-5" />
-                        ) : (
-                          conversation.name.split(' ').map(n => n[0]).join('').slice(0, 2)
-                        )}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background ${getStatusColor(conversation.status)}`} />
-                    {conversation.unreadCount > 0 && (
-                      <Badge className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs min-w-4 h-4 rounded-full flex items-center justify-center p-0">
-                        {conversation.unreadCount > 9 ? '9+' : conversation.unreadCount}
-                      </Badge>
-                    )}
-                    {conversation.isPinned && (
-                      <Pin className="absolute -top-1 -left-1 w-3 h-3 text-muted-foreground" />
-                    )}
-                  </div>
-                )}
+                <PhoneCall className="w-6 h-6" />
+              </Button>
+            </div>
+            <div className="absolute top-4 right-4">
+              <div className="bg-background/50 rounded-lg p-2 text-foreground">
+                <p className="text-sm">Video call with {selectedConversation?.job?.title || `${selectedConversation?.client_profile?.first_name ?? ''} ${selectedConversation?.client_profile?.last_name ?? ''}`.trim() || `${selectedConversation?.engineer_profile?.first_name ?? ''} ${selectedConversation?.engineer_profile?.last_name ?? ''}`.trim()}</p>
               </div>
-            ))}
+            </div>
           </div>
-        </ScrollArea>
-      </div>
+        </div>
+      )}
+
+      <div className="flex-1 flex h-screen overflow-hidden">
+        {/* Conversations Sidebar */}
+        <ConversationList
+          conversations={conversations}
+          selectedConversationId={selectedConversationId}
+          onSelectConversation={setSelectedConversationId}
+          onNewConversation={createNewConversation}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+          isLoading={convLoading}
+        />
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col border-l border-sidebar-border">
@@ -519,33 +485,31 @@ export function MessagesContent() {
          <div className="p-6 border-b border-sidebar-border bg-background">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Avatar className="w-10 h-10">
-                <AvatarFallback className="bg-primary text-primary-foreground">
-                  {selectedConversation.type === "project" ? (
-                    <Building className="w-5 h-5" />
-                  ) : selectedConversation.type === "group" ? (
-                    <Users className="w-5 h-5" />
-                  ) : (
-                    selectedConversation.name.split(' ').map(n => n[0]).join('').slice(0, 2)
-                  )}
-                </AvatarFallback>
-              </Avatar>
+              {selectedConversation && (
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {selectedConversation.job?.title ? (
+                      <Building className="w-5 h-5" />
+                    ) : (
+                      (selectedConversation.client_profile?.first_name || selectedConversation.engineer_profile?.first_name || '?')
+                        .charAt(0)
+                    )}
+                  </AvatarFallback>
+                </Avatar>
+              )}
               <div>
-                <h3 className="font-medium">{selectedConversation.name}</h3>
+                <h3 className="font-medium">{selectedConversation ? (selectedConversation.job?.title || `${selectedConversation.client_profile?.first_name ?? ''} ${selectedConversation.client_profile?.last_name ?? ''}`.trim() || `${selectedConversation.engineer_profile?.first_name ?? ''} ${selectedConversation.engineer_profile?.last_name ?? ''}`.trim()) : ''}</h3>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Circle className={`w-2 h-2 ${getStatusColor(selectedConversation.status)}`} />
+                  {selectedConversation && (
+                    <Circle className={`w-2 h-2 ${getStatusColor('online')}`} />
+                  )}
                   <span>
-                    {selectedConversation.type === "project" 
-                      ? `${selectedConversation.participants.length} members`
-                      : selectedConversation.type === "group"
-                      ? `${selectedConversation.participants.length} participants`
-                      : selectedConversation.status
-                    }
+                    {selectedConversation?.job?.title ? 'Project conversation' : 'Direct conversation'}
                   </span>
-                  {selectedConversation.projectName && (
+                  {selectedConversation?.job?.title && (
                     <>
                       <span>•</span>
-                      <span>{selectedConversation.projectName}</span>
+                      <span>{selectedConversation.job.title}</span>
                     </>
                   )}
                 </div>
@@ -553,10 +517,10 @@ export function MessagesContent() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" onClick={() => startCall("voice")}>
                 <Phone className="w-4 h-4" />
               </Button>
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" onClick={() => startCall("video")}>
                 <Video className="w-4 h-4" />
               </Button>
               <Popover>
@@ -567,18 +531,50 @@ export function MessagesContent() {
                 </PopoverTrigger>
                 <PopoverContent className="w-48" align="end">
                   <div className="space-y-1">
-                    <Button variant="ghost" size="sm" className="w-full justify-start">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start"
+                      onClick={() => handleConversationAction("pin")}
+                    >
                       <Star className="w-4 h-4 mr-2" />
                       Pin Conversation
                     </Button>
-                    <Button variant="ghost" size="sm" className="w-full justify-start">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start"
+                      onClick={() => handleConversationAction("archive")}
+                    >
                       <Archive className="w-4 h-4 mr-2" />
                       Archive
                     </Button>
-                    <Button variant="ghost" size="sm" className="w-full justify-start text-red-600">
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete
-                    </Button>
+                    <Separator />
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="sm" className="w-full justify-start text-destructive">
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Conversation</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete this conversation? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction 
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={() => handleConversationAction("delete")}
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -589,9 +585,15 @@ export function MessagesContent() {
         {/* Messages Area */}
         <ScrollArea className="flex-1 p-4 bg-muted/30">
           <div className="space-y-4 max-w-4xl mx-auto">
-            {messages.map((message) => {
-              const isCurrentUser = message.senderId === "current";
-              const isSystem = message.type === "system";
+            {(!selectedConversationId && !convLoading) && (
+              <div className="text-center text-muted-foreground py-10">Select a conversation to start messaging.</div>
+            )}
+            {(msgLoading) && (
+              <div className="text-center text-muted-foreground py-10">Loading messages...</div>
+            )}
+            {messages.map((message: HookMessage) => {
+              const isCurrentUser = false; // server identifies sender via sender_id
+              const isSystem = message.message_type === "system";
 
               if (isSystem) {
                 return (
@@ -608,7 +610,7 @@ export function MessagesContent() {
                   {!isCurrentUser && (
                     <Avatar className="w-8 h-8">
                       <AvatarFallback className="bg-muted-foreground text-muted-foreground text-xs">
-                        {message.senderName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        {(message.sender_profile?.first_name || '?').charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   )}
@@ -616,8 +618,7 @@ export function MessagesContent() {
                   <div className={`max-w-lg ${isCurrentUser ? 'items-end' : 'items-start'} flex flex-col`}>
                     {!isCurrentUser && (
                       <div className="text-sm font-medium mb-1">
-                        {message.senderName}
-                        <span className="text-xs text-muted-foreground ml-2">{message.senderRole}</span>
+                        {`${message.sender_profile?.first_name ?? ''} ${message.sender_profile?.last_name ?? ''}`.trim()}
                       </div>
                     )}
 
@@ -626,38 +627,111 @@ export function MessagesContent() {
                         ? 'bg-primary text-primary-foreground' 
                         : 'bg-background border border-sidebar-border'
                     }`}>
-                      {message.type === "file" ? (
+                      {message.message_type === "file" ? (
                         <div className="flex items-center gap-3">
                           <div className={`p-2 rounded ${isCurrentUser ? 'bg-primary/20' : 'bg-muted'}`}>
-                            <FileText className="w-5 h-5" />
+                            {(message as any).fileName?.includes('.dwg') ? (
+                              <FileText className="w-5 h-5" />
+                            ) : (message as any).fileName?.includes('.pdf') ? (
+                              <File className="w-5 h-5" />
+                            ) : (message as any).fileName?.includes('.mp3') || (message as any).fileName?.includes('.webm') ? (
+                              <Mic className="w-5 h-5" />
+                            ) : (
+                              <Paperclip className="w-5 h-5" />
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">{message.fileName}</p>
-                            <p className={`text-sm ${isCurrentUser ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                              {message.fileSize && formatFileSize(message.fileSize)}
-                            </p>
+                            <p className="font-medium truncate">{(message as any).fileName || 'Attachment'}</p>
+                            {(message as any).fileSize && (
+                              <p className={`text-xs ${isCurrentUser ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                                {formatFileSize((message as any).fileSize)}
+                              </p>
+                            )}
                           </div>
-                          <Button size="sm" variant={isCurrentUser ? "ghost" : "outline"}>
-                            <Download className="w-4 h-4" />
-                          </Button>
+                          {message.file_url && (
+                            <Button 
+                              size="sm" 
+                              variant={isCurrentUser ? "ghost" : "outline"}
+                              onClick={() => downloadFile((message as any).fileName || 'file', message.file_url)}
+                            >
+                              <Download className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ) : message.message_type === "image" ? (
+                        <div className="flex flex-col gap-2">
+                          <img
+                            src={message.file_url}
+                            alt={message.content || 'Image'}
+                            className="max-h-64 rounded border border-sidebar-border object-contain bg-background"
+                          />
+                          <a
+                            href={message.file_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={`text-xs underline ${isCurrentUser ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}
+                          >
+                            Open full size
+                          </a>
+                        </div>
+                      ) : message.message_type === "audio" ? (
+                        <div className="flex items-center gap-3 max-w-sm">
+                          <audio controls src={message.file_url} className="w-full" />
                         </div>
                       ) : (
-                        <p>{message.content}</p>
+                        <div className="whitespace-pre-wrap">{message.content}</div>
                       )}
 
-                      {message.reactions && message.reactions.length > 0 && (
+                      {/* Message Reactions */}
+                      {(message as any).reactions && (message as any).reactions.length > 0 && (
                         <div className="flex gap-1 mt-2">
-                          {message.reactions.map((reaction, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
+                          {(message as any).reactions.map((reaction: any, index: number) => (
+                            <Button
+                              key={index}
+                              size="sm"
+                              variant="secondary"
+                              className="h-6 px-2 text-xs"
+                              onClick={() => addReaction(message.id, reaction.emoji)}
+                            >
                               {reaction.emoji} {reaction.count}
-                            </Badge>
+                            </Button>
                           ))}
+                        </div>
+                      )}
+
+                      {/* Quick reaction buttons for non-current user messages */}
+                      {!isCurrentUser && message.message_type !== "system" && (
+                        <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="h-6 w-6 p-0 text-xs"
+                            onClick={() => addReaction(message.id, "👍")}
+                          >
+                            👍
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="h-6 w-6 p-0 text-xs"
+                            onClick={() => addReaction(message.id, "❤️")}
+                          >
+                            ❤️
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="h-6 w-6 p-0 text-xs"
+                            onClick={() => addReaction(message.id, "😀")}
+                          >
+                            😀
+                          </Button>
                         </div>
                       )}
                     </div>
 
                     <div className={`text-xs text-muted-foreground mt-1 ${isCurrentUser ? 'text-right' : ''}`}>
-                      {formatTime(message.timestamp)}
+                      {formatTime(message.created_at)}
                       {isCurrentUser && <CheckCircle className="w-3 h-3 inline ml-1" />}
                     </div>
                   </div>
@@ -674,17 +748,56 @@ export function MessagesContent() {
         </ScrollArea>
 
         {/* Message Input */}
-        <div className="p-4 bg-background border-t border-sidebar-border">
+        <div className="sticky bottom-0 p-4 bg-background border-t border-sidebar-border">
           <div className="flex items-end gap-3 w-full max-w-full mx-auto">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Button size="sm" variant="outline">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      uploadAndSendFile(f);
+                      e.currentTarget.value = '';
+                    }
+                  }}
+                />
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      uploadAndSendFile(f);
+                      e.currentTarget.value = '';
+                    }
+                  }}
+                />
+                <input
+                  ref={cameraInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      uploadAndSendFile(f);
+                      e.currentTarget.value = '';
+                    }
+                  }}
+                />
+                <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={isSending} aria-label="Attach file">
                   <Paperclip className="w-4 h-4" />
                 </Button>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="outline" onClick={() => imageInputRef.current?.click()} disabled={isSending} aria-label="Attach image">
                   <Image className="w-4 h-4" />
                 </Button>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="outline" onClick={() => cameraInputRef.current?.click()} disabled={isSending} aria-label="Open camera">
                   <Camera className="w-4 h-4" />
                 </Button>
               </div>
@@ -703,18 +816,93 @@ export function MessagesContent() {
                   }}
                 />
                 <div className="absolute right-2 bottom-2 flex items-center gap-1">
-                  <Button size="sm" variant="ghost">
-                    <Smile className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost">
-                    <Mic className="w-4 h-4" />
-                  </Button>
+                  <Popover open={showEmojiPicker} onOpenChange={handleEmojiPickerClose}>
+                    <PopoverTrigger asChild>
+                      <Button size="sm" variant="ghost">
+                        <Smile className="w-4 h-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-3" align="end">
+                      {/* Search Bar */}
+                      <div className="relative mb-3">
+                        <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
+                        <Input
+                          placeholder="Search emojis..."
+                          value={emojiSearchQuery}
+                          onChange={(e) => setEmojiSearchQuery(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                      
+                      {/* Category Filter */}
+                      <div className="flex gap-1 mb-3 pb-2.5 overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                        {emojiCategories.map((category) => (
+                          <Button
+                            key={category.id}
+                            variant={emojiCategory === category.id ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setEmojiCategory(category.id)}
+                            className="flex-shrink-0 h-8 px-2"
+                          >
+                            <span className="mr-1">{category.icon}</span>
+                            <span className="text-xs">{category.name}</span>
+                          </Button>
+                        ))}
+                      </div>
+                      
+                      {/* Emojis Grid */}
+                      <div className="grid grid-cols-8 gap-1 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                        {getFilteredEmojis().slice(0, showAllEmojis ? undefined : 64).map((emoji) => (
+                          <Button
+                            key={emoji}
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-muted"
+                            onClick={() => {
+                              setNewMessage((prev) => prev + emoji);
+                              setShowEmojiPicker(false);
+                            }}
+                          >
+                            {emoji}
+                          </Button>
+                        ))}
+                      </div>
+                      
+                      {/* View More/Less Button */}
+                      {getFilteredEmojis().length > 64 && (
+                        <div className="mt-3 pt-3 border-t border-sidebar-border">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowAllEmojis(!showAllEmojis)}
+                            className="w-full"
+                          >
+                            {showAllEmojis ? 'View Less' : 'View More'}
+                          </Button>
+                        </div>
+                      )}
+                    </PopoverContent>
+                  </Popover>
+                  {!isRecording ? (
+                    <Button size="sm" variant="ghost" onClick={startVoiceRecording} aria-label="Start recording">
+                      <Mic className="w-4 h-4" />
+                    </Button>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-destructive font-medium">
+                        {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+                      </span>
+                      <Button size="sm" variant="ghost" onClick={stopVoiceRecording} aria-label="Stop recording">
+                        <StopCircle className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
             <Button 
               className="bg-primary hover:bg-primary/90" 
-              disabled={!newMessage.trim()}
+              disabled={!newMessage.trim() || !selectedConversationId || isSending}
               onClick={handleSendMessage}
             >
               <Send className="w-4 h-4" />
@@ -726,31 +914,15 @@ export function MessagesContent() {
       {/* Participants Sidebar (Optional) */}
       <div className="w-64 bg-background border-l border-sidebar-border p-6 hidden xl:block">
         <h3 className="font-medium mb-4">
-          {selectedConversation.type === "project" ? "Project Team" : "Participants"}
+          {selectedConversation?.job?.title ? "Project Team" : "Participants"}
         </h3>
         <div className="space-y-3">
-          {selectedConversation.participants.map((participant) => (
-            <div key={participant.id} className="flex items-center gap-3">
-              <div className="relative">
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-muted-foreground text-muted-foreground text-xs">
-                    {participant.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background ${getStatusColor(participant.status)}`} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{participant.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{participant.role}</p>
-                {participant.company && (
-                  <p className="text-xs text-muted-foreground truncate">{participant.company}</p>
-                )}
-              </div>
-            </div>
-          ))}
+          {selectedConversation && (
+            <div className="text-sm text-muted-foreground">Participants will appear here when implemented.</div>
+          )}
         </div>
 
-        {selectedConversation.projectId && (
+        {selectedConversation?.job?.title && (
           <>
             <Separator className="my-4" />
             <div>
@@ -758,7 +930,7 @@ export function MessagesContent() {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
                   <Building className="w-4 h-4 text-muted-foreground" />
-                  <span>{selectedConversation.projectName}</span>
+                  <span>{selectedConversation.job.title}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -774,5 +946,6 @@ export function MessagesContent() {
         )}
       </div>
     </div>
+    </>
   );
 }

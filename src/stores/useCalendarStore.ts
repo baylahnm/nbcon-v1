@@ -444,9 +444,10 @@ export function useCalendarStore() {
   });
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [events, setEvents] = useState<CalendarEvent[]>(mockEvents);
 
   const filteredEvents = useMemo(() => {
-    return mockEvents.filter(event => {
+    return events.filter(event => {
       // Search term filter
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
@@ -561,6 +562,24 @@ export function useCalendarStore() {
     });
   };
 
+  const addEvent = (eventData: Omit<CalendarEvent, 'id'>) => {
+    const newEvent: CalendarEvent = {
+      ...eventData,
+      id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    };
+    setEvents(prev => [...prev, newEvent]);
+  };
+
+  const updateEvent = (eventId: string, eventData: Partial<CalendarEvent>) => {
+    setEvents(prev => prev.map(event => 
+      event.id === eventId ? { ...event, ...eventData } : event
+    ));
+  };
+
+  const deleteEvent = (eventId: string) => {
+    setEvents(prev => prev.filter(event => event.id !== eventId));
+  };
+
   return {
     // State
     currentDate,
@@ -573,7 +592,7 @@ export function useCalendarStore() {
     
     // Data
     events: filteredEvents,
-    allEvents: mockEvents,
+    allEvents: events,
     
     // Actions
     setCurrentDate,
@@ -584,6 +603,9 @@ export function useCalendarStore() {
     clearFilters,
     setSelectedEvent,
     setShowFilters,
+    addEvent,
+    updateEvent,
+    deleteEvent,
     
     // Computed
     getEventsForDate,

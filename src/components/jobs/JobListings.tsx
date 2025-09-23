@@ -198,7 +198,7 @@ export default function JobListings() {
               <select 
                 value={jobTypeFilter} 
                 onChange={(e) => setJobTypeFilter(e.target.value)}
-                className="px-3 py-2 border border-sidebar-border rounded-md text-sm h-10"
+                className="px-3 py-2 border border-sidebar-border rounded-md text-sm h-10 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 {jobTypes.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -210,7 +210,7 @@ export default function JobListings() {
               <select 
                 value={sortBy} 
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-sidebar-border rounded-md text-sm h-10"
+                className="px-3 py-2 border border-sidebar-border rounded-md text-sm h-10 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>

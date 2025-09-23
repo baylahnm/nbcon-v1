@@ -100,7 +100,7 @@ const mockPayments: Payment[] = [
     dueDate: new Date("2025-01-30"),
     invoiceNumber: "INV-NEOM-001",
     client: {
-      name: "Ahmed Al-Rashid",
+      name: "Current User",
       company: "NEOM Development Company",
       avatar: "/avatars/neom.jpg"
     },

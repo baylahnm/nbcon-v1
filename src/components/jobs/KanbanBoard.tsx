@@ -1,393 +1,88 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Plus, MessageSquare, Paperclip, Eye, Search, Filter, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Filter, Edit3, Trash2, MoreHorizontal, ChevronDown, ChevronUp } from "lucide-react";
+import { ProjectCard } from "./ProjectCard";
+import { KanbanFiltersDialog } from "./KanbanFilters";
+import { NewTaskDialog } from "./NewTaskDialog";
+import { TaskDetailDialog } from "./TaskDetailDialog";
+import { AddColumnDialog } from "./AddColumnDialog";
+import { useKanbanStore, Task, KanbanColumn } from "./hooks/useKanbanStore";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  priority: 'High' | 'Medium' | 'Low';
-  assignees: Array<{
-    id: string;
-    name: string;
-    initials: string;
-  }>;
-  comments: number;
-  attachments: number;
-  tasks: number;
-  status: 'all' | 'draft' | 'open' | 'quoted' | 'todo' | 'on-progress' | 'in-review' | 'completed' | 'cancelled';
-}
+export function KanbanBoard() {
+  const { 
+    getTasksByStatus, 
+    getSortedColumns,
+    filters, 
+    setFilters, 
+    availableCategories, 
+    availableAssignees, 
+    addTask,
+    updateTask,
+    deleteTask,
+    completeTask,
+    updateColumn,
+    deleteColumn
+  } = useKanbanStore();
 
-const mockProjects: Project[] = [
-  // Draft projects
-  {
-    id: '1',
-    title: 'NEOM Smart City Infrastructure',
-    description: 'Initial planning phase for smart city infrastructure in NEOM.',
-    category: 'Civil',
-    priority: 'High',
-    assignees: [
-      { id: '1', name: 'Ahmed Al-Fahad', initials: 'AF' }
-    ],
-    comments: 0,
-    attachments: 2,
-    tasks: 1,
-    status: 'draft'
-  },
-  {
-    id: '2',
-    title: 'Vision 2030 Energy Grid',
-    description: 'Preliminary design for renewable energy grid system.',
-    category: 'Energy',
-    priority: 'High',
-    assignees: [
-      { id: '2', name: 'Fatima Al-Zahra', initials: 'FZ' }
-    ],
-    comments: 1,
-    attachments: 3,
-    tasks: 2,
-    status: 'draft'
-  },
-  // Open projects
-  {
-    id: '3',
-    title: 'Riyadh Metro Extension',
-    description: 'New metro line extension project in Riyadh city center.',
-    category: 'Civil',
-    priority: 'High',
-    assignees: [
-      { id: '3', name: 'Omar Al-Farouq', initials: 'OF' },
-      { id: '4', name: 'Sara Al-Mansouri', initials: 'SM' }
-    ],
-    comments: 3,
-    attachments: 8,
-    tasks: 5,
-    status: 'open'
-  },
-  {
-    id: '4',
-    title: 'Jeddah Port Expansion',
-    description: 'Port infrastructure expansion and modernization project.',
-    category: 'Industrial',
-    priority: 'Medium',
-    assignees: [
-      { id: '5', name: 'Khalid Al-Cheikh', initials: 'KC' }
-    ],
-    comments: 2,
-    attachments: 6,
-    tasks: 4,
-    status: 'open'
-  },
-  // Quoted projects
-  {
-    id: '5',
-    title: 'Dammam Airport Terminal',
-    description: 'New terminal design and construction for Dammam Airport.',
-    category: 'Structural',
-    priority: 'High',
-    assignees: [
-      { id: '6', name: 'Noura Al-Ghamdi', initials: 'NG' },
-      { id: '7', name: 'Mohammed Al-Rashid', initials: 'MR' }
-    ],
-    comments: 4,
-    attachments: 12,
-    tasks: 6,
-    status: 'quoted'
-  },
-  {
-    id: '6',
-    title: 'AlUla Heritage Site Development',
-    description: 'Infrastructure development for UNESCO heritage site.',
-    category: 'Environmental',
-    priority: 'Medium',
-    assignees: [
-      { id: '8', name: 'Aisha Al-Qahtani', initials: 'AQ' }
-    ],
-    comments: 1,
-    attachments: 4,
-    tasks: 3,
-    status: 'quoted'
-  },
-  // To-do projects
-  {
-    id: '7',
-    title: 'Structural Assessment - Villa Complex',
-    description: 'Conduct structural integrity assessment for 15-unit villa complex in Riyadh.',
-    category: 'Structural',
-    priority: 'High',
-    assignees: [
-      { id: '9', name: 'Yousef Al-Nasser', initials: 'YN' },
-      { id: '10', name: 'Rania Al-Faisal', initials: 'RF' }
-    ],
-    comments: 2,
-    attachments: 5,
-    tasks: 3,
-    status: 'todo'
-  },
-  {
-    id: '8',
-    title: 'Geofencing Integration',
-    description: 'Implement location-based check-in system for field engineers.',
-    category: 'Mobile App',
-    priority: 'Medium',
-    assignees: [
-      { id: '11', name: 'Hassan Al-Mutairi', initials: 'HM' },
-      { id: '12', name: 'Jana Al-Sabah', initials: 'JA' }
-    ],
-    comments: 1,
-    attachments: 3,
-    tasks: 3,
-    status: 'todo'
-  },
-  {
-    id: '9',
-    title: 'SCE Credential Verification',
-    description: 'Saudi Council of Engineers API integration for engineer verification.',
-    category: 'Platform',
-    priority: 'High',
-    assignees: [
-      { id: '13', name: 'Saeed Al-Eid', initials: 'SE' },
-      { id: '14', name: 'Nada Al-Khateeb', initials: 'NK' }
-    ],
-    comments: 0,
-    attachments: 4,
-    tasks: 3,
-    status: 'todo'
-  },
-  // In Progress projects
-  {
-    id: '10',
-    title: 'Bridge Load Analysis',
-    description: 'Detailed load-bearing analysis for highway bridge maintenance project.',
-    category: 'Civil',
-    priority: 'High',
-    assignees: [
-      { id: '15', name: 'Rami Al-Mahmoud', initials: 'RM' },
-      { id: '16', name: 'Jawad Al-Rashid', initials: 'JR' }
-    ],
-    comments: 4,
-    attachments: 8,
-    tasks: 3,
-    status: 'on-progress'
-  },
-  {
-    id: '11',
-    title: 'Milestone Payment System',
-    description: 'Escrow-based payment system for project milestones.',
-    category: 'Platform',
-    priority: 'Medium',
-    assignees: [
-      { id: '17', name: 'Mona Al-Sheikh', initials: 'MS' },
-      { id: '18', name: 'Abdulaziz Al-Zahrani', initials: 'AZ' }
-    ],
-    comments: 2,
-    attachments: 6,
-    tasks: 3,
-    status: 'on-progress'
-  },
-  {
-    id: '12',
-    title: 'HVAC System Design Review',
-    description: 'Mechanical engineering review for shopping mall HVAC system.',
-    category: 'Mechanical',
-    priority: 'Medium',
-    assignees: [
-      { id: '19', name: 'Bushra Al-Turki', initials: 'BT' },
-      { id: '20', name: 'Sami Al-Harbi', initials: 'SH' }
-    ],
-    comments: 1,
-    attachments: 5,
-    tasks: 3,
-    status: 'on-progress'
-  },
-  // In Review projects
-  {
-    id: '13',
-    title: 'Electrical Grid Assessment',
-    description: 'Power distribution analysis for residential development.',
-    category: 'Electrical',
-    priority: 'High',
-    assignees: [
-      { id: '21', name: 'Dina Al-Rashid', initials: 'DR' },
-      { id: '22', name: 'Ghassan Al-Shehri', initials: 'GS' }
-    ],
-    comments: 3,
-    attachments: 9,
-    tasks: 3,
-    status: 'in-review'
-  },
-  {
-    id: '14',
-    title: 'AI Matching Algorithm',
-    description: 'Engineer-client matching system based on skills and location.',
-    category: 'Platform',
-    priority: 'Medium',
-    assignees: [
-      { id: '23', name: 'Pamela Al-Yousef', initials: 'PY' }
-    ],
-    comments: 2,
-    attachments: 4,
-    tasks: 3,
-    status: 'in-review'
-  },
-  // Completed projects
-  {
-    id: '15',
-    title: 'Real-time Project Tracking',
-    description: 'GPS-based tracking system for field engineers and project progress.',
-    category: 'Mobile App',
-    priority: 'High',
-    assignees: [
-      { id: '24', name: 'Tariq Al-Mutairi', initials: 'TM' },
-      { id: '25', name: 'Layla Al-Sabah', initials: 'LS' }
-    ],
-    comments: 5,
-    attachments: 12,
-    tasks: 3,
-    status: 'completed'
-  },
-  {
-    id: '16',
-    title: 'Foundation Analysis - Riyadh Metro',
-    description: 'Geotechnical foundation assessment for metro station construction.',
-    category: 'Geotechnical',
-    priority: 'High',
-    assignees: [
-      { id: '26', name: 'Faisal Al-Harbi', initials: 'FH' },
-      { id: '27', name: 'Noura Al-Turki', initials: 'NT' }
-    ],
-    comments: 7,
-    attachments: 15,
-    tasks: 3,
-    status: 'completed'
-  },
-  {
-    id: '17',
-    title: 'Water Treatment Plant Inspection',
-    description: 'Environmental compliance and efficiency assessment.',
-    category: 'Environmental',
-    priority: 'Medium',
-    assignees: [
-      { id: '28', name: 'Majed Al-Rashid', initials: 'MR' },
-      { id: '29', name: 'Hala Al-Sheikh', initials: 'HS' }
-    ],
-    comments: 4,
-    attachments: 8,
-    tasks: 3,
-    status: 'completed'
-  },
-  {
-    id: '18',
-    title: 'Solar Panel Efficiency Analysis',
-    description: 'Renewable energy assessment for government buildings.',
-    category: 'Energy',
-    priority: 'Medium',
-    assignees: [
-      { id: '30', name: 'Waleed Al-Zahrani', initials: 'WZ' },
-      { id: '31', name: 'Reem Al-Ghamdi', initials: 'RG' }
-    ],
-    comments: 3,
-    attachments: 6,
-    tasks: 3,
-    status: 'completed'
-  },
-  // Cancelled projects
-  {
-    id: '19',
-    title: 'Old Airport Renovation',
-    description: 'Renovation project cancelled due to budget constraints.',
-    category: 'Civil',
-    priority: 'Low',
-    assignees: [
-      { id: '32', name: 'Khalid Al-Mutairi', initials: 'KM' }
-    ],
-    comments: 1,
-    attachments: 2,
-    tasks: 1,
-    status: 'cancelled'
-  },
-  {
-    id: '20',
-    title: 'Legacy System Migration',
-    description: 'Project cancelled due to technical feasibility issues.',
-    category: 'Platform',
-    priority: 'Medium',
-    assignees: [
-      { id: '33', name: 'Salma Al-Fahad', initials: 'SF' }
-    ],
-    comments: 2,
-    attachments: 3,
-    tasks: 2,
-    status: 'cancelled'
-  }
-];
-
-const columns = [
-  { id: 'all', title: 'All Jobs', count: 0 },
-  { id: 'draft', title: 'Draft', count: 0 },
-  { id: 'open', title: 'Open', count: 0 },
-  { id: 'quoted', title: 'Quoted', count: 0 },
-  { id: 'todo', title: 'To-do', count: 0 },
-  { id: 'on-progress', title: 'In Progress', count: 0 },
-  { id: 'in-review', title: 'In Review', count: 0 },
-  { id: 'completed', title: 'Completed', count: 0 },
-  { id: 'cancelled', title: 'Cancelled', count: 0 }
-];
-
-const getCategoryColor = (category: string) => {
-  const colors = {
-    'Structural': 'bg-amber-100 text-amber-800',
-    'Civil': 'bg-blue-100 text-blue-800',
-    'Mechanical': 'bg-green-100 text-green-800',
-    'Electrical': 'bg-yellow-100 text-yellow-800',
-    'Industrial': 'bg-purple-100 text-purple-800',
-    'Geotechnical': 'bg-orange-100 text-orange-800',
-    'Environmental': 'bg-emerald-100 text-emerald-800',
-    'Energy': 'bg-cyan-100 text-cyan-800',
-    'Platform': 'bg-violet-100 text-violet-800',
-    'Mobile App': 'bg-indigo-100 text-indigo-800'
-  };
-  return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-};
-
-const getPriorityColor = (priority: string) => {
-  const colors = {
-    'High': 'bg-red-100 text-red-800',
-    'Medium': 'bg-yellow-100 text-yellow-800',
-    'Low': 'bg-green-100 text-green-800'
-  };
-  return colors[priority as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-};
-
-const statusFilters = [
-  { value: 'all', label: 'All Jobs' },
-  { value: 'draft', label: 'Draft' },
-  { value: 'open', label: 'Open' },
-  { value: 'quoted', label: 'Quoted' },
-  { value: 'todo', label: 'To-do' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'in_review', label: 'In Review' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'cancelled', label: 'Cancelled' },
-];
-
-export default function KanbanBoard() {
-  const [projects] = useState<Project[]>(mockProjects);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [taskDetailOpen, setTaskDetailOpen] = useState(false);
+  const [editingColumn, setEditingColumn] = useState<KanbanColumn | null>(null);
+  const [editColumnTitle, setEditColumnTitle] = useState('');
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [columnWidth, setColumnWidth] = useState(320);
   const [expandedColumns, setExpandedColumns] = useState<Set<string>>(new Set());
+  const { toast } = useToast();
+
+  const tasksByStatus = getTasksByStatus();
+  const columns = getSortedColumns();
+
+  // Calculate responsive column width for multi-row layout
+  useEffect(() => {
+    const calculateColumnWidth = () => {
+      const screenWidth = window.innerWidth;
+      const isMobile = screenWidth < 768;
+      const isTablet = screenWidth < 1024;
+      
+      // Determine columns per row based on screen size
+      const columnsPerRow = isMobile ? 2 : isTablet ? 3 : 4;
+      
+      // Adjust available width based on device type
+      const padding = isMobile ? 24 : isTablet ? 48 : 80;
+      const availableWidth = screenWidth - padding;
+      
+      const gapSize = isMobile ? 16 : 24;
+      const totalGapSize = gapSize * (columnsPerRow - 1);
+      const usableWidth = availableWidth - totalGapSize;
+      
+      // Set minimum width based on device
+      const minWidth = isMobile ? 200 : 250;
+      const maxWidth = isMobile ? 300 : isTablet ? 350 : 400;
+      
+      const calculatedWidth = Math.max(minWidth, Math.floor(usableWidth / columnsPerRow));
+      const finalWidth = Math.min(calculatedWidth, maxWidth);
+      
+      setColumnWidth(finalWidth);
+    };
+
+    calculateColumnWidth();
+    
+    // Recalculate on window resize
+    const handleResize = () => {
+      calculateColumnWidth();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleColumnTaskCreate = (status: string) => {
+    return (taskData: any) => {
+      addTask({ ...taskData, status });
+    };
+  };
 
   const toggleColumnExpansion = (columnId: string) => {
     setExpandedColumns(prev => {
@@ -401,188 +96,242 @@ export default function KanbanBoard() {
     });
   };
 
-  // Calculate counts for each column
-  const columnCounts = columns.map(column => ({
-    ...column,
-    count: column.id === 'all' 
-      ? projects.length 
-      : projects.filter(project => project.status === column.id).length
-  }));
+  // Column management handlers
+  const handleEditColumn = (column: KanbanColumn) => {
+    setEditingColumn(column);
+    setEditColumnTitle(column.title);
+    setEditDialogOpen(true);
+  };
 
-  const getProjectsByStatus = (status: string) => {
-    const statusProjects = status === 'all' 
-      ? projects 
-      : projects.filter(project => project.status === status);
+  const handleSaveColumnEdit = () => {
+    if (!editingColumn || !editColumnTitle.trim()) return;
+
+    // Check for duplicates
+    const existingTitles = columns
+      .filter(col => col.id !== editingColumn.id)
+      .map(col => col.title.toLowerCase());
     
-    if (!searchTerm) return statusProjects;
-    
-    return statusProjects.filter(project => 
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.assignees.some(assignee => 
-        assignee.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
+    if (existingTitles.includes(editColumnTitle.trim().toLowerCase())) {
+      toast({
+        title: "Validation Error",
+        description: "A column with this name already exists",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    updateColumn(editingColumn.id, { title: editColumnTitle.trim() });
+    toast({
+      title: "Column Updated",
+      description: `Column renamed to "${editColumnTitle.trim()}"`,
+    });
+    setEditDialogOpen(false);
+  };
+
+  const handleDeleteColumn = (columnId: string) => {
+    const columnTasks = tasksByStatus[columnId] || [];
+    if (columnTasks.length > 0) {
+      toast({
+        title: "Cannot Delete Column",
+        description: "Please move all tasks out of this column before deleting it",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    deleteColumn(columnId);
+    toast({
+      title: "Column Deleted",
+      description: "Column has been removed successfully",
+    });
+  };
+
+  // Task management handlers
+  const handleTaskClick = (task: Task) => {
+    setSelectedTask(task);
+    setTaskDetailOpen(true);
+  };
+
+  const handleTaskUpdate = (taskId: string, updates: Partial<Task>) => {
+    updateTask(taskId, updates);
+    // Update selected task if it's the one being updated
+    if (selectedTask && selectedTask.id === taskId) {
+      setSelectedTask({ ...selectedTask, ...updates });
+    }
+  };
+
+  const handleTaskDelete = (taskId: string) => {
+    deleteTask(taskId);
+    // Close dialog if the selected task is deleted
+    if (selectedTask && selectedTask.id === taskId) {
+      setSelectedTask(null);
+      setTaskDetailOpen(false);
+    }
+  };
+
+  const handleTaskComplete = (taskId: string) => {
+    completeTask(taskId);
+    // Update selected task if it's the one being completed
+    if (selectedTask && selectedTask.id === taskId) {
+      setSelectedTask({ ...selectedTask, status: 'completed' });
+    }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Search and Action Bar */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search engineering projects by discipline, location, or client..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+    <div className="w-full max-w-full">
+      {/* Header removed as requested */}
+
+      {/* Kanban Board */}
+      <div 
+        className="w-full max-w-full pb-4"
+      >
+        {/* Multi-row grid with responsive columns per row */}
+        <div 
+          className="grid gap-6 w-full"
+          style={{ 
+            gridTemplateColumns: `repeat(auto-fill, minmax(${columnWidth}px, 1fr))`,
+            gap: window.innerWidth < 768 ? '16px' : '24px'
+          }}
+        >
+        {columns.map((column) => {
+          const columnTasks = tasksByStatus[column.id] || [];
+          const isExpanded = expandedColumns.has(column.id);
+          const maxVisibleCards = 3;
+          const hasMoreCards = columnTasks.length > maxVisibleCards;
+          const visibleTasks = hasMoreCards && !isExpanded 
+            ? columnTasks.slice(0, maxVisibleCards) 
+            : columnTasks;
+          const hiddenCount = columnTasks.length - maxVisibleCards;
+
+          return (
+            <div key={column.id} className="space-y-4">
+              {/* Column Header */}
+              <div className="flex items-center justify-between group">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <h3 className="font-medium text-foreground truncate">{column.title}</h3>
+                  <span className="text-sm text-muted-foreground">({columnTasks.length})</span>
+                </div>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-6 h-6 p-0"
+                    onClick={() => handleEditColumn(column)}
+                  >
+                    <Edit3 className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-6 h-6 p-0 text-destructive hover:text-destructive"
+                    onClick={() => handleDeleteColumn(column.id)}
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                  <NewTaskDialog
+                    onTaskCreate={handleColumnTaskCreate(column.id)}
+                    availableCategories={availableCategories}
+                    availableAssignees={availableAssignees}
+                    defaultStatus={column.id}
+                    trigger={
+                      <Button variant="ghost" size="sm" className="w-6 h-6 p-0">
+                        <Plus className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Cards */}
+              <div className="space-y-3">
+                {visibleTasks.map((task) => (
+                  <ProjectCard 
+                    key={task.id} 
+                    {...task} 
+                    onClick={() => handleTaskClick(task)}
+                  />
+                ))}
+                {columnTasks.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground border-2 border-dashed border-sidebar-border rounded-lg">
+                    <p className="text-sm">No tasks in this column</p>
+                  </div>
+                )}
+                
+                {/* View More/Collapse Button */}
+                {hasMoreCards && (
+                  <div className="pt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => toggleColumnExpansion(column.id)}
+                    >
+                      {isExpanded ? (
+                        <>
+                          <ChevronUp className="w-3 h-3 mr-1" />
+                          Show Less
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-3 h-3 mr-1" />
+                          View More ({hiddenCount} more)
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
-
-            <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[120px] h-10">
-                  <SelectValue placeholder="All Jobs" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusFilters.map((filter) => (
-                    <SelectItem key={filter.value} value={filter.value}>
-                      {filter.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Button variant="outline" size="sm" className="h-10">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
-              <Button size="sm" className="bg-gradient-primary h-10">
-                <Plus className="h-4 w-4 mr-2" />
-                New Task
-              </Button>
-            </div>
-          </div>
-
-          <div className="text-left py-0 mt-4">
-            <h2 className="text-base font-medium text-muted-foreground">
-              Engineering project management board to track progress across all active assignments.
-            </h2>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-        {columnCounts.map((column) => (
-          <div key={column.id} className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-muted-foreground">
-                {column.title} ({column.count})
-              </h3>
-              <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <div className="space-y-3">
-              {(() => {
-                const projectsInColumn = getProjectsByStatus(column.id);
-                const isExpanded = expandedColumns.has(column.id);
-                const displayProjects = isExpanded ? projectsInColumn : projectsInColumn.slice(0, 3);
-                const hasMoreProjects = projectsInColumn.length > 3;
-                
-                return (
-                  <>
-                    {displayProjects.map((project) => (
-                      <Card key={project.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                        <CardContent className="p-4">
-                          <div className="space-y-3">
-                            <div>
-                              <h4 className="font-medium text-sm leading-tight mb-2">
-                                {project.title}
-                              </h4>
-                              <p className="text-xs text-muted-foreground line-clamp-2">
-                                {project.description}
-                              </p>
-                            </div>
-
-                            <div className="flex flex-wrap gap-1">
-                              <Badge 
-                                variant="secondary" 
-                                className={`text-xs ${getCategoryColor(project.category)}`}
-                              >
-                                {project.category}
-                              </Badge>
-                              <Badge 
-                                variant="secondary" 
-                                className={`text-xs ${getPriorityColor(project.priority)}`}
-                              >
-                                {project.priority}
-                              </Badge>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <div className="flex -space-x-2">
-                                {project.assignees.slice(0, 3).map((assignee) => (
-                                  <Avatar key={assignee.id} className="h-6 w-6 border-2 border-background">
-                                    <AvatarFallback className="text-xs bg-gradient-primary text-primary-foreground">
-                                      {assignee.initials}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                ))}
-                                {project.assignees.length > 3 && (
-                                  <div className="h-6 w-6 rounded-full bg-muted border-2 border-background flex items-center justify-center">
-                                    <span className="text-xs text-muted-foreground">
-                                      +{project.assignees.length - 3}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <MessageSquare className="h-3 w-3" />
-                                  <span>{project.comments}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Paperclip className="h-3 w-3" />
-                                  <span>{project.attachments}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Eye className="h-3 w-3" />
-                                  <span>{project.tasks}</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                    
-                    {hasMoreProjects && (
-                      <div className="flex justify-center pt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => toggleColumnExpansion(column.id)}
-                          className="text-xs"
-                        >
-                          {isExpanded ? 'Collapse' : 'View More'}
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-        ))}
+          );
+        })}
+        </div>
       </div>
+
+      {/* Task Detail Dialog */}
+      <TaskDetailDialog
+        task={selectedTask}
+        open={taskDetailOpen}
+        onOpenChange={setTaskDetailOpen}
+        onTaskUpdate={handleTaskUpdate}
+        onTaskDelete={handleTaskDelete}
+        onTaskComplete={handleTaskComplete}
+        availableCategories={availableCategories}
+        availableAssignees={availableAssignees}
+      />
+
+      {/* Edit Column Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Column</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Column Title</label>
+              <Input
+                value={editColumnTitle}
+                onChange={(e) => setEditColumnTitle(e.target.value)}
+                placeholder="Enter column title..."
+                maxLength={50}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEditDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveColumnEdit}
+              disabled={!editColumnTitle.trim()}
+            >
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

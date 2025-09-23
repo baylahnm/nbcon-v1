@@ -6,100 +6,51 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuthStore } from '@/stores/auth';
+import { R } from '@/lib/routes';
+import { getUserDisplayName, getUserInitials } from '@/lib/userUtils';
 import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
-const engineerMenuItems = [{
-  title: 'Dashboard',
-  url: '/engineer',
-  icon: Home
-}, {
-  title: 'Check In',
-  url: '/e/checkin',
-  icon: Clock
-}, {
-  title: 'Jobs',
-  url: '/engineer/jobs',
-  icon: Briefcase
-}, {
-  title: 'Calendar',
-  url: '/engineer/calendar',
-  icon: Calendar
-}, {
-  title: 'Upload Deliverable',
-  url: '/job/upload',
-  icon: Upload
-}, {
-  title: 'Messages',
-  url: '/engineer/messages',
-  icon: MessageSquare
-}, {
-  title: 'AI Assistant',
-  url: '/ai',
-  icon: Bot
-}];
-const clientMenuItems = [{
-  title: 'Dashboard',
-  url: '/client',
-  icon: Home
-}, {
-  title: 'Browse Engineers',
-  url: '/client/browse',
-  icon: Users
-}, {
-  title: 'My Jobs',
-  url: '/client/jobs',
-  icon: Briefcase
-}, {
-  title: 'Calendar',
-  url: '/client/calendar',
-  icon: Calendar
-}, {
-  title: 'Messages',
-  url: '/client/messages',
-  icon: MessageSquare
-}, {
-  title: 'AI Assistant',
-  url: '/ai',
-  icon: Bot
-}];
-const enterpriseMenuItems = [{
-  title: 'Dashboard',
-  url: '/enterprise',
-  icon: Home
-}, {
-  title: 'Messages',
-  url: '/enterprise/messages',
-  icon: MessageSquare
-}, {
-  title: 'AI Assistant',
-  url: '/ai',
-  icon: Bot
-}];
-const bottomMenuItems = [{
-  title: 'Profile',
-  url: '/profile',
-  icon: User
-}, {
-  title: 'My Network',
-  url: '/network',
-  icon: Users
-}, {
-  title: 'Learning',
-  url: '/learning',
-  icon: BookOpen
-}, {
-  title: 'Finance',
-  url: '/client/payments',
-  icon: DollarSign
-}, {
-  title: 'Help & Support',
-  url: '/help',
-  icon: HelpCircle
-}, {
-  title: 'Settings',
-  url: '/settings',
-  icon: Settings
-}];
+const makeTopMenu = (role?: string) => {
+  switch (role) {
+    case 'engineer':
+      return [{ title: 'Dashboard', url: R.engineer.dashboard, icon: Home },
+        { title: 'Check In', url: R.engineer.checkin, icon: Clock },
+        { title: 'Jobs', url: R.engineer.jobs, icon: Briefcase },
+        { title: 'Calendar', url: R.engineer.calendar, icon: Calendar },
+        { title: 'Upload Deliverable', url: R.engineer.upload, icon: Upload },
+        { title: 'Messages', url: R.engineer.messages, icon: MessageSquare },
+        { title: 'AI Assistant', url: R.engineer.ai, icon: Bot }];
+    case 'client':
+      return [{ title: 'Dashboard', url: R.client.dashboard, icon: Home },
+        { title: 'Browse Engineers', url: R.client.browse, icon: Users },
+        { title: 'My Jobs', url: R.client.jobs, icon: Briefcase },
+        { title: 'Calendar', url: R.client.calendar, icon: Calendar },
+        { title: 'Messages', url: R.client.messages, icon: MessageSquare },
+        { title: 'AI Assistant', url: R.client.ai, icon: Bot }];
+    case 'enterprise':
+      return [{ title: 'Dashboard', url: R.enterprise.dashboard, icon: Home },
+        { title: 'Messages', url: R.enterprise.messages, icon: MessageSquare },
+        { title: 'AI Assistant', url: '/enterprise/ai', icon: Bot }];
+    default:
+      return [{ title: 'Dashboard', url: R.engineer.dashboard, icon: Home },
+        { title: 'Check In', url: R.engineer.checkin, icon: Clock },
+        { title: 'Jobs', url: R.engineer.jobs, icon: Briefcase },
+        { title: 'Calendar', url: R.engineer.calendar, icon: Calendar },
+        { title: 'Upload Deliverable', url: R.engineer.upload, icon: Upload },
+        { title: 'Messages', url: R.engineer.messages, icon: MessageSquare },
+        { title: 'AI Assistant', url: R.engineer.ai, icon: Bot }];
+  }
+};
+
+const makeBottomMenu = (role?: string) => {
+  const common = [{ title: 'Help & Support', url: role === 'engineer' ? R.engineer.help : role === 'client' ? R.client.help : role === 'enterprise' ? R.enterprise.settings : R.engineer.help, icon: HelpCircle },
+    { title: 'Settings', url: role === 'engineer' ? R.engineer.settings : role === 'client' ? R.client.settings : role === 'enterprise' ? R.enterprise.settings : R.engineer.settings, icon: Settings }];
+  const roleScoped = [{ title: 'Profile', url: role === 'engineer' ? R.engineer.profile : role === 'client' ? R.client.profile : R.enterprise.settings, icon: User },
+    { title: 'My Network', url: role === 'engineer' ? R.engineer.network : role === 'client' ? R.client.network : R.enterprise.settings, icon: Users },
+    { title: 'Learning', url: role === 'engineer' ? R.engineer.learning : role === 'client' ? R.client.learning : R.enterprise.settings, icon: BookOpen }];
+  const finance = role === 'engineer' ? [{ title: 'Finance', url: R.engineer.payments, icon: DollarSign }] : role === 'client' ? [{ title: 'Finance', url: R.client.payments, icon: DollarSign }] : [];
+  return [...roleScoped, ...finance, ...common];
+};
 export function AppSidebar() {
   const {
     state
@@ -115,19 +66,7 @@ export function AppSidebar() {
     setTheme,
     theme
   } = useTheme();
-  const getMenuItems = () => {
-    switch (profile?.role) {
-      case 'engineer':
-        return engineerMenuItems;
-      case 'client':
-        return clientMenuItems;
-      case 'enterprise':
-        return enterpriseMenuItems;
-      default:
-        return engineerMenuItems;
-    }
-  };
-  const menuItems = getMenuItems();
+  const menuItems = makeTopMenu(profile?.role);
   const currentPath = location.pathname;
   const isActive = (path: string) => {
     if (path === `/${profile?.role}`) {
@@ -147,26 +86,7 @@ export function AppSidebar() {
       console.error('Sign out error:', error);
     }
   };
-  const getInitials = () => {
-    const firstName = profile?.first_name || '';
-    const lastName = profile?.last_name || '';
-    if (firstName && lastName) {
-      return `${firstName[0]}${lastName[0]}`;
-    }
-    if (firstName) {
-      return firstName.slice(0, 2);
-    }
-    return profile?.role?.[0].toUpperCase() || 'U';
-  };
-  const getDisplayName = () => {
-    if (profile?.first_name && profile?.last_name) {
-      return `${profile.first_name} ${profile.last_name}`;
-    }
-    if (profile?.first_name) {
-      return profile.first_name;
-    }
-    return profile?.email || 'User';
-  };
+  const getInitials = () => getUserInitials(profile);
   return <Sidebar className={collapsed ? 'w-16' : 'w-64'} collapsible="icon">
       <SidebarContent>
         {/* Logo Section */}
@@ -215,7 +135,7 @@ export function AppSidebar() {
         <SidebarGroup className="sidebar-bottom-group">
           <SidebarGroupContent className="sidebar-bottom-content">
             <SidebarMenu className="sidebar-bottom-menu">
-              {bottomMenuItems.map(item => <SidebarMenuItem key={item.title}>
+              {makeBottomMenu(profile?.role).map(item => <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} className={getNavCls(item.url)}>
                       <item.icon className="mr-3 h-4 w-4 flex-shrink-0" />
@@ -241,7 +161,7 @@ export function AppSidebar() {
                 </Avatar>
                 {!collapsed && <div className="ml-3 text-left">
                     <p className="text-sm font-medium text-sidebar-foreground sidebar-user-display-name">
-                      {getDisplayName()}
+                      {getUserDisplayName(profile)}
                     </p>
                     <p className="text-xs text-sidebar-foreground/70 capitalize sidebar-user-role">
                       {profile?.role}
@@ -250,9 +170,9 @@ export function AppSidebar() {
               </Button>
             </DropdownMenuTrigger>
               <DropdownMenuContent side="top" className="w-56" align={collapsed ? "center" : "start"} alignOffset={12}>
-                <DropdownMenuItem onClick={() => navigate('/profile')}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Profile Settings
+                <DropdownMenuItem onClick={() => navigate(profile?.role === 'engineer' ? R.engineer.profile : profile?.role === 'client' ? R.client.profile : R.enterprise.settings)}>
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive">

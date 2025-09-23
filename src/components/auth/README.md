@@ -225,7 +225,7 @@ For testing purposes, use these OTP codes:
 const mockUser = {
   id: 'user_123',
   email: 'ahmed.alrashid@neom.com',
-  name: 'Ahmed Al-Rashid',
+  name: 'Current User',
   role: 'engineer',
   isVerified: true,
   sceNumber: 'SCE-67892',

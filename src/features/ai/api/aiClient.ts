@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { useAuthStore, getStoredUser } from '@/stores/auth';
 import { Message, Attachment, Citation, GeneratedImage } from '../store/useAiStore';
 
 export interface ChatRequest {
@@ -294,9 +295,12 @@ class AiClient {
   async logEvent(event: {
     type: string;
     data: any;
-    userId: string;
+    userId: string | null;
     sessionId?: string;
   }): Promise<void> {
+    if (!event.userId) {
+      return;
+    }
     const { error } = await supabase
       .from('ai_events')
       .insert({
@@ -383,12 +387,18 @@ class AiClient {
     return session.access_token;
   }
 
-  private async getCurrentUserId(): Promise<string> {
+    private async getCurrentUserId(): Promise<string | null> {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      throw new Error('No authenticated user');
+    if (user?.id) {
+      return user.id;
     }
-    return user.id;
+
+    const localUser = useAuthStore.getState().user ?? getStoredUser();
+    if (localUser?.source === 'mock') {
+      return null;
+    }
+
+    return localUser?.id ?? null;
   }
 
   // File validation
@@ -426,4 +436,3 @@ class AiClient {
 }
 
 export const aiClient = new AiClient();
-

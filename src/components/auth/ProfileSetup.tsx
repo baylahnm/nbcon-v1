@@ -64,6 +64,7 @@ export function ProfileSetup({ user, onProfileComplete, onBack }: ProfileSetupPr
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [language] = useState<'ar' | 'en'>(user.language || 'en');
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   const [profileData, setProfileData] = useState<ProfileData>({
     bio: '',
@@ -183,7 +184,7 @@ export function ProfileSetup({ user, onProfileComplete, onBack }: ProfileSetupPr
       const completeUser: AuthenticatedUser = {
         ...user,
         // Add profile data to user object
-        avatar: user.avatar || `user-${user.role}-1`
+        avatar: avatarPreview || user.avatar || `user-${user.role}-1`
       };
 
       onProfileComplete(completeUser);
@@ -194,21 +195,41 @@ export function ProfileSetup({ user, onProfileComplete, onBack }: ProfileSetupPr
     }
   };
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setAvatarPreview(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const renderStep1 = () => (
     <div className="space-y-6">
       {/* Avatar Upload */}
       <div className="text-center">
         <div className="relative inline-block">
           <Avatar className="w-24 h-24 border-4 border-border">
-            <AvatarImage src={`/avatars/${user.avatar || `user-${user.role}-1`}.jpg`} />
+            <AvatarImage src={avatarPreview || `/avatars/${user.avatar || `user-${user.role}-1`}.jpg`} />
             <AvatarFallback className="text-lg">
               {user.name.split(' ').map(n => n[0]).join('')}
             </AvatarFallback>
           </Avatar>
+          <input
+            id="avatar-input"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
           <Button
             size="sm"
             className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
             variant="secondary"
+            onClick={() => document.getElementById('avatar-input')?.click()}
           >
             <Camera className="w-4 h-4" />
           </Button>
@@ -352,13 +373,25 @@ export function ProfileSetup({ user, onProfileComplete, onBack }: ProfileSetupPr
             }}
             dir={language === 'ar' ? 'rtl' : 'ltr'}
           />
-          <Button type="button" onClick={() => {
-            const input = document.querySelector('input[placeholder*="certification"], input[placeholder*="شهادة"]') as HTMLInputElement;
-            if (input) {
-              handleCertificationAdd(input.value);
-              input.value = '';
-            }
-          }}>
+          <input
+            id="certifications-input"
+            type="file"
+            accept="application/pdf,image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              const files = Array.from(e.target.files || []);
+              if (!files.length) return;
+              const names = files.map(f => f.name);
+              names.forEach((n) => handleCertificationAdd(n));
+              // Reset input so same files can be re-selected if needed
+              e.currentTarget.value = '';
+            }}
+          />
+          <Button
+            type="button"
+            onClick={() => document.getElementById('certifications-input')?.click()}
+          >
             <Upload className="w-4 h-4" />
           </Button>
         </div>
