@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,13 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { R, RH } from '@/lib/routes';
 import { toast } from 'sonner';
 import { 
   Settings,
@@ -125,6 +128,53 @@ export function SettingsPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  
+  // Sheet states for right-side panels
+  const [showApiKeyDetails, setShowApiKeyDetails] = useState<string | null>(null);
+  const [showAccessLogs, setShowAccessLogs] = useState(false);
+  const [showThemeEditor, setShowThemeEditor] = useState(false);
+  const [showEmailChange, setShowEmailChange] = useState(false);
+  const [show2FASetup, setShow2FASetup] = useState(false);
+  const [showDataExport, setShowDataExport] = useState(false);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const tab = url.searchParams.get('tab') || 'account';
+    const apiKey = url.searchParams.get('apiKey');
+    const logs = url.searchParams.get('logs') === 'true';
+    const themeEditor = url.searchParams.get('themeEditor') === 'true';
+    const emailChange = url.searchParams.get('emailChange') === 'true';
+    const twoFA = url.searchParams.get('2fa') === 'true';
+    const dataExport = url.searchParams.get('dataExport') === 'true';
+    
+    setActiveTab(tab);
+    setShowApiKeyDetails(apiKey);
+    setShowAccessLogs(logs);
+    setShowThemeEditor(themeEditor);
+    setShowEmailChange(emailChange);
+    setShow2FASetup(twoFA);
+    setShowDataExport(dataExport);
+  }, []);
+
+  // Tab change handler
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    updateQuery({ tab: value });
+  };
 
   const [settings, setSettings] = useState<UserSettings>({
     // Account
@@ -278,6 +328,67 @@ export function SettingsPage() {
     toast.success('Two-factor authentication disabled');
   };
 
+  // Sheet action handlers
+  const handleViewApiKey = (keyId: string) => {
+    setShowApiKeyDetails(keyId);
+    updateQuery({ apiKey: keyId });
+  };
+
+  const handleCloseApiKeyDetails = () => {
+    setShowApiKeyDetails(null);
+    updateQuery({ apiKey: undefined });
+  };
+
+  const handleOpenAccessLogs = () => {
+    setShowAccessLogs(true);
+    updateQuery({ logs: 'true' });
+  };
+
+  const handleCloseAccessLogs = () => {
+    setShowAccessLogs(false);
+    updateQuery({ logs: undefined });
+  };
+
+  const handleOpenThemeEditor = () => {
+    setShowThemeEditor(true);
+    updateQuery({ themeEditor: 'true' });
+  };
+
+  const handleCloseThemeEditor = () => {
+    setShowThemeEditor(false);
+    updateQuery({ themeEditor: undefined });
+  };
+
+  const handleOpenEmailChange = () => {
+    setShowEmailChange(true);
+    updateQuery({ emailChange: 'true' });
+  };
+
+  const handleCloseEmailChange = () => {
+    setShowEmailChange(false);
+    updateQuery({ emailChange: undefined });
+  };
+
+  const handleOpen2FASetup = () => {
+    setShow2FASetup(true);
+    updateQuery({ '2fa': 'true' });
+  };
+
+  const handleClose2FASetup = () => {
+    setShow2FASetup(false);
+    updateQuery({ '2fa': undefined });
+  };
+
+  const handleOpenDataExport = () => {
+    setShowDataExport(true);
+    updateQuery({ dataExport: 'true' });
+  };
+
+  const handleCloseDataExport = () => {
+    setShowDataExport(false);
+    updateQuery({ dataExport: undefined });
+  };
+
 
   return (
     <div className="p-6 space-y-6">
@@ -314,7 +425,7 @@ export function SettingsPage() {
       </div>
 
       {/* Settings Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
             <TabsTrigger value="account" className="flex items-center gap-2 px-4 py-3 min-w-fit">
@@ -362,7 +473,7 @@ export function SettingsPage() {
                     onChange={(e) => handleSettingChange('email', e.target.value)}
                     className="flex-1"
                   />
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={handleOpenEmailChange}>
                     Change Email
                   </Button>
                 </div>
@@ -528,7 +639,7 @@ export function SettingsPage() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="space-y-2">
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" className="gap-2" onClick={() => console.log('Upload logo')}>
                       <Upload className="h-4 w-4" />
                       Upload Logo
                     </Button>
@@ -768,7 +879,7 @@ export function SettingsPage() {
                         Two-factor authentication is enabled
                       </span>
                     </div>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    <Button variant="outline" size="sm" className="gap-2" onClick={handleOpen2FASetup}>
                       <QrCode className="h-4 w-4" />
                       Show QR Code
                     </Button>
@@ -853,7 +964,7 @@ export function SettingsPage() {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleViewApiKey(apiKey.id)}>
                         <Eye className="h-4 w-4" />
                       </Button>
                       <Button 
@@ -878,7 +989,7 @@ export function SettingsPage() {
                   <Activity className="h-5 w-5" />
                   Access Logs
                 </CardTitle>
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2" onClick={handleOpenAccessLogs}>
                   <Download className="h-4 w-4" />
                   Export Logs
                 </Button>
@@ -961,7 +1072,7 @@ export function SettingsPage() {
                     Request a copy of all your account data
                   </p>
                 </div>
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2" onClick={handleOpenDataExport}>
                   <Download className="h-4 w-4" />
                   Download Data
                 </Button>
@@ -1047,7 +1158,7 @@ export function SettingsPage() {
                 <p className="text-muted-foreground mb-4">
                   Customize individual theme tokens to create your perfect interface
                 </p>
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2" onClick={handleOpenThemeEditor}>
                   <Settings className="h-4 w-4" />
                   Open Theme Editor
                 </Button>
@@ -1103,6 +1214,569 @@ export function SettingsPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Right-side Sheets */}
+      
+      {/* API Key Details Sheet */}
+      <Sheet open={!!showApiKeyDetails} onOpenChange={handleCloseApiKeyDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>API Key Details</SheetTitle>
+            <SheetDescription>
+              Complete information about your API key and its permissions.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showApiKeyDetails && (() => {
+              const apiKey = apiKeys.find(k => k.id === showApiKeyDetails);
+              if (!apiKey) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* API Key Header */}
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Key className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold">{apiKey.name}</h3>
+                      <p className="text-muted-foreground mt-1">API Key Management</p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Badge variant="outline" className="text-xs">
+                          {apiKey.permissions.length} permissions
+                        </Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Active
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* API Key Value */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">API Key</h4>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <div className="font-mono text-sm break-all">
+                        {apiKey.key}
+                      </div>
+                      <div className="flex justify-end mt-2">
+                        <Button size="sm" onClick={() => copyApiKey(apiKey.key)}>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Copy Key
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key Information */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Key Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Created</Label>
+                        <p className="font-medium">{apiKey.created}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Last Used</Label>
+                        <p className="font-medium">{apiKey.lastUsed}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Permissions */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Permissions</h4>
+                    <div className="space-y-2">
+                      {apiKey.permissions.map((permission, index) => (
+                        <div key={index} className="flex items-center space-x-2 p-2 border rounded-lg">
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          <span className="text-sm font-mono">{permission}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button variant="outline" className="flex-1">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Regenerate
+                    </Button>
+                    <Button variant="destructive" className="flex-1" onClick={() => revokeApiKey(apiKey.id)}>
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Revoke Key
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Access Logs Sheet */}
+      <Sheet open={showAccessLogs} onOpenChange={handleCloseAccessLogs}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Access Logs</SheetTitle>
+            <SheetDescription>
+              Detailed access logs and security information for your account.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* Logs Summary */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    {accessLogs.filter(log => log.status === 'success').length}
+                  </div>
+                  <p className="text-sm text-green-600">Successful</p>
+                </div>
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="text-2xl font-bold text-red-600">
+                    {accessLogs.filter(log => log.status === 'failed').length}
+                  </div>
+                  <p className="text-sm text-red-600">Failed</p>
+                </div>
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {accessLogs.length}
+                  </div>
+                  <p className="text-sm text-blue-600">Total</p>
+                </div>
+              </div>
+
+              {/* Export Options */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Export Options</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <Button variant="outline" className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export CSV
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export JSON
+                  </Button>
+                </div>
+              </div>
+
+              {/* Detailed Logs */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Recent Activity</h4>
+                <div className="space-y-3">
+                  {accessLogs.map((log) => (
+                    <div key={log.id} className="p-4 border rounded-lg">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-3">
+                          <div className={cn(
+                            "w-3 h-3 rounded-full mt-1",
+                            log.status === 'success' ? 'bg-green-500' : 'bg-red-500'
+                          )} />
+                          <div className="space-y-1">
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium">{log.action}</span>
+                              <Badge 
+                                variant="outline" 
+                                className={cn(
+                                  log.status === 'success' 
+                                    ? 'text-green-700 border-green-200' 
+                                    : 'text-red-700 border-red-200'
+                                )}
+                              >
+                                {log.status}
+                              </Badge>
+                            </div>
+                            <div className="space-y-1 text-sm text-muted-foreground">
+                              <div className="flex items-center space-x-4">
+                                <span className="flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  {log.timestamp}
+                                </span>
+                                <span className="flex items-center">
+                                  <MapPin className="h-3 w-3 mr-1" />
+                                  {log.location}
+                                </span>
+                              </div>
+                              <div className="flex items-center space-x-4">
+                                <span className="flex items-center">
+                                  <Monitor className="h-3 w-3 mr-1" />
+                                  {log.device}
+                                </span>
+                                <span className="font-mono text-xs">
+                                  {log.ipAddress}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Theme Editor Sheet */}
+      <Sheet open={showThemeEditor} onOpenChange={handleCloseThemeEditor}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Theme Editor</SheetTitle>
+            <SheetDescription>
+              Advanced theme customization with live preview.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* Theme Tokens */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Color Tokens</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Primary Color</Label>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded border bg-primary"></div>
+                      <Input placeholder="#2678ab" className="flex-1" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Background</Label>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded border bg-background"></div>
+                      <Input placeholder="#ffffff" className="flex-1" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Card Background</Label>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded border bg-card"></div>
+                      <Input placeholder="#f5f5f5" className="flex-1" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Text Color</Label>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded border bg-foreground"></div>
+                      <Input placeholder="#000000" className="flex-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Typography */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Typography</h4>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Font Family</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select font" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="inter">Inter</SelectItem>
+                        <SelectItem value="roboto">Roboto</SelectItem>
+                        <SelectItem value="system">System Font</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Font Size</Label>
+                    <Input type="range" min="12" max="18" defaultValue="14" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Border Radius */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Border Radius</h4>
+                <div className="space-y-2">
+                  <Label className="text-sm">Corner Radius</Label>
+                  <Input type="range" min="0" max="24" defaultValue="8" />
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button className="flex-1">
+                  <Save className="h-4 w-4 mr-2" />
+                  Apply Theme
+                </Button>
+                <Button variant="outline" className="flex-1">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Reset
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Email Change Sheet */}
+      <Sheet open={showEmailChange} onOpenChange={handleCloseEmailChange}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Change Email Address</SheetTitle>
+            <SheetDescription>
+              Update your email address. You'll receive a verification email.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* Current Email */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Current Email</Label>
+                <div className="p-3 bg-muted rounded-lg">
+                  <span className="text-sm">{settings.email}</span>
+                </div>
+              </div>
+
+              {/* New Email */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">New Email Address</Label>
+                <Input 
+                  type="email" 
+                  placeholder="Enter new email address"
+                  className="w-full"
+                />
+              </div>
+
+              {/* Password Confirmation */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Current Password</Label>
+                <div className="relative">
+                  <Input 
+                    type="password" 
+                    placeholder="Enter current password"
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              {/* Information */}
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start space-x-2">
+                  <AlertTriangle className="h-4 w-4 text-blue-600 mt-0.5" />
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium">Important:</p>
+                    <ul className="mt-1 space-y-1 list-disc list-inside">
+                      <li>You'll receive a verification email at the new address</li>
+                      <li>Your current email will remain active until verified</li>
+                      <li>All notifications will be sent to the new email once verified</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button className="flex-1">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Send Verification Email
+                </Button>
+                <Button variant="outline" onClick={handleCloseEmailChange}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* 2FA Setup Sheet */}
+      <Sheet open={show2FASetup} onOpenChange={handleClose2FASetup}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Two-Factor Authentication Setup</SheetTitle>
+            <SheetDescription>
+              Secure your account with two-factor authentication.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* QR Code */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Scan QR Code</h4>
+                <div className="flex justify-center">
+                  <div className="w-48 h-48 bg-muted rounded-lg flex items-center justify-center">
+                    <QrCode className="h-24 w-24 text-muted-foreground" />
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground text-center">
+                  Scan this QR code with your authenticator app
+                </p>
+              </div>
+
+              {/* Manual Entry */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Manual Entry</h4>
+                <div className="space-y-2">
+                  <Label className="text-sm">Secret Key</Label>
+                  <div className="flex items-center space-x-2">
+                    <Input 
+                      value="JBSWY3DPEHPK3PXP" 
+                      readOnly 
+                      className="font-mono"
+                    />
+                    <Button size="sm" onClick={() => navigator.clipboard.writeText('JBSWY3DPEHPK3PXP')}>
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Verification Code */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Enter Verification Code</h4>
+                <div className="space-y-2">
+                  <Label className="text-sm">6-digit code from your app</Label>
+                  <Input 
+                    placeholder="123456"
+                    maxLength={6}
+                    className="text-center text-lg tracking-widest"
+                  />
+                </div>
+              </div>
+
+              {/* Backup Codes */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Backup Codes</h4>
+                <div className="p-4 bg-muted rounded-lg">
+                  <div className="grid grid-cols-2 gap-2 font-mono text-sm">
+                    {['12345678', '87654321', '11223344', '44332211', '55667788', '88776655'].map((code, index) => (
+                      <div key={index} className="p-2 bg-background rounded border">
+                        {code}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Save these codes in a safe place. Each can only be used once.
+                  </p>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button className="flex-1">
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Enable 2FA
+                </Button>
+                <Button variant="outline" onClick={handleClose2FASetup}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Data Export Sheet */}
+      <Sheet open={showDataExport} onOpenChange={handleCloseDataExport}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Export Account Data</SheetTitle>
+            <SheetDescription>
+              Download a copy of all your account data and settings.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* Export Options */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Export Format</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                    <input type="radio" id="json" name="format" value="json" className="rounded" />
+                    <div className="flex-1">
+                      <Label htmlFor="json" className="font-medium">JSON Format</Label>
+                      <p className="text-sm text-muted-foreground">Machine-readable format for developers</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                    <input type="radio" id="csv" name="format" value="csv" className="rounded" />
+                    <div className="flex-1">
+                      <Label htmlFor="csv" className="font-medium">CSV Format</Label>
+                      <p className="text-sm text-muted-foreground">Spreadsheet-compatible format</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                    <input type="radio" id="pdf" name="format" value="pdf" className="rounded" />
+                    <div className="flex-1">
+                      <Label htmlFor="pdf" className="font-medium">PDF Report</Label>
+                      <p className="text-sm text-muted-foreground">Human-readable report format</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data Sections */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Include Data Sections</h4>
+                <div className="space-y-3">
+                  {[
+                    'Account Information',
+                    'Company Settings',
+                    'Project Data',
+                    'Team Members',
+                    'Financial Records',
+                    'Access Logs',
+                    'API Keys',
+                    'Theme Settings'
+                  ].map((section, index) => (
+                    <div key={index} className="flex items-center space-x-3">
+                      <input type="checkbox" id={`section-${index}`} className="rounded" defaultChecked />
+                      <Label htmlFor={`section-${index}`} className="text-sm">{section}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Export Size */}
+              <div className="p-4 bg-muted rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Estimated Size</span>
+                  <span className="text-sm text-muted-foreground">~2.3 MB</span>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-sm font-medium">Processing Time</span>
+                  <span className="text-sm text-muted-foreground">~30 seconds</span>
+                </div>
+              </div>
+
+              {/* Information */}
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start space-x-2">
+                  <AlertTriangle className="h-4 w-4 text-blue-600 mt-0.5" />
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium">Data Export Information:</p>
+                    <ul className="mt-1 space-y-1 list-disc list-inside">
+                      <li>Export will be sent to your registered email address</li>
+                      <li>Download link will expire in 7 days</li>
+                      <li>Large exports may take several minutes to process</li>
+                      <li>You'll receive an email notification when ready</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button className="flex-1">
+                  <Download className="h-4 w-4 mr-2" />
+                  Request Export
+                </Button>
+                <Button variant="outline" onClick={handleCloseDataExport}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

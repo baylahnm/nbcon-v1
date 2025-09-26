@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '@/components/ui/label';
+import { R, RH } from '@/lib/routes';
 import { 
   BarChart, 
   Bar, 
@@ -83,6 +87,84 @@ interface DepartmentHeatmap {
 export function PerformancePage() {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('this-month');
   const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState('employers');
+  
+  // Sheet states for right-side panels
+  const [showEmployeeDetails, setShowEmployeeDetails] = useState<string | null>(null);
+  const [showProjectDetails, setShowProjectDetails] = useState<string | null>(null);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showExportOptions, setShowExportOptions] = useState(false);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const tab = url.searchParams.get('tab') || 'employers';
+    const employee = url.searchParams.get('employee');
+    const project = url.searchParams.get('project');
+    const analytics = url.searchParams.get('analytics') === 'true';
+    const filters = url.searchParams.get('filters') === 'true';
+    const exportOptions = url.searchParams.get('export') === 'true';
+    
+    setActiveTab(tab);
+    setShowEmployeeDetails(employee);
+    setShowProjectDetails(project);
+    setShowAnalytics(analytics);
+    setShowFilters(filters);
+    setShowExportOptions(exportOptions);
+  }, []);
+
+  // Tab change handler
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    updateQuery({ tab: value });
+  };
+
+  // Employee actions
+  const handleViewEmployee = (employeeId: string) => {
+    setShowEmployeeDetails(employeeId);
+    updateQuery({ employee: employeeId });
+  };
+
+  const handleCloseEmployeeDetails = () => {
+    setShowEmployeeDetails(null);
+    updateQuery({ employee: undefined });
+  };
+
+  // Project actions
+  const handleViewProject = (projectId: string) => {
+    setShowProjectDetails(projectId);
+    updateQuery({ project: projectId });
+  };
+
+  const handleCloseProjectDetails = () => {
+    setShowProjectDetails(null);
+    updateQuery({ project: undefined });
+  };
+
+  // Export handlers
+  const handleExportReport = () => {
+    setShowExportOptions(true);
+    updateQuery({ export: 'true' });
+  };
+
+  const handleCloseExportOptions = () => {
+    setShowExportOptions(false);
+    updateQuery({ export: undefined });
+  };
 
   // Sample employee performance data
   const employeePerformance: EmployeePerformance[] = [
@@ -297,7 +379,7 @@ export function PerformancePage() {
             </SelectContent>
           </Select>
           
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={handleExportReport}>
             <Download className="h-4 w-4" />
             Export Report
           </Button>
@@ -412,7 +494,7 @@ export function PerformancePage() {
       </Card>
 
       {/* Tabs */}
-      <Tabs defaultValue="employers" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
             <TabsTrigger value="employers" className="flex items-center gap-2 px-4 py-3 min-w-fit">
@@ -475,6 +557,8 @@ export function PerformancePage() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.05 }}
+                          className="cursor-pointer hover:bg-muted/50"
+                          onClick={() => handleViewEmployee(employee.id)}
                         >
                           <TableCell>
                             <div className="flex items-center space-x-3">
@@ -534,7 +618,8 @@ export function PerformancePage() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-center space-x-3 p-3 border rounded-lg"
+                      className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleViewEmployee(employee.id)}
                     >
                       <div className="flex-shrink-0">
                         <Badge variant="outline" className="h-6 w-6 rounded-full p-0 flex items-center justify-center">
@@ -570,7 +655,7 @@ export function PerformancePage() {
                     .sort((a, b) => b.efficiency - a.efficiency)
                     .slice(0, 3)
                     .map((employee, index) => (
-                    <div key={employee.id} className="flex items-center justify-between">
+                    <div key={employee.id} className="flex items-center justify-between cursor-pointer hover:bg-muted/50 p-2 rounded" onClick={() => handleViewEmployee(employee.id)}>
                       <div className="flex items-center space-x-2">
                         <Avatar className="h-6 w-6">
                           <AvatarImage src={employee.avatar} />
@@ -598,7 +683,7 @@ export function PerformancePage() {
                     .sort((a, b) => b.attendance - a.attendance)
                     .slice(0, 3)
                     .map((employee, index) => (
-                    <div key={employee.id} className="flex items-center justify-between">
+                    <div key={employee.id} className="flex items-center justify-between cursor-pointer hover:bg-muted/50 p-2 rounded" onClick={() => handleViewEmployee(employee.id)}>
                       <div className="flex items-center space-x-2">
                         <Avatar className="h-6 w-6">
                           <AvatarImage src={employee.avatar} />
@@ -712,6 +797,8 @@ export function PerformancePage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleViewProject(project.id)}
                     >
                       <TableCell className="font-medium">{project.name}</TableCell>
                       <TableCell className="text-center">
@@ -758,6 +845,301 @@ export function PerformancePage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Right-side Sheets */}
+      
+      {/* Employee Details Sheet */}
+      <Sheet open={!!showEmployeeDetails} onOpenChange={handleCloseEmployeeDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Employee Performance Details</SheetTitle>
+            <SheetDescription>
+              View detailed performance metrics, trends, and analytics for this employee.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showEmployeeDetails && (() => {
+              const employee = employeePerformance.find(e => e.id === showEmployeeDetails);
+              if (!employee) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Employee Info */}
+                  <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={employee.avatar} />
+                      <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="text-lg font-semibold">{employee.name}</h3>
+                      <p className="text-muted-foreground">{employee.position}</p>
+                      <p className="text-sm text-muted-foreground">{employee.department}</p>
+                    </div>
+                  </div>
+
+                  {/* Performance Metrics */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Performance Metrics</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-sm text-muted-foreground">Attendance</Label>
+                          <div className="flex items-center gap-1">
+                            {getTrendIcon(employee.trend)}
+                            <span className={cn("font-medium", getEfficiencyColor(employee.attendance))}>
+                              {employee.attendance}%
+                            </span>
+                          </div>
+                        </div>
+                        <Progress value={employee.attendance} className="h-2" />
+                      </div>
+                      
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-sm text-muted-foreground">Efficiency</Label>
+                          <span className={cn("font-medium", getEfficiencyColor(employee.efficiency))}>
+                            {employee.efficiency}%
+                          </span>
+                        </div>
+                        <Progress value={employee.efficiency} className="h-2" />
+                      </div>
+                      
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-sm text-muted-foreground">Tasks Completed</Label>
+                          <span className="font-medium">{employee.tasksCompleted}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-sm text-muted-foreground">Rating</Label>
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 text-yellow-500" />
+                            <span className="font-medium">{employee.rating}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Performance Trends */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Performance Trends</h4>
+                    <div className="h-48">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={performanceTrend}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="month" />
+                          <YAxis />
+                          <Tooltip />
+                          <Line type="monotone" dataKey="efficiency" stroke="#8884d8" name="Efficiency %" />
+                          <Line type="monotone" dataKey="attendance" stroke="#82ca9d" name="Attendance %" />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      View Analytics
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export Report
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Project Details Sheet */}
+      <Sheet open={!!showProjectDetails} onOpenChange={handleCloseProjectDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Project Performance Details</SheetTitle>
+            <SheetDescription>
+              View detailed project metrics, budget analysis, and team performance.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showProjectDetails && (() => {
+              const project = projectPerformance.find(p => p.id === showProjectDetails);
+              if (!project) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Project Info */}
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold">{project.name}</h3>
+                      <div className="flex items-center gap-4 mt-2">
+                        <Badge className={cn(getStatusColor(project.status))}>
+                          {project.status.replace('-', ' ')}
+                        </Badge>
+                        <span className="text-sm text-muted-foreground">
+                          {project.daysLeft} days left
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Progress Metrics */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Progress Metrics</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-sm text-muted-foreground">Current Progress</Label>
+                          <span className={cn("font-medium", 
+                            project.progress >= project.target ? "text-green-600" : 
+                            project.progress >= project.target - 10 ? "text-yellow-600" : "text-red-600"
+                          )}>
+                            {project.progress}%
+                          </span>
+                        </div>
+                        <Progress value={project.progress} className="h-2" />
+                      </div>
+                      
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Label className="text-sm text-muted-foreground">Target</Label>
+                          <span className="font-medium">{project.target}%</span>
+                        </div>
+                        <Progress value={project.target} className="h-2" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Budget Analysis */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Budget Analysis</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 border rounded-lg">
+                        <Label className="text-sm text-muted-foreground">Total Budget</Label>
+                        <p className="font-medium text-lg">{formatCurrency(project.budget)}</p>
+                      </div>
+                      <div className="p-4 border rounded-lg">
+                        <Label className="text-sm text-muted-foreground">Used Budget</Label>
+                        <p className="font-medium text-lg">{formatCurrency(project.budgetUsed)}</p>
+                      </div>
+                      <div className="p-4 border rounded-lg">
+                        <Label className="text-sm text-muted-foreground">Remaining</Label>
+                        <p className="font-medium text-lg">{formatCurrency(project.budget - project.budgetUsed)}</p>
+                      </div>
+                      <div className="p-4 border rounded-lg">
+                        <Label className="text-sm text-muted-foreground">Usage %</Label>
+                        <p className="font-medium text-lg">
+                          {Math.round((project.budgetUsed / project.budget) * 100)}%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Team Information */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Team Information</h4>
+                    <div className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm text-muted-foreground">Team Size</Label>
+                        <span className="font-medium">{project.team} members</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Target className="h-4 w-4 mr-2" />
+                      View Timeline
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export Report
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Export Options Sheet */}
+      <Sheet open={showExportOptions} onOpenChange={handleCloseExportOptions}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Export Performance Report</SheetTitle>
+            <SheetDescription>
+              Choose export format and data range for your performance report.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Export Format</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Button variant="outline" className="justify-start">
+                    <Download className="h-4 w-4 mr-2" />
+                    PDF Report
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <Download className="h-4 w-4 mr-2" />
+                    Excel Spreadsheet
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Data Range</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Button variant="outline" className="justify-start">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    This Month
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    This Quarter
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Include Sections</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Employee Performance</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Project Performance</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Department Analytics</Label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Download className="h-4 w-4 mr-2" />
+                Generate Report
+              </Button>
+              <Button variant="outline" onClick={handleCloseExportOptions}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

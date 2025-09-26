@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,12 +7,16 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '@/components/ui/label';
+import { R, RH } from '@/lib/routes';
 import { 
   ShoppingCart,
   Plus,
@@ -108,6 +112,103 @@ export function ProcurementPage() {
   const [isAddVendorOpen, setIsAddVendorOpen] = useState(false);
   const [isNewPOOpen, setIsNewPOOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState('vendors');
+  
+  // Sheet states for right-side panels
+  const [showVendorDetails, setShowVendorDetails] = useState<string | null>(null);
+  const [showEquipmentDetails, setShowEquipmentDetails] = useState<string | null>(null);
+  const [showInventoryDetails, setShowInventoryDetails] = useState<string | null>(null);
+  const [showMaintenanceDetails, setShowMaintenanceDetails] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showAddEquipment, setShowAddEquipment] = useState(false);
+  const [showAddInventory, setShowAddInventory] = useState(false);
+  const [showScheduleMaintenance, setShowScheduleMaintenance] = useState(false);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const tab = url.searchParams.get('tab') || 'vendors';
+    const vendor = url.searchParams.get('vendor');
+    const equipment = url.searchParams.get('equipment');
+    const inventory = url.searchParams.get('inventory');
+    const maintenance = url.searchParams.get('maintenance');
+    const filters = url.searchParams.get('filters') === 'true';
+    
+    setActiveTab(tab);
+    setShowVendorDetails(vendor);
+    setShowEquipmentDetails(equipment);
+    setShowInventoryDetails(inventory);
+    setShowMaintenanceDetails(maintenance);
+    setShowFilters(filters);
+  }, []);
+
+  // Tab change handler
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    updateQuery({ tab: value });
+  };
+
+  // Vendor actions
+  const handleViewVendor = (vendorId: string) => {
+    setShowVendorDetails(vendorId);
+    updateQuery({ vendor: vendorId });
+  };
+
+  const handleCloseVendorDetails = () => {
+    setShowVendorDetails(null);
+    updateQuery({ vendor: undefined });
+  };
+
+  // Equipment actions
+  const handleViewEquipment = (equipmentId: string) => {
+    setShowEquipmentDetails(equipmentId);
+    updateQuery({ equipment: equipmentId });
+  };
+
+  const handleCloseEquipmentDetails = () => {
+    setShowEquipmentDetails(null);
+    updateQuery({ equipment: undefined });
+  };
+
+  // Inventory actions
+  const handleViewInventory = (inventoryId: string) => {
+    setShowInventoryDetails(inventoryId);
+    updateQuery({ inventory: inventoryId });
+  };
+
+  const handleCloseInventoryDetails = () => {
+    setShowInventoryDetails(null);
+    updateQuery({ inventory: undefined });
+  };
+
+  // Maintenance actions
+  const handleViewMaintenance = (maintenanceId: string) => {
+    setShowMaintenanceDetails(maintenanceId);
+    updateQuery({ maintenance: maintenanceId });
+  };
+
+  const handleCloseMaintenanceDetails = () => {
+    setShowMaintenanceDetails(null);
+    updateQuery({ maintenance: undefined });
+  };
+
+  // Export handlers
+  const handleExport = () => {
+    console.log('Exporting procurement data...');
+  };
 
   // Sample vendors data with Saudi context
   const vendors: Vendor[] = [
@@ -624,19 +725,19 @@ export function ProcurementPage() {
           </SelectContent>
         </Select>
 
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowFilters(true)}>
           <Filter className="h-4 w-4" />
           More Filters
         </Button>
 
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2" onClick={handleExport}>
           <Download className="h-4 w-4" />
           Export
         </Button>
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="vendors" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
             <TabsTrigger value="vendors" className="flex items-center gap-2 px-4 py-3 min-w-fit">
@@ -727,11 +828,11 @@ export function ProcurementPage() {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => handleViewVendor(vendor.id)}>
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleViewVendor(vendor.id)}>
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </div>
@@ -817,11 +918,11 @@ export function ProcurementPage() {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => handleViewEquipment(item.id)}>
                         <Activity className="h-4 w-4 mr-1" />
                         View History
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleViewEquipment(item.id)}>
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </div>
@@ -888,7 +989,7 @@ export function ProcurementPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleViewInventory(item.id)}>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -1004,7 +1105,7 @@ export function ProcurementPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleViewMaintenance(task.id)}>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -1016,6 +1117,440 @@ export function ProcurementPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Right-side Sheets */}
+      
+      {/* Vendor Details Sheet */}
+      <Sheet open={!!showVendorDetails} onOpenChange={handleCloseVendorDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Vendor Details</SheetTitle>
+            <SheetDescription>
+              View and manage vendor information, contracts, and performance metrics.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showVendorDetails && (() => {
+              const vendor = vendors.find(v => v.id === showVendorDetails);
+              if (!vendor) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Vendor Info */}
+                  <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+                    <Avatar className="h-16 w-16">
+                      <AvatarFallback>{vendor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="text-lg font-semibold">{vendor.name}</h3>
+                      <p className="text-muted-foreground">{vendor.category}</p>
+                      <Badge className={cn(getStatusColor(vendor.status))}>
+                        {vendor.status}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Contact Info */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Contact Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Contact Person</Label>
+                        <p className="font-medium">{vendor.contact}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Phone</Label>
+                        <p className="font-medium">{vendor.phone}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Email</Label>
+                        <p className="font-medium">{vendor.email}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Location</Label>
+                        <p className="font-medium">{vendor.location}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Performance Metrics */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Performance Metrics</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Rating</Label>
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 text-yellow-500" />
+                          <span className="font-medium">{vendor.rating}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Reliability</Label>
+                        <p className="font-medium">{vendor.reliability}%</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Contract Value</Label>
+                        <p className="font-medium">{formatCurrency(vendor.contractValue)}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Last Order</Label>
+                        <p className="font-medium">{vendor.lastOrder}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Vendor
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Create PO
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Equipment Details Sheet */}
+      <Sheet open={!!showEquipmentDetails} onOpenChange={handleCloseEquipmentDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Equipment Details</SheetTitle>
+            <SheetDescription>
+              View equipment information, maintenance history, and utilization data.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showEquipmentDetails && (() => {
+              const equipmentItem = equipment.find(e => e.id === showEquipmentDetails);
+              if (!equipmentItem) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Equipment Info */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 bg-muted rounded-lg flex items-center justify-center">
+                        <Wrench className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold">{equipmentItem.name}</h3>
+                        <p className="text-muted-foreground">{equipmentItem.category}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <Badge className={cn(getStatusColor(equipmentItem.status))}>
+                        {equipmentItem.status.replace('-', ' ')}
+                      </Badge>
+                      <Badge className={cn(getConditionColor(equipmentItem.condition))}>
+                        {equipmentItem.condition}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Technical Details */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Technical Details</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Model</Label>
+                        <p className="font-medium">{equipmentItem.model}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Serial Number</Label>
+                        <p className="font-medium">{equipmentItem.serialNumber}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Location</Label>
+                        <p className="font-medium">{equipmentItem.location}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Purchase Date</Label>
+                        <p className="font-medium">{equipmentItem.purchaseDate}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Utilization */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Utilization</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Current Rate</span>
+                        <span className="font-medium">{equipmentItem.utilizationRate}%</span>
+                      </div>
+                      <Progress value={equipmentItem.utilizationRate} className="h-3" />
+                    </div>
+                  </div>
+
+                  {/* Maintenance */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Maintenance</h4>
+                    <div>
+                        <Label className="text-sm text-muted-foreground">Next Maintenance</Label>
+                        <p className="font-medium">{equipmentItem.nextMaintenance}</p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Activity className="h-4 w-4 mr-2" />
+                      View History
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Schedule Maintenance
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Inventory Details Sheet */}
+      <Sheet open={!!showInventoryDetails} onOpenChange={handleCloseInventoryDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Inventory Details</SheetTitle>
+            <SheetDescription>
+              View inventory item information, stock levels, and supplier details.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showInventoryDetails && (() => {
+              const item = inventory.find(i => i.id === showInventoryDetails);
+              if (!item) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Item Info */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      {getStockAlert(item)}
+                      <div>
+                        <h3 className="text-lg font-semibold">{item.name}</h3>
+                        <p className="text-muted-foreground">{item.category}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <Badge className={cn(getStatusColor(item.status))}>
+                        {item.status.replace('-', ' ')}
+                      </Badge>
+                      <span className="text-sm font-mono">{item.sku}</span>
+                    </div>
+                  </div>
+
+                  {/* Stock Information */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Stock Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Current Stock</Label>
+                        <p className="font-medium">{item.currentStock} {item.unit}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Unit Price</Label>
+                        <p className="font-medium">{formatCurrency(item.unitPrice)}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Min Stock</Label>
+                        <p className="font-medium">{item.minStock} {item.unit}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Max Stock</Label>
+                        <p className="font-medium">{item.maxStock} {item.unit}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Supplier Info */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Supplier Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Supplier</Label>
+                        <p className="font-medium">{item.supplier}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Last Restocked</Label>
+                        <p className="font-medium">{item.lastRestocked}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Reorder
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Item
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Maintenance Details Sheet */}
+      <Sheet open={!!showMaintenanceDetails} onOpenChange={handleCloseMaintenanceDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Maintenance Details</SheetTitle>
+            <SheetDescription>
+              View maintenance task information, schedule, and completion status.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showMaintenanceDetails && (() => {
+              const task = maintenanceSchedule.find(t => t.id === showMaintenanceDetails);
+              if (!task) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Task Info */}
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold">{task.equipmentName}</h3>
+                      <p className="text-muted-foreground">{task.description}</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <Badge variant="outline" className="capitalize">
+                        {task.type}
+                      </Badge>
+                      <Badge className={cn(getStatusColor(task.priority))}>
+                        {task.priority}
+                      </Badge>
+                      <Badge className={cn(getStatusColor(task.status))}>
+                        {task.status.replace('-', ' ')}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Schedule Info */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Schedule Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Scheduled Date</Label>
+                        <p className="font-medium">{task.scheduledDate}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Estimated Hours</Label>
+                        <p className="font-medium">{task.estimatedHours}h</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Assigned To</Label>
+                        <p className="font-medium">{task.assignedTo}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Last Service</Label>
+                        <p className="font-medium">{task.lastService}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Mark Complete
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Task
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Filters Sheet */}
+      <Sheet open={showFilters} onOpenChange={setShowFilters}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Advanced Filters</SheetTitle>
+            <SheetDescription>
+              Filter vendors, equipment, and inventory by multiple criteria.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Advanced filtering options coming soon.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Add Equipment Sheet */}
+      <Sheet open={showAddEquipment} onOpenChange={setShowAddEquipment}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Add Equipment</SheetTitle>
+            <SheetDescription>
+              Register new equipment in the procurement system.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Equipment registration form will be implemented here.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Add Inventory Sheet */}
+      <Sheet open={showAddInventory} onOpenChange={setShowAddInventory}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Add Inventory Item</SheetTitle>
+            <SheetDescription>
+              Add new inventory items to the procurement system.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Inventory item form will be implemented here.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Schedule Maintenance Sheet */}
+      <Sheet open={showScheduleMaintenance} onOpenChange={setShowScheduleMaintenance}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Schedule Maintenance</SheetTitle>
+            <SheetDescription>
+              Schedule new maintenance tasks for equipment.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Maintenance scheduling form will be implemented here.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

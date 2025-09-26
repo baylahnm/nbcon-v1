@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,11 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { R, RH } from '@/lib/routes';
 import { toast } from 'sonner';
 import { 
   HelpCircle,
@@ -105,6 +108,122 @@ export function HelpPage() {
     email: '',
     attachments: []
   });
+  
+  // Sheet states for right-side panels
+  const [showArticleDetails, setShowArticleDetails] = useState<string | null>(null);
+  const [showTicketDetails, setShowTicketDetails] = useState<string | null>(null);
+  const [showVideoTutorials, setShowVideoTutorials] = useState(false);
+  const [showDocumentation, setShowDocumentation] = useState(false);
+  const [showContactSupport, setShowContactSupport] = useState(false);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const search = url.searchParams.get('search') || '';
+    const category = url.searchParams.get('category') || 'all';
+    const article = url.searchParams.get('article');
+    const ticket = url.searchParams.get('ticket');
+    const chat = url.searchParams.get('chat') === 'true';
+    const videos = url.searchParams.get('videos') === 'true';
+    const docs = url.searchParams.get('docs') === 'true';
+    const support = url.searchParams.get('support') === 'true';
+    
+    setSearchQuery(search);
+    setSelectedCategory(category);
+    setShowArticleDetails(article);
+    setShowTicketDetails(ticket);
+    setChatOpen(chat);
+    setShowVideoTutorials(videos);
+    setShowDocumentation(docs);
+    setShowContactSupport(support);
+  }, []);
+
+  // Search and filter handlers
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    updateQuery({ search: value || undefined });
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    updateQuery({ category });
+  };
+
+  // Article actions
+  const handleViewArticle = (articleId: string) => {
+    setShowArticleDetails(articleId);
+    updateQuery({ article: articleId });
+  };
+
+  const handleCloseArticleDetails = () => {
+    setShowArticleDetails(null);
+    updateQuery({ article: undefined });
+  };
+
+  // Ticket actions
+  const handleViewTicket = (ticketId: string) => {
+    setShowTicketDetails(ticketId);
+    updateQuery({ ticket: ticketId });
+  };
+
+  const handleCloseTicketDetails = () => {
+    setShowTicketDetails(null);
+    updateQuery({ ticket: undefined });
+  };
+
+  // Support actions
+  const handleOpenChat = () => {
+    setChatOpen(true);
+    updateQuery({ chat: 'true' });
+  };
+
+  const handleCloseChat = () => {
+    setChatOpen(false);
+    updateQuery({ chat: undefined });
+  };
+
+  const handleOpenVideoTutorials = () => {
+    setShowVideoTutorials(true);
+    updateQuery({ videos: 'true' });
+  };
+
+  const handleCloseVideoTutorials = () => {
+    setShowVideoTutorials(false);
+    updateQuery({ videos: undefined });
+  };
+
+  const handleOpenDocumentation = () => {
+    setShowDocumentation(true);
+    updateQuery({ docs: 'true' });
+  };
+
+  const handleCloseDocumentation = () => {
+    setShowDocumentation(false);
+    updateQuery({ docs: undefined });
+  };
+
+  const handleOpenContactSupport = () => {
+    setShowContactSupport(true);
+    updateQuery({ support: 'true' });
+  };
+
+  const handleCloseContactSupport = () => {
+    setShowContactSupport(false);
+    updateQuery({ support: undefined });
+  };
 
   // Knowledge base articles with Saudi engineering context
   const knowledgeArticles: KnowledgeArticle[] = [
@@ -339,7 +458,7 @@ export function HelpPage() {
         </div>
         
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => window.open('tel:+966112345678')}>
             <Phone className="h-4 w-4" />
             Emergency: +966 11 234-5678
           </Button>
@@ -360,7 +479,7 @@ export function HelpPage() {
             <Input
               placeholder="Search help articles, guides, and documentation... (e.g., 'budget tracking', 'saudi compliance')"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-12 py-3"
             />
           </div>
@@ -371,7 +490,7 @@ export function HelpPage() {
                 key={category.id}
                 variant={selectedCategory === category.id ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => handleCategoryChange(category.id)}
                 className="gap-2"
               >
                 {category.name}
@@ -388,7 +507,11 @@ export function HelpPage() {
               <h4 className="font-medium">Search Results ({filteredArticles.length + filteredFAQs.length})</h4>
               
               {filteredArticles.map((article) => (
-                <div key={`article-${article.id}`} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                <div 
+                  key={`article-${article.id}`} 
+                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer"
+                  onClick={() => handleViewArticle(article.id)}
+                >
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
                       <BookOpen className="h-4 w-4 text-primary" />
@@ -598,22 +721,22 @@ export function HelpPage() {
               <h4 className="font-medium">Other Ways to Get Help</h4>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Button variant="outline" className="justify-start gap-2" onClick={() => setChatOpen(true)}>
+                <Button variant="outline" className="justify-start gap-2" onClick={handleOpenChat}>
                   <MessageCircle className="h-4 w-4 text-green-600" />
                   Live Chat Support
                 </Button>
                 
-                <Button variant="outline" className="justify-start gap-2">
+                <Button variant="outline" className="justify-start gap-2" onClick={() => window.open('tel:+966112345678')}>
                   <Phone className="h-4 w-4 text-blue-600" />
                   Call Support
                 </Button>
                 
-                <Button variant="outline" className="justify-start gap-2">
+                <Button variant="outline" className="justify-start gap-2" onClick={handleOpenVideoTutorials}>
                   <Video className="h-4 w-4 text-purple-600" />
                   Video Tutorials
                 </Button>
                 
-                <Button variant="outline" className="justify-start gap-2">
+                <Button variant="outline" className="justify-start gap-2" onClick={handleOpenDocumentation}>
                   <Download className="h-4 w-4 text-orange-600" />
                   Documentation
                 </Button>
@@ -652,6 +775,7 @@ export function HelpPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-muted/50 cursor-pointer"
+                  onClick={() => handleViewArticle(article.id)}
                 >
                   <div className="p-2 bg-primary/10 rounded-lg shrink-0">
                     <BookOpen className="h-4 w-4 text-primary" />
@@ -681,7 +805,7 @@ export function HelpPage() {
       )}
 
       {/* Live Chat Widget */}
-      <Dialog open={chatOpen} onOpenChange={setChatOpen}>
+      <Dialog open={chatOpen} onOpenChange={handleCloseChat}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -743,6 +867,427 @@ export function HelpPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Right-side Sheets */}
+      
+      {/* Article Details Sheet */}
+      <Sheet open={!!showArticleDetails} onOpenChange={handleCloseArticleDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Article Details</SheetTitle>
+            <SheetDescription>
+              Complete article information and content.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showArticleDetails && (() => {
+              const article = knowledgeArticles.find(a => a.id === showArticleDetails);
+              if (!article) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Article Header */}
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <BookOpen className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-xl font-semibold">{article.title}</h3>
+                        {article.language === 'ar' && (
+                          <Badge variant="outline" className="text-xs">عربي</Badge>
+                        )}
+                      </div>
+                      <p className="text-muted-foreground mt-1">{article.description}</p>
+                      <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-2">
+                        <span>{article.readTime} read</span>
+                        <span>{article.views} views</span>
+                        <span className="flex items-center gap-1">
+                          <ThumbsUp className="h-3 w-3" />
+                          {article.helpful} helpful
+                        </span>
+                        <span>Updated {new Date(article.lastUpdated).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Article Category */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Category</Label>
+                    <Badge variant="outline">{article.category}</Badge>
+                  </div>
+
+                  {/* Article Tags */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Tags</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {article.tags.map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Article Content */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Article Content</h4>
+                    <div className="prose prose-sm max-w-none">
+                      <p className="text-muted-foreground">
+                        {article.content}
+                      </p>
+                      <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground">
+                          This is a preview of the article content. The full article would contain detailed 
+                          step-by-step instructions, screenshots, and additional resources.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Article Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <ThumbsUp className="h-4 w-4 mr-2" />
+                      Mark as Helpful
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Video Tutorials Sheet */}
+      <Sheet open={showVideoTutorials} onOpenChange={handleCloseVideoTutorials}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Video Tutorials</SheetTitle>
+            <SheetDescription>
+              Step-by-step video guides for using the platform.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* Tutorial Categories */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Getting Started</h4>
+                <div className="grid gap-4">
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                      <Video className="h-6 w-6 text-red-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-medium">Platform Overview</h5>
+                      <p className="text-sm text-muted-foreground">5:30 min • Learn the basics</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Video className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-medium">Project Setup</h5>
+                      <p className="text-sm text-muted-foreground">8:15 min • Create your first project</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Advanced Features</h4>
+                <div className="grid gap-4">
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Video className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-medium">Budget Management</h5>
+                      <p className="text-sm text-muted-foreground">12:45 min • Financial tracking</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <Video className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-medium">Compliance Reporting</h5>
+                      <p className="text-sm text-muted-foreground">15:20 min • Saudi regulations</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Arabic Tutorials</h4>
+                <div className="grid gap-4">
+                  <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Video className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-medium">دليل استخدام المنصة</h5>
+                      <p className="text-sm text-muted-foreground">10:30 min • دليل شامل</p>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Documentation Sheet */}
+      <Sheet open={showDocumentation} onOpenChange={handleCloseDocumentation}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Documentation</SheetTitle>
+            <SheetDescription>
+              Download comprehensive guides and technical documentation.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* Documentation Categories */}
+              <div className="space-y-4">
+                <h4 className="font-medium">User Guides</h4>
+                <div className="grid gap-4">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <FileText className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">User Manual v2.1</h5>
+                        <p className="text-sm text-muted-foreground">Complete platform guide • 2.3 MB</p>
+                      </div>
+                    </div>
+                    <Button size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <FileText className="h-5 w-5 text-green-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">Quick Start Guide</h5>
+                        <p className="text-sm text-muted-foreground">Get started in 10 minutes • 1.1 MB</p>
+                      </div>
+                    </div>
+                    <Button size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Technical Documentation</h4>
+                <div className="grid gap-4">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <FileText className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">API Reference</h5>
+                        <p className="text-sm text-muted-foreground">Developer documentation • 4.2 MB</p>
+                      </div>
+                    </div>
+                    <Button size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <FileText className="h-5 w-5 text-orange-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">Integration Guide</h5>
+                        <p className="text-sm text-muted-foreground">Third-party integrations • 1.8 MB</p>
+                      </div>
+                    </div>
+                    <Button size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Compliance & Standards</h4>
+                <div className="grid gap-4">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-5 w-5 text-red-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">Saudi Building Code Guide</h5>
+                        <p className="text-sm text-muted-foreground">Compliance requirements • 3.5 MB</p>
+                      </div>
+                    </div>
+                    <Button size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-5 w-5 text-yellow-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">Safety Standards</h5>
+                        <p className="text-sm text-muted-foreground">OSHA guidelines • 2.1 MB</p>
+                      </div>
+                    </div>
+                    <Button size="sm">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Contact Support Sheet */}
+      <Sheet open={showContactSupport} onOpenChange={handleCloseContactSupport}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Contact Support</SheetTitle>
+            <SheetDescription>
+              Get in touch with our support team for personalized assistance.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-6">
+              {/* Contact Methods */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Contact Methods</h4>
+                <div className="grid gap-4">
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <MessageCircle className="h-5 w-5 text-green-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">Live Chat</h5>
+                        <p className="text-sm text-muted-foreground">Available now • Average response: 2-5 min</p>
+                      </div>
+                    </div>
+                    <Button onClick={handleOpenChat}>
+                      Start Chat
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Phone className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">Phone Support</h5>
+                        <p className="text-sm text-muted-foreground">+966 11 234-5678 • 8 AM - 6 PM AST</p>
+                      </div>
+                    </div>
+                    <Button variant="outline" onClick={() => window.open('tel:+966112345678')}>
+                      Call Now
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Mail className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div>
+                        <h5 className="font-medium">Email Support</h5>
+                        <p className="text-sm text-muted-foreground">support@neom-engineering.sa • 24/7</p>
+                      </div>
+                    </div>
+                    <Button variant="outline" onClick={() => window.open('mailto:support@neom-engineering.sa')}>
+                      Send Email
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Support Hours */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Support Hours</h4>
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Regular Support:</span>
+                      <span>Sunday - Thursday: 8:00 AM - 6:00 PM (AST)</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Emergency Support:</span>
+                      <span>24/7 for critical issues</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Response Time:</span>
+                      <span>2-5 minutes (chat), 24 hours (email)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Emergency Contact */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Emergency Contact</h4>
+                <div className="p-4 border border-red-200 bg-red-50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <AlertTriangle className="h-5 w-5 text-red-600" />
+                    <div>
+                      <h5 className="font-medium text-red-800">Critical Issues</h5>
+                      <p className="text-sm text-red-600">
+                        For urgent technical issues affecting project delivery
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <Button variant="destructive" className="w-full">
+                      <Phone className="h-4 w-4 mr-2" />
+                      Emergency Hotline: +966 11 234-5678
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

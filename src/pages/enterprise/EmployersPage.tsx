@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,10 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '@/components/ui/label';
+import { R, RH } from '@/lib/routes';
 import { 
   Users,
   Plus,
@@ -86,6 +90,95 @@ export function EmployersPage() {
   const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
   const [activeTab, setActiveTab] = useState('payroll');
   const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
+  
+  // Sheet states for right-side panels
+  const [showEmployeeDetails, setShowEmployeeDetails] = useState<string | null>(null);
+  const [showCourseDetails, setShowCourseDetails] = useState<string | null>(null);
+  const [showComplianceDetails, setShowComplianceDetails] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showAddCourse, setShowAddCourse] = useState(false);
+  const [showUploadCertificate, setShowUploadCertificate] = useState(false);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const tab = url.searchParams.get('tab') || 'payroll';
+    const employee = url.searchParams.get('employee');
+    const course = url.searchParams.get('course');
+    const compliance = url.searchParams.get('compliance');
+    const filters = url.searchParams.get('filters') === 'true';
+    
+    setActiveTab(tab);
+    setShowEmployeeDetails(employee);
+    setShowCourseDetails(course);
+    setShowComplianceDetails(compliance);
+    setShowFilters(filters);
+  }, []);
+
+  // Tab change handler
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    updateQuery({ tab: value });
+  };
+
+  // Employee actions
+  const handleViewEmployee = (employeeId: string) => {
+    setShowEmployeeDetails(employeeId);
+    updateQuery({ employee: employeeId });
+  };
+
+  const handleCloseEmployeeDetails = () => {
+    setShowEmployeeDetails(null);
+    updateQuery({ employee: undefined });
+  };
+
+  // Course actions
+  const handleViewCourse = (courseId: string) => {
+    setShowCourseDetails(courseId);
+    updateQuery({ course: courseId });
+  };
+
+  const handleCloseCourseDetails = () => {
+    setShowCourseDetails(null);
+    updateQuery({ course: undefined });
+  };
+
+  // Compliance actions
+  const handleViewCompliance = (complianceId: string) => {
+    setShowComplianceDetails(complianceId);
+    updateQuery({ compliance: complianceId });
+  };
+
+  const handleCloseComplianceDetails = () => {
+    setShowComplianceDetails(null);
+    updateQuery({ compliance: undefined });
+  };
+
+  // Export handlers
+  const handleExportPayslips = () => {
+    console.log('Exporting payslips...');
+  };
+
+  const handleGenerateReports = () => {
+    console.log('Generating reports...');
+  };
+
+  const handleExportLearningData = () => {
+    console.log('Exporting learning data...');
+  };
 
   // Sample employee data with Saudi context
   const employees: Employee[] = [
@@ -431,14 +524,14 @@ export function EmployersPage() {
           </SelectContent>
         </Select>
 
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowFilters(true)}>
           <Filter className="h-4 w-4" />
           More Filters
         </Button>
       </div>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
             <TabsTrigger value="payroll" className="flex items-center gap-2 px-4 py-3 min-w-fit">
@@ -465,11 +558,11 @@ export function EmployersPage() {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Salary List</h3>
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2" onClick={handleExportPayslips}>
                 <Download className="h-4 w-4" />
                 Export Payslips
               </Button>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2" onClick={handleGenerateReports}>
                 <FileText className="h-4 w-4" />
                 Generate Reports
               </Button>
@@ -520,7 +613,7 @@ export function EmployersPage() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleViewEmployee(employee.id)}>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -555,7 +648,7 @@ export function EmployersPage() {
                           <p className="text-sm text-muted-foreground">{employee.arabicName}</p>
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => handleViewEmployee(employee.id)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                     </div>
@@ -660,7 +753,7 @@ export function EmployersPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Training Courses</h3>
-              <Button size="sm" className="gap-2">
+              <Button size="sm" className="gap-2" onClick={() => setShowAddCourse(true)}>
                 <Plus className="h-4 w-4" />
                 Add Course
               </Button>
@@ -716,7 +809,7 @@ export function EmployersPage() {
                           <Badge className={cn(getStatusColor(course.status))}>
                             {course.status.replace('-', ' ')}
                           </Badge>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" onClick={() => handleViewCourse(course.id)}>
                             View Details
                           </Button>
                         </div>
@@ -773,7 +866,7 @@ export function EmployersPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Compliance Checklist</h3>
-              <Button size="sm" className="gap-2">
+              <Button size="sm" className="gap-2" onClick={() => setShowUploadCertificate(true)}>
                 <Upload className="h-4 w-4" />
                 Upload Certificate
               </Button>
@@ -815,7 +908,7 @@ export function EmployersPage() {
                             </div>
                           </div>
                         </div>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleViewCompliance(item.id)}>
                           Update
                         </Button>
                       </div>
@@ -827,6 +920,302 @@ export function EmployersPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Right-side Sheets */}
+      
+      {/* Employee Details Sheet */}
+      <Sheet open={!!showEmployeeDetails} onOpenChange={handleCloseEmployeeDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Employee Details</SheetTitle>
+            <SheetDescription>
+              View and manage employee information, payroll, and HR records.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showEmployeeDetails && (() => {
+              const employee = employees.find(emp => emp.id === showEmployeeDetails);
+              if (!employee) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Employee Info */}
+                  <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={employee.avatar} />
+                      <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="text-lg font-semibold">{employee.name}</h3>
+                      <p className="text-muted-foreground">{employee.arabicName}</p>
+                      <Badge className={cn(getStatusColor(employee.status))}>
+                        {employee.status.replace('-', ' ')}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Contact Info */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Contact Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Email</Label>
+                        <p className="font-medium">{employee.email}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Phone</Label>
+                        <p className="font-medium">{employee.phone}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">National ID</Label>
+                        <p className="font-medium">{employee.nationalId}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Nationality</Label>
+                        <p className="font-medium">{employee.nationality}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Employment Info */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Employment Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Position</Label>
+                        <p className="font-medium">{employee.position}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Department</Label>
+                        <p className="font-medium">{employee.department}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Base Salary</Label>
+                        <p className="font-medium">{formatCurrency(employee.salary)}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Join Date</Label>
+                        <p className="font-medium">{employee.joinDate}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Employee
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Generate Report
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Course Details Sheet */}
+      <Sheet open={!!showCourseDetails} onOpenChange={handleCloseCourseDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Course Details</SheetTitle>
+            <SheetDescription>
+              View course information, progress tracking, and enrollment details.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showCourseDetails && (() => {
+              const course = courses.find(c => c.id === showCourseDetails);
+              if (!course) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Course Info */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <GraduationCap className="h-8 w-8 text-primary" />
+                      <div>
+                        <h3 className="text-lg font-semibold">{course.title}</h3>
+                        <p className="text-muted-foreground">{course.category}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        <span>{course.duration}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Award className="h-4 w-4" />
+                        <span>{course.cpdHours} CPD Hours</span>
+                      </div>
+                      {course.dueDate && (
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4" />
+                          <span>Due {course.dueDate}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Progress */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Progress Tracking</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Completion</span>
+                        <span className="text-sm font-medium">{course.progress}%</span>
+                      </div>
+                      <Progress value={course.progress} className="h-3" />
+                    </div>
+                    <Badge className={cn(getStatusColor(course.status))}>
+                      {course.status.replace('-', ' ')}
+                    </Badge>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Continue Learning
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Certificate
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Compliance Details Sheet */}
+      <Sheet open={!!showComplianceDetails} onOpenChange={handleCloseComplianceDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Compliance Details</SheetTitle>
+            <SheetDescription>
+              View compliance requirements, status updates, and document management.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showComplianceDetails && (() => {
+              const compliance = complianceItems.find(c => c.id === showComplianceDetails);
+              if (!compliance) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Compliance Info */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      {getComplianceIcon(compliance.category)}
+                      <div>
+                        <h3 className="text-lg font-semibold">{compliance.title}</h3>
+                        <p className="text-muted-foreground capitalize">{compliance.category.replace('-', ' ')}</p>
+                      </div>
+                    </div>
+                    
+                    <p className="text-sm text-muted-foreground">{compliance.description}</p>
+                    
+                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        <span>Due {compliance.dueDate}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <User className="h-4 w-4" />
+                        <span>{compliance.responsible}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Status */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Status Information</h4>
+                    <div className="p-4 bg-muted/50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Current Status</span>
+                        <Badge className={cn(getStatusColor(compliance.status))}>
+                          {compliance.status}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Document
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <FileText className="h-4 w-4 mr-2" />
+                      View Requirements
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Filters Sheet */}
+      <Sheet open={showFilters} onOpenChange={setShowFilters}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Advanced Filters</SheetTitle>
+            <SheetDescription>
+              Filter employees by multiple criteria including status, salary range, and more.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Advanced filtering options coming soon.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Add Course Sheet */}
+      <Sheet open={showAddCourse} onOpenChange={setShowAddCourse}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Add New Course</SheetTitle>
+            <SheetDescription>
+              Create a new training course for employee development.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Course creation form will be implemented here.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Upload Certificate Sheet */}
+      <Sheet open={showUploadCertificate} onOpenChange={setShowUploadCertificate}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Upload Certificate</SheetTitle>
+            <SheetDescription>
+              Upload compliance certificates and supporting documents.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="text-sm text-muted-foreground">
+              Certificate upload functionality will be implemented here.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

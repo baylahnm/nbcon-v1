@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,10 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { R, RH } from '@/lib/routes';
 import { 
   Building,
   Edit,
@@ -91,6 +94,90 @@ export function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
   const [previewMode, setPreviewMode] = useState(false);
+  
+  // Sheet states for right-side panels
+  const [showDocumentDetails, setShowDocumentDetails] = useState<string | null>(null);
+  const [showUploadDocument, setShowUploadDocument] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showExportProfile, setShowExportProfile] = useState(false);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const tab = url.searchParams.get('tab') || 'basic';
+    const document = url.searchParams.get('document');
+    const upload = url.searchParams.get('upload') === 'true';
+    const settings = url.searchParams.get('settings') === 'true';
+    const exportProfile = url.searchParams.get('export') === 'true';
+    
+    setActiveTab(tab);
+    setShowDocumentDetails(document);
+    setShowUploadDocument(upload);
+    setShowSettings(settings);
+    setShowExportProfile(exportProfile);
+  }, []);
+
+  // Tab change handler
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    updateQuery({ tab: value });
+  };
+
+  // Document actions
+  const handleViewDocument = (documentId: string) => {
+    setShowDocumentDetails(documentId);
+    updateQuery({ document: documentId });
+  };
+
+  const handleCloseDocumentDetails = () => {
+    setShowDocumentDetails(null);
+    updateQuery({ document: undefined });
+  };
+
+  const handleUploadDocument = () => {
+    setShowUploadDocument(true);
+    updateQuery({ upload: 'true' });
+  };
+
+  const handleCloseUploadDocument = () => {
+    setShowUploadDocument(false);
+    updateQuery({ upload: undefined });
+  };
+
+  // Settings actions
+  const handleOpenSettings = () => {
+    setShowSettings(true);
+    updateQuery({ settings: 'true' });
+  };
+
+  const handleCloseSettings = () => {
+    setShowSettings(false);
+    updateQuery({ settings: undefined });
+  };
+
+  // Export actions
+  const handleExportProfile = () => {
+    setShowExportProfile(true);
+    updateQuery({ export: 'true' });
+  };
+
+  const handleCloseExportProfile = () => {
+    setShowExportProfile(false);
+    updateQuery({ export: undefined });
+  };
 
   // Sample company data with Saudi context
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
@@ -347,7 +434,7 @@ export function ProfilePage() {
 
         {/* Main Content */}
         <div className="lg:col-span-3">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
             <div className="border-b border-sidebar-border mb-6">
               <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
                 <TabsTrigger value="basic" className="flex items-center gap-2 px-4 py-3 min-w-fit">
@@ -852,7 +939,7 @@ export function ProfilePage() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             Official Documents
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={handleUploadDocument}>
               <Upload className="h-4 w-4" />
               Upload Document
             </Button>
@@ -893,11 +980,11 @@ export function ProfilePage() {
                       </div>
                     </div>
                     <div className="flex space-x-2 mt-3">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => console.log('Downloading document:', doc.id)}>
                         <Download className="h-4 w-4 mr-1" />
                         Download
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleViewDocument(doc.id)}>
                         <Eye className="h-4 w-4" />
                       </Button>
                     </div>
@@ -908,6 +995,308 @@ export function ProfilePage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Right-side Sheets */}
+      
+      {/* Document Details Sheet */}
+      <Sheet open={!!showDocumentDetails} onOpenChange={handleCloseDocumentDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Document Details</SheetTitle>
+            <SheetDescription>
+              View document information, status, and management options.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showDocumentDetails && (() => {
+              const document = documents.find(d => d.id === showDocumentDetails);
+              if (!document) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Document Info */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-8 w-8 text-muted-foreground" />
+                      <div>
+                        <h3 className="text-lg font-semibold">{document.name}</h3>
+                        <p className="text-muted-foreground">{document.type}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <Badge className={cn(getStatusColor(document.status))}>
+                        {getStatusIcon(document.status)}
+                        <span className="ml-1 capitalize">{document.status}</span>
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Document Details */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Document Information</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">File Size</Label>
+                        <p className="font-medium">{document.size}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Upload Date</Label>
+                        <p className="font-medium">{document.uploadDate}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Document Type</Label>
+                        <p className="font-medium">{document.type}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Status</Label>
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(document.status)}
+                          <span className="capitalize">{document.status}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Document Preview */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Document Preview</h4>
+                    <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
+                      <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-sm text-muted-foreground">
+                        Document preview will be displayed here
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Replace
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Upload Document Sheet */}
+      <Sheet open={showUploadDocument} onOpenChange={handleCloseUploadDocument}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Upload Document</SheetTitle>
+            <SheetDescription>
+              Upload official documents for your company profile.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Document Type</Label>
+                <Select>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Select document type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cr-certificate">Commercial Registration Certificate</SelectItem>
+                    <SelectItem value="vat-certificate">VAT Registration Certificate</SelectItem>
+                    <SelectItem value="gosi-document">GOSI Registration</SelectItem>
+                    <SelectItem value="municipal-license">Municipal License</SelectItem>
+                    <SelectItem value="professional-license">Professional License</SelectItem>
+                    <SelectItem value="insurance-certificate">Insurance Certificate</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Upload File</Label>
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center mt-2">
+                  <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Drag and drop your file here, or click to browse
+                  </p>
+                  <Button variant="outline" size="sm">
+                    Choose File
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Document Description (Optional)</Label>
+                <Textarea 
+                  placeholder="Add any additional information about this document..."
+                  className="mt-2"
+                  rows={3}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Document
+              </Button>
+              <Button variant="outline" onClick={handleCloseUploadDocument}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Settings Sheet */}
+      <Sheet open={showSettings} onOpenChange={handleCloseSettings}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Profile Settings</SheetTitle>
+            <SheetDescription>
+              Manage your profile preferences and privacy settings.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Profile Visibility</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="radio" name="visibility" value="public" defaultChecked className="rounded" />
+                    <Label className="text-sm">Public - Visible to all users</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="radio" name="visibility" value="private" className="rounded" />
+                    <Label className="text-sm">Private - Only visible to verified partners</Label>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Document Verification</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Auto-verify documents from trusted sources</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Send notifications for document status changes</Label>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Data Export</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" className="rounded" />
+                    <Label className="text-sm">Allow data export in machine-readable format</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Include analytics data in exports</Label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Save className="h-4 w-4 mr-2" />
+                Save Settings
+              </Button>
+              <Button variant="outline" onClick={handleCloseSettings}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Export Profile Sheet */}
+      <Sheet open={showExportProfile} onOpenChange={handleCloseExportProfile}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Export Company Profile</SheetTitle>
+            <SheetDescription>
+              Export your company profile data in various formats.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Export Format</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    PDF Report
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Excel Spreadsheet
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Include Sections</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Basic Company Information</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Legal Registration Details</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Contact Information</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Banking Information</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" className="rounded" />
+                    <Label className="text-sm">Document List</Label>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Language</Label>
+                <Select defaultValue="english">
+                  <SelectTrigger className="mt-2">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="english">English</SelectItem>
+                    <SelectItem value="arabic">Arabic</SelectItem>
+                    <SelectItem value="both">Both Languages</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Download className="h-4 w-4 mr-2" />
+                Generate Export
+              </Button>
+              <Button variant="outline" onClick={handleCloseExportProfile}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

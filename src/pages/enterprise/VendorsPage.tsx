@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '@/components/ui/label';
+import { R, RH } from '@/lib/routes';
 import { 
   Search,
   Filter,
@@ -72,6 +76,165 @@ export function VendorsPage() {
   const [selectedLocation, setSelectedLocation] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<string>('name');
+  
+  // Sheet states for right-side panels
+  const [showVendorDetails, setShowVendorDetails] = useState<string | null>(null);
+  const [showAddVendor, setShowAddVendor] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showExportOptions, setShowExportOptions] = useState(false);
+  const [showVendorContracts, setShowVendorContracts] = useState<string | null>(null);
+  const [showVendorProjects, setShowVendorProjects] = useState<string | null>(null);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const search = url.searchParams.get('search') || '';
+    const category = url.searchParams.get('category') || 'all';
+    const status = url.searchParams.get('status') || 'all';
+    const location = url.searchParams.get('location') || 'all';
+    const view = url.searchParams.get('view') as 'grid' | 'list' || 'grid';
+    const sort = url.searchParams.get('sort') || 'name';
+    const vendor = url.searchParams.get('vendor');
+    const addVendor = url.searchParams.get('add') === 'true';
+    const filters = url.searchParams.get('filters') === 'true';
+    const exportOptions = url.searchParams.get('export') === 'true';
+    const contracts = url.searchParams.get('contracts');
+    const projects = url.searchParams.get('projects');
+    
+    setSearchTerm(search);
+    setSelectedCategory(category);
+    setSelectedStatus(status);
+    setSelectedLocation(location);
+    setViewMode(view);
+    setSortBy(sort);
+    setShowVendorDetails(vendor);
+    setShowAddVendor(addVendor);
+    setShowFilters(filters);
+    setShowExportOptions(exportOptions);
+    setShowVendorContracts(contracts);
+    setShowVendorProjects(projects);
+  }, []);
+
+  // Filter change handlers
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    updateQuery({ search: value || undefined });
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+    updateQuery({ category: value });
+  };
+
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value);
+    updateQuery({ status: value });
+  };
+
+  const handleLocationChange = (value: string) => {
+    setSelectedLocation(value);
+    updateQuery({ location: value });
+  };
+
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode);
+    updateQuery({ view: mode });
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    updateQuery({ sort: value });
+  };
+
+  // Vendor actions
+  const handleViewVendor = (vendorId: string) => {
+    setShowVendorDetails(vendorId);
+    updateQuery({ vendor: vendorId });
+  };
+
+  const handleCloseVendorDetails = () => {
+    setShowVendorDetails(null);
+    updateQuery({ vendor: undefined });
+  };
+
+  const handleAddVendor = () => {
+    setShowAddVendor(true);
+    updateQuery({ add: 'true' });
+  };
+
+  const handleCloseAddVendor = () => {
+    setShowAddVendor(false);
+    updateQuery({ add: undefined });
+  };
+
+  const handleViewContracts = (vendorId: string) => {
+    setShowVendorContracts(vendorId);
+    updateQuery({ contracts: vendorId });
+  };
+
+  const handleCloseVendorContracts = () => {
+    setShowVendorContracts(null);
+    updateQuery({ contracts: undefined });
+  };
+
+  const handleViewProjects = (vendorId: string) => {
+    setShowVendorProjects(vendorId);
+    updateQuery({ projects: vendorId });
+  };
+
+  const handleCloseVendorProjects = () => {
+    setShowVendorProjects(null);
+    updateQuery({ projects: undefined });
+  };
+
+  // Filter actions
+  const handleOpenFilters = () => {
+    setShowFilters(true);
+    updateQuery({ filters: 'true' });
+  };
+
+  const handleCloseFilters = () => {
+    setShowFilters(false);
+    updateQuery({ filters: undefined });
+  };
+
+  // Export actions
+  const handleExportOptions = () => {
+    setShowExportOptions(true);
+    updateQuery({ export: 'true' });
+  };
+
+  const handleCloseExportOptions = () => {
+    setShowExportOptions(false);
+    updateQuery({ export: undefined });
+  };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory('all');
+    setSelectedStatus('all');
+    setSelectedLocation('all');
+    updateQuery({ 
+      search: undefined, 
+      category: 'all', 
+      status: 'all', 
+      location: 'all' 
+    });
+  };
 
   // Sample vendors data with Saudi business context
   const vendors: Vendor[] = [
@@ -389,12 +552,12 @@ export function VendorsPage() {
         </div>
         
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={handleAddVendor}>
             <Plus className="h-4 w-4" />
             Add Vendor
           </Button>
           
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={handleExportOptions}>
             <Download className="h-4 w-4" />
             Export
           </Button>
@@ -408,13 +571,13 @@ export function VendorsPage() {
           <Input
             placeholder="Search vendors, categories, or specializations..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-10"
           />
         </div>
         
         <div className="flex items-center space-x-2">
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <Select value={selectedCategory} onValueChange={handleCategoryChange}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
@@ -426,7 +589,7 @@ export function VendorsPage() {
             </SelectContent>
           </Select>
 
-          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+          <Select value={selectedStatus} onValueChange={handleStatusChange}>
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
@@ -439,7 +602,7 @@ export function VendorsPage() {
             </SelectContent>
           </Select>
 
-          <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+          <Select value={selectedLocation} onValueChange={handleLocationChange}>
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Location" />
             </SelectTrigger>
@@ -451,7 +614,7 @@ export function VendorsPage() {
             </SelectContent>
           </Select>
 
-          <Select value={sortBy} onValueChange={setSortBy}>
+          <Select value={sortBy} onValueChange={handleSortChange}>
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -468,18 +631,22 @@ export function VendorsPage() {
             <Button
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setViewMode('grid')}
+              onClick={() => handleViewModeChange('grid')}
             >
               <Grid3X3 className="h-4 w-4" />
             </Button>
             <Button
               variant={viewMode === 'list' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setViewMode('list')}
+              onClick={() => handleViewModeChange('list')}
             >
               <List className="h-4 w-4" />
             </Button>
           </div>
+
+          <Button variant="outline" size="sm" onClick={handleOpenFilters}>
+            <SlidersHorizontal className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -599,12 +766,21 @@ export function VendorsPage() {
                   </div>
 
                   <div className="flex space-x-2 pt-2">
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleViewVendor(vendor.id)}
+                    >
                       <FileText className="h-4 w-4 mr-1" />
                       View Details
                     </Button>
                     {vendor.website && (
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(`https://${vendor.website}`, '_blank')}
+                      >
                         <ExternalLink className="h-4 w-4" />
                       </Button>
                     )}
@@ -669,11 +845,19 @@ export function VendorsPage() {
                         <div className="text-muted-foreground">Reliability</div>
                       </div>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleViewVendor(vendor.id)}
+                        >
                           <FileText className="h-4 w-4" />
                         </Button>
                         {vendor.website && (
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open(`https://${vendor.website}`, '_blank')}
+                          >
                             <ExternalLink className="h-4 w-4" />
                           </Button>
                         )}
@@ -705,17 +889,474 @@ export function VendorsPage() {
                 Try adjusting your search criteria or filters to find more vendors.
               </p>
             </div>
-            <Button variant="outline" onClick={() => {
-              setSearchTerm('');
-              setSelectedCategory('all');
-              setSelectedStatus('all');
-              setSelectedLocation('all');
-            }}>
+            <Button variant="outline" onClick={handleClearFilters}>
               Clear All Filters
             </Button>
           </motion.div>
         </div>
       )}
+
+      {/* Right-side Sheets */}
+      
+      {/* Vendor Details Sheet */}
+      <Sheet open={!!showVendorDetails} onOpenChange={handleCloseVendorDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Vendor Details</SheetTitle>
+            <SheetDescription>
+              Comprehensive vendor information, performance metrics, and management options.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showVendorDetails && (() => {
+              const vendor = vendors.find(v => v.id === showVendorDetails);
+              if (!vendor) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Vendor Header */}
+                  <div className="flex items-start space-x-4">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={vendor.logo} />
+                      <AvatarFallback className="text-lg">
+                        {vendor.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-xl font-semibold">{vendor.name}</h3>
+                        {vendor.isPreferred && (
+                          <Award className="h-5 w-5 text-yellow-500" />
+                        )}
+                        <Badge className={cn(getStatusColor(vendor.status))}>
+                          {vendor.status}
+                        </Badge>
+                      </div>
+                      {vendor.nameArabic && (
+                        <p className="text-muted-foreground" dir="rtl">{vendor.nameArabic}</p>
+                      )}
+                      <p className="text-sm text-muted-foreground">{vendor.category}</p>
+                    </div>
+                  </div>
+
+                  {/* Contact Information */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Contact Information</h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="flex items-center space-x-3">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">{vendor.email}</p>
+                          <p className="text-sm text-muted-foreground">Email</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">{vendor.phone}</p>
+                          <p className="text-sm text-muted-foreground">Phone</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">{vendor.location}</p>
+                          <p className="text-sm text-muted-foreground">Location</p>
+                        </div>
+                      </div>
+                      {vendor.website && (
+                        <div className="flex items-center space-x-3">
+                          <Globe className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <p className="font-medium">{vendor.website}</p>
+                            <p className="text-sm text-muted-foreground">Website</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Performance Metrics */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Performance Metrics</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <Star className="h-4 w-4 text-yellow-500" />
+                          <span className="font-medium">{vendor.rating}</span>
+                          <span className="text-sm text-muted-foreground">({vendor.reviews} reviews)</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Shield className="h-4 w-4 text-green-500" />
+                          <span className="font-medium">{vendor.reliability}%</span>
+                          <span className="text-sm text-muted-foreground">Reliability</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4 text-blue-500" />
+                          <span className="font-medium">{vendor.responseTime}</span>
+                          <span className="text-sm text-muted-foreground">Response Time</span>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div>
+                          <p className="font-medium">{formatCurrency(vendor.contractValue)}</p>
+                          <p className="text-sm text-muted-foreground">Contract Value</p>
+                        </div>
+                        <div>
+                          <p className="font-medium">{vendor.activeContracts}</p>
+                          <p className="text-sm text-muted-foreground">Active Contracts</p>
+                        </div>
+                        <div>
+                          <p className="font-medium">{vendor.completedProjects}</p>
+                          <p className="text-sm text-muted-foreground">Completed Projects</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Specializations */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Specializations</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {vendor.specializations.map((spec, idx) => (
+                        <Badge key={idx} variant="secondary">
+                          {spec}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Certifications */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Certifications</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {vendor.certifications.map((cert, idx) => (
+                        <Badge key={idx} variant="outline">
+                          {cert}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1" onClick={() => handleViewContracts(vendor.id)}>
+                      <FileText className="h-4 w-4 mr-2" />
+                      View Contracts
+                    </Button>
+                    <Button variant="outline" className="flex-1" onClick={() => handleViewProjects(vendor.id)}>
+                      <Construction className="h-4 w-4 mr-2" />
+                      View Projects
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Add Vendor Sheet */}
+      <Sheet open={showAddVendor} onOpenChange={handleCloseAddVendor}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Add New Vendor</SheetTitle>
+            <SheetDescription>
+              Register a new vendor in your supplier directory.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Company Name (English)</Label>
+                  <Input placeholder="Enter company name" className="mt-2" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Company Name (Arabic)</Label>
+                  <Input placeholder="اسم الشركة" className="mt-2" dir="rtl" />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Category</Label>
+                  <Select>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map(category => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Status</Label>
+                  <Select>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Email</Label>
+                  <Input type="email" placeholder="vendor@company.sa" className="mt-2" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Phone</Label>
+                  <Input placeholder="+966 XX XXX XXXX" className="mt-2" />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Location</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <Input placeholder="City" />
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Saudi Arabia">Saudi Arabia</SelectItem>
+                      <SelectItem value="UAE">United Arab Emirates</SelectItem>
+                      <SelectItem value="Kuwait">Kuwait</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Specializations</Label>
+                <Input placeholder="Enter specializations separated by commas" className="mt-2" />
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Vendor
+              </Button>
+              <Button variant="outline" onClick={handleCloseAddVendor}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Advanced Filters Sheet */}
+      <Sheet open={showFilters} onOpenChange={handleCloseFilters}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Advanced Filters</SheetTitle>
+            <SheetDescription>
+              Apply detailed filters to find specific vendors.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Contract Value Range</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <Input placeholder="Min value" type="number" />
+                  <Input placeholder="Max value" type="number" />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Rating Range</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <Input placeholder="Min rating" type="number" step="0.1" min="0" max="5" />
+                  <Input placeholder="Max rating" type="number" step="0.1" min="0" max="5" />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Reliability Range</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <Input placeholder="Min reliability" type="number" min="0" max="100" />
+                  <Input placeholder="Max reliability" type="number" min="0" max="100" />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Employee Count</Label>
+                <Select>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Select employee count" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-10">1-10</SelectItem>
+                    <SelectItem value="11-50">11-50</SelectItem>
+                    <SelectItem value="51-100">51-100</SelectItem>
+                    <SelectItem value="101-200">101-200</SelectItem>
+                    <SelectItem value="201-500">201-500</SelectItem>
+                    <SelectItem value="500+">500+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Certifications</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="iso9001" className="rounded" />
+                    <Label htmlFor="iso9001" className="text-sm">ISO 9001</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="saso" className="rounded" />
+                    <Label htmlFor="saso" className="text-sm">SASO</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="ce" className="rounded" />
+                    <Label htmlFor="ce" className="text-sm">CE Marking</Label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Filter className="h-4 w-4 mr-2" />
+                Apply Filters
+              </Button>
+              <Button variant="outline" onClick={handleClearFilters}>
+                Clear All
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Export Options Sheet */}
+      <Sheet open={showExportOptions} onOpenChange={handleCloseExportOptions}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Export Vendor Data</SheetTitle>
+            <SheetDescription>
+              Export vendor information in various formats.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Export Format</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Excel Spreadsheet
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    CSV File
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Include Data</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Basic Information</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Contact Details</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="rounded" />
+                    <Label className="text-sm">Performance Metrics</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" className="rounded" />
+                    <Label className="text-sm">Specializations</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" className="rounded" />
+                    <Label className="text-sm">Certifications</Label>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Filter by Status</Label>
+                <Select>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="All vendors" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Vendors</SelectItem>
+                    <SelectItem value="active">Active Only</SelectItem>
+                    <SelectItem value="preferred">Preferred Only</SelectItem>
+                    <SelectItem value="pending">Pending Only</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Download className="h-4 w-4 mr-2" />
+                Generate Export
+              </Button>
+              <Button variant="outline" onClick={handleCloseExportOptions}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Vendor Contracts Sheet */}
+      <Sheet open={!!showVendorContracts} onOpenChange={handleCloseVendorContracts}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Vendor Contracts</SheetTitle>
+            <SheetDescription>
+              View contract history and active agreements for this vendor.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-4">
+              <div className="text-center py-8">
+                <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">Contract data will be displayed here</p>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Vendor Projects Sheet */}
+      <Sheet open={!!showVendorProjects} onOpenChange={handleCloseVendorProjects}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Vendor Projects</SheetTitle>
+            <SheetDescription>
+              View completed and ongoing projects for this vendor.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            <div className="space-y-4">
+              <div className="text-center py-8">
+                <Construction className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">Project data will be displayed here</p>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

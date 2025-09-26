@@ -43,6 +43,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 interface BudgetData {
   project: string;
@@ -64,6 +65,45 @@ export function AnalyticsPage() {
   const [selectedProject, setSelectedProject] = useState<string>('all');
   const [selectedDateRange, setSelectedDateRange] = useState<string>('last-30-days');
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [showFilters, setShowFilters] = useState(false);
+  const [snapshotProject, setSnapshotProject] = useState<BudgetData | null>(null);
+
+  // slug mapping for sample names
+  const projectSlugMap: Record<string, string> = {
+    'NEOM Smart City': 'neom',
+    'Aramco Refinery': 'aramco',
+    'PIF Headquarters': 'pif',
+    'Red Sea Project': 'red-sea',
+    'Qiddiya Complex': 'qiddiya',
+  };
+
+  const updateQuery = (updates: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(updates).forEach(([k, v]) => {
+      if (!v) url.searchParams.delete(k); else url.searchParams.set(k, v);
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from query
+  React.useEffect(() => {
+    const url = new URL(window.location.href);
+    const qp = url.searchParams;
+    const proj = qp.get('project');
+    const range = qp.get('range');
+    const from = qp.get('from');
+    const to = qp.get('to');
+    const filtersOpen = qp.get('filters') === 'open';
+    if (proj) setSelectedProject(proj);
+    if (range) setSelectedDateRange(range);
+    if (from || to) {
+      setDateRange({
+        from: from ? new Date(from) : undefined,
+        to: to ? new Date(to) : undefined,
+      });
+    }
+    if (filtersOpen) setShowFilters(true);
+  }, []);
 
   // Sample budget data
   const budgetData: BudgetData[] = [
@@ -213,7 +253,7 @@ export function AnalyticsPage() {
       {/* Filters */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Select value={selectedProject} onValueChange={setSelectedProject}>
+          <Select value={selectedProject} onValueChange={(v) => { setSelectedProject(v); updateQuery({ project: v }); }}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Select Project" />
             </SelectTrigger>
@@ -226,7 +266,14 @@ export function AnalyticsPage() {
             </SelectContent>
           </Select>
           
-          <Select value={selectedDateRange} onValueChange={setSelectedDateRange}>
+          <Select value={selectedDateRange} onValueChange={(v) => { 
+            setSelectedDateRange(v);
+            updateQuery({ range: v });
+            if (v === 'custom') {
+              setShowFilters(true);
+              updateQuery({ filters: 'open' });
+            }
+          }}>
             <SelectTrigger className="w-40">
               <SelectValue placeholder="Date Range" />
             </SelectTrigger>
@@ -239,7 +286,7 @@ export function AnalyticsPage() {
             </SelectContent>
           </Select>
 
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => { setShowFilters(true); updateQuery({ filters: 'open' }); }}>
             <Filter className="h-4 w-4" />
             More Filters
           </Button>
@@ -366,6 +413,8 @@ export function AnalyticsPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
+                      className="cursor-pointer hover:bg-muted/20"
+                      onClick={() => setSnapshotProject(project)}
                     >
                       <TableCell className="font-medium">{project.project}</TableCell>
                       <TableCell className="text-right">{formatCurrency(project.planned)}</TableCell>
@@ -476,6 +525,51 @@ export function AnalyticsPage() {
           </Card>
         </div>
       </div>
+      {/* Filters Sheet */}
+      <Sheet open={showFilters} onOpenChange={(open) => { setShowFilters(open); updateQuery({ filters: open ? 'open' : undefined }); }}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Analytics Filters</SheetTitle>
+            <SheetDescription>Refine analytics by project attributes, cost centers, owners, and time range.</SheetDescription>
+          </SheetHeader>
+          <div className="mt-4 space-y-4 text-sm">
+            <div className="text-muted-foreground">Coming soon: advanced filters (department, owner, region, cost center).</div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Project Analytics Snapshot Sheet */}
+      <Sheet open={!!snapshotProject} onOpenChange={() => setSnapshotProject(null)}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>{snapshotProject?.project}</SheetTitle>
+            <SheetDescription>Quick analytics snapshot. Open full page for deeper insights.</SheetDescription>
+          </SheetHeader>
+          {snapshotProject && (
+            <div className="mt-4 space-y-3">
+              <div className="flex justify-between text-sm">
+                <span>Planned</span>
+                <span className="font-medium">{formatCurrency(snapshotProject.planned)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Actual</span>
+                <span className="font-medium">{formatCurrency(snapshotProject.actual)}</span>
+              </div>
+              <div className={`flex justify-between text-sm ${snapshotProject.variance > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                <span>Variance</span>
+                <span className="font-medium">{snapshotProject.variance > 0 ? '+' : ''}{formatCurrency(snapshotProject.variance)}</span>
+              </div>
+              <div className="pt-4 flex gap-2">
+                <Button size="sm" onClick={() => {
+                  const slug = projectSlugMap[snapshotProject.project] || 'all';
+                  window.location.assign(`/enterprise/analytics/projects/${slug}`);
+                }}>Open full page</Button>
+                <Button size="sm" variant="outline" onClick={() => setShowFilters(true)}>Adjust filters</Button>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

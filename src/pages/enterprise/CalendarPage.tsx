@@ -7,6 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import CreateEventDialog from '@/components/calendar/CreateEventDialog';
+import { R, RH } from '@/lib/routes';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -43,6 +46,9 @@ export function CalendarPage() {
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(currentDate);
+  const [showCreate, setShowCreate] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
   // Sample events data
   const sampleEvents: CalendarEvent[] = [
@@ -135,6 +141,38 @@ export function CalendarPage() {
     });
   };
 
+  const exportICS = () => {
+    // Minimal ICS export for visible sample events
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//nbcon//enterprise-calendar//EN',
+    ];
+    sampleEvents.forEach((e) => {
+      // Use current date for DTSTART fallback
+      const dt = new Date(currentDate);
+      const yyyy = dt.getFullYear();
+      const mm = String(dt.getMonth() + 1).padStart(2, '0');
+      const dd = String(dt.getDate()).padStart(2, '0');
+      const start = `${yyyy}${mm}${dd}T${e.time.replace(':','')}00`;
+      lines.push(
+        'BEGIN:VEVENT',
+        `UID:enterprise-${e.id}@nbcon`,
+        `SUMMARY:${e.title}`,
+        `DTSTART:${start}`,
+        'END:VEVENT'
+      );
+    });
+    lines.push('END:VCALENDAR');
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'calendar.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -152,15 +190,21 @@ export function CalendarPage() {
         </div>
         
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={exportICS} aria-label="Export calendar">
             <Download className="h-4 w-4" />
             Export
           </Button>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            onClick={() => window.location.assign(`${R.enterprise.settings}#integrations`)}
+            aria-label="Sync calendar"
+          >
             <RefreshCw className="h-4 w-4" />
             Sync
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={() => setShowCreate(true)} aria-label="Create event">
             <Plus className="h-4 w-4" />
             Create
           </Button>
@@ -218,7 +262,7 @@ export function CalendarPage() {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowFilters(true)} aria-label="Open filters">
               <Filter className="h-4 w-4" />
               Filters
             </Button>
@@ -277,6 +321,7 @@ export function CalendarPage() {
                               ${event.color} text-white text-xs p-2 rounded mb-1 
                               cursor-pointer hover:shadow-md transition-shadow
                             `}
+                            onClick={() => setSelectedEvent(event)}
                           >
                             <div className="font-medium truncate">{event.title}</div>
                             <div className="opacity-90">{event.time}</div>
@@ -374,7 +419,7 @@ export function CalendarPage() {
                   <p className="text-sm font-medium">Nasser Baylah</p>
                   <p className="text-xs text-muted-foreground">Engineering Lead</p>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => window.location.assign(`/enterprise/calendar/event/1`)}>
+                <Button variant="ghost" size="sm" onClick={() => window.location.assign(RH.enterprise.calendarEvent('1'))}>
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
@@ -382,6 +427,50 @@ export function CalendarPage() {
           </Card>
         </div>
       </div>
+
+      {/* Create Event Dialog */}
+      <CreateEventDialog
+        isOpen={showCreate}
+        onClose={() => setShowCreate(false)}
+        onSave={() => setShowCreate(false)}
+        initialDate={selectedDate || currentDate}
+      />
+
+      {/* Filters Sheet */}
+      <Sheet open={showFilters} onOpenChange={setShowFilters}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Filters</SheetTitle>
+            <SheetDescription>Refine events by type, team, and participants.</SheetDescription>
+          </SheetHeader>
+          <div className="mt-4 text-sm text-muted-foreground">
+            {/* TODO: Implement enterprise-specific filters; persist to query string */}
+            Coming soon: enterprise calendar filters.
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Event Quick View Sheet */}
+      <Sheet open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>{selectedEvent?.title}</SheetTitle>
+            <SheetDescription>
+              {selectedEvent ? `${selectedEvent.time} • ${selectedEvent.type}` : ''}
+            </SheetDescription>
+          </SheetHeader>
+          {selectedEvent && (
+            <div className="mt-4 space-y-3">
+              <div className="text-sm">Duration: {selectedEvent.duration}h</div>
+              <div className="text-sm">Participants: {(selectedEvent.participants || []).join(', ') || '—'}</div>
+              <div className="pt-4 flex gap-2">
+                <Button size="sm" onClick={() => window.location.assign(RH.enterprise.calendarEvent(selectedEvent.id))}>Open full page</Button>
+                <Button size="sm" variant="outline" onClick={() => { setShowCreate(true); }}>Edit</Button>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

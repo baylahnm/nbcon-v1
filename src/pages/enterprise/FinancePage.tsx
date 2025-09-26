@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '@/components/ui/label';
+import { R, RH } from '@/lib/routes';
 import { toast } from 'sonner';
 import { 
   DollarSign,
@@ -99,6 +103,148 @@ export function FinancePage() {
   const [selectedProject, setSelectedProject] = useState<string>('all');
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
   const [activeTab, setActiveTab] = useState('transactions');
+  
+  // Sheet states for right-side panels
+  const [showTransactionDetails, setShowTransactionDetails] = useState<string | null>(null);
+  const [showInvoiceDetails, setShowInvoiceDetails] = useState<string | null>(null);
+  const [showReceiptDetails, setShowReceiptDetails] = useState<string | null>(null);
+  const [showNewInvoice, setShowNewInvoice] = useState(false);
+  const [showExportOptions, setShowExportOptions] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+
+  // URL parameter management
+  const updateQuery = (params: Record<string, string | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const search = url.searchParams.get('search') || '';
+    const status = url.searchParams.get('status') || 'all';
+    const type = url.searchParams.get('type') || 'all';
+    const project = url.searchParams.get('project') || 'all';
+    const tab = url.searchParams.get('tab') || 'transactions';
+    const transaction = url.searchParams.get('transaction');
+    const invoice = url.searchParams.get('invoice');
+    const receipt = url.searchParams.get('receipt');
+    const newInvoice = url.searchParams.get('newInvoice') === 'true';
+    const exportOptions = url.searchParams.get('export') === 'true';
+    const filters = url.searchParams.get('filters') === 'true';
+    
+    setSearchQuery(search);
+    setSelectedStatus(status);
+    setSelectedType(type);
+    setSelectedProject(project);
+    setActiveTab(tab);
+    setShowTransactionDetails(transaction);
+    setShowInvoiceDetails(invoice);
+    setShowReceiptDetails(receipt);
+    setShowNewInvoice(newInvoice);
+    setShowExportOptions(exportOptions);
+    setShowFilters(filters);
+  }, []);
+
+  // Tab change handler
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    updateQuery({ tab: value });
+  };
+
+  // Filter change handlers
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    updateQuery({ search: value || undefined });
+  };
+
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value);
+    updateQuery({ status: value });
+  };
+
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value);
+    updateQuery({ type: value });
+  };
+
+  const handleProjectChange = (value: string) => {
+    setSelectedProject(value);
+    updateQuery({ project: value });
+  };
+
+  // Transaction actions
+  const handleViewTransaction = (transactionId: string) => {
+    setShowTransactionDetails(transactionId);
+    updateQuery({ transaction: transactionId });
+  };
+
+  const handleCloseTransactionDetails = () => {
+    setShowTransactionDetails(null);
+    updateQuery({ transaction: undefined });
+  };
+
+  // Invoice actions
+  const handleViewInvoice = (invoiceId: string) => {
+    setShowInvoiceDetails(invoiceId);
+    updateQuery({ invoice: invoiceId });
+  };
+
+  const handleCloseInvoiceDetails = () => {
+    setShowInvoiceDetails(null);
+    updateQuery({ invoice: undefined });
+  };
+
+  // Receipt actions
+  const handleViewReceipt = (receiptId: string) => {
+    setShowReceiptDetails(receiptId);
+    updateQuery({ receipt: receiptId });
+  };
+
+  const handleCloseReceiptDetails = () => {
+    setShowReceiptDetails(null);
+    updateQuery({ receipt: undefined });
+  };
+
+  // New invoice actions
+  const handleNewInvoice = () => {
+    setShowNewInvoice(true);
+    updateQuery({ newInvoice: 'true' });
+  };
+
+  const handleCloseNewInvoice = () => {
+    setShowNewInvoice(false);
+    updateQuery({ newInvoice: undefined });
+  };
+
+  // Export actions
+  const handleExportOptions = () => {
+    setShowExportOptions(true);
+    updateQuery({ export: 'true' });
+  };
+
+  const handleCloseExportOptions = () => {
+    setShowExportOptions(false);
+    updateQuery({ export: undefined });
+  };
+
+  // Filter actions
+  const handleOpenFilters = () => {
+    setShowFilters(true);
+    updateQuery({ filters: 'true' });
+  };
+
+  const handleCloseFilters = () => {
+    setShowFilters(false);
+    updateQuery({ filters: undefined });
+  };
 
   // Sample transactions data with Saudi engineering context
   const transactions: Transaction[] = [
@@ -508,38 +654,14 @@ export function FinancePage() {
         </div>
         
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={handleNewInvoice}>
             <Plus className="h-4 w-4" />
             New Invoice
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="gap-2">
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleExport('excel', 'transactions')}>
-                Export Transactions (Excel)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('pdf', 'transactions')}>
-                Export Transactions (PDF)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('excel', 'invoices')}>
-                Export Invoices (Excel)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('pdf', 'invoices')}>
-                Export Invoices (PDF)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('excel', 'receipts')}>
-                Export Receipts (Excel)
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('pdf', 'receipts')}>
-                Export Receipts (PDF)
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button className="gap-2" onClick={handleExportOptions}>
+            <Download className="h-4 w-4" />
+            Export
+          </Button>
         </div>
       </div>
 
@@ -631,7 +753,7 @@ export function FinancePage() {
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
             <TabsTrigger value="transactions" className="flex items-center gap-2 px-4 py-3 min-w-fit">
@@ -659,12 +781,12 @@ export function FinancePage() {
                 <Input
                   placeholder="Search transactions..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="pl-10 w-64"
                 />
               </div>
               
-              <Select value={selectedType} onValueChange={setSelectedType}>
+              <Select value={selectedType} onValueChange={handleTypeChange}>
                 <SelectTrigger className="w-32">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
@@ -675,7 +797,7 @@ export function FinancePage() {
                 </SelectContent>
               </Select>
 
-              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+              <Select value={selectedStatus} onValueChange={handleStatusChange}>
                 <SelectTrigger className="w-32">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -688,7 +810,7 @@ export function FinancePage() {
                 </SelectContent>
               </Select>
 
-              <Select value={selectedProject} onValueChange={setSelectedProject}>
+              <Select value={selectedProject} onValueChange={handleProjectChange}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Project" />
                 </SelectTrigger>
@@ -700,6 +822,10 @@ export function FinancePage() {
                   <SelectItem value="Red Sea Project">Red Sea Project</SelectItem>
                 </SelectContent>
               </Select>
+
+              <Button variant="outline" size="sm" onClick={handleOpenFilters}>
+                <Filter className="h-4 w-4" />
+              </Button>
             </div>
 
             <Button 
@@ -801,15 +927,15 @@ export function FinancePage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleViewTransaction(transaction.id)}>
                               <Eye className="h-4 w-4 mr-2" />
                               View Details
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(transaction.reference)}>
                               <Copy className="h-4 w-4 mr-2" />
                               Copy Reference
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => console.log('Downloading receipt for:', transaction.id)}>
                               <Download className="h-4 w-4 mr-2" />
                               Download Receipt
                             </DropdownMenuItem>
@@ -892,15 +1018,30 @@ export function FinancePage() {
                     </p>
 
                     <div className="flex space-x-2 pt-2">
-                      <Button variant="outline" size="sm" className="flex-1 gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 gap-1"
+                        onClick={() => handleViewInvoice(invoice.id)}
+                      >
                         <Eye className="h-3 w-3" />
                         View
                       </Button>
-                      <Button variant="outline" size="sm" className="flex-1 gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 gap-1"
+                        onClick={() => console.log('Downloading PDF for invoice:', invoice.id)}
+                      >
                         <Download className="h-3 w-3" />
                         PDF
                       </Button>
-                      <Button variant="outline" size="sm" className="gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={() => console.log('Sending invoice:', invoice.id)}
+                      >
                         <Send className="h-3 w-3" />
                       </Button>
                     </div>
@@ -975,15 +1116,30 @@ export function FinancePage() {
                     </p>
 
                     <div className="flex space-x-2 pt-2">
-                      <Button variant="outline" size="sm" className="flex-1 gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 gap-1"
+                        onClick={() => handleViewReceipt(receipt.id)}
+                      >
                         <Eye className="h-3 w-3" />
                         View
                       </Button>
-                      <Button variant="outline" size="sm" className="flex-1 gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 gap-1"
+                        onClick={() => console.log('Downloading receipt:', receipt.id)}
+                      >
                         <Download className="h-3 w-3" />
                         Download
                       </Button>
-                      <Button variant="outline" size="sm" className="gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={() => console.log('Printing receipt:', receipt.id)}
+                      >
                         <Printer className="h-3 w-3" />
                       </Button>
                     </div>
@@ -994,6 +1150,531 @@ export function FinancePage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Right-side Sheets */}
+      
+      {/* Transaction Details Sheet */}
+      <Sheet open={!!showTransactionDetails} onOpenChange={handleCloseTransactionDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Transaction Details</SheetTitle>
+            <SheetDescription>
+              Complete transaction information and related documents.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showTransactionDetails && (() => {
+              const transaction = transactions.find(t => t.id === showTransactionDetails);
+              if (!transaction) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Transaction Header */}
+                  <div className="flex items-start space-x-4">
+                    <div className={cn(
+                      "w-12 h-12 rounded-lg flex items-center justify-center",
+                      transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                    )}>
+                      {transaction.type === 'income' ? (
+                        <ArrowUpRight className="h-6 w-6 text-green-600" />
+                      ) : (
+                        <ArrowDownRight className="h-6 w-6 text-red-600" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-xl font-semibold">{transaction.vendor}</h3>
+                        <Badge className={cn(getStatusColor(transaction.status))}>
+                          {getStatusIcon(transaction.status)}
+                          <span className="ml-1">{transaction.status}</span>
+                        </Badge>
+                      </div>
+                      <p className="text-muted-foreground">{transaction.description}</p>
+                      <p className="text-sm text-muted-foreground">{transaction.reference}</p>
+                    </div>
+                  </div>
+
+                  {/* Transaction Amount */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Transaction Amount</h4>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <div className={cn(
+                        "text-3xl font-bold",
+                        transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                      )}>
+                        {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {transaction.paymentMethod} • {transaction.currency}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Transaction Details */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Transaction Details</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Transaction ID</Label>
+                        <p className="font-medium">{transaction.id}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Date</Label>
+                        <p className="font-medium">{new Date(transaction.date).toLocaleDateString()}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Project</Label>
+                        <p className="font-medium">{transaction.project}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Category</Label>
+                        <p className="font-medium">{transaction.category}</p>
+                      </div>
+                      {transaction.invoiceNumber && (
+                        <div>
+                          <Label className="text-sm text-muted-foreground">Invoice Number</Label>
+                          <p className="font-medium">{transaction.invoiceNumber}</p>
+                        </div>
+                      )}
+                      {transaction.location && (
+                        <div>
+                          <Label className="text-sm text-muted-foreground">Location</Label>
+                          <p className="font-medium">{transaction.location}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Receipt
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copy Reference
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Invoice Details Sheet */}
+      <Sheet open={!!showInvoiceDetails} onOpenChange={handleCloseInvoiceDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Invoice Details</SheetTitle>
+            <SheetDescription>
+              Complete invoice information and payment status.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showInvoiceDetails && (() => {
+              const invoice = invoices.find(i => i.id === showInvoiceDetails);
+              if (!invoice) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Invoice Header */}
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-xl font-semibold">{invoice.invoiceNumber}</h3>
+                        <Badge className={cn(getStatusColor(invoice.status))}>
+                          {getStatusIcon(invoice.status)}
+                          <span className="ml-1">{invoice.status}</span>
+                        </Badge>
+                      </div>
+                      <p className="text-muted-foreground">{invoice.client}</p>
+                      <p className="text-sm text-muted-foreground">{invoice.project}</p>
+                    </div>
+                  </div>
+
+                  {/* Invoice Amount */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Invoice Amount</h4>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <div className="text-3xl font-bold text-primary">
+                        {formatCurrency(invoice.amount)}
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {invoice.currency} • {invoice.items} items
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Invoice Details */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Invoice Details</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Issue Date</Label>
+                        <p className="font-medium">{new Date(invoice.issueDate).toLocaleDateString()}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Due Date</Label>
+                        <p className="font-medium">{new Date(invoice.dueDate).toLocaleDateString()}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Payment Terms</Label>
+                        <p className="font-medium">{invoice.paymentTerms}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Items Count</Label>
+                        <p className="font-medium">{invoice.items}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Description</h4>
+                    <p className="text-sm text-muted-foreground">{invoice.description}</p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Send className="h-4 w-4 mr-2" />
+                      Send Invoice
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* Receipt Details Sheet */}
+      <Sheet open={!!showReceiptDetails} onOpenChange={handleCloseReceiptDetails}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Receipt Details</SheetTitle>
+            <SheetDescription>
+              Complete receipt information and verification status.
+            </SheetDescription>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+            {showReceiptDetails && (() => {
+              const receipt = receipts.find(r => r.id === showReceiptDetails);
+              if (!receipt) return null;
+              
+              return (
+                <div className="space-y-6">
+                  {/* Receipt Header */}
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Receipt className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-xl font-semibold">{receipt.receiptNumber}</h3>
+                        <Badge className={cn(getStatusColor(receipt.status))}>
+                          {getStatusIcon(receipt.status)}
+                          <span className="ml-1">{receipt.status}</span>
+                        </Badge>
+                      </div>
+                      <p className="text-muted-foreground">{receipt.vendor}</p>
+                      <p className="text-sm text-muted-foreground">{receipt.project}</p>
+                    </div>
+                  </div>
+
+                  {/* Receipt Amount */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Receipt Amount</h4>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <div className="text-3xl font-bold text-primary">
+                        {formatCurrency(receipt.amount)}
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {receipt.currency} • {receipt.paymentMethod}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Receipt Details */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Receipt Details</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Date</Label>
+                        <p className="font-medium">{new Date(receipt.date).toLocaleDateString()}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Category</Label>
+                        <p className="font-medium">{receipt.category}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Payment Method</Label>
+                        <p className="font-medium">{receipt.paymentMethod}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm text-muted-foreground">Project</Label>
+                        <p className="font-medium">{receipt.project}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Description</h4>
+                    <p className="text-sm text-muted-foreground">{receipt.description}</p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Receipt
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Printer className="h-4 w-4 mr-2" />
+                      Print Receipt
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+
+      {/* New Invoice Sheet */}
+      <Sheet open={showNewInvoice} onOpenChange={handleCloseNewInvoice}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Create New Invoice</SheetTitle>
+            <SheetDescription>
+              Create a new invoice for your client.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Client Name</Label>
+                  <Input placeholder="Enter client name" className="mt-2" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Project</Label>
+                  <Select>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Select project" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="neom">NEOM Smart City</SelectItem>
+                      <SelectItem value="aramco">Aramco Refinery</SelectItem>
+                      <SelectItem value="pif">PIF Green Energy</SelectItem>
+                      <SelectItem value="redsea">Red Sea Project</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Amount</Label>
+                  <Input placeholder="0.00" type="number" className="mt-2" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Currency</Label>
+                  <Select defaultValue="SAR">
+                    <SelectTrigger className="mt-2">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SAR">SAR - Saudi Riyal</SelectItem>
+                      <SelectItem value="USD">USD - US Dollar</SelectItem>
+                      <SelectItem value="EUR">EUR - Euro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Description</Label>
+                <Input placeholder="Enter invoice description" className="mt-2" />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Issue Date</Label>
+                  <Input type="date" className="mt-2" />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Due Date</Label>
+                  <Input type="date" className="mt-2" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <FileText className="h-4 w-4 mr-2" />
+                Create Invoice
+              </Button>
+              <Button variant="outline" onClick={handleCloseNewInvoice}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Export Options Sheet */}
+      <Sheet open={showExportOptions} onOpenChange={handleCloseExportOptions}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Export Financial Data</SheetTitle>
+            <SheetDescription>
+              Export your financial data in various formats.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Export Type</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Transactions
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Invoices
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <Receipt className="h-4 w-4 mr-2" />
+                    Receipts
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <DollarSign className="h-4 w-4 mr-2" />
+                    All Data
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Export Format</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Excel Spreadsheet
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    PDF Report
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Date Range</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <Input type="date" placeholder="From date" />
+                  <Input type="date" placeholder="To date" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Download className="h-4 w-4 mr-2" />
+                Generate Export
+              </Button>
+              <Button variant="outline" onClick={handleCloseExportOptions}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Advanced Filters Sheet */}
+      <Sheet open={showFilters} onOpenChange={handleCloseFilters}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Advanced Filters</SheetTitle>
+            <SheetDescription>
+              Apply detailed filters to find specific transactions.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Amount Range</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <Input placeholder="Min amount" type="number" />
+                  <Input placeholder="Max amount" type="number" />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Date Range</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <Input type="date" placeholder="From date" />
+                  <Input type="date" placeholder="To date" />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Payment Method</Label>
+                <Select>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Select payment method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Methods</SelectItem>
+                    <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
+                    <SelectItem value="Corporate Card">Corporate Card</SelectItem>
+                    <SelectItem value="Wire Transfer">Wire Transfer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium">Categories</Label>
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="engineering" className="rounded" />
+                    <Label htmlFor="engineering" className="text-sm">Engineering Services</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="materials" className="rounded" />
+                    <Label htmlFor="materials" className="text-sm">Materials</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="consulting" className="rounded" />
+                    <Label htmlFor="consulting" className="text-sm">Consulting</Label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2 pt-4 border-t">
+              <Button className="flex-1">
+                <Filter className="h-4 w-4 mr-2" />
+                Apply Filters
+              </Button>
+              <Button variant="outline">
+                Clear All
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
