@@ -171,10 +171,26 @@ export const useAuthStore = create<AuthState>()(
         const normalizedUser = normalizeUser(mergedUser);
         const currentProfile = get().profile;
         const baseProfile = createProfileFromUser(normalizedUser);
+        
+        // Map user updates to profile fields
+        const profileUpdates: Partial<UserProfile> = {};
+        if (updates.name) {
+          const nameParts = updates.name.trim().split(/\s+/).filter(Boolean);
+          profileUpdates.first_name = nameParts[0];
+          profileUpdates.last_name = nameParts.slice(1).join(' ') || undefined;
+        }
+        if (updates.email) profileUpdates.email = updates.email;
+        if (updates.phone) profileUpdates.phone = updates.phone;
+        if (updates.location) {
+          const locationParts = updates.location.split(',').map(part => part.trim()).filter(Boolean);
+          profileUpdates.location_city = locationParts[0];
+          profileUpdates.location_region = locationParts.slice(1).join(', ') || undefined;
+        }
+        
         const updatedProfile: UserProfile = {
           ...baseProfile,
           ...currentProfile,
-          ...updates,
+          ...profileUpdates,
         };
 
         set({
@@ -229,7 +245,7 @@ export const getUserRole = (): string | null => {
 };
 
 export const requiresAuth = (path: string): boolean => {
-  const publicPaths = ['/', '/home', '/auth', '/auth/email', '/auth/phone', '/auth/verify', '/auth/role', '/auth/profile'];
+  const publicPaths = ['/', '/home', '/auth', '/auth/email', '/auth/phone', '/auth/verify', '/auth/role', '/auth/registration/engineer', '/auth/registration/client', '/auth/registration/enterprise', '/auth/profile'];
   return !publicPaths.includes(path);
 };
 
@@ -237,7 +253,29 @@ export const initializeAuth = () => {
   const { setUser, setLoading, setInitialized } = useAuthStore.getState();
 
   const syncFromStorage = () => {
-    const storedUser = getStoredUser();
+    // First try to get user from the new storage key
+    let storedUser = getStoredUser();
+    
+    // If no user found, try to migrate from the old storage key
+    if (!storedUser && typeof window !== 'undefined') {
+      const oldUserData = window.localStorage.getItem('nbcon_user');
+      if (oldUserData) {
+        try {
+          const oldUser = JSON.parse(oldUserData);
+          if (oldUser && oldUser.isVerified) {
+            // Migrate the user to the new storage format
+            setUser(oldUser);
+            // Clean up old storage
+            window.localStorage.removeItem('nbcon_user');
+            return;
+          }
+        } catch (error) {
+          console.error('Error migrating old user data:', error);
+          window.localStorage.removeItem('nbcon_user');
+        }
+      }
+    }
+    
     setUser(storedUser);
     setLoading(false);
     setInitialized(true);

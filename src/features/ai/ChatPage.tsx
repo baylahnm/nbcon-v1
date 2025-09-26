@@ -22,7 +22,6 @@ import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
 import { MessageBubble } from './components/MessageBubble';
 import { ThreadList } from './components/ThreadList';
-import { RTLDirectionToggle } from './components/RTLDirectionToggle';
 import { HijriBadge } from './components/HijriBadge';
 import { aiClient } from './api/aiClient';
 
@@ -138,7 +137,8 @@ export function ChatPage({ onBack }: ChatPageProps) {
         {/* Header */}
         <div className="p-4 border-b border-sidebar-border">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-lg font-semibold">
+            <h1 className="text-lg font-semibold flex items-center gap-2">
+              <Bot className="w-5 h-5 text-primary" />
               {settings.rtl ? 'الذكاء الاصطناعي' : 'AI Assistant'}
             </h1>
             {onBack && (
@@ -170,10 +170,6 @@ export function ChatPage({ onBack }: ChatPageProps) {
             </CardContent>
           </Card>
 
-          {/* RTL Toggle */}
-          <div className="mt-3">
-            <RTLDirectionToggle />
-          </div>
         </div>
 
         {/* Threads List */}

@@ -48,7 +48,8 @@ import {
   ThumbsUp,
   Laugh,
   Frown,
-  Angry
+  Angry,
+  Bot
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useConversations, useMessages, type Message as HookMessage } from "@/hooks/useMessaging";
 import { ConversationList } from "@/components/messaging/ConversationList";
+import { AiMessagingContent } from "@/components/messaging/AiMessagingContent";
 import { useEffect, useRef, useState as useStateAlias } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -128,16 +130,27 @@ const emojiCategories = [
 ];
 
 export function MessagesContent() {
-  const { profile } = useAuthStore();
+  const { profile, user } = useAuthStore();
+  
+  // Debug: Log user data
+  console.log('MessagesContent - User from auth store:', user);
+  console.log('MessagesContent - Profile from auth store:', profile);
+
   
   // Get current user data
   const currentUserName = getUserDisplayName(profile);
   const currentUserInitials = getUserInitials(profile);
   
-  const { conversations, isLoading: convLoading } = useConversations();
+  const { conversations, isLoading: convLoading, refetch: refetchConversations } = useConversations();
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
-  const { messages, isLoading: msgLoading, sendMessage } = useMessages(selectedConversationId);
+  const { messages, isLoading: msgLoading, sendMessage, refetch: refetchMessages } = useMessages(selectedConversationId);
   const selectedConversation = conversations.find(c => c.id === selectedConversationId);
+
+  // Debug: Log messages and conversation state
+  console.log('MessagesContent - Selected conversation ID:', selectedConversationId);
+  console.log('MessagesContent - Messages:', messages);
+  console.log('MessagesContent - Messages loading:', msgLoading);
+
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showAllEmojis, setShowAllEmojis] = useState(false);
@@ -150,6 +163,7 @@ export function MessagesContent() {
   const [uploadingFile, setUploadingFile] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [isAiMode, setIsAiMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -183,6 +197,12 @@ export function MessagesContent() {
     try {
       await sendMessage(newMessage);
       setNewMessage("");
+      // Force refresh messages after sending
+      if (refetchMessages) {
+        setTimeout(() => {
+          refetchMessages();
+        }, 100);
+      }
     } finally {
       setIsSending(false);
     }
@@ -282,27 +302,40 @@ export function MessagesContent() {
 
   const createNewConversation = async (name: string, type: "direct" | "group" | "project"): Promise<void> => {
     try {
-      const { data: auth } = await supabase.auth.getUser();
-      const userId = auth.user?.id;
-      if (!userId) return;
+      // Get user from auth store instead of Supabase auth (since we're using mock auth)
+      const userId = user?.id;
+      if (!userId) {
+        console.error('No user ID found in auth store');
+        return;
+      }
 
-      // For now, create a simple conversation with the current user
-      // In a real app, you'd select participants
-      const { error } = await supabase
+      console.log('Creating conversation for user:', userId);
+
+      // For demo purposes, create a conversation with the current user as both client and engineer
+      // In a real app, you'd select participants or create based on job assignments
+      const { data, error } = await supabase
         .from('conversations')
         .insert([
           {
             client_id: userId,
             engineer_id: userId, // For demo, same user
-            name: name,
-            type: type
+            // Note: conversations table doesn't have name/type columns, 
+            // these would be stored in a separate table or as metadata
           }
-        ]);
+        ])
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
-      // The conversations will be refreshed automatically by the useConversations hook
-      // due to the real-time subscription
+      console.log('Conversation created successfully:', data);
+      
+      // Force refresh conversations
+      if (refetchConversations) {
+        await refetchConversations();
+      }
     } catch (error) {
       console.error('Failed to create conversation:', error);
       throw error;
@@ -330,9 +363,40 @@ export function MessagesContent() {
   };
 
   // Conversation management
-  const handleConversationAction = (action: "pin" | "archive" | "delete") => {
-    // This would update the database in a real implementation
-    console.log(`Conversation action: ${action}`);
+  const handleConversationAction = async (action: "pin" | "archive" | "delete") => {
+    if (!selectedConversationId) return;
+    
+    try {
+      if (action === "delete") {
+        // Delete the conversation from the database
+        const { error } = await supabase
+          .from('conversations')
+          .delete()
+          .eq('id', selectedConversationId);
+
+        if (error) {
+          console.error('Error deleting conversation:', error);
+          return;
+        }
+
+        // Clear the selected conversation
+        setSelectedConversationId(null);
+        
+        // Refresh the conversations list
+        if (refetchConversations) {
+          await refetchConversations();
+        }
+        
+        console.log('Conversation deleted successfully');
+        // You could add a toast notification here if you have a toast system
+        // toast.success('Conversation deleted successfully');
+      } else {
+        // For pin and archive, just log for now
+        console.log(`Conversation action: ${action}`);
+      }
+    } catch (error) {
+      console.error('Failed to perform conversation action:', error);
+    }
   };
 
   // File download
@@ -406,14 +470,14 @@ export function MessagesContent() {
 
       {/* Voice Call Modal */}
       {showVoiceCall && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 text-center">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-card rounded-lg p-8 max-w-md w-full mx-4 text-center">
             <div className="mb-6">
               <Avatar className="w-20 h-20 mx-auto mb-4">
                 <AvatarFallback className="bg-primary text-primary-foreground text-lg">
                   {selectedConversation?.job?.title ? (
                     <Building className="w-10 h-10" />
-                  ) : (selectedConversation as any)?.type === "group" ? (
+                  ) : selectedConversation?.type === "group" ? (
                     <Users className="w-10 h-10" />
                   ) : (
                     (selectedConversation?.client_profile?.first_name || selectedConversation?.engineer_profile?.first_name || '?').charAt(0)
@@ -428,7 +492,7 @@ export function MessagesContent() {
             <div className="flex justify-center gap-4">
               <Button 
                 size="lg"
-                className="bg-red-600 hover:bg-red-700 rounded-full"
+                className="bg-destructive hover:bg-destructive/90 rounded-full"
                 onClick={endCall}
               >
                 <PhoneCall className="w-6 h-6" />
@@ -452,7 +516,7 @@ export function MessagesContent() {
               </Button>
               <Button 
                 size="lg"
-                className="bg-red-600 hover:bg-red-700 rounded-full"
+                className="bg-destructive hover:bg-destructive/90 rounded-full"
                 onClick={endCall}
               >
                 <PhoneCall className="w-6 h-6" />
@@ -468,16 +532,33 @@ export function MessagesContent() {
       )}
 
       <div className="flex-1 flex h-screen overflow-hidden">
+        {/* AI Mode Toggle */}
+        {!isAiMode && (
+          <div className="absolute top-4 right-4 z-10">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAiMode(true)}
+              className="bg-background/80 backdrop-blur-sm"
+            >
+              <Bot className="w-4 h-4 mr-2" />
+              AI Assistant
+            </Button>
+          </div>
+        )}
+
         {/* Conversations Sidebar */}
-        <ConversationList
-          conversations={conversations}
-          selectedConversationId={selectedConversationId}
-          onSelectConversation={setSelectedConversationId}
-          onNewConversation={createNewConversation}
-          isCollapsed={isCollapsed}
-          onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
-          isLoading={convLoading}
-        />
+        {!isAiMode && (
+          <ConversationList
+            conversations={conversations}
+            selectedConversationId={selectedConversationId}
+            onSelectConversation={setSelectedConversationId}
+            onNewConversation={createNewConversation}
+            isCollapsed={isCollapsed}
+            onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+            isLoading={convLoading}
+          />
+        )}
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col border-l border-sidebar-border">
@@ -567,7 +648,7 @@ export function MessagesContent() {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction 
-                            className="bg-red-600 hover:bg-red-700"
+                            className="bg-destructive hover:bg-destructive/90"
                             onClick={() => handleConversationAction("delete")}
                           >
                             Delete
@@ -591,9 +672,21 @@ export function MessagesContent() {
             {(msgLoading) && (
               <div className="text-center text-muted-foreground py-10">Loading messages...</div>
             )}
+            {selectedConversationId && !msgLoading && messages.length === 0 && (
+              <div className="text-center text-muted-foreground py-10">
+                No messages yet. Start the conversation!
+                <br />
+                <span className="text-xs">Debug: Conversation ID: {selectedConversationId}</span>
+              </div>
+            )}
             {messages.map((message: HookMessage) => {
-              const isCurrentUser = false; // server identifies sender via sender_id
+              const isCurrentUser = message.sender_id === user?.id;
               const isSystem = message.message_type === "system";
+              const originalFileName = message.fileName ?? message.file_name ?? message.file_url?.split('/')?.pop() ?? '';
+              const displayFileName = originalFileName || 'Attachment';
+              const lowerFileName = originalFileName.toLowerCase();
+              const fileSize = message.fileSize ?? (typeof message.file_size === 'number' ? message.file_size : undefined);
+              const fileUrl = message.file_url ?? undefined;
 
               if (isSystem) {
                 return (
@@ -630,29 +723,29 @@ export function MessagesContent() {
                       {message.message_type === "file" ? (
                         <div className="flex items-center gap-3">
                           <div className={`p-2 rounded ${isCurrentUser ? 'bg-primary/20' : 'bg-muted'}`}>
-                            {(message as any).fileName?.includes('.dwg') ? (
+                            {lowerFileName.endsWith('.dwg') ? (
                               <FileText className="w-5 h-5" />
-                            ) : (message as any).fileName?.includes('.pdf') ? (
+                            ) : lowerFileName.endsWith('.pdf') ? (
                               <File className="w-5 h-5" />
-                            ) : (message as any).fileName?.includes('.mp3') || (message as any).fileName?.includes('.webm') ? (
+                            ) : lowerFileName.endsWith('.mp3') || lowerFileName.endsWith('.webm') ? (
                               <Mic className="w-5 h-5" />
                             ) : (
                               <Paperclip className="w-5 h-5" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">{(message as any).fileName || 'Attachment'}</p>
-                            {(message as any).fileSize && (
+                            <p className="font-medium truncate">{displayFileName}</p>
+                            {typeof fileSize === 'number' && (
                               <p className={`text-xs ${isCurrentUser ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                                {formatFileSize((message as any).fileSize)}
+                                {formatFileSize(fileSize)}
                               </p>
                             )}
                           </div>
-                          {message.file_url && (
+                          {fileUrl && (
                             <Button 
                               size="sm" 
                               variant={isCurrentUser ? "ghost" : "outline"}
-                              onClick={() => downloadFile((message as any).fileName || 'file', message.file_url)}
+                              onClick={() => downloadFile(displayFileName, fileUrl)}
                             >
                               <Download className="w-4 h-4" />
                             </Button>
@@ -683,9 +776,9 @@ export function MessagesContent() {
                       )}
 
                       {/* Message Reactions */}
-                      {(message as any).reactions && (message as any).reactions.length > 0 && (
+                      {message.reactions && message.reactions.length > 0 && (
                         <div className="flex gap-1 mt-2">
-                          {(message as any).reactions.map((reaction: any, index: number) => (
+                          {message.reactions.map((reaction, index) => (
                             <Button
                               key={index}
                               size="sm"
@@ -945,7 +1038,24 @@ export function MessagesContent() {
           </>
         )}
       </div>
+
+      {/* AI Messaging Mode */}
+      {isAiMode && (
+        <AiMessagingContent 
+          onBack={() => setIsAiMode(false)}
+        />
+      )}
     </div>
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+

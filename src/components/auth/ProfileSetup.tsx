@@ -30,6 +30,7 @@ interface ProfileSetupProps {
   user: AuthenticatedUser;
   onProfileComplete: (user: AuthenticatedUser) => void;
   onBack: () => void;
+  shouldExitOnBack?: boolean;
 }
 
 interface AuthenticatedUser {
@@ -60,7 +61,7 @@ interface ProfileData {
   industryFocus: string[];
 }
 
-export function ProfileSetup({ user, onProfileComplete, onBack }: ProfileSetupProps) {
+export function ProfileSetup({ user, onProfileComplete, onBack, shouldExitOnBack = false }: ProfileSetupProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [language] = useState<'ar' | 'en'>(user.language || 'en');
@@ -580,7 +581,13 @@ export function ProfileSetup({ user, onProfileComplete, onBack }: ProfileSetupPr
             <div className="flex items-center justify-between">
               <Button 
                 variant="outline" 
-                onClick={currentStep === 1 ? onBack : () => setCurrentStep(currentStep - 1)}
+                onClick={() => {
+                  if (shouldExitOnBack || currentStep === 1) {
+                    onBack();
+                  } else {
+                    setCurrentStep(currentStep - 1);
+                  }
+                }}
                 className="px-8"
               >
                 <ArrowRight className="w-4 h-4 mr-2 rotate-180" />

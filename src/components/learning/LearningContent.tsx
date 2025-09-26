@@ -304,40 +304,42 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
     <div className="w-full max-w-full bg-background p-6 overflow-x-hidden">
       {/* Header */}
       <div className="p-0 pb-6 border-b border-sidebar-border">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <BookOpen className="w-5 h-5 text-muted-foreground" />
-              <h1 className="text-xl font-medium text-foreground">Learning</h1>
+        <div className="w-full max-w-full space">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <BookOpen className="w-5 h-5 text-muted-foreground" />
+                <h1 className="text-xl font-medium text-foreground">Learning</h1>
+              </div>
+              <p className="text-sm text-muted-foreground">Advance your engineering skills with courses tailored for Saudi Arabia</p>
             </div>
-            <p className="text-sm text-muted-foreground">Advance your engineering skills with courses tailored for Saudi Arabia</p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Switch 
-                id="hijri" 
-                checked={isHijri}
-                onCheckedChange={setIsHijri}
+            
+            <div className="flex items-center gap-3">
+              <div className="flex items-center">
+                <Switch 
+                  id="hijri" 
+                  checked={isHijri}
+                  onCheckedChange={setIsHijri}
+                />
+                <Label htmlFor="hijri" className="text-sm">Hijri Calendar</Label>
+              </div>
+              <LearningFilters
+                options={filterOptions}
+                activeFilters={activeFilters}
+                onFiltersChange={setActiveFilters}
+                resultsCount={filteredCourses.length}
               />
-              <Label htmlFor="hijri" className="text-sm">Hijri Calendar</Label>
             </div>
-            <LearningFilters
-              options={filterOptions}
-              activeFilters={activeFilters}
-              onFiltersChange={setActiveFilters}
-              resultsCount={filteredCourses.length}
-            />
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="pt-6 px-0 pb-0">
-        <div className="w-full max-w-full space-y-6">
+        <div className="w-full max-w-full space">
           {/* Search */}
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4 mb-6">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input
@@ -352,14 +354,46 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
 
           {/* Tabs */}
           <Tabs defaultValue="discover" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-              <TabsTrigger value="discover">Discover</TabsTrigger>
-              <TabsTrigger value="paths">Learning Paths</TabsTrigger>
-              <TabsTrigger value="my-learning">My Learning</TabsTrigger>
-              <TabsTrigger value="assessments">Assessments</TabsTrigger>
-              {(userRole === "enterprise" || userRole === "admin") && (
-                <TabsTrigger value="admin">Admin</TabsTrigger>
-              )}
+            <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
+              <div className="flex items-center w-full overflow-x-auto">
+                <TabsTrigger 
+                  value="discover"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <Search className="w-4 h-4" />
+                  <span className="hidden sm:inline">Discover</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="paths"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <Target className="w-4 h-4" />
+                  <span className="hidden sm:inline">Learning Paths</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="my-learning"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span className="hidden sm:inline">My Learning</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="assessments"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <Award className="w-4 h-4" />
+                  <span className="hidden sm:inline">Assessments</span>
+                </TabsTrigger>
+                {(userRole === "enterprise" || userRole === "admin") && (
+                  <TabsTrigger 
+                    value="admin"
+                    className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span className="hidden sm:inline">Admin</span>
+                  </TabsTrigger>
+                )}
+              </div>
             </TabsList>
 
             {/* Discover Tab - Enhanced with Multiple Recommendation Sections */}

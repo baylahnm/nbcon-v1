@@ -6,11 +6,11 @@ export type ThreadSummary = {
   id: string;
   title: string;
   jobCode?: string | null;
-  avatars: string[]; // urls or initials; render however you like
+  avatars: string[];
   unreadCount: number;
   starred: boolean;
   archived: boolean;
-  updatedAt: string; // ISO
+  updatedAt: string;
 };
 
 export type Message = {
@@ -23,11 +23,22 @@ export type Message = {
   audioMeta?: { url: string; durMs: number } | null;
   lang?: "en" | "ar" | null;
   translatedFrom?: "en" | "ar" | null;
-  createdAt: string;       // ISO
+  createdAt: string;
   deliveredAt?: string | null;
   readAt?: string | null;
   systemNote?: string | null;
 };
+
+export type ThreadFilters = {
+  search?: string;
+  starred?: boolean;
+  archived?: boolean;
+  unread?: boolean;
+};
+
+type AttachmentDraft = { id: string; name: string; size: number; mime: string; blob?: Blob };
+
+type PresenceState = { typingUserIds: string[]; onlineIds: string[] };
 
 export interface MessagingState {
   threads: ThreadSummary[];
@@ -37,12 +48,12 @@ export interface MessagingState {
   loadingThreads: boolean;
   loadingMessages: boolean;
   inputDrafts: Record<string, string>;
-  attachments: Record<string, { id: string; name: string; size: number; mime: string; blob?: Blob }[]>;
+  attachments: Record<string, AttachmentDraft[]>;
   recording: { threadId?: string; state: "idle" | "rec" | "uploading"; blob?: Blob } | null;
   translationEnabled: boolean;
-  presence: Record<string, { typingUserIds: string[]; onlineIds: string[] }>;
+  presence: Record<string, PresenceState>;
 
-  loadThreads: (filters?: any) => Promise<void>;
+  loadThreads: (filters?: ThreadFilters) => Promise<void>;
   openThread: (threadId: string) => Promise<void>;
   fetchOlder: (threadId: string) => Promise<void>;
   sendMessage: (args: { threadId: string; kind: MessageKind; body?: string; files?: File[]; audioBlob?: Blob }) => Promise<void>;
@@ -55,6 +66,23 @@ export interface MessagingState {
   setTyping: (threadId: string, isTyping: boolean) => void;
   toggleTranslate: (enabled: boolean) => void;
 }
+
+const generateId = () => {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return Math.random().toString(36).slice(2);
+};
+
+type ConsoleError = Error | string | Record<string, unknown>;
+
+const logError = (error: unknown, context: ConsoleError) => {
+  if (error instanceof Error) {
+    console.error(context, error.message, error);
+  } else {
+    console.error(context, error);
+  }
+};
 
 export const useMessagingStore = create<MessagingState>((set, get) => ({
   threads: [],
@@ -71,100 +99,126 @@ export const useMessagingStore = create<MessagingState>((set, get) => ({
   async loadThreads() {
     set({ loadingThreads: true });
     try {
-      // TODO: wire to supabase.rpc('rpc_search_messages', {...}) OR select from 'threads'
       const mock: ThreadSummary[] = [
-        { id:"t1", title:"Job NB-1042 · Client X", jobCode:"NB-1042", avatars:[], unreadCount:2, starred:false, archived:false, updatedAt:new Date().toISOString() },
-        { id:"t2", title:"Job NB-1038 · HVAC", jobCode:"NB-1038", avatars:[], unreadCount:0, starred:true, archived:false, updatedAt:new Date().toISOString() }
+        { id: "t1", title: "Job NB-1042 � Client X", jobCode: "NB-1042", avatars: [], unreadCount: 2, starred: false, archived: false, updatedAt: new Date().toISOString() },
+        { id: "t2", title: "Job NB-1038 � HVAC", jobCode: "NB-1038", avatars: [], unreadCount: 0, starred: true, archived: false, updatedAt: new Date().toISOString() }
       ];
       set({ threads: mock, loadingThreads: false });
-      console.log("analytics","messages_view",{ route:"/messages" });
-      // Auto-open first thread for convenience
-      if (!get().activeThreadId && mock[0]) get().openThread(mock[0].id);
-    } catch (e:any) {
+      console.log("analytics", "messages_view", { route: "/messages" });
+      if (!get().activeThreadId && mock[0]) {
+        void get().openThread(mock[0].id);
+      }
+    } catch (error) {
       set({ loadingThreads: false });
-      console.error(e);
+      logError(error, "loadThreads");
     }
   },
 
   async openThread(threadId) {
     set({ activeThreadId: threadId, loadingMessages: true });
     try {
-      // TODO: wire to `select * from messages where thread_id=:id order by created_at desc limit 30`
       const mockMsgs: Message[] = [
-        { id:"m1", threadId, mine:false, kind:"text", body:"Hi, site visit today at 3pm?", lang:"en", createdAt: new Date(Date.now()-3600e3).toISOString(), deliveredAt:new Date().toISOString(), readAt:new Date().toISOString() },
-        { id:"m2", threadId, mine:true, kind:"text", body:"Yes, confirmed. سأتواجد هناك.", lang:"ar", createdAt: new Date(Date.now()-1800e3).toISOString(), deliveredAt:new Date().toISOString(), readAt:new Date().toISOString() }
+        { id: "m1", threadId, mine: false, kind: "text", body: "Hi, site visit today at 3pm?", lang: "en", createdAt: new Date(Date.now() - 3600e3).toISOString(), deliveredAt: new Date().toISOString(), readAt: new Date().toISOString() },
+        { id: "m2", threadId, mine: true, kind: "text", body: "Yes, confirmed.", lang: "ar", createdAt: new Date(Date.now() - 1800e3).toISOString(), deliveredAt: new Date().toISOString(), readAt: new Date().toISOString() }
       ];
-      set(s => ({
-        messagesByThread: { ...s.messagesByThread, [threadId]: mockMsgs },
-        hasMoreByThread: { ...s.hasMoreByThread, [threadId]: false },
+      set((state) => ({
+        messagesByThread: { ...state.messagesByThread, [threadId]: mockMsgs },
+        hasMoreByThread: { ...state.hasMoreByThread, [threadId]: false },
         loadingMessages: false
       }));
-      get().markRead(threadId, mockMsgs[mockMsgs.length-1].id);
-    } catch (e:any) {
+      const lastMessage = mockMsgs[mockMsgs.length - 1];
+      if (lastMessage) {
+        void get().markRead(threadId, lastMessage.id);
+      }
+    } catch (error) {
       set({ loadingMessages: false });
-      console.error(e);
+      logError(error, "openThread");
     }
   },
 
   async fetchOlder(threadId) {
-    // TODO: page older messages and prepend
     console.log("fetchOlder", threadId);
   },
 
-  async sendMessage({ threadId, kind, body, files, audioBlob }) {
-    const tempId = "tmp-"+Math.random().toString(36).slice(2);
+  async sendMessage({ threadId, kind, body }) {
+    const tempId = `tmp-${Math.random().toString(36).slice(2)}`;
     const optimistic: Message = {
-      id: tempId, threadId, mine:true, kind,
-      body: kind==="text" ? (body ?? "") : undefined,
+      id: tempId,
+      threadId,
+      mine: true,
+      kind,
+      body: kind === "text" ? body ?? "" : undefined,
       createdAt: new Date().toISOString()
     };
-    set(s => ({
-      messagesByThread: { ...s.messagesByThread, [threadId]: [...(s.messagesByThread[threadId] ?? []), optimistic] },
-      inputDrafts: { ...s.inputDrafts, [threadId]: "" },
-      attachments: { ...s.attachments, [threadId]: [] }
+
+    set((state) => ({
+      messagesByThread: {
+        ...state.messagesByThread,
+        [threadId]: [...(state.messagesByThread[threadId] ?? []), optimistic]
+      },
+      inputDrafts: { ...state.inputDrafts, [threadId]: "" },
+      attachments: { ...state.attachments, [threadId]: [] }
     }));
+
     try {
-      // TODO: supabase.rpc('rpc_send_message', { ... }) + upload to Storage if files/audio
-      console.log("analytics","message_sent",{ thread_id:threadId, kind, bytes: (body?.length ?? 0), attachments: files?.length ?? 0 });
-    } catch (e:any) {
-      console.log("analytics","message_failed",{ thread_id:threadId, reason:e?.message });
+      console.log("analytics", "message_sent", { thread_id: threadId, kind, bytes: body?.length ?? 0 });
+    } catch (error) {
+      logError(error, "sendMessage");
     }
   },
 
   async markRead(threadId, lastMessageId) {
-    // TODO: supabase.rpc('rpc_mark_read', { thread_id:threadId, last_message_id:lastMessageId })
-    console.log("analytics","message_read",{ thread_id:threadId, last_message_id:lastMessageId });
-    set(s => ({
-      threads: s.threads.map(t => t.id===threadId ? { ...t, unreadCount: 0 } : t )
+    console.log("analytics", "message_read", { thread_id: threadId, last_message_id: lastMessageId });
+    set((state) => ({
+      threads: state.threads.map((thread) => (thread.id === threadId ? { ...thread, unreadCount: 0 } : thread))
     }));
   },
 
   async toggleStar(threadId) {
-    // TODO: update starred_by on threads
-    set(s => ({ threads: s.threads.map(t => t.id===threadId ? { ...t, starred: !t.starred } : t) }));
+    set((state) => ({
+      threads: state.threads.map((thread) => (thread.id === threadId ? { ...thread, starred: !thread.starred } : thread))
+    }));
   },
 
   async archiveThread(threadId) {
-    // TODO: update archived_by on threads
-    set(s => ({ threads: s.threads.map(t => t.id===threadId ? { ...t, archived: !t.archived } : t) }));
+    set((state) => ({
+      threads: state.threads.map((thread) => (thread.id === threadId ? { ...thread, archived: !thread.archived } : thread))
+    }));
   },
 
-  setDraft(threadId, text) { set(s => ({ inputDrafts: { ...s.inputDrafts, [threadId]: text } })); },
+  setDraft(threadId, text) {
+    set((state) => ({ inputDrafts: { ...state.inputDrafts, [threadId]: text } }));
+  },
 
   queueAttachment(threadId, files) {
-    const items = files.map(f => ({ id: (crypto as any).randomUUID?.() ?? String(Math.random()), name: f.name, size: f.size, mime: f.type }));
-    set(s => ({ attachments: { ...s.attachments, [threadId]: [ ...(s.attachments[threadId] ?? []), ...items ] }}));
+    const items: AttachmentDraft[] = files.map((file) => ({
+      id: generateId(),
+      name: file.name,
+      size: file.size,
+      mime: file.type
+    }));
+    set((state) => ({
+      attachments: {
+        ...state.attachments,
+        [threadId]: [...(state.attachments[threadId] ?? []), ...items]
+      }
+    }));
   },
 
   removeAttachment(threadId, name) {
-    set(s => ({ attachments: { ...s.attachments, [threadId]: (s.attachments[threadId] ?? []).filter(a => a.name !== name) }}));
+    set((state) => ({
+      attachments: {
+        ...state.attachments,
+        [threadId]: (state.attachments[threadId] ?? []).filter((attachment) => attachment.name !== name)
+      }
+    }));
   },
 
   setTyping(threadId, isTyping) {
-    // TODO: Realtime presence
     console.log("setTyping", threadId, isTyping);
   },
 
-  toggleTranslate(enabled) { set({ translationEnabled: enabled }); }
+  toggleTranslate(enabled) {
+    set({ translationEnabled: enabled });
+  }
 }));
-

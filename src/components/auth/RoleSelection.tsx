@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Building,
   User,
@@ -58,6 +59,7 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
   const [selectedRole, setSelectedRole] = useState<'engineer' | 'client' | 'enterprise' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [language] = useState<'ar' | 'en'>(user.language || 'en');
+  const navigate = useNavigate();
 
   const roleOptions: RoleOption[] = [
     {
@@ -159,7 +161,7 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       const completeUser: AuthenticatedUser = {
-        id: user.id || 'user_' + Date.now(),
+        id: user.id || 'a938012d-b35b-40ab-91d4-bcbd5678216a', // Valid UUID format
         email: user.email || '',
         name: user.name || '',
         role: selectedRole,
@@ -173,6 +175,7 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
       };
 
       onRoleSelected(completeUser);
+      navigate(`/auth/registration/${selectedRole}`, { state: { user: completeUser } });
     } catch (error) {
       console.error('Role selection failed:', error);
     } finally {
@@ -251,7 +254,7 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
                   
                   {/* Verified Badge */}
                   {role.verified && (
-                    <Badge variant="secondary" className="absolute -top-2 -left-2 bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                    <Badge variant="secondary" className="absolute -top-2 -left-2 bg-success/10 text-success">
                       <CheckCircle className="w-3 h-3 mr-1" />
                       {language === 'ar' ? 'معتمد' : 'Verified'}
                     </Badge>

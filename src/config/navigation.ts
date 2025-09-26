@@ -25,7 +25,7 @@ export const NAV: Record<UserRole, NavItem[]> = {
   client: [
     { labelKey: "nav.dashboard", to: "/client/dashboard", icon: "dashboard" },
     { labelKey: "nav.browse", to: "/client/browse", icon: "search" },
-    { labelKey: "nav.jobs", to: "/client/jobs", icon: "briefcase" },
+    { labelKey: "nav.jobs", to: "/client/myprojects", icon: "briefcase" },
     { labelKey: "nav.calendar", to: "/client/calendar", icon: "calendar" },
     { labelKey: "nav.messages", to: "/client/messages", icon: "chat" },
     { labelKey: "nav.ai", to: "/client/ai", icon: "bot" },

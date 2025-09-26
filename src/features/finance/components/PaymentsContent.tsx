@@ -107,7 +107,7 @@ export function PaymentsContent() {
                   <TabsTrigger 
                     key={tab.value}
                     value={tab.value}
-                    className="flex items-center gap-2 px-0 py-3 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none text-muted-foreground data-[state=active]:text-primary hover:text-foreground transition-colors min-w-fit px-4"
+                    className="flex items-center gap-2 px-4 py-3 min-w-fit"
                   >
                     <Icon className="w-4 h-4" />
                     <span className="hidden sm:inline">{tab.label}</span>

@@ -18,6 +18,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
+type ConversationType = "direct" | "group" | "project";
+type ConversationFilter = "all" | "unread" | "pinned" | "projects";
+
 interface Conversation {
   id: string;
   client_id: string;
@@ -46,14 +49,14 @@ interface Conversation {
   unreadCount?: number;
   isPinned?: boolean;
   isArchived?: boolean;
-  type?: "direct" | "group" | "project";
+  type?: ConversationType;
 }
 
 interface ConversationListProps {
   conversations: Conversation[];
   selectedConversationId: string | null;
   onSelectConversation: (id: string) => void;
-  onNewConversation: (name: string, type: "direct" | "group" | "project") => Promise<void>;
+  onNewConversation: (name: string, type: ConversationType) => Promise<void>;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   isLoading?: boolean;
@@ -69,10 +72,10 @@ export function ConversationList({
   isLoading = false
 }: ConversationListProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "unread" | "pinned" | "projects">("all");
+  const [filterType, setFilterType] = useState<ConversationFilter>("all");
   const [showNewConversationDialog, setShowNewConversationDialog] = useState(false);
   const [newConversationName, setNewConversationName] = useState("");
-  const [newConversationType, setNewConversationType] = useState<"direct" | "group" | "project">("direct");
+  const [newConversationType, setNewConversationType] = useState<ConversationType>("direct");
   const [isCreating, setIsCreating] = useState(false);
 
   const formatTime = (timestamp: string) => {
@@ -144,7 +147,7 @@ export function ConversationList({
             </div>
             <div>
               <label className="text-sm font-medium">Type</label>
-              <Select value={newConversationType} onValueChange={(value: any) => setNewConversationType(value)}>
+              <Select value={newConversationType} onValueChange={(value) => setNewConversationType(value as ConversationType)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -222,21 +225,21 @@ export function ConversationList({
           </div>
 
           {/* Filters */}
-          {!isCollapsed && (
-            <div className="flex gap-2">
-              <Select value={filterType} onValueChange={(value: any) => setFilterType(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Conversations</SelectItem>
-                  <SelectItem value="unread">Unread</SelectItem>
-                  <SelectItem value="pinned">Pinned</SelectItem>
-                  <SelectItem value="projects">Projects</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+            {!isCollapsed && (
+              <div className="flex gap-2">
+                <Select value={filterType} onValueChange={(value) => setFilterType(value as ConversationFilter)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Conversations</SelectItem>
+                    <SelectItem value="unread">Unread</SelectItem>
+                    <SelectItem value="pinned">Pinned</SelectItem>
+                    <SelectItem value="projects">Projects</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           {isCollapsed && (
             <div className="flex justify-center">
               <Button size="sm" variant="outline" className="p-2">
@@ -252,7 +255,11 @@ export function ConversationList({
             {isLoading ? (
               <div className="text-center text-muted-foreground py-10">Loading conversations...</div>
             ) : filteredConversations.length === 0 ? (
-              <div className="text-center text-muted-foreground py-10">No conversations found</div>
+              <div className="text-center text-muted-foreground py-10">
+                No conversations found
+                <br />
+                <span className="text-xs">Total: {conversations.length}</span>
+              </div>
             ) : (
               filteredConversations.map((conversation) => (
                 <div
@@ -350,3 +357,5 @@ export function ConversationList({
     </>
   );
 }
+
+

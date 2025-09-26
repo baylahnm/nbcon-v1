@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/stores/auth';
+import { R } from '@/lib/routes';
 import {
   Tabs,
   TabsContent,
@@ -11,7 +12,8 @@ import {
 } from '@/components/ui/tabs';
 import { 
   Briefcase,
-  Brain
+  Brain,
+  Plus
 } from 'lucide-react';
 import { KanbanBoard } from '@/components/jobs/KanbanBoard';
 import JobListings from '@/components/jobs/JobListings';
@@ -41,7 +43,7 @@ export default function JobsList() {
         <div>
           <h1 className="text-xl font-bold flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-primary" />
-            {profile?.role === 'client' ? 'My Jobs' : 'Jobs'}
+            {profile?.role === 'client' ? 'My Projects' : 'Jobs'}
           </h1>
           <p className="text-muted-foreground">
             {profile?.role === 'client' 
@@ -52,7 +54,7 @@ export default function JobsList() {
         </div>
         
         {profile?.role === 'client' && (
-          <Button onClick={() => navigate('/client/jobs/create')} className="bg-gradient-primary">
+          <Button onClick={() => navigate(R.client.jobNew)} className="bg-gradient-primary">
             <Plus className="h-4 w-4 mr-2" />
             Post New Job
           </Button>
@@ -62,18 +64,22 @@ export default function JobsList() {
       {/* Tabs for Engineers */}
       {profile?.role === 'engineer' && (
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="my-jobs" onClick={() => setActiveTab('my-jobs')}>
-              My Projects
-            </TabsTrigger>
-            <TabsTrigger value="available" onClick={() => setActiveTab('available')}>
-              Available Jobs
-            </TabsTrigger>
-            <TabsTrigger value="ai-recommendations" onClick={() => setActiveTab('ai-recommendations')}>
-              <Brain className="w-4 h-4 mr-2" />
-              AI Job Recommendations
-            </TabsTrigger>
-          </TabsList>
+          <div className="border-b border-sidebar-border mb-6">
+            <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+              <div className="flex items-center w-full overflow-x-auto">
+                <TabsTrigger value="my-jobs" onClick={() => setActiveTab('my-jobs')} className="flex items-center gap-2 px-4 py-3 min-w-fit">
+                  My Projects
+                </TabsTrigger>
+                <TabsTrigger value="available" onClick={() => setActiveTab('available')} className="flex items-center gap-2 px-4 py-3 min-w-fit">
+                  Available Jobs
+                </TabsTrigger>
+                <TabsTrigger value="ai-recommendations" onClick={() => setActiveTab('ai-recommendations')} className="flex items-center gap-2 px-4 py-3 min-w-fit">
+                  <Brain className="w-4 h-4" />
+                  AI Job Recommendations
+                </TabsTrigger>
+              </div>
+            </TabsList>
+          </div>
 
           <TabsContent value="my-jobs" className="mt-6">
             <div className="space-y-4">

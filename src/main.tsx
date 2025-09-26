@@ -22,7 +22,7 @@ createRoot(document.getElementById("root")!).render(
     attribute="class" 
     defaultTheme="light" 
     enableSystem 
-    themes={["light", "dark", "wazeer", "sunset", "abstract", "dotted-indigo", "lagoon", "dark-nature", "full-gradient", "sea-purple"]}
+    themes={["light", "dark", "wazeer", "sunset", "abstract", "nika", "lagoon", "dark-nature", "full-gradient", "sea-purple"]}
   >
     <App />
   </ThemeProvider>

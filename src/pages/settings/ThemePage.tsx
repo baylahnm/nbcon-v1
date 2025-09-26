@@ -174,11 +174,13 @@ export default function ThemePage() {
         </div>
 
         <Tabs defaultValue="presets" className="theme-vertical-rhythm">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="presets">Preset Themes</TabsTrigger>
-            <TabsTrigger value="custom">Custom Tokens</TabsTrigger>
-            <TabsTrigger value="advanced">Advanced</TabsTrigger>
-          </TabsList>
+          <div className="border-b border-sidebar-border mb-6">
+            <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+              <TabsTrigger value="presets" className="flex items-center gap-2 px-4 py-3 min-w-fit">Preset Themes</TabsTrigger>
+              <TabsTrigger value="custom" className="flex items-center gap-2 px-4 py-3 min-w-fit">Custom Tokens</TabsTrigger>
+              <TabsTrigger value="advanced" className="flex items-center gap-2 px-4 py-3 min-w-fit">Advanced</TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Color Mode Section */}
           <Card>
@@ -235,12 +237,12 @@ export default function ThemePage() {
                     Abstract
                   </Button>
                   <Button
-                    variant={preset === 'dotted-indigo' ? 'default' : 'outline'}
-                    onClick={() => handlePresetChange('dotted-indigo')}
+                    variant={preset === 'nika' ? 'default' : 'outline'}
+                    onClick={() => handlePresetChange('nika')}
                     className="flex items-center gap-2 whitespace-nowrap"
                   >
                     <Circle className="h-4 w-4" />
-                    Dotted Indigo
+                    Nika
                   </Button>
                   <Button
                     variant={preset === 'lagoon' ? 'default' : 'outline'}

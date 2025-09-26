@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuthStore } from "@/stores/auth";
+import { R, RH } from "@/lib/routes";
 import { LearningContent } from "@/components/learning/LearningContent";
 import { LearningPathDetailContent } from "@/components/learning/LearningPathDetailContent";
 import { CourseDetailContent } from "@/components/learning/CourseDetailContent";
@@ -12,17 +15,37 @@ export default function LearningPage() {
   const [selectedPath, setSelectedPath] = useState<{id: string, title: string} | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<{id: string, title: string, progress?: number} | null>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<{id: string, title: string} | null>(null);
+  const navigate = useNavigate();
+  const params = useParams();
+  const { profile } = useAuthStore();
+  const role = useMemo(() => profile?.role || 'engineer', [profile]);
+
+  // Open deep links from URL params
+  useEffect(() => {
+    if (params.courseId) {
+      setSelectedCourse({ id: params.courseId, title: "Course" });
+      setCurrentView('course-detail');
+    } else if (params.certificateId) {
+      setSelectedCertificate({ id: params.certificateId, title: "Certificate" });
+      setCurrentView('certificate');
+    } else {
+      setCurrentView('main');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.courseId, params.certificateId]);
 
   const handleViewCourse = (courseId: string, title: string, fromPage?: string) => {
-    console.log(`View course: ${courseId} - ${title} from ${fromPage}`);
-    setSelectedCourse({ id: courseId, title });
-    setCurrentView('course-detail');
+    // Navigate to deep link route
+    if (role === 'client') navigate(RH.client.learningCourse(courseId));
+    else if (role === 'enterprise') navigate(RH.enterprise.teamProject ? `/enterprise/learning/${courseId}` : RH.engineer.learningCourse(courseId));
+    else navigate(RH.engineer.learningCourse(courseId));
   };
 
   const handleStartCourse = (courseId: string, title: string, progress?: number, fromPage?: string) => {
-    console.log(`Start course: ${courseId} - ${title} with progress ${progress}% from ${fromPage}`);
-    setSelectedCourse({ id: courseId, title, progress });
-    setCurrentView('course-player');
+    // Navigate to deep link, player handled inside page
+    if (role === 'client') navigate(RH.client.learningCourse(courseId));
+    else if (role === 'enterprise') navigate(`/enterprise/learning/${courseId}`);
+    else navigate(RH.engineer.learningCourse(courseId));
   };
 
   const handleStartPath = (pathId: string, title: string) => {
@@ -37,9 +60,9 @@ export default function LearningPage() {
   };
 
   const handleViewCertificate = (certificateId: string, title: string) => {
-    console.log(`View certificate: ${certificateId} - ${title}`);
-    setSelectedCertificate({ id: certificateId, title });
-    setCurrentView('certificate');
+    if (role === 'client') navigate(RH.client.learningCertificate(certificateId));
+    else if (role === 'enterprise') navigate(`/enterprise/learning/certificates/${certificateId}`);
+    else navigate(RH.engineer.learningCertificate(certificateId));
   };
 
   const handleBackToMain = () => {
@@ -47,6 +70,9 @@ export default function LearningPage() {
     setSelectedPath(null);
     setSelectedCourse(null);
     setSelectedCertificate(null);
+    if (role === 'client') navigate(R.client.learning);
+    else if (role === 'enterprise') navigate('/enterprise/learning');
+    else navigate(R.engineer.learning);
   };
 
   const handleStartCourseFromDetail = (courseId: string, title: string) => {

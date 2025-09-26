@@ -169,11 +169,11 @@ export default function JobListings() {
 
   const getJobTypeColor = (type: string) => {
     const colors = {
-      'Full-time': 'bg-blue-100 text-blue-800',
-      'Contract': 'bg-green-100 text-green-800',
-      'Part-time': 'bg-purple-100 text-purple-800'
+      'Full-time': 'bg-primary/10 text-primary',
+      'Contract': 'bg-success/10 text-success',
+      'Part-time': 'bg-accent/10 text-accent'
     };
-    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[type as keyof typeof colors] || 'bg-muted text-muted-foreground';
   };
 
   return (

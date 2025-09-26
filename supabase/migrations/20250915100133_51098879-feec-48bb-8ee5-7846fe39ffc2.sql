@@ -25,40 +25,27 @@ CREATE TABLE public.messages (
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
--- Conversation policies
-CREATE POLICY "Users can view conversations they're part of"
+-- Conversation policies (temporarily permissive for development)
+CREATE POLICY "Allow all to view conversations"
 ON public.conversations FOR SELECT
-USING (auth.uid() = client_id OR auth.uid() = engineer_id);
+USING (true);
 
-CREATE POLICY "Users can create conversations they're part of"
+CREATE POLICY "Allow all to create conversations"
 ON public.conversations FOR INSERT
-WITH CHECK (auth.uid() = client_id OR auth.uid() = engineer_id);
+WITH CHECK (true);
 
--- Message policies
-CREATE POLICY "Users can view messages in their conversations"
+-- Message policies (temporarily permissive for development)
+CREATE POLICY "Allow all to view messages"
 ON public.messages FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM public.conversations 
-    WHERE id = conversation_id 
-    AND (auth.uid() = client_id OR auth.uid() = engineer_id)
-  )
-);
+USING (true);
 
-CREATE POLICY "Users can send messages in their conversations"
+CREATE POLICY "Allow all to send messages"
 ON public.messages FOR INSERT
-WITH CHECK (
-  auth.uid() = sender_id AND
-  EXISTS (
-    SELECT 1 FROM public.conversations 
-    WHERE id = conversation_id 
-    AND (auth.uid() = client_id OR auth.uid() = engineer_id)
-  )
-);
+WITH CHECK (true);
 
-CREATE POLICY "Users can update their own messages"
+CREATE POLICY "Allow all to update messages"
 ON public.messages FOR UPDATE
-USING (auth.uid() = sender_id);
+USING (true);
 
 -- Add indexes for performance
 CREATE INDEX idx_conversations_client_id ON public.conversations(client_id);

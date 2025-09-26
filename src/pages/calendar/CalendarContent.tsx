@@ -516,7 +516,7 @@ export default function CalendarContent() {
     <div className="h-full flex flex-col">
       {/* Calendar View */}
       <div 
-        className="flex-1 p-6 overflow-auto"
+        className="flex-1 p-0 overflow-auto"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
         }}
@@ -529,7 +529,7 @@ export default function CalendarContent() {
 
       {/* Event Details Drawer */}
       <Sheet open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <SheetContent className="w-[400px] sm:w-[540px]">
+        <SheetContent className="w-[50vw] sm:max-w-none">
           <SheetHeader>
             <SheetTitle>{selectedEvent?.title}</SheetTitle>
             <SheetDescription>

@@ -15,6 +15,7 @@ import {
   Languages,
   Briefcase
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +25,47 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+
+// Function to ensure user profile exists in database
+const ensureUserProfileExists = async (user: AuthenticatedUser) => {
+  try {
+    // Check if profile already exists
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!existingProfile) {
+      // Create profile if it doesn't exist
+      const { error } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            user_id: user.id,
+            role: user.role,
+            first_name: user.name.split(' ')[0],
+            last_name: user.name.split(' ').slice(1).join(' ') || '',
+            email: user.email,
+            phone: user.phone,
+            location_city: user.location.split(',')[0]?.trim(),
+            location_region: user.location.split(',').slice(1).join(',').trim() || '',
+            preferred_language: user.language,
+            theme_preference: 'light',
+            rtl_enabled: user.language === 'ar'
+          }
+        ]);
+
+      if (error) {
+        console.error('Error creating user profile:', error);
+      } else {
+        console.log('User profile created successfully');
+      }
+    }
+  } catch (error) {
+    console.error('Error ensuring user profile exists:', error);
+  }
+};
 
 interface AuthContentProps {
   onAuthSuccess: (user: AuthenticatedUser) => void;
@@ -140,9 +182,9 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
       
       // Mock successful login
       const mockUser: AuthenticatedUser = {
-        id: 'user_123',
+        id: 'a938012d-b35b-40ab-91d4-bcbd5678216a', // Valid UUID format
         email: loginData.email,
-        name: 'Ahmed Al-Rashid',
+        name: 'Nasser Baylah',
         role: 'engineer',
         isVerified: true,
         sceNumber: 'SCE-67892',
@@ -153,6 +195,9 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
         avatar: 'engineer-male-1'
       };
 
+      // Ensure user profile exists in database
+      await ensureUserProfileExists(mockUser);
+      
       onAuthSuccess(mockUser);
     } catch (error) {
       setErrors({ 
@@ -221,7 +266,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
       
       // For new users, redirect to OTP verification
       const partialUser: Partial<AuthenticatedUser> = {
-        id: 'user_new_' + Date.now(),
+        id: 'a938012d-b35b-40ab-91d4-bcbd5678216a', // Valid UUID format
         email: signupData.email,
         name: signupData.name,
         phone: signupData.phone,
@@ -309,14 +354,16 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
 
           <CardContent>
             <Tabs value={authMode} onValueChange={(value) => setAuthMode(value as 'login' | 'signup')}>
-              <TabsList className="grid w-full grid-cols-2 mb-6 border border-sidebar-border">
-                <TabsTrigger value="login">
-                  {language === 'ar' ? 'تسجيل دخول' : 'Sign In'}
-                </TabsTrigger>
-                <TabsTrigger value="signup">
-                  {language === 'ar' ? 'إنشاء حساب' : 'Sign Up'}
-                </TabsTrigger>
-              </TabsList>
+              <div className="border-b border-sidebar-border mb-6">
+                <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+                  <TabsTrigger value="login" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+                    {language === 'ar' ? 'تسجيل دخول' : 'Sign In'}
+                  </TabsTrigger>
+                  <TabsTrigger value="signup" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+                    {language === 'ar' ? 'إنشاء حساب' : 'Sign Up'}
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               {/* Login Form */}
               <TabsContent value="login">
@@ -333,7 +380,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         placeholder={language === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
                         value={loginData.email}
                         onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                        className="pl-10 bg-input-background border-border"
+                        className="pl-10 bg-background border-primary/20 focus-visible:border-primary focus-visible:ring-primary/20"
                         autoComplete="username"
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                       />
@@ -353,7 +400,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         placeholder={language === 'ar' ? 'أدخل كلمة المرور' : 'Enter your password'}
                         value={loginData.password}
                         onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                        className="pl-10 pr-10 bg-input-background border-border"
+                        className="pl-10 pr-10 bg-background border-primary/20 focus-visible:border-primary focus-visible:ring-primary/20"
                         autoComplete="current-password"
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                       />

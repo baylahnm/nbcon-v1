@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export type PaymentType = "invoice" | "milestone" | "escrow" | "payout" | "refund";
-export type PaymentStatus = "pending" | "processing" | "completed" | "failed" | "cancelled" | "disputed";
+export type PaymentStatus = "pending" | "processing" | "completed" | "failed" | "cancelled" | "disputed" | "overdue" | "held";
 export type PaymentMethod = "bank_transfer" | "digital_wallet" | "credit_card" | "stc_pay" | "apple_pay";
 
 export interface Payment {

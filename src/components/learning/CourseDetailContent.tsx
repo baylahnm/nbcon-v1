@@ -288,12 +288,14 @@ export function CourseDetailContent({ courseId, courseTitle, onBack, onStartCour
 
             {/* Course Details Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
-                <TabsTrigger value="instructor">Instructor</TabsTrigger>
-              </TabsList>
+              <div className="border-b border-sidebar-border mb-6">
+                <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+                  <TabsTrigger value="overview" className="flex items-center gap-2 px-4 py-3 min-w-fit">Overview</TabsTrigger>
+                  <TabsTrigger value="curriculum" className="flex items-center gap-2 px-4 py-3 min-w-fit">Curriculum</TabsTrigger>
+                  <TabsTrigger value="reviews" className="flex items-center gap-2 px-4 py-3 min-w-fit">Reviews</TabsTrigger>
+                  <TabsTrigger value="instructor" className="flex items-center gap-2 px-4 py-3 min-w-fit">Instructor</TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="overview" className="space-y-6">
                 <Card>

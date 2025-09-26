@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Sidebar width variables */
+:root {
+  --sidebar-width: 16rem;
+  --sidebar-width-icon: 3rem;
+}
+
 /* Enhanced Scrollbar Styling for Kanban Board */
 @layer utilities {
   .kanban-scrollbar {
@@ -108,7 +114,6 @@ All colors MUST be HSL.
     --bg: hsl(var(--background));
     --surface: hsl(var(--card));
     --fg: hsl(var(--foreground));
-    --border: hsl(var(--border));
 
     /* Light Theme - New Brand System */
     --background: 0 0% 100%;
@@ -152,10 +157,15 @@ All colors MUST be HSL.
     --danger: var(--destructive);
     --info: 217 92% 55%;
     --info-foreground: 0 0% 100%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
 
     /* UI elements */
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
+    --input-background: 0 0% 100%;
+    --input-foreground: 0 0% 6%;
+    --input-placeholder: 0 0% 45%;
     --ring: 142 65% 47%;
 
     /* Gradients */
@@ -193,7 +203,6 @@ All colors MUST be HSL.
     --bg: hsl(var(--background));
     --surface: hsl(var(--card));
     --fg: hsl(var(--foreground));
-    --border: hsl(var(--border));
 
     /* Dark Theme - New Brand System */
     --background: 0 0% 0%;
@@ -237,10 +246,15 @@ All colors MUST be HSL.
     --danger: var(--destructive);
     --info: 217 92% 55%;
     --info-foreground: 0 0% 100%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
 
     /* UI elements */
-    --border: 0 0% 13%;
-    --input: 0 0% 13%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
+    --input-background: 0 0% 100%;
+    --input-foreground: 0 0% 6%;
+    --input-placeholder: 0 0% 45%;
     --ring: 142 65% 47%;
 
     /* Adjusted gradients for dark mode */
@@ -268,38 +282,38 @@ All colors MUST be HSL.
 
   /* Dark theme specific: white bottom border for messaging header */
   .dark .messaging-header {
-    border-bottom-color: hsl(var(--border)) !important;
+    border-bottom-color: hsl(var(--sidebar-border)) !important;
   }
 
   /* Dark theme specific: black bottom border for threads header */
   .dark .threads-header {
-    border-bottom-color: hsl(var(--border)) !important;
+    border-bottom-color: hsl(var(--sidebar-border)) !important;
   }
 
   /* Dark theme specific: black bottom border for each thread row */
   .dark .thread-row {
-    border-bottom-color: hsl(var(--border)) !important;
+    border-bottom-color: hsl(var(--sidebar-border)) !important;
   }
 
   /* Dark theme specific: black top border for composer area */
   .dark .composer-container {
-    border-top-color: hsl(var(--border)) !important;
+    border-top-color: hsl(var(--sidebar-border)) !important;
   }
 
   .light .messaging-header {
-    border-bottom-color: hsl(var(--border)) !important;
+    border-bottom-color: hsl(var(--sidebar-border)) !important;
   }
 
   .light .threads-header {
-    border-bottom-color: hsl(var(--border)) !important;
+    border-bottom-color: hsl(var(--sidebar-border)) !important;
   }
 
   .light .thread-row {
-    border-bottom-color: hsl(var(--border)) !important;
+    border-bottom-color: hsl(var(--sidebar-border)) !important;
   }
 
   .light .composer-container {
-    border-top-color: hsl(var(--border)) !important;
+    border-top-color: hsl(var(--sidebar-border)) !important;
   }
 
   .wazeer {
@@ -308,7 +322,6 @@ All colors MUST be HSL.
     --bg: hsl(var(--background));
     --surface: hsl(var(--card));
     --fg: hsl(var(--foreground));
-    --border: hsl(var(--border));
 
     /* wazeer Theme - Earth Tones */
     --background: 0 0% 100%;
@@ -350,10 +363,12 @@ All colors MUST be HSL.
     --danger: var(--destructive);
     --info: 217 92% 55%;
     --info-foreground: 0 0% 100%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
 
     /* UI elements */
-    --border: 30 15% 75%;
-    --input: 30 15% 75%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
     --ring: 160 30% 25%;
 
     /* wazeer gradients */
@@ -385,7 +400,7 @@ All colors MUST be HSL.
   .wazeer .nav-links a,
   .sunset .nav-links a,
   .abstract .nav-links a,
-  .dotted-indigo .nav-links a,
+  .nika .nav-links a,
   .lagoon .nav-links a,
   .dark-nature .nav-links a,
   .full-gradient .nav-links a,
@@ -399,7 +414,7 @@ All colors MUST be HSL.
   .wazeer .nbcon-logo,
   .sunset .nbcon-logo,
   .abstract .nbcon-logo,
-  .dotted-indigo .nbcon-logo,
+  .nika .nbcon-logo,
   .lagoon .nbcon-logo,
   .dark-nature .nbcon-logo,
   .full-gradient .nbcon-logo,
@@ -413,7 +428,7 @@ All colors MUST be HSL.
   .wazeer .header-buttons button:not([class*="bg-primary"]),
   .sunset .header-buttons button:not([class*="bg-primary"]),
   .abstract .header-buttons button:not([class*="bg-primary"]),
-  .dotted-indigo .header-buttons button:not([class*="bg-primary"]),
+  .nika .header-buttons button:not([class*="bg-primary"]),
   .lagoon .header-buttons button:not([class*="bg-primary"]),
   .dark-nature .header-buttons button:not([class*="bg-primary"]),
   .full-gradient .header-buttons button:not([class*="bg-primary"]),
@@ -427,7 +442,7 @@ All colors MUST be HSL.
   .wazeer .browse-engineers-btn,
   .sunset .browse-engineers-btn,
   .abstract .browse-engineers-btn,
-  .dotted-indigo .browse-engineers-btn,
+  .nika .browse-engineers-btn,
   .lagoon .browse-engineers-btn,
   .dark-nature .browse-engineers-btn,
   .full-gradient .browse-engineers-btn,
@@ -441,7 +456,7 @@ All colors MUST be HSL.
   .wazeer .browse-engineers-btn:hover,
   .sunset .browse-engineers-btn:hover,
   .abstract .browse-engineers-btn:hover,
-  .dotted-indigo .browse-engineers-btn:hover,
+  .nika .browse-engineers-btn:hover,
   .lagoon .browse-engineers-btn:hover,
   .dark-nature .browse-engineers-btn:hover,
   .full-gradient .browse-engineers-btn:hover,
@@ -456,7 +471,7 @@ All colors MUST be HSL.
   .wazeer .hero-title,
   .sunset .hero-title,
   .abstract .hero-title,
-  .dotted-indigo .hero-title,
+  .nika .hero-title,
   .lagoon .hero-title,
   .dark-nature .hero-title,
   .full-gradient .hero-title,
@@ -473,7 +488,7 @@ All colors MUST be HSL.
   .wazeer .trust-title,
   .sunset .trust-title,
   .abstract .trust-title,
-  .dotted-indigo .trust-title,
+  .nika .trust-title,
   .lagoon .trust-title,
   .dark-nature .trust-title,
   .full-gradient .trust-title,
@@ -487,7 +502,7 @@ All colors MUST be HSL.
   .wazeer .feature-cards h3,
   .sunset .feature-cards h3,
   .abstract .feature-cards h3,
-  .dotted-indigo .feature-cards h3,
+  .nika .feature-cards h3,
   .lagoon .feature-cards h3,
   .dark-nature .feature-cards h3,
   .full-gradient .feature-cards h3,
@@ -501,7 +516,7 @@ All colors MUST be HSL.
   .wazeer .disciplines-title,
   .sunset .disciplines-title,
   .abstract .disciplines-title,
-  .dotted-indigo .disciplines-title,
+  .nika .disciplines-title,
   .lagoon .disciplines-title,
   .dark-nature .disciplines-title,
   .full-gradient .disciplines-title,
@@ -515,7 +530,7 @@ All colors MUST be HSL.
   .wazeer .social-title,
   .sunset .social-title,
   .abstract .social-title,
-  .dotted-indigo .social-title,
+  .nika .social-title,
   .lagoon .social-title,
   .dark-nature .social-title,
   .full-gradient .social-title,
@@ -529,7 +544,7 @@ All colors MUST be HSL.
   .wazeer .social-cta-btn,
   .sunset .social-cta-btn,
   .abstract .social-cta-btn,
-  .dotted-indigo .social-cta-btn,
+  .nika .social-cta-btn,
   .lagoon .social-cta-btn,
   .dark-nature .social-cta-btn,
   .full-gradient .social-cta-btn,
@@ -543,7 +558,7 @@ All colors MUST be HSL.
   .wazeer .enterprise-card:hover,
   .sunset .enterprise-card:hover,
   .abstract .enterprise-card:hover,
-  .dotted-indigo .enterprise-card:hover,
+  .nika .enterprise-card:hover,
   .lagoon .enterprise-card:hover,
   .dark-nature .enterprise-card:hover,
   .full-gradient .enterprise-card:hover,
@@ -557,7 +572,7 @@ All colors MUST be HSL.
   .wazeer .clients-card:hover,
   .sunset .clients-card:hover,
   .abstract .clients-card:hover,
-  .dotted-indigo .clients-card:hover,
+  .nika .clients-card:hover,
   .lagoon .clients-card:hover,
   .dark-nature .clients-card:hover,
   .full-gradient .clients-card:hover,
@@ -571,7 +586,7 @@ All colors MUST be HSL.
   .wazeer .engineers-card:hover,
   .sunset .engineers-card:hover,
   .abstract .engineers-card:hover,
-  .dotted-indigo .engineers-card:hover,
+  .nika .engineers-card:hover,
   .lagoon .engineers-card:hover,
   .dark-nature .engineers-card:hover,
   .full-gradient .engineers-card:hover,
@@ -585,7 +600,7 @@ All colors MUST be HSL.
   .wazeer .disciplines-badges .badge:hover,
   .sunset .disciplines-badges .badge:hover,
   .abstract .disciplines-badges .badge:hover,
-  .dotted-indigo .disciplines-badges .badge:hover,
+  .nika .disciplines-badges .badge:hover,
   .lagoon .disciplines-badges .badge:hover,
   .dark-nature .disciplines-badges .badge:hover,
   .full-gradient .disciplines-badges .badge:hover,
@@ -599,7 +614,7 @@ All colors MUST be HSL.
   .wazeer .auth-logo,
   .sunset .auth-logo,
   .abstract .auth-logo,
-  .dotted-indigo .auth-logo,
+  .nika .auth-logo,
   .lagoon .auth-logo,
   .dark-nature .auth-logo,
   .full-gradient .auth-logo,
@@ -613,7 +628,7 @@ All colors MUST be HSL.
   .wazeer .auth-submit-btn,
   .sunset .auth-submit-btn,
   .abstract .auth-submit-btn,
-  .dotted-indigo .auth-submit-btn,
+  .nika .auth-submit-btn,
   .lagoon .auth-submit-btn,
   .dark-nature .auth-submit-btn,
   .full-gradient .auth-submit-btn,
@@ -627,7 +642,7 @@ All colors MUST be HSL.
   .wazeer .auth-title,
   .sunset .auth-title,
   .abstract .auth-title,
-  .dotted-indigo .auth-title,
+  .nika .auth-title,
   .lagoon .auth-title,
   .dark-nature .auth-title,
   .full-gradient .auth-title,
@@ -641,7 +656,7 @@ All colors MUST be HSL.
   .wazeer .auth-email-btn:hover,
   .sunset .auth-email-btn:hover,
   .abstract .auth-email-btn:hover,
-  .dotted-indigo .auth-email-btn:hover,
+  .nika .auth-email-btn:hover,
   .lagoon .auth-email-btn:hover,
   .dark-nature .auth-email-btn:hover,
   .full-gradient .auth-email-btn:hover,
@@ -655,7 +670,7 @@ All colors MUST be HSL.
   .wazeer .auth-phone-input:hover,
   .sunset .auth-phone-input:hover,
   .abstract .auth-phone-input:hover,
-  .dotted-indigo .auth-phone-input:hover,
+  .nika .auth-phone-input:hover,
   .lagoon .auth-phone-input:hover,
   .dark-nature .auth-phone-input:hover,
   .full-gradient .auth-phone-input:hover,
@@ -669,7 +684,7 @@ All colors MUST be HSL.
   .wazeer .auth-phone-btn,
   .sunset .auth-phone-btn,
   .abstract .auth-phone-btn,
-  .dotted-indigo .auth-phone-btn,
+  .nika .auth-phone-btn,
   .lagoon .auth-phone-btn,
   .dark-nature .auth-phone-btn,
   .full-gradient .auth-phone-btn,
@@ -683,7 +698,7 @@ All colors MUST be HSL.
   .wazeer .sidebar-content,
   .sunset .sidebar-content,
   .abstract .sidebar-content,
-  .dotted-indigo .sidebar-content,
+  .nika .sidebar-content,
   .lagoon .sidebar-content,
   .dark-nature .sidebar-content,
   .full-gradient .sidebar-content,
@@ -697,7 +712,7 @@ All colors MUST be HSL.
   .wazeer .border-sidebar-border,
   .sunset .border-sidebar-border,
   .abstract .border-sidebar-border,
-  .dotted-indigo .border-sidebar-border,
+  .nika .border-sidebar-border,
   .lagoon .border-sidebar-border,
   .dark-nature .border-sidebar-border,
   .full-gradient .border-sidebar-border,
@@ -711,7 +726,7 @@ All colors MUST be HSL.
   .wazeer .border-b,
   .sunset .border-b,
   .abstract .border-b,
-  .dotted-indigo .border-b,
+  .nika .border-b,
   .lagoon .border-b,
   .dark-nature .border-b,
   .full-gradient .border-b,
@@ -725,7 +740,7 @@ All colors MUST be HSL.
   .wazeer .sidebar-main-group,
   .sunset .sidebar-main-group,
   .abstract .sidebar-main-group,
-  .dotted-indigo .sidebar-main-group,
+  .nika .sidebar-main-group,
   .lagoon .sidebar-main-group,
   .dark-nature .sidebar-main-group,
   .full-gradient .sidebar-main-group,
@@ -739,7 +754,7 @@ All colors MUST be HSL.
   .wazeer .bg-sidebar-accent,
   .sunset .bg-sidebar-accent,
   .abstract .bg-sidebar-accent,
-  .dotted-indigo .bg-sidebar-accent,
+  .nika .bg-sidebar-accent,
   .lagoon .bg-sidebar-accent,
   .dark-nature .bg-sidebar-accent,
   .full-gradient .bg-sidebar-accent,
@@ -752,7 +767,7 @@ All colors MUST be HSL.
   .wazeer .text-sidebar-accent-foreground,
   .sunset .text-sidebar-accent-foreground,
   .abstract .text-sidebar-accent-foreground,
-  .dotted-indigo .text-sidebar-accent-foreground,
+  .nika .text-sidebar-accent-foreground,
   .lagoon .text-sidebar-accent-foreground,
   .dark-nature .text-sidebar-accent-foreground,
   .full-gradient .text-sidebar-accent-foreground,
@@ -765,7 +780,7 @@ All colors MUST be HSL.
   .wazeer .hover\\:bg-sidebar-accent:hover,
   .sunset .hover\\:bg-sidebar-accent:hover,
   .abstract .hover\\:bg-sidebar-accent:hover,
-  .dotted-indigo .hover\\:bg-sidebar-accent:hover,
+  .nika .hover\\:bg-sidebar-accent:hover,
   .lagoon .hover\\:bg-sidebar-accent:hover,
   .dark-nature .hover\\:bg-sidebar-accent:hover,
   .full-gradient .hover\\:bg-sidebar-accent:hover,
@@ -778,7 +793,7 @@ All colors MUST be HSL.
   .wazeer .hover\\:text-sidebar-accent-foreground:hover,
   .sunset .hover\\:text-sidebar-accent-foreground:hover,
   .abstract .hover\\:text-sidebar-accent-foreground:hover,
-  .dotted-indigo .hover\\:text-sidebar-accent-foreground:hover,
+  .nika .hover\\:text-sidebar-accent-foreground:hover,
   .lagoon .hover\\:text-sidebar-accent-foreground:hover,
   .dark-nature .hover\\:text-sidebar-accent-foreground:hover,
   .full-gradient .hover\\:text-sidebar-accent-foreground:hover,
@@ -822,7 +837,7 @@ All colors MUST be HSL.
   .wazeer .jobs-details-btn,
   .sunset .jobs-details-btn,
   .abstract .jobs-details-btn,
-  .dotted-indigo .jobs-details-btn,
+  .nika .jobs-details-btn,
   .lagoon .jobs-details-btn,
   .dark-nature .jobs-details-btn,
   .full-gradient .jobs-details-btn,
@@ -838,7 +853,7 @@ All colors MUST be HSL.
   .wazeer .jobs-details-btn:hover,
   .sunset .jobs-details-btn:hover,
   .abstract .jobs-details-btn:hover,
-  .dotted-indigo .jobs-details-btn:hover,
+  .nika .jobs-details-btn:hover,
   .lagoon .jobs-details-btn:hover,
   .dark-nature .jobs-details-btn:hover,
   .full-gradient .jobs-details-btn:hover,
@@ -851,7 +866,7 @@ All colors MUST be HSL.
   .dark .jobs-details-btn,
   .sunset .jobs-details-btn,
   .abstract .jobs-details-btn,
-  .dotted-indigo .jobs-details-btn,
+  .nika .jobs-details-btn,
   .lagoon .jobs-details-btn,
   .dark-nature .jobs-details-btn,
   .full-gradient .jobs-details-btn,
@@ -865,7 +880,7 @@ All colors MUST be HSL.
   .dark .jobs-details-btn:hover,
   .sunset .jobs-details-btn:hover,
   .abstract .jobs-details-btn:hover,
-  .dotted-indigo .jobs-details-btn:hover,
+  .nika .jobs-details-btn:hover,
   .lagoon .jobs-details-btn:hover,
   .dark-nature .jobs-details-btn:hover,
   .full-gradient .jobs-details-btn:hover,
@@ -885,7 +900,7 @@ All colors MUST be HSL.
   .dark .milestones-release-btn,
   .sunset .milestones-release-btn,
   .abstract .milestones-release-btn,
-  .dotted-indigo .milestones-release-btn,
+  .nika .milestones-release-btn,
   .lagoon .milestones-release-btn,
   .dark-nature .milestones-release-btn,
   .full-gradient .milestones-release-btn,
@@ -1116,25 +1131,25 @@ All colors MUST be HSL.
     background-color: hsl(var(--primary-dark)) !important;
   }
 
-  /* CheckIn components - Dotted Indigo theme */
-  .dotted-indigo .checkin-map-pin-icon {
+  /* CheckIn components - Nika theme */
+  .nika .checkin-map-pin-icon {
     color: hsl(var(--primary)) !important;
   }
 
-  .dotted-indigo .checkin-subtitle {
+  .nika .checkin-subtitle {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  .dotted-indigo .checkin-card-title {
+  .nika .checkin-card-title {
     color: hsl(var(--foreground)) !important;
   }
 
-  .dotted-indigo .checkin-btn {
+  .nika .checkin-btn {
     background-color: hsl(var(--primary)) !important;
     color: hsl(var(--primary-foreground)) !important;
   }
 
-  .dotted-indigo .checkin-btn:hover {
+  .nika .checkin-btn:hover {
     background-color: hsl(var(--primary-dark)) !important;
   }
 
@@ -1247,7 +1262,7 @@ All colors MUST be HSL.
   .wazeer .theme-toggle-menu,
   .sunset .theme-toggle-menu,
   .abstract .theme-toggle-menu,
-  .dotted-indigo .theme-toggle-menu,
+  .nika .theme-toggle-menu,
   .lagoon .theme-toggle-menu,
   .dark-nature .theme-toggle-menu,
   .full-gradient .theme-toggle-menu,
@@ -1260,7 +1275,7 @@ All colors MUST be HSL.
   .wazeer .theme-toggle-menu svg,
   .sunset .theme-toggle-menu svg,
   .abstract .theme-toggle-menu svg,
-  .dotted-indigo .theme-toggle-menu svg,
+  .nika .theme-toggle-menu svg,
   .lagoon .theme-toggle-menu svg,
   .dark-nature .theme-toggle-menu svg,
   .full-gradient .theme-toggle-menu svg,
@@ -1274,7 +1289,7 @@ All colors MUST be HSL.
   .wazeer [data-radix-menu-content] [role="menuitem"],
   .sunset [data-radix-menu-content] [role="menuitem"],
   .abstract [data-radix-menu-content] [role="menuitem"],
-  .dotted-indigo [data-radix-menu-content] [role="menuitem"],
+  .nika [data-radix-menu-content] [role="menuitem"],
   .lagoon [data-radix-menu-content] [role="menuitem"],
   .dark-nature [data-radix-menu-content] [role="menuitem"],
   .full-gradient [data-radix-menu-content] [role="menuitem"],
@@ -1304,8 +1319,10 @@ All colors MUST be HSL.
     --warning: 35 100% 50%;
     --destructive: 0 70% 50%;
     --info: 200 80% 50%;
-    --border: 25 20% 85%;
-    --input: 25 20% 85%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
     --ring: 15 85% 50%;
     --sidebar-background: 25 20% 95%;
     --sidebar-foreground: 20 15% 20%;
@@ -1337,8 +1354,10 @@ All colors MUST be HSL.
     --warning: 35 100% 50%;
     --destructive: 0 70% 50%;
     --info: 200 80% 50%;
-    --border: 280 15% 85%;
-    --input: 280 15% 85%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
     --ring: 280 60% 50%;
     --sidebar-background: 280 15% 95%;
     --sidebar-foreground: 280 20% 20%;
@@ -1348,37 +1367,42 @@ All colors MUST be HSL.
     --sidebar-ring: 280 60% 50%;
   }
 
-  /* Dotted Indigo Theme */
-  .dotted-indigo {
+  /* Nika Theme */
+  .nika {
     --background: 0 0% 100%;
-    --foreground: 240 20% 20%;
-    --card: 240 15% 95%;
-    --card-foreground: 240 20% 20%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 96%;
+    --card-foreground: 0 0% 0%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 20% 20%;
-    --primary: 240 60% 50%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 355 85% 52%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 240 55% 60%;
-    --primary-dark: 240 65% 40%;
-    --secondary: 240 15% 90%;
-    --secondary-foreground: 240 20% 20%;
-    --muted: 240 15% 95%;
-    --muted-foreground: 240 20% 50%;
-    --accent: 240 15% 90%;
-    --accent-foreground: 240 20% 20%;
+    --primary-light: 355 85% 62%;
+    --primary-dark: 355 85% 42%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 0%;
     --success: 120 60% 40%;
     --warning: 35 100% 50%;
     --destructive: 0 70% 50%;
     --info: 200 80% 50%;
-    --border: 240 15% 85%;
-    --input: 240 15% 85%;
-    --ring: 240 60% 50%;
-    --sidebar-background: 240 15% 95%;
-    --sidebar-foreground: 240 20% 20%;
-    --sidebar-primary: 240 60% 50%;
-    --sidebar-accent: 240 15% 90%;
-    --sidebar-border: 240 15% 85%;
-    --sidebar-ring: 240 60% 50%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
+    --input-background: 0 0% 100%;
+    --input-foreground: 0 0% 0%;
+    --input-placeholder: 0 0% 45%;
+    --ring: 355 85% 52%;
+    --sidebar-background: 0 0% 96%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 355 85% 52%;
+    --sidebar-accent: 355 85% 52%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 355 85% 52%;
   }
 
   /* Lagoon Theme */
@@ -1403,8 +1427,10 @@ All colors MUST be HSL.
     --warning: 35 100% 50%;
     --destructive: 0 70% 50%;
     --info: 200 80% 50%;
-    --border: 180 15% 85%;
-    --input: 180 15% 85%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
     --ring: 180 60% 50%;
     --sidebar-background: 180 15% 95%;
     --sidebar-foreground: 180 20% 20%;
@@ -1436,8 +1462,10 @@ All colors MUST be HSL.
     --warning: 35 100% 50%;
     --destructive: 0 70% 50%;
     --info: 200 80% 50%;
-    --border: 120 15% 85%;
-    --input: 120 15% 85%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
     --ring: 120 60% 50%;
     --sidebar-background: 120 15% 95%;
     --sidebar-foreground: 120 20% 20%;
@@ -1469,8 +1497,10 @@ All colors MUST be HSL.
     --warning: 35 100% 50%;
     --destructive: 0 70% 50%;
     --info: 200 80% 50%;
-    --border: 300 15% 85%;
-    --input: 300 15% 85%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
     --ring: 300 60% 50%;
     --sidebar-background: 300 15% 95%;
     --sidebar-foreground: 300 20% 20%;
@@ -1502,8 +1532,10 @@ All colors MUST be HSL.
     --warning: 35 100% 50%;
     --destructive: 0 70% 50%;
     --info: 200 80% 50%;
-    --border: 250 15% 85%;
-    --input: 250 15% 85%;
+    --purple: 270 95% 60%;
+    --purple-foreground: 0 0% 100%;
+    --border: var(--sidebar-border);
+    --input: var(--sidebar-border);
     --ring: 250 60% 50%;
     --sidebar-background: 250 15% 95%;
     --sidebar-foreground: 250 20% 20%;
@@ -1668,19 +1700,19 @@ All colors MUST be HSL.
 
 .landing-image-placeholder {
   background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05));
-  border: 2px dashed hsl(var(--border));
+  border: 2px dashed hsl(var(--sidebar-border));
 }
 
 .landing-stats-card {
   background: hsl(var(--background) / 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid hsl(var(--border) / 0.5);
+  border: 1px solid hsl(var(--sidebar-border) / 0.5);
 }
 
 .landing-job-card {
   background: hsl(var(--background) / 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid hsl(var(--border) / 0.5);
+  border: 1px solid hsl(var(--sidebar-border) / 0.5);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
@@ -1713,7 +1745,7 @@ All colors MUST be HSL.
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-sidebar-border;
   }
 
   /* Global border-bottom styling using sidebar border color */

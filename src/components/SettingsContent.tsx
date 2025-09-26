@@ -307,7 +307,7 @@ export function SettingsContent() {
     { id: "wazeer", name: "Wazeer", description: "Professional and elegant", icon: Palette },
     { id: "sunset", name: "Sunset", description: "Warm and inviting", icon: Sunset },
     { id: "abstract", name: "Abstract", description: "Creative and modern", icon: Sparkles },
-    { id: "dotted-indigo", name: "Dotted Indigo", description: "Subtle and sophisticated", icon: Circle },
+    { id: "nika", name: "Nika", description: "Bold and vibrant", icon: Circle },
     { id: "lagoon", name: "Lagoon", description: "Fresh and calming", icon: Waves },
     { id: "dark-nature", name: "Dark Nature", description: "Natural and earthy", icon: TreePine },
     { id: "full-gradient", name: "Full Gradient", description: "Vibrant and dynamic", icon: Paintbrush },
@@ -341,12 +341,44 @@ export function SettingsContent() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="account">Account</TabsTrigger>
-            <TabsTrigger value="preferences">Preferences</TabsTrigger>
-            <TabsTrigger value="themes">Themes</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="privacy">Privacy & Security</TabsTrigger>
+          <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
+            <div className="flex items-center w-full overflow-x-auto">
+              <TabsTrigger 
+                value="account"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">Account</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="preferences"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <Sliders className="w-4 h-4" />
+                <span className="hidden sm:inline">Preferences</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="themes"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <Palette className="w-4 h-4" />
+                <span className="hidden sm:inline">Themes</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="notifications"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="hidden sm:inline">Notifications</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="privacy"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <Shield className="w-4 h-4" />
+                <span className="hidden sm:inline">Privacy & Security</span>
+              </TabsTrigger>
+            </div>
           </TabsList>
 
           {/* Account Tab */}
@@ -735,7 +767,19 @@ export function SettingsContent() {
                       </Button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {THEME_TOKENS.filter(token => token.category === category).map((token) => (
+                      {THEME_TOKENS.filter(token => {
+                        if (token.category === category) {
+                          // Exclude specific sidebar tokens
+                          if (category === 'sidebar' && 
+                              (token.key === '--sidebar-primary' || 
+                               token.key === '--sidebar-primary-foreground' || 
+                               token.key === '--sidebar-ring')) {
+                            return false;
+                          }
+                          return true;
+                        }
+                        return false;
+                      }).map((token) => (
                         <TokenEditor
                           key={token.key}
                           token={token}
@@ -1222,6 +1266,8 @@ export function SettingsContent() {
               '--popover-foreground': 'Popover text color',
               '--primary': 'Primary color',
               '--primary-foreground': 'Primary text color',
+              '--primary-light': 'Light primary color',
+              '--primary-dark': 'Dark primary color',
               '--secondary': 'Secondary color',
               '--secondary-foreground': 'Secondary text color',
               '--muted': 'Muted color',
@@ -1232,10 +1278,24 @@ export function SettingsContent() {
               '--destructive-foreground': 'Destructive text color',
               '--border': 'Border color',
               '--input': 'Input border color',
+              '--input-background': 'Input background color',
+              '--input-foreground': 'Input text color',
+              '--input-placeholder': 'Input placeholder color',
               '--ring': 'Focus ring color',
               '--success': 'Success color',
+              '--success-foreground': 'Success text color',
               '--warning': 'Warning color',
-              '--info': 'Info color'
+              '--warning-foreground': 'Warning text color',
+              '--info': 'Info color',
+              '--info-foreground': 'Info text color',
+              '--sidebar-background': 'Sidebar background',
+              '--sidebar-foreground': 'Sidebar text color',
+              '--sidebar-primary': 'Sidebar primary color',
+              '--sidebar-primary-foreground': 'Sidebar primary text',
+              '--sidebar-accent': 'Sidebar accent color',
+              '--sidebar-accent-foreground': 'Sidebar accent text',
+              '--sidebar-border': 'Sidebar border color',
+              '--sidebar-ring': 'Sidebar focus ring'
             };
             return friendlyNames[token.key] || token.key;
           })()}

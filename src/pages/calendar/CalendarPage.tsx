@@ -163,7 +163,7 @@ export default function CalendarPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-xl font-bold flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
+              <Calendar className="h-5 w-5 text-primary" />
               Calendar
             </h1>
             <p className="text-muted-foreground">Manage your engineering projects and milestones</p>

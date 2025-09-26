@@ -17,6 +17,10 @@ import {
   Plus,
   MoreHorizontal
 } from "lucide-react";
+import type { Payment } from "../store/usePaymentsStore";
+import { InvoiceBuilder } from "./InvoiceBuilder";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { usePaymentsStore } from "../store/usePaymentsStore";
 
 const formatCurrency = (amount: number, currency: string = 'SAR') => {
@@ -48,6 +52,8 @@ const paymentStatusColors = {
 export function PaymentsInvoices() {
   const { payments, searchQuery, setSearchQuery } = usePaymentsStore();
   const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
+  const [isInvoiceBuilderOpen, setIsInvoiceBuilderOpen] = useState(false);
+  const [previewInvoice, setPreviewInvoice] = useState<Payment | null>(null);
 
   // Filter only invoice payments
   const invoicePayments = payments.filter(payment => payment.type === 'invoice');
@@ -73,7 +79,7 @@ export function PaymentsInvoices() {
     );
   };
 
-  const InvoiceCard = ({ invoice }: { invoice: any }) => {
+  const InvoiceCard = ({ invoice }: { invoice: Payment }) => {
     const daysUntilDue = getDaysUntilDue(invoice.dueDate);
     const isOverdue = daysUntilDue !== null && daysUntilDue < 0;
     const isDueSoon = daysUntilDue !== null && daysUntilDue <= 3 && daysUntilDue >= 0;
@@ -138,7 +144,11 @@ export function PaymentsInvoices() {
                   Send Reminder
                 </Button>
               )}
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" onClick={() => setPreviewInvoice(invoice)}>
+                <Eye className="w-4 h-4 mr-2" />
+                Quick View
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => window.location.assign(`/engineer/payments/${invoice.id}`)}>
                 <Eye className="w-4 h-4 mr-2" />
                 View
               </Button>
@@ -244,7 +254,7 @@ export function PaymentsInvoices() {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button size="sm" className="bg-primary hover:bg-primary/90">
+          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => setIsInvoiceBuilderOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Create Invoice
           </Button>
@@ -313,6 +323,61 @@ export function PaymentsInvoices() {
           )}
         </div>
       </div>
+
+      <Dialog open={isInvoiceBuilderOpen} onOpenChange={setIsInvoiceBuilderOpen}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-hidden p-0">
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle>Create Invoice</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[80vh] overflow-y-auto px-6 pb-6">
+            <InvoiceBuilder onClose={() => setIsInvoiceBuilderOpen(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Sheet open={!!previewInvoice} onOpenChange={() => setPreviewInvoice(null)}>
+        <SheetContent className="w-[50vw] sm:max-w-none">
+          <SheetHeader>
+            <SheetTitle>Invoice Preview</SheetTitle>
+          </SheetHeader>
+          {previewInvoice && (
+            <div className="space-y-4 mt-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h4 className="font-medium text-foreground mb-1">{previewInvoice.title}</h4>
+                  <p className="text-sm text-muted-foreground">{previewInvoice.description}</p>
+                </div>
+                <Badge variant="secondary" className={paymentStatusColors[previewInvoice.status]}>
+                  {previewInvoice.status}
+                </Badge>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <div className="text-muted-foreground">Client</div>
+                  <div className="font-medium">{previewInvoice.client.company}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Amount</div>
+                  <div className="font-medium">{formatCurrency(previewInvoice.amount, previewInvoice.currency)}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Created</div>
+                  <div className="font-medium">{formatDate(previewInvoice.createdDate)}</div>
+                </div>
+                {previewInvoice.dueDate && (
+                  <div>
+                    <div className="text-muted-foreground">Due</div>
+                    <div className="font-medium">{formatDate(previewInvoice.dueDate)}</div>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center gap-2 pt-2">
+                <Button size="sm" onClick={() => window.location.assign(`/engineer/payments/${previewInvoice.id}`)}>Open full page</Button>
+                <Button size="sm" variant="outline" onClick={() => setPreviewInvoice(null)}>Close</Button>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

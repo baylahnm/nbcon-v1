@@ -25,13 +25,31 @@ import CalendarPage from "@/pages/calendar/CalendarPage";
 import LearningPage from "@/pages/learning/LearningPage";
 import { ChatPage } from "@/features/ai/ChatPage";
 import { PaymentsContent } from "@/features/finance/components/PaymentsContent";
+import { DashboardPage as EnterpriseDashboardPage } from "@/pages/enterprise/DashboardPage";
+import { TeamProjectsPage } from "@/pages/enterprise/TeamProjectsPage";
+import { AnalyticsPage } from "@/pages/enterprise/AnalyticsPage";
+import { EmployersPage } from "@/pages/enterprise/EmployersPage";
+import { ProcurementPage } from "@/pages/enterprise/ProcurementPage";
+import { PerformancePage } from "@/pages/enterprise/PerformancePage";
+import { VendorsPage } from "@/pages/enterprise/VendorsPage";
+import { FinancePage } from "@/pages/enterprise/FinancePage";
+import { HelpPage as EnterpriseHelpPage } from "@/pages/enterprise/HelpPage";
+import { SettingsPage as EnterpriseSettingsPage } from "@/pages/enterprise/SettingsPage";
+import { ProfilePage as EnterpriseProfilePage } from "@/pages/enterprise/ProfilePage";
+import { MessagesPage as EnterpriseMessagesPage } from "@/pages/enterprise/MessagesPage";
+import { AIAssistantPage } from "@/pages/enterprise/AIAssistantPage";
+import { CalendarPage as EnterpriseCalendarPage } from "@/pages/enterprise/CalendarPage";
 
 export function useActiveRole(): UserRole | null {
   const { profile } = useAuthStore();
   return (profile?.role as UserRole) ?? null;
 }
 
-function LegacyRedirects() {
+interface LegacyRedirectsProps {
+  fallback?: string;
+}
+
+function LegacyRedirects({ fallback }: LegacyRedirectsProps = {}) {
   const role = useActiveRole();
   const location = useLocation();
   const path = location.pathname;
@@ -53,14 +71,16 @@ function LegacyRedirects() {
   if (redirect) {
     return <Navigate to={redirect} replace />;
   }
+  if (fallback) {
+    return <Navigate to={fallback} replace />;
+  }
   return null;
 }
-
 export default function RoleRouter() {
   const role = useActiveRole();
 
   if (!role) {
-    return <LegacyRedirects />;
+    return <LegacyRedirects fallback="/auth/role" />;
   }
 
   return (
@@ -73,18 +93,28 @@ export default function RoleRouter() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<EngineerDashboard />} />
           <Route path="jobs" element={<JobsList />} />
+          {/* Deep links */}
+          <Route path="jobs/:jobId" element={<JobDetails />} />
+          <Route path="jobs/:jobId/tasks/:taskId" element={<JobDetails />} />
           <Route path="calendar" element={<CalendarPage />} />
+          <Route path="calendar/event/:eventId" element={<CalendarPage />} />
           <Route path="checkin" element={<CheckIn />} />
           <Route path="messages" element={<MessagingPage />} />
+          <Route path="messages/:threadId" element={<MessagingPage />} />
           <Route path="job">
             <Route path="upload" element={<UploadDeliverable />} />
             <Route path=":id" element={<JobDetails />} />
           </Route>
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
+          <Route path="ai/thread/:threadId" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="network" element={<MyNetwork />} />
+          <Route path="network/:userId" element={<MyNetwork />} />
           <Route path="learning" element={<LearningPage />} />
+          <Route path="learning/:courseId" element={<LearningPage />} />
+          <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
           <Route path="payments" element={<PaymentsContent />} />
+          <Route path="payments/:paymentId" element={<PaymentsContent />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
@@ -93,31 +123,56 @@ export default function RoleRouter() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ClientDashboard />} />
           <Route path="browse" element={<BrowseEngineers />} />
-          <Route path="jobs" element={<JobsList />} />
+          <Route path="myprojects" element={<JobsList />} />
+          {/* Deep links */}
+          <Route path="myprojects/:projectId" element={<JobsList />} />
+          <Route path="myprojects/:projectId/tasks/:taskId" element={<JobsList />} />
           <Route path="job">
             <Route path="new" element={<CreateJob />} />
           </Route>
           <Route path="calendar" element={<CalendarPage />} />
+          <Route path="calendar/event/:eventId" element={<CalendarPage />} />
           <Route path="payments" element={<PaymentsContent />} />
+          <Route path="payments/:paymentId" element={<PaymentsContent />} />
           <Route path="messages" element={<MessagingPage />} />
+          <Route path="messages/:threadId" element={<MessagingPage />} />
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
+          <Route path="ai/thread/:threadId" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="network" element={<MyNetwork />} />
+          <Route path="network/:userId" element={<MyNetwork />} />
           <Route path="learning" element={<LearningPage />} />
+          <Route path="learning/:courseId" element={<LearningPage />} />
+          <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="/enterprise" element={<EnterpriseLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<div className="text-center py-20"><h1 className="text-2xl font-bold">Enterprise Dashboard</h1><p className="text-muted-foreground mt-2">Coming soon...</p></div>} />
-          <Route path="projects" element={<div />} />
-          <Route path="workforce" element={<div />} />
-          <Route path="analytics" element={<div />} />
-          <Route path="finance" element={<div />} />
-          <Route path="compliance" element={<div />} />
-          <Route path="messages" element={<MessagingPage />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route path="dashboard" element={<EnterpriseDashboardPage />} />
+          <Route path="calendar" element={<EnterpriseCalendarPage />} />
+          <Route path="calendar/event/:eventId" element={<EnterpriseCalendarPage />} />
+          <Route path="team-projects" element={<TeamProjectsPage />} />
+          <Route path="team-projects/:projectId" element={<TeamProjectsPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="messages" element={<EnterpriseMessagesPage />} />
+          <Route path="messages/:threadId" element={<EnterpriseMessagesPage />} />
+          <Route path="ai" element={<AIAssistantPage />} />
+          <Route path="ai/thread/:threadId" element={<AIAssistantPage />} />
+          <Route path="employers" element={<EmployersPage />} />
+          <Route path="employers/:employeeId" element={<EmployersPage />} />
+          <Route path="procurement" element={<ProcurementPage />} />
+          <Route path="procurement/:entityId" element={<ProcurementPage />} />
+          <Route path="performance" element={<PerformancePage />} />
+          <Route path="performance/:itemId" element={<PerformancePage />} />
+          <Route path="profile" element={<EnterpriseProfilePage />} />
+          <Route path="vendors" element={<VendorsPage />} />
+          <Route path="vendors/:vendorId" element={<VendorsPage />} />
+          <Route path="finance" element={<FinancePage />} />
+          <Route path="finance/:paymentId" element={<FinancePage />} />
+          <Route path="help" element={<EnterpriseHelpPage />} />
+          <Route path="settings" element={<EnterpriseSettingsPage />} />
         </Route>
 
         <Route path="/admin" element={<AdminLayout />}>
@@ -135,5 +190,3 @@ export default function RoleRouter() {
     </>
   );
 }
-
-

@@ -370,12 +370,16 @@ export function CoursePlayerContent({ courseId, courseTitle, progress, onBack }:
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-            <TabsList className="grid w-full grid-cols-4 m-4">
-              <TabsTrigger value="curriculum">Content</TabsTrigger>
-              <TabsTrigger value="notes">Notes</TabsTrigger>
-              <TabsTrigger value="transcript">Script</TabsTrigger>
-              <TabsTrigger value="resources">Files</TabsTrigger>
-            </TabsList>
+            <div className="border-b border-sidebar-border m-4">
+              <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+                <div className="flex items-center w-full overflow-x-auto">
+                  <TabsTrigger value="curriculum" className="flex items-center gap-2 px-4 py-3 min-w-fit">Content</TabsTrigger>
+                  <TabsTrigger value="notes" className="flex items-center gap-2 px-4 py-3 min-w-fit">Notes</TabsTrigger>
+                  <TabsTrigger value="transcript" className="flex items-center gap-2 px-4 py-3 min-w-fit">Script</TabsTrigger>
+                  <TabsTrigger value="resources" className="flex items-center gap-2 px-4 py-3 min-w-fit">Files</TabsTrigger>
+                </div>
+              </TabsList>
+            </div>
 
             <TabsContent value="curriculum" className="flex-1 m-0">
               <ScrollArea className="flex-1 px-4">

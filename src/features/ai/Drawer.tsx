@@ -23,7 +23,6 @@ import { Separator } from '@/components/ui/separator';
 import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
 import { MessageBubble } from './components/MessageBubble';
-import { RTLDirectionToggle } from './components/RTLDirectionToggle';
 import { HijriBadge } from './components/HijriBadge';
 import { aiClient } from './api/aiClient';
 
@@ -160,10 +159,6 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
           )}
         </div>
 
-        {/* RTL Toggle */}
-        <div className="mt-2">
-          <RTLDirectionToggle isCompact showLabel={false} />
-        </div>
       </div>
 
       {/* Content */}

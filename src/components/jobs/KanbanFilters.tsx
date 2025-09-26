@@ -102,7 +102,7 @@ export function KanbanFiltersDialog({
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="fixed right-0 top-0 h-svh w-[50vw] max-w-none translate-x-0 translate-y-0 left-auto grid overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Filter className="w-5 h-5" />

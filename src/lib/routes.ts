@@ -19,8 +19,10 @@ export const R = {
     base: "/client",
     dashboard: "/client/dashboard",
     browse: "/client/browse",
-    jobs: "/client/jobs",
+    jobs: "/client/myprojects",
+    myprojects: "/client/myprojects", // Alias for consistency
     jobNew: "/client/job/new",
+    jobCreate: "/client/job/new", // Alias for consistency
     calendar: "/client/calendar",
     messages: "/client/messages",
     ai: "/client/ai",
@@ -34,12 +36,18 @@ export const R = {
   enterprise: {
     base: "/enterprise",
     dashboard: "/enterprise/dashboard",
-    projects: "/enterprise/projects",
-    workforce: "/enterprise/workforce",
+    calendar: "/enterprise/calendar",
+    teamProjects: "/enterprise/team-projects",
     analytics: "/enterprise/analytics",
-    finance: "/enterprise/finance",
-    compliance: "/enterprise/compliance",
     messages: "/enterprise/messages",
+    ai: "/enterprise/ai",
+    employers: "/enterprise/employers",
+    procurement: "/enterprise/procurement",
+    performance: "/enterprise/performance",
+    profile: "/enterprise/profile",
+    vendors: "/enterprise/vendors",
+    finance: "/enterprise/finance",
+    help: "/enterprise/help",
     settings: "/enterprise/settings",
   },
   admin: {
@@ -53,4 +61,40 @@ export const R = {
   },
 } as const;
 
+// Dynamic route helpers for deep links
+export const RH = {
+  engineer: {
+    job: (jobId: string) => `/engineer/jobs/${jobId}`,
+    task: (jobId: string, taskId: string) => `/engineer/jobs/${jobId}/tasks/${taskId}`,
+    messageThread: (threadId: string) => `/engineer/messages/${threadId}`,
+    calendarEvent: (eventId: string) => `/engineer/calendar/event/${eventId}`,
+    aiThread: (threadId: string) => `/engineer/ai/thread/${threadId}`,
+    learningCourse: (courseId: string) => `/engineer/learning/${courseId}`,
+    learningCertificate: (certificateId: string) => `/engineer/learning/certificates/${certificateId}`,
+    networkProfile: (userId: string) => `/engineer/network/${userId}`,
+    payment: (paymentId: string) => `/engineer/payments/${paymentId}`,
+  },
+  client: {
+    myProject: (projectId: string) => `/client/myprojects/${projectId}`,
+    task: (projectId: string, taskId: string) => `/client/myprojects/${projectId}/tasks/${taskId}`,
+    messageThread: (threadId: string) => `/client/messages/${threadId}`,
+    calendarEvent: (eventId: string) => `/client/calendar/event/${eventId}`,
+    aiThread: (threadId: string) => `/client/ai/thread/${threadId}`,
+    learningCourse: (courseId: string) => `/client/learning/${courseId}`,
+    learningCertificate: (certificateId: string) => `/client/learning/certificates/${certificateId}`,
+    networkProfile: (userId: string) => `/client/network/${userId}`,
+    payment: (paymentId: string) => `/client/payments/${paymentId}`,
+  },
+  enterprise: {
+    teamProject: (projectId: string) => `/enterprise/team-projects/${projectId}`,
+    employer: (employeeId: string) => `/enterprise/employers/${employeeId}`,
+    vendor: (vendorId: string) => `/enterprise/vendors/${vendorId}`,
+    procurementEntity: (entityId: string) => `/enterprise/procurement/${entityId}`,
+    performanceItem: (itemId: string) => `/enterprise/performance/${itemId}`,
+    messageThread: (threadId: string) => `/enterprise/messages/${threadId}`,
+    calendarEvent: (eventId: string) => `/enterprise/calendar/event/${eventId}`,
+    aiThread: (threadId: string) => `/enterprise/ai/thread/${threadId}`,
+    payment: (paymentId: string) => `/enterprise/finance/${paymentId}`,
+  },
+};
 

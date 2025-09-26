@@ -1,5 +1,6 @@
 import { AuthenticationSystem } from "@/components/auth/AuthenticationSystem";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/auth";
 
 interface AuthenticatedUser {
   id: string;
@@ -17,8 +18,12 @@ interface AuthenticatedUser {
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
+  const { login } = useAuthStore();
 
   const handleAuthenticationComplete = (user: AuthenticatedUser) => {
+    // Update auth store with the authenticated user
+    login(user);
+    
     // Redirect based on user role
     switch (user.role) {
       case 'engineer':

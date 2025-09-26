@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { useAuthStore, initializeAuth } from '@/stores/auth';
 import { Loader2, Bot } from 'lucide-react';
@@ -61,7 +61,7 @@ export function AppLayout({
   return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-subtle">
         <AppSidebar />
-        <div className="flex-1 flex flex-col">
+        <SidebarInset className="flex-1 flex flex-col">
           {/* Header */}
           <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-sidebar-border">
             <div className="flex items-center justify-between px-6 py-[12px]">
@@ -94,16 +94,16 @@ export function AppLayout({
           <main className="flex-1 bg-background" style={{ padding: '0px' }}>
             {children || <Outlet />}
           </main>
-        </div>
-        
-        {/* AI Drawer - Only show on dashboard routes */}
-        {isDashboardRoute && (
-          <AiDrawer
-            isOpen={isAiDrawerOpen}
-            onClose={() => setIsAiDrawerOpen(false)}
-            onOpenFull={() => navigate('/ai')}
-          />
-        )}
+          
+          {/* AI Drawer - Only show on dashboard routes */}
+          {isDashboardRoute && (
+            <AiDrawer
+              isOpen={isAiDrawerOpen}
+              onClose={() => setIsAiDrawerOpen(false)}
+              onOpenFull={() => navigate('/ai')}
+            />
+          )}
+        </SidebarInset>
       </div>
     </SidebarProvider>;
 }

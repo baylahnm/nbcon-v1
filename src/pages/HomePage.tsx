@@ -1040,12 +1040,16 @@ const HomePage = () => {
           <div className="flex items-center justify-center gap-3 mb-8">
             <button
               type="button"
+              role="switch"
+              aria-checked={billing === 'annual'}
+              data-state={billing === 'annual' ? 'checked' : 'unchecked'}
               onClick={() => setBilling((b)=> b === 'monthly' ? 'annual' : 'monthly')}
-              className={`relative h-6 w-12 rounded-full border border-[var(--border)] transition-colors billing-toggle ${billing==='annual' ? 'bg-[var(--primary)]' : 'bg-[var(--surface)]'}`}
+              className="peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors data-[state=checked]:bg-primary data-[state=unchecked]:bg-input focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Toggle billing period"
             >
               <span
-                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full shadow shadow-[inset_0_4px_4px_hsl(var(--foreground)/0.1)] transition-transform ${billing==='annual' ? 'translate-x-6 bg-[var(--primary-foreground)]' : 'bg-[var(--muted)]'}`}
+                data-state={billing === 'annual' ? 'checked' : 'unchecked'}
+                className="pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
               />
             </button>
             <span className="text-sm text-muted-foreground">{billing === 'annual' ? 'Annually' : 'Monthly'}</span>

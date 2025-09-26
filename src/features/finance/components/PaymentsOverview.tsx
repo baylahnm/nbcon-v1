@@ -43,12 +43,14 @@ const paymentTypeColors = {
 };
 
 const paymentStatusColors = {
-  pending: "bg-yellow-100 text-yellow-700",
-  processing: "bg-blue-100 text-blue-700",
-  completed: "bg-green-100 text-green-700",
-  failed: "bg-red-100 text-red-700",
-  cancelled: "bg-gray-100 text-gray-600",
-  disputed: "bg-red-100 text-red-700"
+  pending: "bg-warning/10 text-warning",
+  processing: "bg-info/10 text-info",
+  completed: "bg-success/10 text-success",
+  failed: "bg-destructive/10 text-destructive",
+  cancelled: "bg-muted text-muted-foreground",
+  disputed: "bg-destructive/10 text-destructive",
+  overdue: "bg-destructive/10 text-destructive",
+  held: "bg-purple/10 text-purple"
 };
 
 export function PaymentsOverview() {

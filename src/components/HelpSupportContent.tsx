@@ -376,7 +376,7 @@ export function HelpSupportContent() {
 
         {/* Search */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
@@ -426,11 +426,37 @@ export function HelpSupportContent() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="help-center" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="help-center">Help Center</TabsTrigger>
-            <TabsTrigger value="faqs">FAQs</TabsTrigger>
-            <TabsTrigger value="contact">Contact Support</TabsTrigger>
-            <TabsTrigger value="resources">Resources</TabsTrigger>
+          <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
+            <div className="flex items-center w-full overflow-x-auto">
+              <TabsTrigger 
+                value="help-center"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <HelpCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">Help Center</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="faqs"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <Book className="w-4 h-4" />
+                <span className="hidden sm:inline">FAQs</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="contact"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">Contact Support</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="resources"
+                className="flex items-center gap-2 px-4 py-3 min-w-fit"
+              >
+                <FileText className="w-4 h-4" />
+                <span className="hidden sm:inline">Resources</span>
+              </TabsTrigger>
+            </div>
           </TabsList>
 
           {/* Help Center Tab */}

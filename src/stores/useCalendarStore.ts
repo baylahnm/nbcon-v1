@@ -517,26 +517,26 @@ export function useCalendarStore() {
 
   const getEventTypeColor = (type: EventType) => {
     const colors = {
-      job: 'bg-blue-100 text-blue-800 border-blue-200',
-      milestone: 'bg-green-100 text-green-800 border-green-200',
-      visit: 'bg-orange-100 text-orange-800 border-orange-200',
-      invoice: 'bg-red-100 text-red-800 border-red-200',
-      call: 'bg-purple-100 text-purple-800 border-purple-200',
-      payout: 'bg-teal-100 text-teal-800 border-teal-200'
+      job: 'bg-primary/10 text-primary border-primary/20',
+      milestone: 'bg-success/10 text-success border-success/20',
+      visit: 'bg-warning/10 text-warning border-warning/20',
+      invoice: 'bg-destructive/10 text-destructive border-destructive/20',
+      call: 'bg-info/10 text-info border-info/20',
+      payout: 'bg-accent/10 text-accent border-accent/20'
     };
-    return colors[type] || 'bg-gray-100 text-gray-800 border-gray-200';
+    return colors[type] || 'bg-muted text-muted-foreground border-border';
   };
 
   const getStatusColor = (status: EventStatus) => {
     const colors = {
-      draft: 'bg-gray-100 text-gray-800',
-      open: 'bg-blue-100 text-blue-800',
-      quoted: 'bg-yellow-100 text-yellow-800',
-      'in-progress': 'bg-orange-100 text-orange-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
+      draft: 'bg-muted text-muted-foreground',
+      open: 'bg-info/10 text-info',
+      quoted: 'bg-warning/10 text-warning',
+      'in-progress': 'bg-primary/10 text-primary',
+      completed: 'bg-success/10 text-success',
+      cancelled: 'bg-destructive/10 text-destructive'
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return colors[status] || 'bg-muted text-muted-foreground';
   };
 
   const formatCurrency = (amount: number) => {

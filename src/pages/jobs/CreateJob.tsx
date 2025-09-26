@@ -152,8 +152,18 @@ export default function CreateJob() {
     setIsLoading(true);
 
     try {
+      // Get the actual Supabase user ID for RLS policy
+      const { data: { user: supabaseUser }, error: authError } = await supabase.auth.getUser();
+      const clientId = supabaseUser?.id || user.id;
+      
+      // Debug logging
+      console.log('Supabase auth user:', supabaseUser);
+      console.log('Auth error:', authError);
+      console.log('Using client_id:', clientId);
+      console.log('Mock user ID:', user.id);
+
       const jobData = {
-        client_id: user.id,
+        client_id: clientId,
         title: formData.title,
         description: formData.description,
         category: formData.category,
@@ -191,7 +201,7 @@ export default function CreateJob() {
       });
 
       // Redirect to job details or jobs list
-      navigate(`/client/jobs`);
+      navigate(`/client/myprojects`);
 
     } catch (error: any) {
       toast({
@@ -221,9 +231,9 @@ export default function CreateJob() {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" onClick={() => navigate('/client/jobs')}>
+        <Button variant="ghost" onClick={() => navigate('/client/myprojects')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Jobs
+          Back to My Projects
         </Button>
         <div>
           <h1 className="text-3xl font-bold">Create New Job</h1>

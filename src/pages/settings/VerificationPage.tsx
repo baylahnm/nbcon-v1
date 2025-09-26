@@ -115,9 +115,9 @@ export default function VerificationPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge variant="default" className="bg-green-500">Completed</Badge>;
+        return <Badge variant="default" className="bg-success text-success-foreground">Completed</Badge>;
       case 'in_progress':
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">In Progress</Badge>;
+        return <Badge variant="secondary" className="bg-warning/10 text-warning">In Progress</Badge>;
       case 'failed':
         return <Badge variant="destructive">Failed</Badge>;
       default:

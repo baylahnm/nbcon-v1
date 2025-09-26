@@ -16,7 +16,7 @@ const themes = [
   { key: 'wazeer', label: 'Wazeer', icon: Palette },
   { key: 'sunset', label: 'Sunset', icon: Sunset },
   { key: 'abstract', label: 'Abstract', icon: Paintbrush },
-  { key: 'dotted-indigo', label: 'Dotted Indigo', icon: CircleDot },
+  { key: 'nika', label: 'Nika', icon: CircleDot },
   { key: 'lagoon', label: 'Lagoon', icon: Waves },
   { key: 'dark-nature', label: 'Dark Nature', icon: TreePine },
   { key: 'full-gradient', label: 'Full Gradient', icon: Layers },

@@ -291,7 +291,7 @@ export function DashboardContent() {
     {
       id: 4,
       type: "message",
-      message: "New message from Ahmed Al-Rashid",
+      message: "New message from Nasser Baylah",
       time: "6 hours ago",
       icon: "💬"
     }
@@ -335,7 +335,7 @@ export function DashboardContent() {
       priority: "high",
       category: "Structural",
       dueTime: "2:00 PM",
-      assignee: { name: "Ahmed Al-Rashid", avatar: "AR" }
+      assignee: { name: "Nasser Baylah", avatar: "AR" }
     },
     {
       id: 2,

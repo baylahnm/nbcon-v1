@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContent } from "./AuthContent";
 import { VerifyOTPContent } from "./VerifyOTPContent";
 import { RoleSelection } from "./RoleSelection";
@@ -26,9 +27,32 @@ interface AuthenticationSystemProps {
 type AuthStep = 'auth' | 'verify-otp' | 'role-selection' | 'profile-setup';
 
 export function AuthenticationSystem({ onAuthenticationComplete, onBackToHome }: AuthenticationSystemProps) {
+  const hasHandledStoredUser = useRef(false);
   const [currentStep, setCurrentStep] = useState<AuthStep>('auth');
   const [currentUser, setCurrentUser] = useState<Partial<AuthenticatedUser> | null>(null);
   const [otpMethod, setOtpMethod] = useState<'sms' | 'email'>('sms');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Keep the URL aligned with the current step
+  useEffect(() => {
+    if (currentStep === 'role-selection' && location.pathname !== '/auth/role') {
+      navigate('/auth/role', { replace: true });
+    }
+  }, [currentStep, location.pathname, navigate]);
+
+  useEffect(() => {
+    if (location.pathname === '/auth/role' && currentStep !== 'role-selection') {
+      setCurrentStep('role-selection');
+    }
+  }, [location.pathname, currentStep]);
+
+  useEffect(() => {
+    const state = location.state as { user?: Partial<AuthenticatedUser> } | null;
+    if (state?.user) {
+      setCurrentUser(prev => ({ ...prev, ...state.user }));
+    }
+  }, [location.state]);
 
   // Check for existing authentication on mount
   useEffect(() => {
@@ -120,13 +144,13 @@ export function AuthenticationSystem({ onAuthenticationComplete, onBackToHome }:
         ) : null;
 
       case 'role-selection':
-        return currentUser ? (
+        return (
           <RoleSelection
-            user={currentUser}
+            user={currentUser ?? {}}
             onRoleSelected={handleRoleSelected}
             onBack={handleBack}
           />
-        ) : null;
+        );
 
       case 'profile-setup':
         return currentUser && 'role' in currentUser ? (
@@ -150,3 +174,4 @@ export function AuthenticationSystem({ onAuthenticationComplete, onBackToHome }:
 
   return <>{renderCurrentStep()}</>;
 }
+

@@ -487,11 +487,13 @@ export function UploadDeliverableContent() {
 
       {selectedMilestone && (
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="upload">File Upload</TabsTrigger>
-            <TabsTrigger value="quality">Quality Check</TabsTrigger>
-            <TabsTrigger value="submit">Review & Submit</TabsTrigger>
-          </TabsList>
+          <div className="border-b border-sidebar-border mb-6">
+            <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+              <TabsTrigger value="upload" className="flex items-center gap-2 px-4 py-3 min-w-fit">File Upload</TabsTrigger>
+              <TabsTrigger value="quality" className="flex items-center gap-2 px-4 py-3 min-w-fit">Quality Check</TabsTrigger>
+              <TabsTrigger value="submit" className="flex items-center gap-2 px-4 py-3 min-w-fit">Review & Submit</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="upload" className="space-y-6">
             {/* File Upload Area */}

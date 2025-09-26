@@ -1,0 +1,1108 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
+import { 
+  Settings,
+  User,
+  Building,
+  Bell,
+  Shield,
+  Mail,
+  Key,
+  CheckCircle,
+  AlertTriangle,
+  Download,
+  Upload,
+  Eye,
+  EyeOff,
+  Smartphone,
+  Monitor,
+  Sun,
+  Moon,
+  Camera,
+  Globe,
+  Lock,
+  UserX,
+  Trash2,
+  Save,
+  RefreshCw,
+  X,
+  Copy,
+  Plus,
+  MoreHorizontal,
+  LogOut,
+  Activity,
+  MapPin,
+  Calendar,
+  Clock,
+  Palette,
+  Link,
+  QrCode,
+  CreditCard,
+  Sunset,
+  Sparkles,
+  Circle,
+  Waves,
+  TreePine,
+  Paintbrush,
+  Droplets
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface UserSettings {
+  // Account settings
+  email: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+  
+  // Company settings
+  companyName: string;
+  companyNameArabic: string;
+  companyLogo?: string;
+  website: string;
+  phoneNumber: string;
+  address: string;
+  
+  // Notification settings
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  pushNotifications: boolean;
+  projectUpdates: boolean;
+  taskReminders: boolean;
+  budgetAlerts: boolean;
+  teamInvitations: boolean;
+  securityAlerts: boolean;
+  
+  // Security settings
+  twoFactorEnabled: boolean;
+  sessionTimeout: number;
+  ipWhitelist: boolean;
+  loginNotifications: boolean;
+  
+  // General settings
+  theme: 'light' | 'dark' | 'system';
+  language: string;
+  timezone: string;
+}
+
+interface ApiKey {
+  id: string;
+  name: string;
+  key: string;
+  lastUsed: string;
+  created: string;
+  permissions: string[];
+}
+
+interface AccessLog {
+  id: string;
+  timestamp: string;
+  ipAddress: string;
+  location: string;
+  device: string;
+  action: string;
+  status: 'success' | 'failed';
+}
+
+export function SettingsPage() {
+  const [activeTab, setActiveTab] = useState('account');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const [settings, setSettings] = useState<UserSettings>({
+    // Account
+    email: 'ahmed.almansouri@neom-engineering.sa',
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+    
+    // Company
+    companyName: 'NEOM Engineering Consultants',
+    companyNameArabic: 'شركة نيوم للاستشارات الهندسية',
+    companyLogo: undefined,
+    website: 'www.neom-engineering.sa',
+    phoneNumber: '+966 11 234 5678',
+    address: 'King Fahd Road, Al Olaya District, Riyadh 11543',
+    
+    // Notifications
+    emailNotifications: true,
+    smsNotifications: false,
+    pushNotifications: true,
+    projectUpdates: true,
+    taskReminders: true,
+    budgetAlerts: true,
+    teamInvitations: true,
+    securityAlerts: true,
+    
+    // Security
+    twoFactorEnabled: true,
+    sessionTimeout: 30,
+    ipWhitelist: false,
+    loginNotifications: true,
+    
+    // General
+    theme: 'light',
+    language: 'en',
+    timezone: 'Asia/Riyadh'
+  });
+
+  const [apiKeys] = useState<ApiKey[]>([
+    {
+      id: '1',
+      name: 'NEOM Integration API',
+      key: 'ne_live_4kX9mP2nQ8vR7sT1uY5wZ3aB6cD9fE2g',
+      lastUsed: '2024-09-25 14:30:00',
+      created: '2024-01-15',
+      permissions: ['read:projects', 'write:reports', 'read:team']
+    },
+    {
+      id: '2',
+      name: 'Mobile App Access',
+      key: 'ne_live_8hL4pQ7mN1xV9sB3tU6kW2yF5rE8cA9j',
+      lastUsed: '2024-09-26 09:15:00',
+      created: '2024-03-20',
+      permissions: ['read:all', 'write:tasks']
+    }
+  ]);
+
+  const [accessLogs] = useState<AccessLog[]>([
+    {
+      id: '1',
+      timestamp: '2024-09-26 10:30:00',
+      ipAddress: '192.168.1.100',
+      location: 'Riyadh, Saudi Arabia',
+      device: 'Chrome on Windows',
+      action: 'Login',
+      status: 'success'
+    },
+    {
+      id: '2',
+      timestamp: '2024-09-25 16:45:00',
+      ipAddress: '192.168.1.101',
+      location: 'Riyadh, Saudi Arabia',
+      device: 'Safari on iPhone',
+      action: 'API Access',
+      status: 'success'
+    },
+    {
+      id: '3',
+      timestamp: '2024-09-24 22:15:00',
+      ipAddress: '203.45.67.89',
+      location: 'Unknown',
+      device: 'Chrome on Linux',
+      action: 'Failed Login Attempt',
+      status: 'failed'
+    }
+  ]);
+
+  const handleSettingChange = (key: keyof UserSettings, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      setHasUnsavedChanges(false);
+      toast.success('Settings saved successfully');
+    }, 1000);
+  };
+
+  const handleCancel = () => {
+    // Reset to original values (simplified for demo)
+    setHasUnsavedChanges(false);
+    toast.info('Changes cancelled');
+  };
+
+  const handlePasswordUpdate = async () => {
+    if (settings.newPassword !== settings.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setSettings(prev => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      }));
+      toast.success('Password updated successfully');
+    }, 1500);
+  };
+
+  const copyApiKey = (key: string) => {
+    navigator.clipboard.writeText(key);
+    toast.success('API key copied to clipboard');
+  };
+
+  const generateApiKey = () => {
+    toast.success('New API key generated successfully');
+  };
+
+  const revokeApiKey = (keyId: string) => {
+    toast.success('API key revoked successfully');
+  };
+
+  const enable2FA = () => {
+    handleSettingChange('twoFactorEnabled', true);
+    toast.success('Two-factor authentication enabled');
+  };
+
+  const disable2FA = () => {
+    handleSettingChange('twoFactorEnabled', false);
+    toast.success('Two-factor authentication disabled');
+  };
+
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <Settings className="h-6 w-6 text-primary" />
+            <div>
+              <h1 className="text-2xl font-semibold">Settings</h1>
+              <p className="text-sm text-muted-foreground">
+                Manage your account, company, and security preferences
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        {hasUnsavedChanges && (
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={isLoading}>
+              {isLoading ? (
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4 mr-2" />
+              )}
+              Save Changes
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Settings Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="border-b border-sidebar-border mb-6">
+          <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+            <TabsTrigger value="account" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+              <User className="h-4 w-4" />
+              Account
+            </TabsTrigger>
+            <TabsTrigger value="company" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+              <Building className="h-4 w-4" />
+              Company
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+              <Bell className="h-4 w-4" />
+              Notifications
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+              <Shield className="h-4 w-4" />
+              Security
+            </TabsTrigger>
+            <TabsTrigger value="theme" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+              <Palette className="h-4 w-4" />
+              Theme
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        {/* Account Tab */}
+        <TabsContent value="account" className="space-y-6 mt-6">
+          {/* Email & Password Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Email & Password
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Email Address */}
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <div className="flex space-x-2">
+                  <Input
+                    id="email"
+                    type="email"
+                    value={settings.email}
+                    onChange={(e) => handleSettingChange('email', e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button variant="outline">
+                    Change Email
+                  </Button>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  We'll send you a verification email to confirm the change
+                </p>
+              </div>
+
+              <Separator />
+
+              {/* Change Password */}
+              <div className="space-y-4">
+                <h4 className="font-medium">Change Password</h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Current Password */}
+                  <div className="space-y-2">
+                    <Label htmlFor="current-password">Current Password</Label>
+                    <div className="relative">
+                      <Input
+                        id="current-password"
+                        type={showCurrentPassword ? 'text' : 'password'}
+                        value={settings.currentPassword}
+                        onChange={(e) => handleSettingChange('currentPassword', e.target.value)}
+                        placeholder="Enter current password"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      >
+                        {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* New Password */}
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <div className="relative">
+                      <Input
+                        id="new-password"
+                        type={showNewPassword ? 'text' : 'password'}
+                        value={settings.newPassword}
+                        onChange={(e) => handleSettingChange('newPassword', e.target.value)}
+                        placeholder="Enter new password"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Confirm New Password */}
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">Confirm New Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirm-password"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={settings.confirmPassword}
+                      onChange={(e) => handleSettingChange('confirmPassword', e.target.value)}
+                      placeholder="Confirm new password"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button 
+                  onClick={handlePasswordUpdate}
+                  disabled={isLoading || !settings.currentPassword || !settings.newPassword || !settings.confirmPassword}
+                  className="w-fit"
+                >
+                  {isLoading ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    'Update Password'
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Profile Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Language</Label>
+                  <Select value={settings.language} onValueChange={(value) => handleSettingChange('language', value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="ar">العربية (Arabic)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Timezone</Label>
+                  <Select value={settings.timezone} onValueChange={(value) => handleSettingChange('timezone', value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Asia/Riyadh">Riyadh (UTC+3)</SelectItem>
+                      <SelectItem value="Asia/Dubai">Dubai (UTC+4)</SelectItem>
+                      <SelectItem value="Asia/Kuwait">Kuwait (UTC+3)</SelectItem>
+                      <SelectItem value="Asia/Bahrain">Manama (UTC+3)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Company Tab */}
+        <TabsContent value="company" className="space-y-6 mt-6">
+          {/* Company Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building className="h-5 w-5" />
+                Company Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Company Logo */}
+              <div className="space-y-4">
+                <Label>Company Logo</Label>
+                <div className="flex items-center space-x-4">
+                  <Avatar className="h-20 w-20">
+                    <AvatarImage src={settings.companyLogo} />
+                    <AvatarFallback className="text-lg">
+                      {settings.companyName.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="space-y-2">
+                    <Button variant="outline" className="gap-2">
+                      <Upload className="h-4 w-4" />
+                      Upload Logo
+                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                      Recommended: 256x256px, PNG or JPG
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="companyName">Company Name (English)</Label>
+                  <Input
+                    id="companyName"
+                    value={settings.companyName}
+                    onChange={(e) => handleSettingChange('companyName', e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="companyNameArabic">Company Name (Arabic)</Label>
+                  <Input
+                    id="companyNameArabic"
+                    value={settings.companyNameArabic}
+                    onChange={(e) => handleSettingChange('companyNameArabic', e.target.value)}
+                    dir="rtl"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="website">Website</Label>
+                  <Input
+                    id="website"
+                    value={settings.website}
+                    onChange={(e) => handleSettingChange('website', e.target.value)}
+                    placeholder="www.company.com"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Input
+                    id="phoneNumber"
+                    value={settings.phoneNumber}
+                    onChange={(e) => handleSettingChange('phoneNumber', e.target.value)}
+                    placeholder="+966 11 234 5678"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Business Address</Label>
+                <Textarea
+                  id="address"
+                  value={settings.address}
+                  onChange={(e) => handleSettingChange('address', e.target.value)}
+                  rows={3}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+        </TabsContent>
+
+        {/* Notifications Tab */}
+        <TabsContent value="notifications" className="space-y-6 mt-6">
+          {/* Notification Channels */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="h-5 w-5" />
+                Notification Channels
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      Email Notifications
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Receive notifications via email
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.emailNotifications}
+                    onCheckedChange={(checked) => handleSettingChange('emailNotifications', checked)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="flex items-center gap-2">
+                      <Smartphone className="h-4 w-4" />
+                      SMS Notifications
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Receive notifications via SMS
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.smsNotifications}
+                    onCheckedChange={(checked) => handleSettingChange('smsNotifications', checked)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="flex items-center gap-2">
+                      <Monitor className="h-4 w-4" />
+                      Push Notifications
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Receive push notifications in browser
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.pushNotifications}
+                    onCheckedChange={(checked) => handleSettingChange('pushNotifications', checked)}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Notification Types */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Notification Types</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Project Updates</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Notifications about project status changes and milestones
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.projectUpdates}
+                    onCheckedChange={(checked) => handleSettingChange('projectUpdates', checked)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Task Reminders</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Reminders for upcoming task deadlines
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.taskReminders}
+                    onCheckedChange={(checked) => handleSettingChange('taskReminders', checked)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Budget Alerts</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Alerts when project budgets reach thresholds
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.budgetAlerts}
+                    onCheckedChange={(checked) => handleSettingChange('budgetAlerts', checked)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Team Invitations</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Notifications when invited to teams or projects
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.teamInvitations}
+                    onCheckedChange={(checked) => handleSettingChange('teamInvitations', checked)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Security Alerts</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Important security and account notifications
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.securityAlerts}
+                    onCheckedChange={(checked) => handleSettingChange('securityAlerts', checked)}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Security Tab */}
+        <TabsContent value="security" className="space-y-6 mt-6">
+          {/* Two-Factor Authentication */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Two-Factor Authentication
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label>Enable 2FA</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Add an extra layer of security to your account
+                  </p>
+                </div>
+                <Switch
+                  checked={settings.twoFactorEnabled}
+                  onCheckedChange={(checked) => 
+                    checked ? enable2FA() : disable2FA()
+                  }
+                />
+              </div>
+
+              {settings.twoFactorEnabled && (
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <span className="text-sm text-green-800 font-medium">
+                        Two-factor authentication is enabled
+                      </span>
+                    </div>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <QrCode className="h-4 w-4" />
+                      Show QR Code
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Login Notifications</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Get notified of new login attempts
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.loginNotifications}
+                    onCheckedChange={(checked) => handleSettingChange('loginNotifications', checked)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Session Timeout</Label>
+                  <Select 
+                    value={settings.sessionTimeout.toString()} 
+                    onValueChange={(value) => handleSettingChange('sessionTimeout', parseInt(value))}
+                  >
+                    <SelectTrigger className="w-48">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 minutes</SelectItem>
+                      <SelectItem value="30">30 minutes</SelectItem>
+                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="240">4 hours</SelectItem>
+                      <SelectItem value="480">8 hours</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* API Keys */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Key className="h-5 w-5" />
+                  API Keys
+                </CardTitle>
+                <Button onClick={generateApiKey} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Generate New Key
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {apiKeys.map((apiKey) => (
+                  <div key={apiKey.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <h4 className="font-medium">{apiKey.name}</h4>
+                        <Badge variant="outline" className="text-xs">
+                          {apiKey.permissions.length} permissions
+                        </Badge>
+                      </div>
+                      <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                        <span>Created: {apiKey.created}</span>
+                        <span>Last used: {apiKey.lastUsed}</span>
+                      </div>
+                      <div className="font-mono text-xs bg-muted p-2 rounded flex items-center justify-between">
+                        <span>{apiKey.key.substring(0, 20)}...{apiKey.key.substring(apiKey.key.length - 4)}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyApiKey(apiKey.key)}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button variant="outline" size="sm">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => revokeApiKey(apiKey.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Access Logs */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" />
+                  Access Logs
+                </CardTitle>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Export Logs
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {accessLogs.map((log) => (
+                  <div key={log.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-4">
+                      <div className={cn(
+                        "w-2 h-2 rounded-full",
+                        log.status === 'success' ? 'bg-green-500' : 'bg-red-500'
+                      )} />
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium">{log.action}</span>
+                          <Badge 
+                            variant="outline" 
+                            className={cn(
+                              log.status === 'success' 
+                                ? 'text-green-700 border-green-200' 
+                                : 'text-red-700 border-red-200'
+                            )}
+                          >
+                            {log.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                          <span className="flex items-center">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {log.timestamp}
+                          </span>
+                          <span className="flex items-center">
+                            <MapPin className="h-3 w-3 mr-1" />
+                            {log.location}
+                          </span>
+                          <span className="flex items-center">
+                            <Monitor className="h-3 w-3 mr-1" />
+                            {log.device}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground font-mono">
+                      {log.ipAddress}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Danger Zone */}
+          <Card className="border-destructive/20">
+            <CardHeader>
+              <CardTitle className="text-destructive flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Danger Zone
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 border border-destructive/20 rounded-lg">
+                <div>
+                  <p className="font-medium">Sign Out All Devices</p>
+                  <p className="text-sm text-muted-foreground">
+                    End all active sessions on other devices
+                  </p>
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <LogOut className="h-4 w-4" />
+                  Sign Out All
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 border border-destructive/20 rounded-lg">
+                <div>
+                  <p className="font-medium">Download Account Data</p>
+                  <p className="text-sm text-muted-foreground">
+                    Request a copy of all your account data
+                  </p>
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Download Data
+                </Button>
+              </div>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="w-fit gap-2">
+                    <Trash2 className="h-4 w-4" />
+                    Delete Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete your
+                      account and remove all your data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="bg-destructive hover:bg-destructive/90">
+                      Delete Account
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Theme Tab */}
+        <TabsContent value="theme" className="space-y-6 mt-6">
+          {/* Theme Presets */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                Theme Presets
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 pb-2">
+                {[
+                  { id: "light", name: "Light", description: "Clean and bright interface", icon: Sun },
+                  { id: "dark", name: "Dark", description: "Easy on the eyes", icon: Moon },
+                  { id: "wazeer", name: "Wazeer", description: "Professional and elegant", icon: Palette },
+                  { id: "sunset", name: "Sunset", description: "Warm and inviting", icon: Sunset },
+                  { id: "abstract", name: "Abstract", description: "Creative and modern", icon: Sparkles },
+                  { id: "nika", name: "Nika", description: "Bold and vibrant", icon: Circle },
+                  { id: "lagoon", name: "Lagoon", description: "Fresh and calming", icon: Waves },
+                  { id: "dark-nature", name: "Dark Nature", description: "Natural and earthy", icon: TreePine },
+                  { id: "full-gradient", name: "Full Gradient", description: "Vibrant and dynamic", icon: Paintbrush },
+                  { id: "sea-purple", name: "Sea Purple", description: "Deep and mysterious", icon: Droplets }
+                ].map((theme) => {
+                  const Icon = theme.icon;
+                  return (
+                    <Button
+                      key={theme.id}
+                      variant={settings.theme === theme.id ? 'default' : 'outline'}
+                      onClick={() => handleSettingChange('theme', theme.id)}
+                      className="flex flex-col items-center gap-1 h-auto py-1 px-0.5 text-xs"
+                    >
+                      <Icon className="h-3 w-3" />
+                      <span className="text-center leading-tight">{theme.name}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Custom Theme Tokens */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Custom Theme Tokens</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-center py-8">
+                <Palette className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Advanced Theme Customization</h3>
+                <p className="text-muted-foreground mb-4">
+                  Customize individual theme tokens to create your perfect interface
+                </p>
+                <Button variant="outline" className="gap-2">
+                  <Settings className="h-4 w-4" />
+                  Open Theme Editor
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Advanced Options */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Advanced Options</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">Export Theme</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Download your current theme configuration
+                  </p>
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Export JSON
+                </Button>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">Import Theme</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Upload a theme configuration file
+                  </p>
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <Upload className="h-4 w-4" />
+                  Import JSON
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium">Reset Theme</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Reset to default theme settings
+                  </p>
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <RefreshCw className="h-4 w-4" />
+                  Reset
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

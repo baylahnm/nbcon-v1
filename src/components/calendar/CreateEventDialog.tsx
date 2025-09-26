@@ -564,7 +564,7 @@ export default function CreateEventDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent 
-        className="max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="fixed right-0 top-0 h-svh w-[50vw] max-w-none translate-x-0 translate-y-0 left-auto grid overflow-y-auto"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`

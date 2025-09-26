@@ -127,7 +127,7 @@ export function AddColumnDialog({ trigger }: AddColumnDialogProps) {
         {trigger || defaultTrigger}
       </DialogTrigger>
       
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="fixed right-0 top-0 h-svh w-[50vw] max-w-none translate-x-0 translate-y-0 left-auto grid overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Layout className="w-5 h-5" />

@@ -577,51 +577,53 @@ export default function MyNetwork() {
 
       {/* Main Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="border-b">
+        <div className="border-b border-sidebar-border">
           <ScrollArea className="w-full whitespace-nowrap">
-            <TabsList className="inline-flex h-12 items-center justify-start rounded-none border-0 bg-transparent p-0">
-              <TabsTrigger
-                value="connections"
-                className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
-              >
-                <Users className="h-4 w-4" />
-                My Connections
-              </TabsTrigger>
-              <TabsTrigger
-                value="suggestions"
-                className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
-              >
-                <UserPlus className="h-4 w-4" />
-                People You May Know
-              </TabsTrigger>
-              <TabsTrigger
-                value="requests"
-                className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
-              >
-                <UserCheck className="h-4 w-4" />
-                Connection Requests
-              </TabsTrigger>
-              <TabsTrigger
-                value="events"
-                className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
-              >
-                <Calendar className="h-4 w-4" />
-                Industry Events
-              </TabsTrigger>
-              <TabsTrigger
-                value="updates"
-                className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
-              >
-                <Newspaper className="h-4 w-4" />
-                Industry Updates
-              </TabsTrigger>
-              <TabsTrigger
-                value="groups"
-                className="inline-flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 font-medium text-muted-foreground transition-colors hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
-              >
-                <Users className="h-4 w-4" />
-                Professional Groups
-              </TabsTrigger>
+            <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+              <div className="flex items-center w-full overflow-x-auto">
+                <TabsTrigger
+                  value="connections"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <Users className="h-4 w-4" />
+                  My Connections
+                </TabsTrigger>
+                <TabsTrigger
+                  value="suggestions"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  People You May Know
+                </TabsTrigger>
+                <TabsTrigger
+                  value="requests"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <UserCheck className="h-4 w-4" />
+                  Connection Requests
+                </TabsTrigger>
+                <TabsTrigger
+                  value="events"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Industry Events
+                </TabsTrigger>
+                <TabsTrigger
+                  value="updates"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <Newspaper className="h-4 w-4" />
+                  Industry Updates
+                </TabsTrigger>
+                <TabsTrigger
+                  value="groups"
+                  className="flex items-center gap-2 px-4 py-3 min-w-fit"
+                >
+                  <Users className="h-4 w-4" />
+                  Professional Groups
+                </TabsTrigger>
+              </div>
             </TabsList>
           </ScrollArea>
         </div>
@@ -687,8 +689,8 @@ function MyConnectionsTab({
 
   const getConnectionStrengthColor = (strength: string) => {
     switch (strength) {
-      case "strong": return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
-      case "medium": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
+      case "strong": return "bg-success/10 text-success";
+      case "medium": return "bg-warning/10 text-warning";
       case "weak": return "bg-muted text-muted-foreground";
       default: return "bg-muted text-muted-foreground";
     }
@@ -878,7 +880,7 @@ function MyConnectionsTab({
                   <Button variant="outline" size="sm">
                     <MessageSquare className="w-4 h-4" />
               </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => window.location.assign(`/engineer/network/${connection.id}`)}>
                     <MoreHorizontal className="w-4 h-4" />
               </Button>
       </div>
@@ -1048,9 +1050,9 @@ function PeopleYouMayKnowTab() {
   });
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 90) return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
+    if (confidence >= 90) return "bg-success/10 text-success";
     if (confidence >= 80) return "bg-info/10 text-info border-info/20";
-    if (confidence >= 70) return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
+    if (confidence >= 70) return "bg-warning/10 text-warning";
     return "bg-muted text-muted-foreground";
   };
 
@@ -1532,19 +1534,19 @@ function IndustryEventsTab({
   const getEventTypeColor = (type: string) => {
     switch (type) {
       case "conference": return "bg-info/10 text-info border-info/20";
-      case "workshop": return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
-      case "seminar": return "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400";
-      case "networking": return "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400";
-      case "project_visit": return "bg-teal-100 text-teal-800 dark:bg-teal-900/20 dark:text-teal-400";
-      case "training": return "bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-400";
+      case "workshop": return "bg-success/10 text-success";
+      case "seminar": return "bg-accent/10 text-accent";
+      case "networking": return "bg-warning/10 text-warning";
+      case "project_visit": return "bg-primary/10 text-primary";
+      case "training": return "bg-secondary/10 text-secondary";
       default: return "bg-muted text-muted-foreground";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high": return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
-      case "medium": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
+      case "high": return "bg-destructive/10 text-destructive";
+      case "medium": return "bg-warning/10 text-warning";
       case "low": return "bg-muted text-muted-foreground";
       default: return "bg-muted text-muted-foreground";
     }
@@ -1869,8 +1871,8 @@ function IndustryUpdatesTab({
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high": return "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800";
-      case "medium": return "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800";
+      case "high": return "bg-destructive/10 text-destructive border-destructive/20";
+      case "medium": return "bg-warning/10 text-warning border-warning/20";
       case "low": return "bg-muted text-muted-foreground border-border";
       default: return "bg-muted text-muted-foreground border-border";
     }
@@ -2207,9 +2209,9 @@ function ProfessionalGroupsTab({
 
   const getPrivacyColor = (privacy: string) => {
     switch (privacy) {
-      case "public": return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
-      case "private": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
-      case "invite_only": return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
+      case "public": return "bg-success/10 text-success";
+      case "private": return "bg-warning/10 text-warning";
+      case "invite_only": return "bg-destructive/10 text-destructive";
       default: return "bg-muted text-muted-foreground";
     }
   };
