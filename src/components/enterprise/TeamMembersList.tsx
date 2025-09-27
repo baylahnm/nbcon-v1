@@ -225,7 +225,7 @@ export function TeamMembersList() {
                           <div className="relative">
                             <Avatar className="h-10 w-10">
                               <AvatarImage src={member.avatar} />
-                              <AvatarFallback>
+                              <AvatarFallback className="bg-primary text-primary-foreground">
                                 {member.name.split(' ').map(n => n[0]).join('')}
                               </AvatarFallback>
                             </Avatar>

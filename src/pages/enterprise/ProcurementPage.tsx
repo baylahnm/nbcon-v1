@@ -561,17 +561,15 @@ export function ProcurementPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <ShoppingCart className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-2xl font-semibold">Procurement Center</h1>
-              <p className="text-sm text-muted-foreground">
-                Manage vendors, equipment, inventory, and maintenance operations
-              </p>
-            </div>
-          </div>
+      <div className="flex items-center justify-between pb-6 border-b">
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <ShoppingCart className="h-5 w-5 text-primary" />
+            Procurement Center
+          </h1>
+          <p className="text-muted-foreground">
+            Manage vendors, equipment, inventory, and maintenance operations
+          </p>
         </div>
         
         <div className="flex items-center space-x-2">
@@ -776,7 +774,7 @@ export function ProcurementPage() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-12 w-12">
-                          <AvatarFallback>{vendor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          <AvatarFallback className="bg-primary text-primary-foreground">{vendor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                         <div>
                           <h4 className="font-medium">{vendor.name}</h4>
@@ -1141,7 +1139,7 @@ export function ProcurementPage() {
                   {/* Vendor Info */}
                   <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
                     <Avatar className="h-16 w-16">
-                      <AvatarFallback>{vendor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback className="bg-primary text-primary-foreground">{vendor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>
                       <h3 className="text-lg font-semibold">{vendor.name}</h3>

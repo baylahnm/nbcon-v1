@@ -413,17 +413,15 @@ export function EmployersPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <Users className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-2xl font-semibold">Employers Management</h1>
-              <p className="text-sm text-muted-foreground">
-                Manage employee payroll, HR processes, learning, and compliance
-              </p>
-            </div>
-          </div>
+      <div className="flex items-center justify-between pb-6 border-b">
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <Users className="h-5 w-5 text-primary" />
+            Employers Management
+          </h1>
+          <p className="text-muted-foreground">
+            Manage employee payroll, HR processes, learning, and compliance
+          </p>
         </div>
         
         <Dialog open={isAddEmployeeOpen} onOpenChange={setIsAddEmployeeOpen}>
@@ -596,7 +594,7 @@ export function EmployersPage() {
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-8 w-8">
                             <AvatarImage src={employee.avatar} />
-                            <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            <AvatarFallback className="bg-primary text-primary-foreground">{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                           </Avatar>
                           <div>
                             <p className="font-medium">{employee.name}</p>
@@ -643,7 +641,7 @@ export function EmployersPage() {
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-12 w-12">
                           <AvatarImage src={employee.avatar} />
-                          <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          <AvatarFallback className="bg-primary text-primary-foreground">{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                         <div>
                           <h4 className="font-medium">{employee.name}</h4>
@@ -945,7 +943,7 @@ export function EmployersPage() {
                   <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
                     <Avatar className="h-16 w-16">
                       <AvatarImage src={employee.avatar} />
-                      <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback className="bg-primary text-primary-foreground">{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div>
                       <h3 className="text-lg font-semibold">{employee.name}</h3>

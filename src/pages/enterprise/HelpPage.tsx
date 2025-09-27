@@ -444,25 +444,21 @@ export function HelpPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <HelpCircle className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-2xl font-semibold">Help & Support</h1>
-              <p className="text-sm text-muted-foreground">
-                Get help with your engineering platform and project management tools
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" className="gap-2" onClick={() => window.open('tel:+966112345678')}>
-            <Phone className="h-4 w-4" />
-            Emergency: +966 11 234-5678
-          </Button>
-        </div>
+      <div className="space-y-2 pb-6 border-b">
+        <h1 className="text-xl font-bold flex items-center gap-2">
+          <HelpCircle className="h-5 w-5 text-primary" />
+          Help & Support
+        </h1>
+        <p className="text-muted-foreground">
+          Get help with your engineering platform and project management tools
+        </p>
+      </div>
+      
+      <div className="flex items-center space-x-2">
+        <Button variant="outline" className="gap-2" onClick={() => window.open('tel:+966112345678')}>
+          <Phone className="h-4 w-4" />
+          Emergency: +966 11 234-5678
+        </Button>
       </div>
 
       {/* Knowledge Base Search Bar */}

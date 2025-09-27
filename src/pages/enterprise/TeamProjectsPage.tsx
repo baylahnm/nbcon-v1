@@ -154,18 +154,102 @@ export function TeamProjectsPage() {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-6 border-b">
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <Users className="h-5 w-5 text-primary" />
+            Team & Projects
+          </h1>
+          <p className="text-muted-foreground">
+            Manage team members, project assignments, and track progress across all initiatives
+          </p>
+        </div>
+      </div>
+
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
             <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+              <TabsTrigger value="management" className="flex items-center gap-2 px-4 py-3 min-w-fit">Team & Role Management</TabsTrigger>
               <TabsTrigger value="timesheet" className="flex items-center gap-2 px-4 py-3 min-w-fit">Team Time Sheet</TabsTrigger>
-            <TabsTrigger value="management" className="flex items-center gap-2 px-4 py-3 min-w-fit">Team & Role Management</TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center gap-2 px-4 py-3 min-w-fit">Projects Reports</TabsTrigger>
-            <TabsTrigger value="documents" className="flex items-center gap-2 px-4 py-3 min-w-fit">Document & File Management</TabsTrigger>
+              <TabsTrigger value="reports" className="flex items-center gap-2 px-4 py-3 min-w-fit">Projects Reports</TabsTrigger>
+              <TabsTrigger value="documents" className="flex items-center gap-2 px-4 py-3 min-w-fit">Document & File Management</TabsTrigger>
             </div>
           </TabsList>
         </div>
+
+        <TabsContent value="management" className="space-y-6">
+          {/* Team Members Section */}
+          <TeamMembersList />
+          
+          {/* Projects Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="pt-8 border-t border-border"
+          >
+            <div className="space-y-2 mb-6">
+              <h3 className="text-lg font-semibold">Projects</h3>
+              <p className="text-sm text-muted-foreground">
+                Create and manage your team projects
+              </p>
+            </div>
+            
+            {/* Projects Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <NewProjectCard onClick={handleCreateProject} />
+              {projects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: (index + 1) * 0.1 
+                  }}
+                >
+                  <ProjectCard project={project} />
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {projects.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-center py-12"
+              >
+                <div className="space-y-3">
+                  <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center mx-auto">
+                    <span className="text-3xl">📋</span>
+                  </div>
+                  <h4 className="font-medium">No Projects Yet</h4>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Get started by creating your first project. You can add team members, 
+                    assign tasks, and track progress all in one place.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* Kanban Board Section */}
+          {projects.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="pt-8 border-t border-border"
+            >
+              <GlobalKanbanBoard />
+            </motion.div>
+          )}
+        </TabsContent>
 
         <TabsContent value="timesheet" className="space-y-6">
           {/* Header + Actions */}
@@ -294,7 +378,7 @@ export function TeamProjectsPage() {
                             <div className="flex items-center gap-3">
                               <Avatar className="h-8 w-8">
                                 <AvatarImage src={m.user.avatar} />
-                                <AvatarFallback>{m.user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                <AvatarFallback className="bg-primary text-primary-foreground">{m.user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                               </Avatar>
                               <div className="space-y-0.5">
                                 <div className="font-medium leading-tight">{m.user.name}</div>
@@ -319,77 +403,6 @@ export function TeamProjectsPage() {
               </ScrollArea>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="management" className="space-y-6">
-          {/* Team Members Section */}
-          <TeamMembersList />
-          
-          {/* Projects Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="pt-8 border-t border-border"
-          >
-            <div className="space-y-2 mb-6">
-              <h3 className="text-lg font-semibold">Projects</h3>
-              <p className="text-sm text-muted-foreground">
-                Create and manage your team projects
-              </p>
-            </div>
-            
-            {/* Projects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              <NewProjectCard onClick={handleCreateProject} />
-              {projects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: (index + 1) * 0.1 
-                  }}
-                >
-                  <ProjectCard project={project} />
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Empty State */}
-            {projects.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-center py-12"
-              >
-                <div className="space-y-3">
-                  <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center mx-auto">
-                    <span className="text-3xl">📋</span>
-                  </div>
-                  <h4 className="font-medium">No Projects Yet</h4>
-                  <p className="text-muted-foreground max-w-md mx-auto">
-                    Get started by creating your first project. You can add team members, 
-                    assign tasks, and track progress all in one place.
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </motion.div>
-
-          {/* Kanban Board Section */}
-          {projects.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="pt-8 border-t border-border"
-            >
-              <GlobalKanbanBoard />
-            </motion.div>
-          )}
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-6">
@@ -619,7 +632,7 @@ export function TeamProjectsPage() {
                       </div>
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={member.user.avatar} />
-                        <AvatarFallback>{member.user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        <AvatarFallback className="bg-primary text-primary-foreground">{member.user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="font-medium truncate">{member.user.name}</div>
@@ -670,20 +683,6 @@ export function TeamProjectsPage() {
               <h2 className="text-2xl font-bold">Document & File Management</h2>
               <p className="text-muted-foreground">Centralized document storage, file sharing, and collaborative document management system coming soon.</p>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setShowDocumentsFilters(true)}>
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleExportDocuments}>
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-              <Button size="sm" onClick={() => window.open(RH.enterprise.documents(), '_blank')}>
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Full Page
-              </Button>
-            </div>
           </div>
 
           {/* Quick Actions & Filters */}
@@ -691,10 +690,20 @@ export function TeamProjectsPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <h3 className="font-medium">Quick Actions & Filters</h3>
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Upload Files
-                </Button>
+                <div className="flex gap-2">
+                  <Button size="sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Upload Files
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setShowDocumentsFilters(true)}>
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filters
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleExportDocuments}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -859,7 +868,7 @@ export function TeamProjectsPage() {
                           <div className="flex items-center gap-2">
                             <Avatar className="h-6 w-6">
                               <AvatarImage src={file.member.user.avatar} />
-                              <AvatarFallback>{file.member.user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                              <AvatarFallback className="bg-primary text-primary-foreground">{file.member.user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                             </Avatar>
                             <span className="text-sm">{file.sharedBy}</span>
                           </div>

@@ -106,7 +106,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               {project.members.slice(0, 4).map((member) => (
                 <Avatar key={member.userId} className="h-6 w-6 border-2 border-background">
                   <AvatarImage src={member.user.avatar} />
-                  <AvatarFallback className="text-xs">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                     {member.user.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>

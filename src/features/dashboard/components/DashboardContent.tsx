@@ -7,7 +7,9 @@ import {
   ArrowDownRight, Shield, Bell, Upload, UserCheck, Navigation,
   CreditCard, Building2, Smartphone, Settings, Eye, MessageSquare,
   X, ChevronDown, CheckSquare, Columns, Rows, Wrench, Brush, Palette,
-  Moon, Sun, Sunset, Paintbrush, CircleDot, Waves, TreePine, Layers, Sparkles
+  Moon, Sun, Sunset, Paintbrush, CircleDot, Waves, TreePine, Layers, Sparkles,
+  Target, Building, ShoppingCart, PieChart as PieChartIcon, FolderOpen,
+  UserPlus, FileSpreadsheet, Handshake, Truck, ClipboardList
 } from "lucide-react";
 import { useInlineDashboardEditStore } from '@/stores/inlineDashboardEdit';
 import { DashboardEditMode } from './DashboardEditMode';
@@ -529,53 +531,116 @@ export function DashboardContent() {
                    <div className="relative quick-actions-container">
                      <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
                     
-                    {/* Browse Jobs */}
-                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                      <Link to="/engineer/jobs">
-                        <Briefcase className="w-6 h-6 text-info" />
-                        <span className="text-sm font-medium">Browse Jobs</span>
-                      </Link>
-                    </Button>
+                    {profile?.role === 'enterprise' ? (
+                      <>
+                        {/* Team Management */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/enterprise/team">
+                            <Users className="w-6 h-6 text-blue-600" />
+                            <span className="text-sm font-medium">Team</span>
+                          </Link>
+                        </Button>
 
-                    {/* Check-In */}
-                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                      <Link to="/engineer/checkin">
-                        <MapPin className="w-6 h-6 text-success" />
-                        <span className="text-sm font-medium">Check-In</span>
-                      </Link>
-                    </Button>
+                        {/* Projects */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/enterprise/projects">
+                            <FolderOpen className="w-6 h-6 text-green-600" />
+                            <span className="text-sm font-medium">Projects</span>
+                          </Link>
+                        </Button>
 
-                    {/* Upload Deliverable */}
-                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                      <Link to="/engineer/upload">
-                        <Upload className="w-6 h-6 text-primary" />
-                        <span className="text-sm font-medium">Upload</span>
-                      </Link>
-                    </Button>
+                        {/* Finance */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/enterprise/finance">
+                            <DollarSign className="w-6 h-6 text-emerald-600" />
+                            <span className="text-sm font-medium">Finance</span>
+                          </Link>
+                        </Button>
 
-                    {/* Messages */}
-                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                      <Link to="/engineer/messages">
-                        <MessageSquare className="w-6 h-6 text-blue-600" />
-                        <span className="text-sm font-medium">Messages</span>
-                      </Link>
-                    </Button>
+                        {/* Procurement */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/enterprise/procurement">
+                            <ShoppingCart className="w-6 h-6 text-orange-600" />
+                            <span className="text-sm font-medium">Procurement</span>
+                          </Link>
+                        </Button>
 
-                    {/* Calendar */}
-                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                      <Link to="/engineer/calendar">
-                        <Calendar className="w-6 h-6 text-purple-600" />
-                        <span className="text-sm font-medium">Calendar</span>
-                      </Link>
-                    </Button>
+                        {/* Analytics */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/enterprise/analytics">
+                            <BarChart3 className="w-6 h-6 text-purple-600" />
+                            <span className="text-sm font-medium">Analytics</span>
+                          </Link>
+                        </Button>
 
-                    {/* Profile */}
-                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                      <Link to="/engineer/profile">
-                        <User className="w-6 h-6 text-orange-600" />
-                        <span className="text-sm font-medium">Profile</span>
-                      </Link>
-                    </Button>
+                        {/* Messages */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/enterprise/messages">
+                            <MessageSquare className="w-6 h-6 text-blue-600" />
+                            <span className="text-sm font-medium">Messages</span>
+                          </Link>
+                        </Button>
+
+                        {/* Calendar */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/enterprise/calendar">
+                            <Calendar className="w-6 h-6 text-indigo-600" />
+                            <span className="text-sm font-medium">Calendar</span>
+                          </Link>
+                        </Button>
+
+                      </>
+                    ) : (
+                      <>
+                        {/* Browse Jobs */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/engineer/jobs">
+                            <Briefcase className="w-6 h-6 text-info" />
+                            <span className="text-sm font-medium">Browse Jobs</span>
+                          </Link>
+                        </Button>
+
+                        {/* Check-In */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/engineer/checkin">
+                            <MapPin className="w-6 h-6 text-success" />
+                            <span className="text-sm font-medium">Check-In</span>
+                          </Link>
+                        </Button>
+
+                        {/* Upload Deliverable */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/engineer/upload">
+                            <Upload className="w-6 h-6 text-primary" />
+                            <span className="text-sm font-medium">Upload</span>
+                          </Link>
+                        </Button>
+
+                        {/* Messages */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/engineer/messages">
+                            <MessageSquare className="w-6 h-6 text-blue-600" />
+                            <span className="text-sm font-medium">Messages</span>
+                          </Link>
+                        </Button>
+
+                        {/* Calendar */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/engineer/calendar">
+                            <Calendar className="w-6 h-6 text-purple-600" />
+                            <span className="text-sm font-medium">Calendar</span>
+                          </Link>
+                        </Button>
+
+                        {/* Profile */}
+                        <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Link to="/engineer/profile">
+                            <User className="w-6 h-6 text-orange-600" />
+                            <span className="text-sm font-medium">Profile</span>
+                          </Link>
+                        </Button>
+                      </>
+                    )}
 
                     {/* Theme Toggle */}
                     <DropdownMenu>

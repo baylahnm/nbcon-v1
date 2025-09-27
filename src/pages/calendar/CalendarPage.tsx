@@ -110,6 +110,19 @@ export default function CalendarPage() {
     }
   };
 
+  const handleDoubleClickCreateEvent = (date: Date, time?: string) => {
+    if (date) {
+      // Set the initial date and time for the event
+      const eventDate = new Date(date);
+      if (time) {
+        const [hours, minutes] = time.split(':').map(Number);
+        eventDate.setHours(hours, minutes, 0, 0);
+      }
+      setCurrentDate(eventDate);
+    }
+    setShowCreateDialog(true);
+  };
+
   const exportICS = () => {
     try {
       const lines: string[] = [
@@ -302,7 +315,7 @@ export default function CalendarPage() {
             backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`
           }}
         >
-          <CalendarContent />
+          <CalendarContent onCreateEvent={handleDoubleClickCreateEvent} />
         </div>
         
         {/* Right Sidebar - Mini Calendar */}

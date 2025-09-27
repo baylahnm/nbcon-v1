@@ -300,10 +300,10 @@ export function ProfileSetup({ user, onProfileComplete, onBack, shouldExitOnBack
           value={profileData.experience} 
           onValueChange={(value) => setProfileData(prev => ({ ...prev, experience: value }))}
         >
-          <SelectTrigger>
+          <SelectTrigger className="bg-background text-foreground [&_svg]:text-primary">
             <SelectValue placeholder={language === 'ar' ? 'اختر مستوى خبرتك' : 'Select your experience level'} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background text-foreground">
             {experienceLevels.map((level) => (
               <SelectItem key={level.value} value={level.value}>
                 {level.label[language]}
@@ -426,10 +426,10 @@ export function ProfileSetup({ user, onProfileComplete, onBack, shouldExitOnBack
           value={profileData.availability} 
           onValueChange={(value) => setProfileData(prev => ({ ...prev, availability: value }))}
         >
-          <SelectTrigger>
+          <SelectTrigger className="bg-background text-foreground [&_svg]:text-primary">
             <SelectValue placeholder={language === 'ar' ? 'اختر نوع التوفر' : 'Select your availability'} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background text-foreground">
             {availabilityOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label[language]}
@@ -469,10 +469,10 @@ export function ProfileSetup({ user, onProfileComplete, onBack, shouldExitOnBack
               value={profileData.projectBudget} 
               onValueChange={(value) => setProfileData(prev => ({ ...prev, projectBudget: value }))}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-background text-foreground [&_svg]:text-primary">
                 <SelectValue placeholder={language === 'ar' ? 'اختر نطاق الميزانية' : 'Select budget range'} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background text-foreground">
                 <SelectItem value="under-50k">{language === 'ar' ? 'أقل من 50,000 ريال' : 'Under 50,000 SAR'}</SelectItem>
                 <SelectItem value="50k-100k">{language === 'ar' ? '50,000 - 100,000 ريال' : '50,000 - 100,000 SAR'}</SelectItem>
                 <SelectItem value="100k-500k">{language === 'ar' ? '100,000 - 500,000 ريال' : '100,000 - 500,000 SAR'}</SelectItem>
@@ -491,10 +491,10 @@ export function ProfileSetup({ user, onProfileComplete, onBack, shouldExitOnBack
                 value={profileData.companySize} 
                 onValueChange={(value) => setProfileData(prev => ({ ...prev, companySize: value }))}
               >
-                <SelectTrigger>
+                <SelectTrigger className="bg-background text-foreground [&_svg]:text-primary">
                   <SelectValue placeholder={language === 'ar' ? 'اختر حجم الشركة' : 'Select company size'} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background text-foreground">
                   {companySizes.map((size) => (
                     <SelectItem key={size.value} value={size.value}>
                       {size.label[language]}

@@ -324,17 +324,15 @@ export function ProfilePage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <Building className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-2xl font-semibold">Company Profile</h1>
-              <p className="text-sm text-muted-foreground">
-                Manage your enterprise information and documentation
-              </p>
-            </div>
-          </div>
+      <div className="flex items-center justify-between pb-6 border-b">
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <Building className="h-5 w-5 text-primary" />
+            Company Profile
+          </h1>
+          <p className="text-muted-foreground">
+            Manage your enterprise information and documentation
+          </p>
         </div>
         
         <div className="flex items-center space-x-2">

@@ -13,6 +13,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { InvoiceBuilder } from '@/features/finance/components/InvoiceBuilder';
 import { R, RH } from '@/lib/routes';
 import { toast } from 'sonner';
 import { 
@@ -46,6 +48,7 @@ import {
   User,
   FileCheck,
   X,
+  Trash2,
   RefreshCw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -640,17 +643,15 @@ export function FinancePage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <DollarSign className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-2xl font-semibold">Finance & Payments</h1>
-              <p className="text-sm text-muted-foreground">
-                Manage your financial transactions, invoices, and receipts
-              </p>
-            </div>
-          </div>
+      <div className="flex items-center justify-between pb-6 border-b">
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <DollarSign className="h-5 w-5 text-primary" />
+            Finance & Payments
+          </h1>
+          <p className="text-muted-foreground">
+            Manage your financial transactions, invoices, and receipts
+          </p>
         </div>
         
         <div className="flex items-center space-x-2">
@@ -956,14 +957,24 @@ export function FinancePage() {
         <TabsContent value="invoices" className="space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Invoices & Billing</h3>
-            <Button 
-              variant="outline" 
-              onClick={() => handleExport('pdf', 'invoices')}
-              className="gap-2"
-            >
-              <Download className="h-4 w-4" />
-              Export All
-            </Button>
+            <div className="flex items-center space-x-2">
+              <Button 
+                variant="outline" 
+                onClick={handleNewInvoice}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                New Invoice
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => handleExport('pdf', 'invoices')}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export All
+              </Button>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1453,84 +1464,11 @@ export function FinancePage() {
         </SheetContent>
       </Sheet>
 
-      {/* New Invoice Sheet */}
+      {/* New Invoice Sheet - 100% Clone of InvoiceBuilder */}
       <Sheet open={showNewInvoice} onOpenChange={handleCloseNewInvoice}>
-        <SheetContent className="w-[50vw] sm:max-w-none">
-          <SheetHeader>
-            <SheetTitle>Create New Invoice</SheetTitle>
-            <SheetDescription>
-              Create a new invoice for your client.
-            </SheetDescription>
-          </SheetHeader>
-          <div className="mt-6 space-y-4">
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Client Name</Label>
-                  <Input placeholder="Enter client name" className="mt-2" />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Project</Label>
-                  <Select>
-                    <SelectTrigger className="mt-2">
-                      <SelectValue placeholder="Select project" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="neom">NEOM Smart City</SelectItem>
-                      <SelectItem value="aramco">Aramco Refinery</SelectItem>
-                      <SelectItem value="pif">PIF Green Energy</SelectItem>
-                      <SelectItem value="redsea">Red Sea Project</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Amount</Label>
-                  <Input placeholder="0.00" type="number" className="mt-2" />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Currency</Label>
-                  <Select defaultValue="SAR">
-                    <SelectTrigger className="mt-2">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="SAR">SAR - Saudi Riyal</SelectItem>
-                      <SelectItem value="USD">USD - US Dollar</SelectItem>
-                      <SelectItem value="EUR">EUR - Euro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div>
-                <Label className="text-sm font-medium">Description</Label>
-                <Input placeholder="Enter invoice description" className="mt-2" />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Issue Date</Label>
-                  <Input type="date" className="mt-2" />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Due Date</Label>
-                  <Input type="date" className="mt-2" />
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex gap-2 pt-4 border-t">
-              <Button className="flex-1">
-                <FileText className="h-4 w-4 mr-2" />
-                Create Invoice
-              </Button>
-              <Button variant="outline" onClick={handleCloseNewInvoice}>
-                Cancel
-              </Button>
-            </div>
+        <SheetContent className="w-[95vw] sm:max-w-none p-0">
+          <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card">
+            <InvoiceBuilder onClose={handleCloseNewInvoice} />
           </div>
         </SheetContent>
       </Sheet>

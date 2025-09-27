@@ -236,17 +236,26 @@ export function AnalyticsPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <BarChart3 className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-2xl font-semibold">Analytics & Reports</h1>
-              <p className="text-sm text-muted-foreground">
-                Track performance, analyze budgets, and monitor business metrics
-              </p>
-            </div>
-          </div>
+      <div className="flex items-center justify-between pb-6 border-b">
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            Analytics & Reports
+          </h1>
+          <p className="text-muted-foreground">
+            Track performance, analyze budgets, and monitor business metrics
+          </p>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => handleExport('excel')}>
+            <Download className="h-4 w-4" />
+            Export Excel
+          </Button>
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => handleExport('pdf')}>
+            <Download className="h-4 w-4" />
+            Export PDF
+          </Button>
         </div>
       </div>
 
@@ -289,17 +298,6 @@ export function AnalyticsPage() {
           <Button variant="outline" size="sm" className="gap-2" onClick={() => { setShowFilters(true); updateQuery({ filters: 'open' }); }}>
             <Filter className="h-4 w-4" />
             More Filters
-          </Button>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" className="gap-2" onClick={() => handleExport('excel')}>
-            <Download className="h-4 w-4" />
-            Export Excel
-          </Button>
-          <Button variant="outline" size="sm" className="gap-2" onClick={() => handleExport('pdf')}>
-            <Download className="h-4 w-4" />
-            Export PDF
           </Button>
         </div>
       </div>

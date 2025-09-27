@@ -17,7 +17,11 @@ import {
 import { useCalendarStore, EventType, EventStatus } from '@/stores/useCalendarStore';
 import { useThemeStore } from '@/stores/theme';
 
-export default function CalendarContent() {
+interface CalendarContentProps {
+  onCreateEvent?: (date: Date, time?: string) => void;
+}
+
+export default function CalendarContent({ onCreateEvent }: CalendarContentProps = {}) {
   const {
     currentDate,
     view,
@@ -33,6 +37,13 @@ export default function CalendarContent() {
   } = useCalendarStore();
 
   const { applied: themeTokens } = useThemeStore();
+
+  const handleTimeSlotDoubleClick = (date: Date, hour: number) => {
+    if (onCreateEvent) {
+      const timeString = `${hour.toString().padStart(2, '0')}:00`;
+      onCreateEvent(date, timeString);
+    }
+  };
 
   const getWeekDays = () => {
     const startDate = new Date(currentDate);
@@ -286,10 +297,12 @@ export default function CalendarContent() {
                     {timeSlots.map(slot => (
                       <div 
                         key={slot.hour} 
-                        className="h-16 border-b"
+                        className="h-16 border-b cursor-pointer hover:bg-muted/20 transition-colors"
                         style={{
                           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'} / 0.5)`
                         }}
+                        onDoubleClick={() => handleTimeSlotDoubleClick(date, slot.hour)}
+                        title={`Double-click to create event at ${slot.hour.toString().padStart(2, '0')}:00`}
                       ></div>
                     ))}
                     

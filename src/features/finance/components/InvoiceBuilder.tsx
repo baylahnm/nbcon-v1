@@ -313,14 +313,14 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className="w-full p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <FileText className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-medium">Proforma Invoice Builder</h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mx-6">
           <Button onClick={handleExportPDF} variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Export PDF
@@ -328,9 +328,6 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
           <Button onClick={handleSave} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Save className="h-4 w-4 mr-2" />
             Save
-          </Button>
-          <Button onClick={onClose} variant="outline" size="sm">
-            Close
           </Button>
         </div>
       </div>
