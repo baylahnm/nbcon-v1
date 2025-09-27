@@ -301,15 +301,15 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
   };
 
   return (
-    <div className="w-full max-w-full bg-background p-6 overflow-x-hidden">
+    <div className="w-full max-w-full bg-background p-6 overflow-x-hidden overflow-y-auto">
       {/* Header */}
       <div className="p-0 pb-6 border-b border-sidebar-border">
         <div className="w-full max-w-full space">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <BookOpen className="w-5 h-5 text-muted-foreground" />
-                <h1 className="text-xl font-medium text-foreground">Learning</h1>
+                <BookOpen className="h-5 w-5 text-primary" />
+                <h1 className="text-xl font-bold flex items-center gap-2">Learning</h1>
               </div>
               <p className="text-sm text-muted-foreground">Advance your engineering skills with courses tailored for Saudi Arabia</p>
             </div>
@@ -355,7 +355,7 @@ export function LearningContent({ onViewCourse, onStartCourse, onStartPath, onSt
           {/* Tabs */}
           <Tabs defaultValue="discover" className="space-y-6">
             <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
-              <div className="flex items-center w-full overflow-x-auto">
+              <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
                 <TabsTrigger 
                   value="discover"
                   className="flex items-center gap-2 px-4 py-3 min-w-fit"

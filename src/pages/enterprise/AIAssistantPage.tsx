@@ -478,8 +478,10 @@ export function AIAssistantPage() {
               <Tabs defaultValue="prompts" className="w-full">
                 <div className="border-b border-sidebar-border mb-3">
                   <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-                    <TabsTrigger value="prompts" className="flex items-center gap-2 px-4 py-3 min-w-fit text-xs">Prompts</TabsTrigger>
+                    <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                      <TabsTrigger value="prompts" className="flex items-center gap-2 px-4 py-3 min-w-fit text-xs">Prompts</TabsTrigger>
                     <TabsTrigger value="recent" className="flex items-center gap-2 px-4 py-3 min-w-fit text-xs">Recent</TabsTrigger>
+                    </div>
                   </TabsList>
                 </div>
                 

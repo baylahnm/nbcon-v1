@@ -330,7 +330,7 @@ export function SettingsContent() {
     <div className="flex-1 p-6 overflow-auto">
       <div className="w-full space-y-6">
         {/* Header */}
-        <div className="space-y-2">
+        <div className="space-y-2 pb-6 border-b">
         <h1 className="text-xl font-bold flex items-center gap-2">
           <Settings className="h-5 w-5 text-primary" />
           Settings
@@ -342,7 +342,7 @@ export function SettingsContent() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
-            <div className="flex items-center w-full overflow-x-auto">
+            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
               <TabsTrigger 
                 value="account"
                 className="flex items-center gap-2 px-4 py-3 min-w-fit"

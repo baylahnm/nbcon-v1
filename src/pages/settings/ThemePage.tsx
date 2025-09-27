@@ -176,9 +176,11 @@ export default function ThemePage() {
         <Tabs defaultValue="presets" className="theme-vertical-rhythm">
           <div className="border-b border-sidebar-border mb-6">
             <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-              <TabsTrigger value="presets" className="flex items-center gap-2 px-4 py-3 min-w-fit">Preset Themes</TabsTrigger>
+              <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                <TabsTrigger value="presets" className="flex items-center gap-2 px-4 py-3 min-w-fit">Preset Themes</TabsTrigger>
               <TabsTrigger value="custom" className="flex items-center gap-2 px-4 py-3 min-w-fit">Custom Tokens</TabsTrigger>
               <TabsTrigger value="advanced" className="flex items-center gap-2 px-4 py-3 min-w-fit">Advanced</TabsTrigger>
+              </div>
             </TabsList>
           </div>
 

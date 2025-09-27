@@ -158,10 +158,12 @@ export function TeamProjectsPage() {
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-            <TabsTrigger value="timesheet" className="flex items-center gap-2 px-4 py-3 min-w-fit">Team Time Sheet</TabsTrigger>
+            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+              <TabsTrigger value="timesheet" className="flex items-center gap-2 px-4 py-3 min-w-fit">Team Time Sheet</TabsTrigger>
             <TabsTrigger value="management" className="flex items-center gap-2 px-4 py-3 min-w-fit">Team & Role Management</TabsTrigger>
             <TabsTrigger value="reports" className="flex items-center gap-2 px-4 py-3 min-w-fit">Projects Reports</TabsTrigger>
             <TabsTrigger value="documents" className="flex items-center gap-2 px-4 py-3 min-w-fit">Document & File Management</TabsTrigger>
+            </div>
           </TabsList>
         </div>
 

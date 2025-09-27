@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Home, Search, Plus, TrendingUp, MoreHorizontal, Calendar, Users, 
-  CheckCircle, Clock, AlertTriangle, User, ExternalLink, BarChart3, 
+  Clock, AlertTriangle, User, ExternalLink, BarChart3, 
   MapPin, Briefcase, FileText, DollarSign, Activity, ArrowUpRight, 
-  ArrowDownRight, Target, Shield, Bell, Upload, UserCheck, Navigation,
-  CreditCard, Building2, Smartphone, Settings, Eye
+  ArrowDownRight, Shield, Bell, Upload, UserCheck, Navigation,
+  CreditCard, Building2, Smartphone, Settings, Eye, MessageSquare,
+  X, ChevronDown, CheckSquare, Columns, Rows, Wrench, Brush, Palette,
+  Moon, Sun, Sunset, Paintbrush, CircleDot, Waves, TreePine, Layers, Sparkles
 } from "lucide-react";
+import { useInlineDashboardEditStore } from '@/stores/inlineDashboardEdit';
+import { DashboardEditMode } from './DashboardEditMode';
+import { EditableWrapper } from './EditableWrapper';
+import { Toolbar } from '@/components/toolbar/Toolbar';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,11 +20,20 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChatComposer } from "@/features/ai/components/ChatComposer";
 import { Link } from "react-router-dom";
+import { R } from "@/lib/routes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/stores/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { useThemeStore } from "@/stores/theme";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function DashboardContent() {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -25,7 +41,21 @@ export function DashboardContent() {
   const [activeTab, setActiveTab] = useState("overview");
   const [engineerSpecializations, setEngineerSpecializations] = useState<string[]>([]);
   const [revenueView, setRevenueView] = useState<'monthly' | 'yearly'>('monthly');
+  const [isAddComponentOpen, setIsAddComponentOpen] = useState(false);
+  const [activePopup, setActivePopup] = useState<string | null>(null);
+  const [dashboardComponents, setDashboardComponents] = useState<any[]>([]);
+  const [hoveredBorder, setHoveredBorder] = useState<string | null>(null);
+  const [containerLayout, setContainerLayout] = useState({
+    rows: 1,
+    columns: 1,
+    gridTemplate: '1fr'
+  });
+  const [isToolbarVisible, setIsToolbarVisible] = useState(false);
   const { profile, user } = useAuthStore();
+  const navigate = useNavigate();
+  
+  // Inline edit mode
+  const { isEditMode, toggleEditMode } = useInlineDashboardEditStore();
 
   // Load engineer specializations
   useEffect(() => {
@@ -84,69 +114,142 @@ export function DashboardContent() {
     }
   };
 
-  // Realistic Saudi engineering project data
-  const projects = [
-    {
-      id: 1,
-      name: "NEOM City Infrastructure",
-      client: "NEOM Authority",
-      value: "2,400,000 SAR",
-      progress: 67,
-      status: 'active',
-      location: "NEOM",
-      engineer: getDisplayName(),
-      dueDate: "2024-03-15",
-      category: "Civil Engineering"
-    },
-    {
-      id: 2,
-      name: "Aramco Refinery Expansion",
-      client: "Saudi Aramco",
-      value: "1,800,000 SAR",
-      progress: 34,
-      status: 'active',
-      location: "Dammam",
-      engineer: getDisplayName(),
-      dueDate: "2024-06-20",
-      category: "Mechanical Engineering"
-    },
-    {
-      id: 3,
-      name: "SABIC Chemical Plant",
-      client: "SABIC",
-      value: "3,200,000 SAR",
-      progress: 89,
-      status: 'active',
-      location: "Jubail",
-      engineer: getDisplayName(),
-      dueDate: "2024-02-28",
-      category: "Chemical Engineering"
-    },
-    {
-      id: 4,
-      name: "Red Sea Development",
-      client: "Red Sea Global",
-      value: "950,000 SAR",
-      progress: 45,
-      status: 'active',
-      location: "Red Sea Coast",
-      engineer: getDisplayName(),
-      dueDate: "2024-08-10",
-      category: "Environmental Engineering"
-    },
-    {
-      id: 5,
-      name: "AlUla Heritage Site",
-      client: "Royal Commission for AlUla",
-      value: "1,200,000 SAR",
-      progress: 78,
-      status: 'active',
-      location: "AlUla",
-      engineer: getDisplayName(),
-      dueDate: "2024-04-30",
-      category: "Structural Engineering"
+  // Get AI route based on role
+  const getAIRoute = () => {
+    switch (profile?.role) {
+      case 'engineer':
+        return R.engineer.ai;
+      case 'client':
+        return R.client.ai;
+      case 'enterprise':
+        return R.enterprise.ai;
+      default:
+        return '/ai'; // fallback
     }
+  };
+
+  // Component options for the add component popup
+  const componentOptions = [
+    { id: 'chart', name: 'Chart', icon: BarChart3, description: 'Add a data visualization chart' },
+    { id: 'table', name: 'Data Table', icon: FileText, description: 'Add a data table component' },
+    { id: 'kpi', name: 'KPI Card', icon: TrendingUp, description: 'Add a key performance indicator card' },
+    { id: 'activity', name: 'Activity Feed', icon: Activity, description: 'Add an activity feed component' },
+    { id: 'calendar', name: 'Calendar', icon: Calendar, description: 'Add a calendar widget' },
+    { id: 'notes', name: 'Notes', icon: FileText, description: 'Add a notes component' },
+    { id: 'weather', name: 'Weather', icon: Navigation, description: 'Add a weather widget' },
+    { id: 'tasks', name: 'Task List', icon: CheckSquare, description: 'Add a task management component' }
   ];
+
+  const handleAddComponent = (componentId: string) => {
+    console.log(`Adding component: ${componentId}`);
+    
+    // Component routing system
+    const componentRoutes = {
+      // Simple widgets - show popup cards
+      'kpi': () => showKPICardPopup(),
+      'notes': () => showNotesPopup(),
+      'weather': () => showWeatherPopup(),
+      
+      // Data components - show popup cards with configuration
+      'chart': () => showChartPopup(),
+      'table': () => showDataTablePopup(),
+      'activity': () => showActivityFeedPopup(),
+      
+      // Complex components - navigate to dedicated pages
+      'calendar': () => navigateToCalendarPage(),
+      'tasks': () => navigateToTaskListPage()
+    };
+
+    // Execute the appropriate action
+    const action = componentRoutes[componentId as keyof typeof componentRoutes];
+    if (action) {
+      action();
+    } else {
+      console.warn(`No route defined for component: ${componentId}`);
+    }
+    
+    setIsAddComponentOpen(false);
+  };
+
+  // Popup card functions for simple widgets
+  const showKPICardPopup = () => {
+    setActivePopup('kpi');
+  };
+
+  const showNotesPopup = () => {
+    setActivePopup('notes');
+  };
+
+  const showWeatherPopup = () => {
+    setActivePopup('weather');
+  };
+
+  // Popup card functions for data components
+  const showChartPopup = () => {
+    setActivePopup('chart');
+  };
+
+  const showDataTablePopup = () => {
+    setActivePopup('table');
+  };
+
+  const showActivityFeedPopup = () => {
+    setActivePopup('activity');
+  };
+
+  // Page navigation functions for complex components
+  const navigateToCalendarPage = () => {
+    navigate('/calendar');
+  };
+
+  const navigateToTaskListPage = () => {
+    // For now, navigate to jobs page as task management is integrated there
+    navigate('/jobs');
+  };
+
+  // Function to add components to dashboard
+  const addComponentToDashboard = (componentData: any) => {
+    setDashboardComponents(prev => [...prev, componentData]);
+    console.log('Component added to dashboard:', componentData);
+  };
+
+  // Function to handle border hover actions
+  const handleBorderAction = (action: string) => {
+    console.log(`Border action: ${action}`);
+    
+    setContainerLayout(prev => {
+      let newLayout = { ...prev };
+      
+      switch (action) {
+        case 'add-column-left':
+          newLayout.columns += 1;
+          newLayout.gridTemplate = `1fr ${newLayout.gridTemplate}`;
+          break;
+        case 'add-column-right':
+          newLayout.columns += 1;
+          newLayout.gridTemplate = `${newLayout.gridTemplate} 1fr`;
+          break;
+        case 'add-row-top':
+          newLayout.rows += 1;
+          newLayout.gridTemplate = `1fr / ${newLayout.gridTemplate}`;
+          break;
+        case 'add-row-bottom':
+          newLayout.rows += 1;
+          newLayout.gridTemplate = `${newLayout.gridTemplate} / 1fr`;
+          break;
+        default:
+          break;
+      }
+      
+      return newLayout;
+    });
+  };
+
+  // Function to handle toolbar tool selection
+  const handleToolbarToolSelect = (tool: string) => {
+    console.log(`Toolbar tool selected: ${tool}`);
+    // TODO: Implement toolbar tool actions
+  };
 
   // Financial data
   const financialData = {
@@ -325,65 +428,7 @@ export function DashboardContent() {
     }
   ];
 
-  // My tasks
-  const myTasks = [
-    {
-      id: 1,
-      title: "Structural Assessment - Villa Complex",
-      subtitle: "Conduct structural integrity assessment for 15-unit villa complex in Riyadh",
-      status: "in-progress",
-      priority: "high",
-      category: "Structural",
-      dueTime: "2:00 PM",
-      assignee: { name: "Nasser Baylah", avatar: "AR" }
-    },
-    {
-      id: 2,
-      title: "Bridge Load Analysis",
-      subtitle: "Detailed load-bearing analysis for highway bridge maintenance project",
-      status: "in-progress",
-      priority: "high",
-      category: "Civil",
-      dueTime: "4:30 PM",
-      assignee: { name: "Mohammed Al-Shehri", avatar: "MS" }
-    },
-    {
-      id: 3,
-      title: "Site Inspection - Industrial Facility",
-      subtitle: "Safety and compliance inspection for petrochemical plant expansion",
-      status: "pending",
-      priority: "high",
-      category: "Industrial",
-      dueTime: "Tomorrow",
-      assignee: { name: "Tariq Al-Harbi", avatar: "TH" }
-    }
-  ];
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="w-4 h-4 text-success" />;
-      case 'in-progress':
-        return <Clock className="w-4 h-4 text-info" />;
-      case 'pending':
-        return <AlertTriangle className="w-4 h-4 text-warning" />;
-      default:
-        return <Clock className="w-4 h-4 text-muted-foreground" />;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return 'bg-destructive/10 text-destructive border-destructive/20';
-      case 'medium':
-        return 'bg-warning/10 text-warning border-warning/20';
-      case 'low':
-        return 'bg-success/10 text-success border-success/20';
-      default:
-        return 'bg-muted text-muted-foreground border-sidebar-border';
-    }
-  };
 
   const getCurrentDate = () => {
     return new Date().toLocaleDateString('en-US', {
@@ -395,15 +440,31 @@ export function DashboardContent() {
   };
 
   return (
-    <div className="flex-1 min-h-screen">
-      <div className="p-6">
-        <div className="space-y-4 max-w mx-auto">
+    <DashboardEditMode>
+      <div className="flex-1 min-h-screen">
+        <div className="p-6">
+          <div className="space-y-6 max-w mx-auto">
           
-          {/* Row 1: Header & Search */}
+          {/* Toolbar */}
+          {isToolbarVisible && (
+            <Toolbar
+              onToolSelect={handleToolbarToolSelect}
+              onClose={() => setIsToolbarVisible(false)}
+              isOpen={isToolbarVisible}
+              onToggle={() => setIsToolbarVisible(!isToolbarVisible)}
+            />
+          )}
+          
+          {/* Row 1: Header with AI Assistant */}
           <div className="flex flex-col lg:flex-row gap-4">
            {/* Welcome Header */}
            <div className="flex-1 lg:w-2/3">
-             <Card className="h-full">
+             <EditableWrapper 
+               componentId="welcome-header"
+               componentType="Welcome Header"
+               data-editable-component
+             >
+               <Card className="h-full">
     <CardContent className="p-4 flex flex-col h-full">
       <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -419,702 +480,663 @@ export function DashboardContent() {
                       </p>
                     </div>
         </div>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="default"
+            size="sm"
+            onClick={toggleEditMode}
+            className="flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
+          >
+            <Brush className="w-4 h-4 transition-colors duration-200 text-primary-foreground" />
+            {isEditMode ? 'Exit Edit' : 'Customize'}
+          </Button>
+        </div>
                 </div>
       {/* Inline AI Assistant */}
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-sm font-medium">AI Assistant</h3>
           <Button asChild variant="outline" size="sm">
-            <Link to="/ai">Open</Link>
+            <Link to={getAIRoute()}>Open</Link>
           </Button>
         </div>
         <ChatComposer isCompact />
       </div>
               </CardContent>
             </Card>
+            </EditableWrapper>
           </div>
           
-          {/* (moved AI Assistant into header card) */}
           </div>
 
-          {/* Row 2: Project Overview */}
+          {/* Row 2: Quick Actions */}
           <div className="flex flex-col lg:flex-row gap-4">
-           {/* Active Projects Card */}
-           <div className="lg:w-1/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <BarChart3 className="w-5 h-5" />
-                   Active Projects
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-primary">{projects.length}</div>
-                  <p className="text-sm text-muted-foreground">Total Active Projects</p>
-                </div>
-                
-                {/* Donut Chart */}
-                <div className="h-32 mb-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={projectStatusData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={30}
-                        outerRadius={60}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        {projectStatusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="space-y-2">
-                  {projectStatusData.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                        <span>{item.name}</span>
-                      </div>
-                      <span className="font-medium">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-           {/* Current Projects */}
-           <div className="lg:w-2/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="px-4 pt-4 pb-0">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <Target className="w-5 h-5" />
-                   Current Projects
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                <div className="space-y-4">
-                  {projects.slice(0, 3).map((project, index) => (
-                    <div key={project.id} className="space-y-4">
-                      <div className="mt-2">
-                        <h3 className="font-semibold text-foreground">{project.name}</h3>
-                        <p className="text-sm text-muted-foreground">{project.client}</p>
-                      </div>
-                      
-                      <div className="space-y-2 mt-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Progress</span>
-                          <span className="font-medium">{project.progress}%</span>
-                        </div>
-                        <Progress value={project.progress} className="h-2" />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">Value</span>
-                          <p className="font-medium text-success">{project.value}</p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Due Date</span>
-                          <p className="font-medium">{project.dueDate}</p>
-                        </div>
-                      </div>
-                      
-                      {index < 2 && <hr className="border-sidebar-border" />}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          </div>
-
-          {/* Row 3: Job Recommendations & Browse Jobs */}
-          <div className="flex gap-4">
-             {/* AI Job Recommendations */}
-             <div className="flex-1">
-               <Card className="h-full flex flex-col">
-                 <CardHeader className="p-4">
-                   <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                     <Briefcase className="w-5 h-5" />
-                     AI Job Recommendations
-                   </CardTitle>
-                 </CardHeader>
-                 <CardContent className="flex-1 flex flex-col p-4">
-                  <div className="space-y-3 flex-1">
-                    {jobRecommendations.map((job) => (
-                      <div key={job.id} className="p-3 border border-sidebar-border rounded-lg hover:bg-muted/50 transition-colors">
-                        <div className="flex items-start justify-between mb-0">
-                          <h4 className="font-medium text-foreground text-sm">{job.title}</h4>
-                          <Badge variant="secondary" className="text-xs">
-                            {job.match}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground mb-2">{job.company}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium text-success">{job.salary.split(' - ')[0]}</span>
-                          <span className="text-xs text-muted-foreground">{job.postedAt}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full mt-3">
-                    <Briefcase className="w-4 h-4 mr-2" />
-                    View All Jobs
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-
-             {/* Browse Jobs */}
-             <div className="flex-1">
-               <Card className="h-full flex flex-col">
-                 <CardHeader className="p-4">
-                <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                  <Navigation className="w-5 h-5" />
-                  Available Jobs
-                </CardTitle>
-                 </CardHeader>
-                 <CardContent className="flex-1 flex flex-col p-4">
-                  <div className="space-y-3 flex-1">
-                    {nearbyJobs.map((job) => (
-                      <div key={job.id} className="flex items-center gap-3 p-3 border border-sidebar-border rounded-lg hover:bg-muted/50 transition-colors">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <Briefcase className="w-5 h-5 text-primary" />
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-foreground truncate">{job.title}</h4>
-                          <p className="text-xs text-muted-foreground">{job.company}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs font-medium text-success">{job.salary}</span>
-                            <Badge variant="secondary" className="text-xs">{job.type}</Badge>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <MapPin className="w-3 h-3" />
-                          <span>{job.distance}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full mt-3">
-                    <Navigation className="w-4 h-4 mr-2" />
-                    View All Nearby Jobs
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Row 4: Nearby Jobs Map - Full Width */}
-          <div className="w-full">
-           {/* Nearby Jobs Map */}
-           <div className="w-full">
-             <Card>
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <MapPin className="w-5 h-5" />
-                   Nearby Jobs (50km radius)
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4">
-                <div className="flex gap-4">
-                  {/* Map */}
-                  <div className="relative h-64 rounded-lg border border-sidebar-border overflow-hidden flex-1">
-                    {/* Real Map */}
-                    <iframe
-                      className="absolute inset-0 w-full h-full border-0"
-                      src="https://www.openstreetmap.org/export/embed.html?bbox=46.5,24.4,46.8,24.7&layer=mapnik&marker=24.6,46.6"
-                      title="Nearby Jobs Map"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
-
-                    {/* Job Location Markers */}
-                    {nearbyJobs.map((job, index) => (
-                      <div 
-                        key={job.id}
-                        className="absolute w-4 h-4 bg-primary rounded-full border-2 border-background shadow-lg animate-pulse"
-                        style={{
-                          top: `${20 + (index * 25)}%`,
-                          left: `${30 + (index * 20)}%`
-                        }}
-                      >
-                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-background px-2 py-1 rounded text-xs font-medium shadow-md whitespace-nowrap border border-sidebar-border">
-                          {job.title.split(' - ')[0]} ({job.distance})
-                        </div>
-                      </div>
-                    ))}
-
-                    {/* Your Location */}
-                    <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-primary rounded-full border-2 border-background shadow-lg">
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium shadow-md whitespace-nowrap">
-                        Your Location
-                      </div>
-                    </div>
-
-                    {/* Distance Circles */}
-                    <div className="absolute top-1/2 left-1/2 w-20 h-20 border border-primary/30 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-                    <div className="absolute top-1/2 left-1/2 w-32 h-32 border border-primary/20 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-                    <div className="absolute top-1/2 left-1/2 w-44 h-44 border border-primary/10 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-                  </div>
-
-                  {/* Leads List */}
-                  <div className="w-64 h-64 rounded-lg border border-sidebar-border bg-background p-3 overflow-auto">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-sm font-medium">Leads</h4>
-                      <span className="text-xs text-muted-foreground">{nearbyJobs.length} nearby</span>
-                    </div>
-                    <div className="space-y-2">
-                      {nearbyJobs.map((job) => (
-                        <div key={job.id} className="p-2 rounded border hover:bg-muted/50 cursor-pointer">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{job.title.split(' - ')[0]}</span>
-                            <span className="text-xs text-muted-foreground">{job.distance}</span>
-                          </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="outline" className="text-[10px]">{job.type || 'Job'}</Badge>
-                            <span className="text-xs text-muted-foreground">{job.location || 'Riyadh'}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between mt-4">
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      <span>Your Location</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-destructive rounded-full"></div>
-                      <span>Job Sites</span>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <Eye className="w-4 h-4 mr-2" />
-                    Full Map View
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          </div>
-
-          {/* Row 5: Financial Overview */}
-          <div className="flex flex-col lg:flex-row gap-4">
-           {/* Invoice Overview */}
-           <div className="lg:w-1/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <FileText className="w-5 h-5" />
-                   Invoice Overview
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                <div className="space-y-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-foreground">{financialData.totalInvoices}</div>
-                    <p className="text-sm text-muted-foreground">Total Invoices</p>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-success rounded-full"></div>
-                        <div>
-                          <p className="text-sm font-medium">Paid</p>
-                          <p className="text-xs text-muted-foreground">{financialData.paidInvoices} invoices</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-success">324,650 SAR</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-warning rounded-full"></div>
-                        <div>
-                          <p className="text-sm font-medium">Pending</p>
-                          <p className="text-xs text-muted-foreground">{financialData.pendingInvoices} invoices</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-warning">128,400 SAR</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-3 border border-sidebar-border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-destructive rounded-full"></div>
-                        <div>
-                          <p className="text-sm font-medium">Overdue</p>
-                          <p className="text-xs text-muted-foreground">{financialData.overdueInvoices} invoices</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-destructive">45,750 SAR</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-           {/* Monthly Revenue */}
-           <div className="lg:w-1/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="p-4">
-                 <div className="flex items-center justify-between">
-                   <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                     <TrendingUp className="w-5 h-5" />
-                     {revenueView === 'monthly' ? 'Monthly Revenue' : 'Yearly Revenue'}
-                   </CardTitle>
-                   <div className="flex bg-muted rounded-lg p-1">
-                     <Button
-                       variant={revenueView === 'monthly' ? 'default' : 'ghost'}
-                       size="sm"
-                       onClick={() => setRevenueView('monthly')}
-                       className="h-7 px-3 text-xs"
-                     >
-                       Monthly
-                     </Button>
-                     <Button
-                       variant={revenueView === 'yearly' ? 'default' : 'ghost'}
-                       size="sm"
-                       onClick={() => setRevenueView('yearly')}
-                       className="h-7 px-3 text-xs"
-                     >
-                       Yearly
-                     </Button>
-                   </div>
-                 </div>
-                
-                {/* Revenue Trend Chart */}
-                <div className="mt-4 h-20">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={revenueTrendData}>
-                      <defs>
-                        <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0.05}/>
-                        </linearGradient>
-                      </defs>
-                      <Area 
-                        type="monotone" 
-                        dataKey="revenue" 
-                        stroke="hsl(var(--success))" 
-                        strokeWidth={2}
-                        fill="url(#revenueGradient)"
-                        dot={{ fill: "hsl(var(--success))", strokeWidth: 2, r: 3 }}
-                      />
-                      <XAxis 
-                        dataKey={revenueView === 'monthly' ? 'month' : 'year'} 
-                        axisLine={false} 
-                        tickLine={false}
-                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                 <div className="mb-4">
-                   <div className="text-3xl font-bold text-success">
-                     {revenueView === 'monthly' ? financialData.monthlyRevenue : financialData.yearlyRevenue}
-                   </div>
-                   <p className="text-sm text-muted-foreground">
-                     {revenueView === 'monthly' ? 'This Month' : 'This Year'}
-                   </p>
-                 </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      {revenueView === 'monthly' ? 'Last Month' : 'Last Year'}
-                    </span>
-                    <span className="text-sm font-medium">
-                      {revenueView === 'monthly' ? '487,300 SAR' : '4,100,000 SAR'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Growth</span>
-                    <div className="flex items-center gap-1">
-                      <ArrowUpRight className="w-3 h-3 text-success" />
-                      <span className="text-sm font-medium text-success">
-                        {revenueView === 'monthly' ? financialData.growth : financialData.yearlyGrowth}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Avg. Project Value</span>
-                    <span className="text-sm font-medium">48,750 SAR</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-           {/* Escrow & Earnings */}
-           <div className="lg:w-1/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <Shield className="w-5 h-5" />
-                   Escrow & Earnings
-                 </CardTitle>
-                
-                {/* Escrow Breakdown Chart */}
-                <div className="mt-4 h-20">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={escrowData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={0}
-                        outerRadius={30}
-                        paddingAngle={1}
-                        dataKey="value"
-                      >
-                        <Cell fill="hsl(var(--success))" />
-                        <Cell fill="hsl(var(--warning))" />
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                 <div className="space-y-4">
-                   <div>
-                     <div className="text-2xl font-bold text-info">{financialData.totalEscrow}</div>
-                     <p className="text-sm text-muted-foreground">Total in Escrow</p>
-                   </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Available Earnings</span>
-                      <span className="text-sm font-medium text-success">{financialData.availableEarnings}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Pending Release</span>
-                      <span className="text-sm font-medium text-warning">{financialData.pendingRelease}</span>
-                    </div>
-                  </div>
-                </div>
-                <Button variant="outline" className="w-full mt-auto">
-                  <DollarSign className="w-4 h-4 mr-2" />
-                  Request Payout
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          </div>
-
-          {/* Row 6: Activity & Management */}
-          <div className="flex flex-col lg:flex-row gap-4">
-           {/* Activity & Alerts */}
-           <div className="lg:w-1/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <Bell className="w-5 h-5" />
-                   Activity & Alerts
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                <div className="space-y-3">
-                  {activities.map((activity) => (
-                    <div key={activity.id} className="flex items-start gap-3 p-3 border border-sidebar-border rounded-lg">
-                      <div className="text-lg">{activity.icon}</div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground">{activity.message}</p>
-                        <p className="text-xs text-muted-foreground">{activity.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full mt-4" style={{ marginTop: 'auto' }}>
-                  <Activity className="w-4 h-4 mr-2" />
-                  View All Activity
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-           {/* Next Milestones Due */}
-           <div className="lg:w-1/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <Target className="w-5 h-5" />
-                   Next Milestones Due
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                <div className="space-y-3">
-                  {milestonesDue.map((milestone) => (
-                    <div key={milestone.id} className="p-3 border border-sidebar-border rounded-lg">
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="text-sm font-medium text-foreground">{milestone.title}</h4>
-                        <span className="text-xs text-muted-foreground">{milestone.dueDate}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2">{milestone.project}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-success">{milestone.amount}</span>
-                        <Badge variant="secondary" className="text-xs">
-                          {milestone.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full mt-auto mt-4">
-                  <Target className="w-4 h-4 mr-2" />
-                  View All Milestones
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-           {/* My Tasks */}
-           <div className="lg:w-1/3">
-             <Card className="h-full flex flex-col">
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <CheckCircle className="w-5 h-5" />
-                   My Tasks
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4 flex-1 flex flex-col">
-                <div className="space-y-3">
-                  {myTasks.map((task) => (
-                    <div key={task.id} className="p-3 border border-sidebar-border rounded-lg">
-                      <div className="flex items-start gap-3">
-                        {getStatusIcon(task.status)}
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-foreground">{task.title}</h4>
-                          <p className="text-xs text-muted-foreground truncate">{task.subtitle}</p>
-                          <div className="flex items-center justify-between mt-2">
-                            <Badge variant="secondary" className={`text-xs ${getPriorityColor(task.priority)}`}>
-                              {task.category}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground">{task.dueTime}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full mt-auto">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  View All Tasks
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          </div>
-
-          {/* Row 7: Quick Actions */}
-          <div className="w-full">
            {/* Quick Actions */}
            <div className="w-full">
-             <Card>
-               <CardHeader className="p-4">
-                 <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
-                   <Plus className="w-5 h-5" />
-                   Quick Actions
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="p-4">
-                <div className="grid grid-cols-1 gap-3">
-                  
-                  {/* Browse Jobs */}
-                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
-                    <div className="w-10 h-10 bg-info/10 rounded-lg flex items-center justify-center">
-                      <Briefcase className="w-5 h-5 text-info" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium">Browse Jobs</p>
-                      <p className="text-xs text-muted-foreground">Find new opportunities</p>
-                    </div>
-                  </Button>
+             <EditableWrapper 
+               componentId="quick-actions"
+               componentType="Quick Actions"
+               data-editable-component
+             >
+                <Card className="h-full flex flex-col">
+                  <CardHeader className="p-4 pb-2">
+                    <CardTitle className="flex items-center gap-2" style={{ fontSize: '18px' }}>
+                      <Plus className="w-5 h-5" />
+                      Quick Actions
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 flex-1 flex flex-col">
+                   <div className="relative quick-actions-container">
+                     <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                    
+                    {/* Browse Jobs */}
+                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                      <Link to="/engineer/jobs">
+                        <Briefcase className="w-6 h-6 text-info" />
+                        <span className="text-sm font-medium">Browse Jobs</span>
+                      </Link>
+                    </Button>
 
-                  {/* Check-In */}
-                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
-                    <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-success" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium">Check-In</p>
-                      <p className="text-xs text-muted-foreground">Mark your location</p>
-                    </div>
-                  </Button>
+                    {/* Check-In */}
+                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                      <Link to="/engineer/checkin">
+                        <MapPin className="w-6 h-6 text-success" />
+                        <span className="text-sm font-medium">Check-In</span>
+                      </Link>
+                    </Button>
 
-                  {/* Upload Deliverable */}
-                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Upload className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium">Upload Deliverable</p>
-                      <p className="text-xs text-muted-foreground">Submit project files</p>
-                    </div>
-                  </Button>
+                    {/* Upload Deliverable */}
+                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                      <Link to="/engineer/upload">
+                        <Upload className="w-6 h-6 text-primary" />
+                        <span className="text-sm font-medium">Upload</span>
+                      </Link>
+                    </Button>
 
-                  {/* Emergency Contact */}
-                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
-                    <div className="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center">
-                      <UserCheck className="w-5 h-5 text-destructive" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium">Emergency Contact</p>
-                      <p className="text-xs text-muted-foreground">Safety & support</p>
-                    </div>
-                  </Button>
+                    {/* Messages */}
+                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                      <Link to="/engineer/messages">
+                        <MessageSquare className="w-6 h-6 text-blue-600" />
+                        <span className="text-sm font-medium">Messages</span>
+                      </Link>
+                    </Button>
 
-                  {/* Settings */}
-                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
-                    <div className="w-10 h-10 bg-muted/10 rounded-lg flex items-center justify-center">
-                      <Settings className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium">Settings</p>
-                      <p className="text-xs text-muted-foreground">Account preferences</p>
-                    </div>
-                  </Button>
+                    {/* Calendar */}
+                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                      <Link to="/engineer/calendar">
+                        <Calendar className="w-6 h-6 text-purple-600" />
+                        <span className="text-sm font-medium">Calendar</span>
+                      </Link>
+                    </Button>
 
-                  {/* Profile */}
-                  <Button variant="outline" className="h-16 flex items-center justify-start gap-3 p-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <User className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-medium">Profile</p>
-                      <p className="text-xs text-muted-foreground">Manage your profile</p>
-                    </div>
-                  </Button>
+                    {/* Profile */}
+                    <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                      <Link to="/engineer/profile">
+                        <User className="w-6 h-6 text-orange-600" />
+                        <span className="text-sm font-medium">Profile</span>
+                      </Link>
+                    </Button>
 
-                </div>
-              </CardContent>
-            </Card>
+                    {/* Theme Toggle */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
+                          <Palette className="w-6 h-6 text-purple-600" />
+                          <span className="text-sm font-medium">Theme</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-popover border theme-toggle-menu">
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('light')}>
+                          <Sun className="h-4 w-4 mr-2" />
+                          Light
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('dark')}>
+                          <Moon className="h-4 w-4 mr-2" />
+                          Dark
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('wazeer')}>
+                          <Palette className="h-4 w-4 mr-2" />
+                          Wazeer
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('sunset')}>
+                          <Sunset className="h-4 w-4 mr-2" />
+                          Sunset
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('abstract')}>
+                          <Paintbrush className="h-4 w-4 mr-2" />
+                          Abstract
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('nika')}>
+                          <CircleDot className="h-4 w-4 mr-2" />
+                          Nika
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('lagoon')}>
+                          <Waves className="h-4 w-4 mr-2" />
+                          Lagoon
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('dark-nature')}>
+                          <TreePine className="h-4 w-4 mr-2" />
+                          Dark Nature
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('full-gradient')}>
+                          <Layers className="h-4 w-4 mr-2" />
+                          Full Gradient
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => useThemeStore.getState().applyPreset('sea-purple')}>
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Sea Purple
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              </EditableWrapper>
+            </div>
           </div>
+
+          {/* Row 3: Add New Component Empty State */}
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="w-full">
+              <EditableWrapper 
+                componentId="add-new-component"
+                componentType="Add New Component"
+                data-editable-component
+              >
+                <Popover open={isAddComponentOpen} onOpenChange={setIsAddComponentOpen}>
+                  <PopoverTrigger asChild>
+                    <div className="min-h-[200px]">
+                      {dashboardComponents.length > 0 ? (
+                        <div 
+                          className="grid gap-4 h-full"
+                          style={{
+                            gridTemplateColumns: containerLayout.gridTemplate.includes('/') 
+                              ? containerLayout.gridTemplate.split('/')[1] 
+                              : containerLayout.gridTemplate,
+                            gridTemplateRows: containerLayout.gridTemplate.includes('/') 
+                              ? containerLayout.gridTemplate.split('/')[0] 
+                              : '1fr'
+                          }}
+                        >
+                          {dashboardComponents.map((component) => (
+                            <Card key={component.id} className="p-4">
+                              <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium">{component.title}</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="space-y-2 text-xs text-muted-foreground">
+                                  <div>Type: {component.type}</div>
+                                  {component.chartType && <div>Chart Type: {component.chartType}</div>}
+                                  {component.dataSource && <div>Data Source: {component.dataSource}</div>}
+                                  <div>Added: {new Date(component.createdAt).toLocaleDateString()}</div>
+                                </div>
+                                <div className="mt-3 flex gap-2">
+                                  <Button size="sm" variant="outline" className="text-xs">
+                                    Configure
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    className="text-xs text-destructive"
+                                    onClick={() => {
+                                      setDashboardComponents(prev => 
+                                        prev.filter(comp => comp.id !== component.id)
+                                      );
+                                    }}
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                          
+                          {/* Empty grid cells for layout visualization */}
+                          {Array.from({ length: (containerLayout.rows * containerLayout.columns) - dashboardComponents.length }).map((_, index) => (
+                            <div 
+                              key={`empty-${index}`} 
+                              className="border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center min-h-[100px]"
+                            >
+                              <span className="text-muted-foreground/50 text-sm">Empty Cell</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="relative text-center py-8 text-muted-foreground border-2 border-dashed border-sidebar-border rounded-lg cursor-pointer hover:border-primary/50 hover:text-primary transition-colors">
+                          {/* Left Border - Add Column */}
+                          <div 
+                            className="absolute left-0 top-0 w-6 h-full hover:bg-primary/20 transition-colors cursor-pointer group z-10"
+                            onMouseEnter={() => setHoveredBorder('left')}
+                            onMouseLeave={() => setHoveredBorder(null)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBorderAction('add-column-left');
+                            }}
+                          >
+                            {hoveredBorder === 'left' && (
+                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
+                                <Columns className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Right Border - Add Column */}
+                          <div 
+                            className="absolute right-0 top-0 w-6 h-full hover:bg-primary/20 transition-colors cursor-pointer group z-10"
+                            onMouseEnter={() => setHoveredBorder('right')}
+                            onMouseLeave={() => setHoveredBorder(null)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBorderAction('add-column-right');
+                            }}
+                          >
+                            {hoveredBorder === 'right' && (
+                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
+                                <Columns className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Top Border - Add Row */}
+                          <div 
+                            className="absolute top-0 left-0 w-full h-6 hover:bg-primary/20 transition-colors cursor-pointer group z-10"
+                            onMouseEnter={() => setHoveredBorder('top')}
+                            onMouseLeave={() => setHoveredBorder(null)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBorderAction('add-row-top');
+                            }}
+                          >
+                            {hoveredBorder === 'top' && (
+                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
+                                <Rows className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Bottom Border - Add Row */}
+                          <div 
+                            className="absolute bottom-0 left-0 w-full h-6 hover:bg-primary/20 transition-colors cursor-pointer group z-10"
+                            onMouseEnter={() => setHoveredBorder('bottom')}
+                            onMouseLeave={() => setHoveredBorder(null)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBorderAction('add-row-bottom');
+                            }}
+                          >
+                            {hoveredBorder === 'bottom' && (
+                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
+                                <Rows className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-col items-center gap-2 relative z-0">
+                            <Plus className="w-6 h-6" />
+                            <p className="text-sm font-medium">Add new component here</p>
+                            <p className="text-xs opacity-75">Click to choose from available components</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0 bg-card border-card" align="center">
+                    <div className="p-3">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-card-foreground">Add Component</h3>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsAddComponentOpen(false)}
+                          className="hover:bg-muted/50 h-6 w-6 p-0"
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {componentOptions.map((option) => {
+                          const IconComponent = option.icon;
+                          return (
+                            <Button
+                              key={option.id}
+                              variant="outline"
+                              className="h-auto p-2 flex flex-col items-center gap-1 hover:bg-primary/5 hover:border-primary/20 transition-all duration-200 group"
+                              onClick={() => handleAddComponent(option.id)}
+                            >
+                              <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                <IconComponent className="w-3 h-3 text-primary" />
+                              </div>
+                              <div className="text-center">
+                                <div className="text-xs font-medium text-card-foreground leading-tight">
+                                  {option.name}
+                                </div>
+                              </div>
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </EditableWrapper>
+            </div>
           </div>
 
         </div>
       </div>
+
     </div>
+
+    {/* Component Popup Cards */}
+    {activePopup && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-card border border-border rounded-lg shadow-xl max-w-md w-full mx-4">
+          {activePopup === 'kpi' && <KPICardPopup onClose={() => setActivePopup(null)} onAdd={addComponentToDashboard} />}
+          {activePopup === 'notes' && <NotesPopup onClose={() => setActivePopup(null)} onAdd={addComponentToDashboard} />}
+          {activePopup === 'weather' && <WeatherPopup onClose={() => setActivePopup(null)} onAdd={addComponentToDashboard} />}
+          {activePopup === 'chart' && <ChartPopup onClose={() => setActivePopup(null)} onAdd={addComponentToDashboard} />}
+          {activePopup === 'table' && <DataTablePopup onClose={() => setActivePopup(null)} onAdd={addComponentToDashboard} />}
+          {activePopup === 'activity' && <ActivityFeedPopup onClose={() => setActivePopup(null)} onAdd={addComponentToDashboard} />}
+        </div>
+      </div>
+    )}
+    </DashboardEditMode>
   );
 }
+
+// KPI Card Popup Component
+const KPICardPopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (component: any) => void }) => (
+  <div className="p-6">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-lg font-semibold">Add KPI Card</h3>
+      <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">KPI Title</label>
+        <Input placeholder="e.g., Monthly Revenue" className="mt-1" />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Value</label>
+        <Input placeholder="e.g., 594,900 SAR" className="mt-1" />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Change</label>
+        <Input placeholder="e.g., +12.5%" className="mt-1" />
+      </div>
+      <div className="flex gap-2 pt-4">
+        <Button className="flex-1">Add KPI Card</Button>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+      </div>
+    </div>
+  </div>
+);
+
+// Notes Popup Component
+const NotesPopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (component: any) => void }) => (
+  <div className="p-6">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-lg font-semibold">Add Notes</h3>
+      <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Note Title</label>
+        <Input placeholder="e.g., Project Update" className="mt-1" />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Content</label>
+        <textarea 
+          className="w-full p-2 border border-border rounded-md resize-none h-24"
+          placeholder="Enter your notes here..."
+        />
+      </div>
+      <div className="flex gap-2 pt-4">
+        <Button className="flex-1">Add Notes</Button>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+      </div>
+    </div>
+  </div>
+);
+
+// Weather Popup Component
+const WeatherPopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (component: any) => void }) => (
+  <div className="p-6">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-lg font-semibold">Add Weather Widget</h3>
+      <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Location</label>
+        <Input placeholder="e.g., Riyadh, Saudi Arabia" className="mt-1" />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Temperature Unit</label>
+        <select className="w-full p-2 border border-border rounded-md mt-1">
+          <option value="celsius">Celsius (°C)</option>
+          <option value="fahrenheit">Fahrenheit (°F)</option>
+        </select>
+      </div>
+      <div className="flex gap-2 pt-4">
+        <Button className="flex-1">Add Weather Widget</Button>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+      </div>
+    </div>
+  </div>
+);
+
+// Chart Popup Component
+const ChartPopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (component: any) => void }) => {
+  const [chartType, setChartType] = useState('line');
+  const [dataSource, setDataSource] = useState('');
+  const [chartTitle, setChartTitle] = useState('');
+
+  const handleAddChart = () => {
+    if (!dataSource || !chartTitle) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    // Create chart component data
+    const chartData = {
+      id: `chart-${Date.now()}`,
+      type: 'chart',
+      chartType,
+      dataSource,
+      title: chartTitle,
+      createdAt: new Date().toISOString()
+    };
+
+    // Add to dashboard
+    onAdd(chartData);
+    
+    // Show success message
+    alert(`Chart "${chartTitle}" added successfully!`);
+    
+    // Close popup
+    onClose();
+  };
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold">Add Chart</h3>
+        <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+      <div className="space-y-4">
+        <div>
+          <label className="text-sm font-medium">Chart Type</label>
+          <select 
+            className="w-full p-2 border border-border rounded-md mt-1"
+            value={chartType}
+            onChange={(e) => setChartType(e.target.value)}
+          >
+            <option value="line">Line Chart</option>
+            <option value="bar">Bar Chart</option>
+            <option value="pie">Pie Chart</option>
+            <option value="area">Area Chart</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium">Data Source</label>
+          <select 
+            className="w-full p-2 border border-border rounded-md mt-1"
+            value={dataSource}
+            onChange={(e) => setDataSource(e.target.value)}
+          >
+            <option value="">Select a data source...</option>
+            <optgroup label="Financial Data">
+              <option value="monthly-revenue">Monthly Revenue</option>
+              <option value="yearly-revenue">Yearly Revenue</option>
+              <option value="project-budget">Project Budget</option>
+              <option value="payment-status">Payment Status</option>
+              <option value="expense-tracking">Expense Tracking</option>
+            </optgroup>
+            <optgroup label="Project Data">
+              <option value="active-projects">Active Projects</option>
+              <option value="project-timeline">Project Timeline</option>
+              <option value="project-status">Project Status</option>
+              <option value="team-performance">Team Performance</option>
+              <option value="project-milestones">Project Milestones</option>
+            </optgroup>
+            <optgroup label="User & Network Data">
+              <option value="user-activity">User Activity</option>
+              <option value="network-connections">Network Connections</option>
+              <option value="engineer-specializations">Engineer Specializations</option>
+              <option value="client-interactions">Client Interactions</option>
+              <option value="team-collaboration">Team Collaboration</option>
+            </optgroup>
+            <optgroup label="Job & Task Data">
+              <option value="job-listings">Job Listings</option>
+              <option value="task-completion">Task Completion</option>
+              <option value="job-applications">Job Applications</option>
+              <option value="skill-demand">Skill Demand</option>
+              <option value="workload-distribution">Workload Distribution</option>
+            </optgroup>
+            <optgroup label="Analytics Data">
+              <option value="dashboard-metrics">Dashboard Metrics</option>
+              <option value="performance-kpis">Performance KPIs</option>
+              <option value="engagement-stats">Engagement Statistics</option>
+              <option value="conversion-rates">Conversion Rates</option>
+              <option value="growth-metrics">Growth Metrics</option>
+            </optgroup>
+            <optgroup label="Calendar & Events">
+              <option value="calendar-events">Calendar Events</option>
+              <option value="meeting-schedule">Meeting Schedule</option>
+              <option value="deadline-tracking">Deadline Tracking</option>
+              <option value="event-attendance">Event Attendance</option>
+            </optgroup>
+            <optgroup label="Learning & Development">
+              <option value="course-progress">Course Progress</option>
+              <option value="certification-status">Certification Status</option>
+              <option value="skill-assessments">Skill Assessments</option>
+              <option value="training-completion">Training Completion</option>
+            </optgroup>
+            <optgroup label="Communication Data">
+              <option value="message-volume">Message Volume</option>
+              <option value="response-times">Response Times</option>
+              <option value="support-tickets">Support Tickets</option>
+              <option value="feedback-ratings">Feedback Ratings</option>
+            </optgroup>
+            <optgroup label="External Data Sources">
+              <option value="pdf-document">PDF Document</option>
+              <option value="excel-spreadsheet">Excel Spreadsheet</option>
+              <option value="external-link">External Link</option>
+              <option value="api-endpoint">API Endpoint</option>
+              <option value="script-output">Script Output</option>
+            </optgroup>
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium">Chart Title</label>
+          <Input 
+            placeholder="e.g., Monthly Revenue Trend" 
+            className="mt-1"
+            value={chartTitle}
+            onChange={(e) => setChartTitle(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-2 pt-4">
+          <Button className="flex-1" onClick={handleAddChart}>Add Chart</Button>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Data Table Popup Component
+const DataTablePopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (component: any) => void }) => (
+  <div className="p-6">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-lg font-semibold">Add Data Table</h3>
+      <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Table Title</label>
+        <Input placeholder="e.g., Project List" className="mt-1" />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Data Source</label>
+        <Input placeholder="e.g., Projects API" className="mt-1" />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Columns</label>
+        <Input placeholder="e.g., Name, Status, Progress" className="mt-1" />
+      </div>
+      <div className="flex gap-2 pt-4">
+        <Button className="flex-1">Add Data Table</Button>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+      </div>
+    </div>
+  </div>
+);
+
+// Activity Feed Popup Component
+const ActivityFeedPopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (component: any) => void }) => (
+  <div className="p-6">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-lg font-semibold">Add Activity Feed</h3>
+      <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium">Feed Title</label>
+        <Input placeholder="e.g., Recent Activity" className="mt-1" />
+      </div>
+      <div>
+        <label className="text-sm font-medium">Activity Source</label>
+        <select className="w-full p-2 border border-border rounded-md mt-1">
+          <option value="all">All Activities</option>
+          <option value="projects">Projects Only</option>
+          <option value="users">User Activities</option>
+          <option value="system">System Events</option>
+        </select>
+      </div>
+      <div>
+        <label className="text-sm font-medium">Max Items</label>
+        <Input type="number" placeholder="10" className="mt-1" />
+      </div>
+      <div className="flex gap-2 pt-4">
+        <Button className="flex-1">Add Activity Feed</Button>
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+      </div>
+    </div>
+  </div>
+);

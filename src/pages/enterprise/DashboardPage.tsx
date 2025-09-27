@@ -341,9 +341,11 @@ export function DashboardPage() {
                 <Tabs value={timeRange} onValueChange={setTimeRange} className="w-auto">
                   <div className="border-b border-sidebar-border">
                     <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-                      <TabsTrigger value="week" className="flex items-center gap-2 px-4 py-3 min-w-fit">Week</TabsTrigger>
+                      <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                        <TabsTrigger value="week" className="flex items-center gap-2 px-4 py-3 min-w-fit">Week</TabsTrigger>
                       <TabsTrigger value="month" className="flex items-center gap-2 px-4 py-3 min-w-fit">Month</TabsTrigger>
                       <TabsTrigger value="year" className="flex items-center gap-2 px-4 py-3 min-w-fit">Year</TabsTrigger>
+                      </div>
                     </TabsList>
                   </div>
                 </Tabs>

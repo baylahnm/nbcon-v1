@@ -177,10 +177,12 @@ export function ProjectDrawer({ isOpen, onClose, projectId }: ProjectDrawerProps
           <Tabs defaultValue="tasks" className="mt-6">
             <div className="border-b border-sidebar-border mb-6">
               <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-                <TabsTrigger value="tasks" className="flex items-center gap-2 px-4 py-3 min-w-fit">Tasks</TabsTrigger>
+                <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                  <TabsTrigger value="tasks" className="flex items-center gap-2 px-4 py-3 min-w-fit">Tasks</TabsTrigger>
                 <TabsTrigger value="board" className="flex items-center gap-2 px-4 py-3 min-w-fit">Board</TabsTrigger>
                 <TabsTrigger value="members" className="flex items-center gap-2 px-4 py-3 min-w-fit">Members</TabsTrigger>
                 <TabsTrigger value="activity" className="flex items-center gap-2 px-4 py-3 min-w-fit">Activity</TabsTrigger>
+                </div>
               </TabsList>
             </div>
             

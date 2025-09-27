@@ -359,9 +359,10 @@ export function CoursePlayerContent({ courseId, courseTitle, progress, onBack }:
             <div className="flex items-center justify-between mb-2">
               <h2 className="font-semibold text-foreground">{course.currentLesson.title}</h2>
               <Button
-                variant="ghost"
+                variant="default"
                 size="sm"
                 onClick={() => setSidebarOpen(false)}
+                className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded-md"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -372,7 +373,7 @@ export function CoursePlayerContent({ courseId, courseTitle, progress, onBack }:
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
             <div className="border-b border-sidebar-border m-4">
               <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-                <div className="flex items-center w-full overflow-x-auto">
+                <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
                   <TabsTrigger value="curriculum" className="flex items-center gap-2 px-4 py-3 min-w-fit">Content</TabsTrigger>
                   <TabsTrigger value="notes" className="flex items-center gap-2 px-4 py-3 min-w-fit">Notes</TabsTrigger>
                   <TabsTrigger value="transcript" className="flex items-center gap-2 px-4 py-3 min-w-fit">Script</TabsTrigger>

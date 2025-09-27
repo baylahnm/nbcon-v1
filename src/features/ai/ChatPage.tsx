@@ -220,7 +220,7 @@ export function ChatPage({ onBack }: ChatPageProps) {
         </div>
 
         {/* Messages Area */}
-        <ScrollArea className="flex-1 p-4">
+        <ScrollArea className="flex-1 p-4 h-0">
           <div className="space-y-4">
             {activeMessages.length === 0 ? (
               /* Empty State */

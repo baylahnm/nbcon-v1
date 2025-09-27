@@ -183,7 +183,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                 <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                   {settings.rtl ? 'المحادثات الأخيرة' : 'Recent Chats'}
                 </h3>
-                <ScrollArea className="h-64">
+                <ScrollArea className="h-64 overflow-y-auto">
                   <div className="space-y-1">
                     {threads.slice(0, 5).map((thread) => (
                       <Card
@@ -225,7 +225,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
           /* Compact View - Show Messages */
           <div className="flex-1 flex flex-col min-h-0">
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4">
+            <ScrollArea className="flex-1 p-4 overflow-y-auto">
               <div className="space-y-3">
                 {lastMessages.length === 0 ? (
                   <div className="text-center py-8">
@@ -251,8 +251,8 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
             </ScrollArea>
 
             {/* Composer */}
-            <div className="p-4 border-t border-sidebar-border">
-              <ChatComposer isCompact />
+            <div className="p-4 border-t border-sidebar-border bg-background">
+              <ChatComposer />
             </div>
           </div>
         )}

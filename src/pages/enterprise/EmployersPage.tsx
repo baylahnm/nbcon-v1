@@ -534,7 +534,8 @@ export function EmployersPage() {
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-            <TabsTrigger value="payroll" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+              <TabsTrigger value="payroll" className="flex items-center gap-2 px-4 py-3 min-w-fit">
               <DollarSign className="h-4 w-4" />
               Payroll
             </TabsTrigger>
@@ -550,6 +551,7 @@ export function EmployersPage() {
               <Shield className="h-4 w-4" />
               Compliance
             </TabsTrigger>
+            </div>
           </TabsList>
         </div>
 

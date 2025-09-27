@@ -497,7 +497,8 @@ export function PerformancePage() {
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
           <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-            <TabsTrigger value="employers" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+              <TabsTrigger value="employers" className="flex items-center gap-2 px-4 py-3 min-w-fit">
               <Users className="h-4 w-4" />
               Employers
             </TabsTrigger>
@@ -505,6 +506,7 @@ export function PerformancePage() {
               <Target className="h-4 w-4" />
               Projects
             </TabsTrigger>
+            </div>
           </TabsList>
         </div>
 

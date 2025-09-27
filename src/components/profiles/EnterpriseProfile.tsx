@@ -408,9 +408,11 @@ export function EnterpriseProfile() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="border-b border-sidebar-border mb-6">
             <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-              <TabsTrigger value="basic" className="flex items-center gap-2 px-4 py-3 min-w-fit">Basic Information</TabsTrigger>
+              <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                <TabsTrigger value="basic" className="flex items-center gap-2 px-4 py-3 min-w-fit">Basic Information</TabsTrigger>
               <TabsTrigger value="professional" className="flex items-center gap-2 px-4 py-3 min-w-fit">Professional Details</TabsTrigger>
               <TabsTrigger value="portfolio" className="flex items-center gap-2 px-4 py-3 min-w-fit">Portfolio & Skills</TabsTrigger>
+              </div>
             </TabsList>
           </div>
 

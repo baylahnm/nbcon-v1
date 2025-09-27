@@ -338,7 +338,7 @@ export function TaskDetailDialog({
                 <FileText className="w-5 h-5" />
                 {isEditing ? 'Edit Task' : 'Task Details'}
               </DialogTitle>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mx-6">
                 {!isEditing && (
                   <>
                     {task.status !== 'completed' && (

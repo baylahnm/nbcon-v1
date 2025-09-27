@@ -160,7 +160,7 @@ export default function CalendarPage() {
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b">
           <div>
             <h1 className="text-xl font-bold flex items-center gap-2">
               <Calendar className="h-5 w-5 text-primary" />

@@ -355,7 +355,7 @@ export function HelpSupportContent() {
     <div className="flex-1 p-6 pb-6 overflow-auto">
       <div className="w-full space-y-6">
         {/* Header */}
-        <div className="space-y-2">
+        <div className="space-y-2 pb-6 border-b">
         <h1 className="flex items-center gap-2 text-xl font-bold">
           <LifeBuoy className="h-5 w-5 text-primary" />
           Help & Support
@@ -367,7 +367,6 @@ export function HelpSupportContent() {
 
         {/* Emergency Alert */}
         <Alert className="border-destructive/20 bg-destructive/5">
-          <AlertTriangle className="h-4 w-4 text-destructive" />
           <AlertDescription className="text-destructive">
             <strong>Emergency Support:</strong> For critical safety issues or system emergencies affecting active work sites, 
             call our 24/7 hotline at <strong>+966 11 234 5678</strong>. For payment disputes exceeding 50,000 SAR, contact our legal team immediately.
@@ -427,7 +426,7 @@ export function HelpSupportContent() {
         {/* Main Content Tabs */}
         <Tabs defaultValue="help-center" className="space-y-6">
           <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
-            <div className="flex items-center w-full overflow-x-auto">
+            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
               <TabsTrigger 
                 value="help-center"
                 className="flex items-center gap-2 px-4 py-3 min-w-fit"

@@ -39,7 +39,7 @@ export default function JobsList() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pb-6 border-b">
         <div>
           <h1 className="text-xl font-bold flex items-center gap-2">
             <Briefcase className="h-5 w-5 text-primary" />
@@ -66,7 +66,7 @@ export default function JobsList() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <div className="border-b border-sidebar-border mb-6">
             <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-              <div className="flex items-center w-full overflow-x-auto">
+              <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
                 <TabsTrigger value="my-jobs" onClick={() => setActiveTab('my-jobs')} className="flex items-center gap-2 px-4 py-3 min-w-fit">
                   My Projects
                 </TabsTrigger>

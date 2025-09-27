@@ -489,9 +489,11 @@ export function UploadDeliverableContent() {
         <Tabs defaultValue="upload" className="space-y-6">
           <div className="border-b border-sidebar-border mb-6">
             <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-              <TabsTrigger value="upload" className="flex items-center gap-2 px-4 py-3 min-w-fit">File Upload</TabsTrigger>
+              <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                <TabsTrigger value="upload" className="flex items-center gap-2 px-4 py-3 min-w-fit">File Upload</TabsTrigger>
               <TabsTrigger value="quality" className="flex items-center gap-2 px-4 py-3 min-w-fit">Quality Check</TabsTrigger>
               <TabsTrigger value="submit" className="flex items-center gap-2 px-4 py-3 min-w-fit">Review & Submit</TabsTrigger>
+              </div>
             </TabsList>
           </div>
 

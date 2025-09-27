@@ -565,9 +565,9 @@ export default function MyNetwork() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Users className="h-6 w-6 text-primary" />
+      <div className="space-y-2 pb-6 border-b">
+        <h1 className="text-xl font-bold flex items-center gap-2">
+          <Users className="h-5 w-5 text-primary" />
           My Network
         </h1>
         <p className="text-muted-foreground">
@@ -578,54 +578,52 @@ export default function MyNetwork() {
       {/* Main Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="border-b border-sidebar-border">
-          <ScrollArea className="w-full whitespace-nowrap">
-            <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-              <div className="flex items-center w-full overflow-x-auto">
+          <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
+            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
                 <TabsTrigger
                   value="connections"
                   className="flex items-center gap-2 px-4 py-3 min-w-fit"
                 >
                   <Users className="h-4 w-4" />
-                  My Connections
+                  <span className="hidden sm:inline">My Connections</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="suggestions"
                   className="flex items-center gap-2 px-4 py-3 min-w-fit"
                 >
                   <UserPlus className="h-4 w-4" />
-                  People You May Know
+                  <span className="hidden sm:inline">People You May Know</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="requests"
                   className="flex items-center gap-2 px-4 py-3 min-w-fit"
                 >
                   <UserCheck className="h-4 w-4" />
-                  Connection Requests
+                  <span className="hidden sm:inline">Connection Requests</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="events"
                   className="flex items-center gap-2 px-4 py-3 min-w-fit"
                 >
                   <Calendar className="h-4 w-4" />
-                  Industry Events
+                  <span className="hidden sm:inline">Industry Events</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="updates"
                   className="flex items-center gap-2 px-4 py-3 min-w-fit"
                 >
                   <Newspaper className="h-4 w-4" />
-                  Industry Updates
+                  <span className="hidden sm:inline">Industry Updates</span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="groups"
                   className="flex items-center gap-2 px-4 py-3 min-w-fit"
                 >
                   <Users className="h-4 w-4" />
-                  Professional Groups
+                  <span className="hidden sm:inline">Professional Groups</span>
                 </TabsTrigger>
-              </div>
-            </TabsList>
-          </ScrollArea>
+            </div>
+          </TabsList>
         </div>
 
         {/* Tab Content */}

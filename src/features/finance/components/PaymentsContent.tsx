@@ -84,7 +84,7 @@ export function PaymentsContent() {
     <div className="flex-1 bg-background p-6">
       {/* Header */}
       <div className="bg-background p-0">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-6 border-b">
           <div>
             <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-primary" />
@@ -100,7 +100,7 @@ export function PaymentsContent() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Tab Navigation */}
           <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
-            <div className="flex items-center w-full overflow-x-auto">
+            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (

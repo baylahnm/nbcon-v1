@@ -356,12 +356,14 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
             <Tabs value={authMode} onValueChange={(value) => setAuthMode(value as 'login' | 'signup')}>
               <div className="border-b border-sidebar-border mb-6">
                 <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-                  <TabsTrigger value="login" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+                  <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                    <TabsTrigger value="login" className="flex items-center gap-2 px-4 py-3 min-w-fit">
                     {language === 'ar' ? 'تسجيل دخول' : 'Sign In'}
                   </TabsTrigger>
                   <TabsTrigger value="signup" className="flex items-center gap-2 px-4 py-3 min-w-fit">
                     {language === 'ar' ? 'إنشاء حساب' : 'Sign Up'}
                   </TabsTrigger>
+                  </div>
                 </TabsList>
               </div>
 

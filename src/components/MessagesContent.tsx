@@ -532,20 +532,6 @@ export function MessagesContent() {
       )}
 
       <div className="flex-1 flex h-screen overflow-hidden">
-        {/* AI Mode Toggle */}
-        {!isAiMode && (
-          <div className="absolute top-4 right-4 z-10">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsAiMode(true)}
-              className="bg-background/80 backdrop-blur-sm"
-            >
-              <Bot className="w-4 h-4 mr-2" />
-              AI Assistant
-            </Button>
-          </div>
-        )}
 
         {/* Conversations Sidebar */}
         {!isAiMode && (

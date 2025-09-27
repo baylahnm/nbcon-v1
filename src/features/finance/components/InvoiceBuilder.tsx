@@ -9,6 +9,52 @@ import { Plus, Trash2, FileText, Download, Upload, X, Save } from "lucide-react"
 import QRCode from "qrcode";
 import html2pdf from "html2pdf.js";
 
+// Helper function to get computed CSS variable values
+const getCSSVariableValue = (variable: string): string => {
+  if (typeof window !== 'undefined') {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue(variable)
+      .trim();
+  }
+  return '';
+};
+
+// Helper function to convert HSL values to hex
+const hslToHex = (hsl: string): string => {
+  if (!hsl || hsl === '') return '#000000';
+  
+  // Parse HSL values
+  const values = hsl.match(/\d+/g);
+  if (!values || values.length < 3) return '#000000';
+  
+  const h = parseInt(values[0]) / 360;
+  const s = parseInt(values[1]) / 100;
+  const l = parseInt(values[2]) / 100;
+  
+  const hue2rgb = (p: number, q: number, t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+  };
+  
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  
+  const r = hue2rgb(p, q, h + 1/3);
+  const g = hue2rgb(p, q, h);
+  const b = hue2rgb(p, q, h - 1/3);
+  
+  const toHex = (c: number) => {
+    const hex = Math.round(c * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
+
 export interface LineItem {
   id: string;
   description: string;
@@ -53,11 +99,29 @@ interface InvoiceBuilderProps {
 
 export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
-  const [headerColor, setHeaderColor] = useState("#2b4c44");
-  const [tableHeaderColor, setTableHeaderColor] = useState("#6c4b3e");
-  const [signatureStampBgColor, setSignatureStampBgColor] = useState("#f3f4f6");
-  const [headerTextColor, setHeaderTextColor] = useState("#ffffff");
-  const [tableTextColor, setTableTextColor] = useState("#ffffff");
+  
+  // Get initial theme colors for display in color pickers
+  const getInitialColors = () => {
+    const primaryHSL = getCSSVariableValue('--primary');
+    const cardHSL = getCSSVariableValue('--card');
+    const foregroundHSL = getCSSVariableValue('--foreground');
+    
+    return {
+      headerColor: primaryHSL ? hslToHex(primaryHSL) : '#27c862',
+      tableHeaderColor: cardHSL ? hslToHex(cardHSL) : '#f0f0f0',
+      headerTextColor: '#ffffff',
+      tableTextColor: foregroundHSL ? hslToHex(foregroundHSL) : '#000000',
+      signatureStampBgColor: '#f3f4f6'
+    };
+  };
+  
+  const initialColors = getInitialColors();
+  
+  const [headerColor, setHeaderColor] = useState(initialColors.headerColor);
+  const [tableHeaderColor, setTableHeaderColor] = useState(initialColors.tableHeaderColor);
+  const [signatureStampBgColor, setSignatureStampBgColor] = useState(initialColors.signatureStampBgColor);
+  const [headerTextColor, setHeaderTextColor] = useState(initialColors.headerTextColor);
+  const [tableTextColor, setTableTextColor] = useState(initialColors.tableTextColor);
   const [signatureStamp, setSignatureStamp] = useState<string | null>(null);
   
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
@@ -179,6 +243,34 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
   useEffect(() => {
     generateQRCode();
   }, [generateQRCode]);
+
+  // Update colors when theme changes
+  useEffect(() => {
+    const updateThemeColors = () => {
+      const primaryHSL = getCSSVariableValue('--primary');
+      const cardHSL = getCSSVariableValue('--card');
+      const foregroundHSL = getCSSVariableValue('--foreground');
+      
+      // Only update if we haven't manually changed the colors
+      if (primaryHSL && headerColor === initialColors.headerColor) {
+        setHeaderColor(hslToHex(primaryHSL));
+      }
+      if (cardHSL && tableHeaderColor === initialColors.tableHeaderColor) {
+        setTableHeaderColor(hslToHex(cardHSL));
+      }
+      if (foregroundHSL && tableTextColor === initialColors.tableTextColor) {
+        setTableTextColor(hslToHex(foregroundHSL));
+      }
+    };
+
+    // Update colors on theme change
+    updateThemeColors();
+    
+    // Listen for theme changes (if using a theme store)
+    const interval = setInterval(updateThemeColors, 1000);
+    
+    return () => clearInterval(interval);
+  }, [headerColor, tableHeaderColor, tableTextColor, initialColors]);
 
   const handleExportPDF = async () => {
     const invoiceContent = document.querySelector(".invoice-preview") as HTMLElement;
@@ -398,7 +490,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                         type="color"
                         value={headerColor}
                         onChange={(e) => setHeaderColor(e.target.value)}
-                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
                       />
                     </div>
                     <div className="flex flex-col gap-1">
@@ -408,7 +500,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                         type="color"
                         value={headerTextColor}
                         onChange={(e) => setHeaderTextColor(e.target.value)}
-                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
                       />
                     </div>
                     <div className="flex flex-col gap-1">
@@ -418,7 +510,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                         type="color"
                         value={tableHeaderColor}
                         onChange={(e) => setTableHeaderColor(e.target.value)}
-                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
                       />
                     </div>
                     <div className="flex flex-col gap-1">
@@ -428,17 +520,17 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                         type="color"
                         value={tableTextColor}
                         onChange={(e) => setTableTextColor(e.target.value)}
-                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
                       />
                     </div>
-  <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1">
                       <Label htmlFor="signature-stamp-bg-color" className="text-xs">Stamp BG</Label>
                       <input
                         id="signature-stamp-bg-color"
                         type="color"
                         value={signatureStampBgColor}
                         onChange={(e) => setSignatureStampBgColor(e.target.value)}
-                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+                        className="w-8 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
                       />
                     </div>
                   </div>

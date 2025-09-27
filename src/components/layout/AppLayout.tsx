@@ -7,6 +7,7 @@ import { Loader2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AiDrawer } from '@/features/ai/Drawer';
 import { useAiStore } from '@/features/ai/store/useAiStore';
+import { R } from '@/lib/routes';
 interface AppLayoutProps {
   children?: ReactNode;
 }
@@ -30,6 +31,20 @@ export function AppLayout({
   const isDashboardRoute = ['/e', '/c', '/x', '/admin'].some(route => 
     location.pathname.startsWith(route)
   );
+
+  // Get AI route based on role
+  const getAIRoute = () => {
+    switch (profile?.role) {
+      case 'engineer':
+        return R.engineer.ai;
+      case 'client':
+        return R.client.ai;
+      case 'enterprise':
+        return R.enterprise.ai;
+      default:
+        return '/ai'; // fallback
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = initializeAuth();
@@ -100,7 +115,7 @@ export function AppLayout({
             <AiDrawer
               isOpen={isAiDrawerOpen}
               onClose={() => setIsAiDrawerOpen(false)}
-              onOpenFull={() => navigate('/ai')}
+              onOpenFull={() => navigate(getAIRoute())}
             />
           )}
         </SidebarInset>
