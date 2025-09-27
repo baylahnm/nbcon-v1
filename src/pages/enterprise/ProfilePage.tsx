@@ -397,7 +397,7 @@ export function ProfilePage() {
               <div className="relative">
                 <Avatar className="h-32 w-32 mx-auto">
                   <AvatarImage src={companyInfo.logo} />
-                  <AvatarFallback className="text-2xl">
+                  <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
                     {companyInfo.companyName.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>

@@ -395,10 +395,8 @@ const HomePage = () => {
               </div>
               
               {/* Main Title */}
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent hero-title">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight text-primary hero-title">
               {t.hero.title}
-            </span>
           </h1>
               
               {/* Subtitle */}
@@ -603,13 +601,76 @@ const HomePage = () => {
       <section className="py-12 bg-muted/50">
         <div className="container mx-auto px-4 text-center">
           <p className="text-lg font-medium mb-8 trust-title">{t.trust.title}</p>
-          <div className="flex justify-center items-center space-x-8 opacity-60">
-            {/* Placeholder for company logos */}
-            <div className="w-20 h-8 bg-muted-foreground/20 rounded"></div>
-            <div className="w-24 h-8 bg-muted-foreground/20 rounded"></div>
-            <div className="w-16 h-8 bg-muted-foreground/20 rounded"></div>
-            <div className="w-28 h-8 bg-muted-foreground/20 rounded"></div>
-            <div className="w-20 h-8 bg-muted-foreground/20 rounded"></div>
+          <div className="relative overflow-hidden">
+            <div className="flex animate-scroll space-x-8 opacity-60">
+              {/* First set of logos */}
+              <img src="/clintes-logos/Advanced.png" alt="Advanced" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Al-ajmi.png" alt="Al-ajmi" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Almajdouié.png" alt="Almajdouié" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Alrawaf.png" alt="Alrawaf" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/ALTAMIMI.png" alt="ALTAMIMI" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/ansab.png" alt="ansab" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Aramco.png" alt="Aramco" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/BOUTIQUE.png" alt="BOUTIQUE" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Cat Group.png" alt="Cat Group" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/El Seif.png" alt="El Seif" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/EQUATE.png" alt="EQUATE" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Euro Consult.png" alt="Euro Consult" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/GACA.png" alt="GACA" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Giza Systems.png" alt="Giza Systems" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Jabco.png" alt="Jabco" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/MAIADEN.png" alt="MAIADEN" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/MAS.png" alt="MAS" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Mastoura.png" alt="Mastoura" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Mobco.png" alt="Mobco" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/NCH.png" alt="NCH" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Neom.png" alt="Neom" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Nesma.png" alt="Nesma" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/PIF.png" alt="PIF" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Sabic.png" alt="Sabic" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/SAMA ENERGY.png" alt="SAMA ENERGY" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/SAR.png" alt="SAR" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Saudi Electricity company.png" alt="Saudi Electricity" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/SCTNH.png" alt="SCTNH" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Shibah Al Jazira.png" alt="Shibah Al Jazira" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Sinopec.png" alt="Sinopec" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Sipchem.png" alt="Sipchem" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/wsp.png" alt="WSP" className="h-48 w-48 object-contain flex-shrink-0" />
+              
+              {/* Duplicate set for seamless loop */}
+              <img src="/clintes-logos/Advanced.png" alt="Advanced" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Al-ajmi.png" alt="Al-ajmi" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Almajdouié.png" alt="Almajdouié" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Alrawaf.png" alt="Alrawaf" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/ALTAMIMI.png" alt="ALTAMIMI" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/ansab.png" alt="ansab" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Aramco.png" alt="Aramco" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/BOUTIQUE.png" alt="BOUTIQUE" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Cat Group.png" alt="Cat Group" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/El Seif.png" alt="El Seif" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/EQUATE.png" alt="EQUATE" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Euro Consult.png" alt="Euro Consult" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/GACA.png" alt="GACA" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Giza Systems.png" alt="Giza Systems" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Jabco.png" alt="Jabco" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/MAIADEN.png" alt="MAIADEN" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/MAS.png" alt="MAS" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Mastoura.png" alt="Mastoura" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Mobco.png" alt="Mobco" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/NCH.png" alt="NCH" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Neom.png" alt="Neom" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Nesma.png" alt="Nesma" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/PIF.png" alt="PIF" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Sabic.png" alt="Sabic" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/SAMA ENERGY.png" alt="SAMA ENERGY" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/SAR.png" alt="SAR" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Saudi Electricity company.png" alt="Saudi Electricity" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/SCTNH.png" alt="SCTNH" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Shibah Al Jazira.png" alt="Shibah Al Jazira" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Sinopec.png" alt="Sinopec" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/Sipchem.png" alt="Sipchem" className="h-48 w-48 object-contain flex-shrink-0" />
+              <img src="/clintes-logos/wsp.png" alt="WSP" className="h-48 w-48 object-contain flex-shrink-0" />
+            </div>
           </div>
         </div>
       </section>

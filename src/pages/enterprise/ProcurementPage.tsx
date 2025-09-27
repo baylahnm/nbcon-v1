@@ -506,31 +506,31 @@ export function ProcurementPage() {
       case 'available':
       case 'in-stock':
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-600 border-green-500/20';
       case 'inactive':
       case 'retired':
       case 'out-of-stock':
       case 'overdue':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'pending':
       case 'maintenance':
       case 'low-stock':
       case 'scheduled':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
       case 'in-use':
       case 'overstocked':
       case 'in-progress':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-primary/10 text-primary border-primary/20';
       case 'critical':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'high':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
       case 'low':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground border-muted';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground border-muted';
     }
   };
 
@@ -539,21 +539,36 @@ export function ProcurementPage() {
       case 'excellent':
         return 'text-green-600';
       case 'good':
-        return 'text-blue-600';
+        return 'text-primary';
       case 'fair':
-        return 'text-yellow-600';
+        return 'text-orange-600';
       case 'poor':
-        return 'text-red-600';
+        return 'text-destructive';
       default:
-        return 'text-gray-600';
+        return 'text-muted-foreground';
+    }
+  };
+
+  const getConditionBadgeColor = (condition: string) => {
+    switch (condition) {
+      case 'excellent':
+        return 'bg-green-500/10 text-green-600 border-green-500/20';
+      case 'good':
+        return 'bg-primary/10 text-primary border-primary/20';
+      case 'fair':
+        return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
+      case 'poor':
+        return 'bg-destructive/10 text-destructive border-destructive/20';
+      default:
+        return 'bg-muted text-muted-foreground border-muted';
     }
   };
 
   const getStockAlert = (item: InventoryItem) => {
     if (item.status === 'out-of-stock') {
-      return <AlertTriangle className="h-4 w-4 text-red-600" />;
+      return <AlertTriangle className="h-4 w-4 text-destructive" />;
     } else if (item.status === 'low-stock') {
-      return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
+      return <AlertTriangle className="h-4 w-4 text-orange-600" />;
     }
     return null;
   };
@@ -781,7 +796,7 @@ export function ProcurementPage() {
                           <p className="text-sm text-muted-foreground">{vendor.category}</p>
                         </div>
                       </div>
-                      <Badge className={cn(getStatusColor(vendor.status))}>
+                      <Badge variant="outline" className={cn(getStatusColor(vendor.status))}>
                         {vendor.status}
                       </Badge>
                     </div>
@@ -866,7 +881,7 @@ export function ProcurementPage() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Badge className={cn(getStatusColor(item.status))}>
+                        <Badge variant="outline" className={cn(getStatusColor(item.status))}>
                           {item.status.replace('-', ' ')}
                         </Badge>
                         <Switch 
@@ -984,7 +999,7 @@ export function ProcurementPage() {
                       </TableCell>
                       <TableCell className="text-sm">{item.supplier}</TableCell>
                       <TableCell>
-                        <Badge className={cn(getStatusColor(item.status))}>
+                        <Badge variant="outline" className={cn(getStatusColor(item.status))}>
                           {item.status.replace('-', ' ')}
                         </Badge>
                       </TableCell>
@@ -1082,7 +1097,7 @@ export function ProcurementPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge className={cn(getStatusColor(task.priority))}>
+                        <Badge variant="outline" className={cn(getStatusColor(task.priority))}>
                           {task.priority}
                         </Badge>
                       </TableCell>
@@ -1100,7 +1115,7 @@ export function ProcurementPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={cn(getStatusColor(task.status))}>
+                        <Badge variant="outline" className={cn(getStatusColor(task.status))}>
                           {task.status.replace('-', ' ')}
                         </Badge>
                       </TableCell>
@@ -1144,7 +1159,7 @@ export function ProcurementPage() {
                     <div>
                       <h3 className="text-lg font-semibold">{vendor.name}</h3>
                       <p className="text-muted-foreground">{vendor.category}</p>
-                      <Badge className={cn(getStatusColor(vendor.status))}>
+                      <Badge variant="outline" className={cn(getStatusColor(vendor.status))}>
                         {vendor.status}
                       </Badge>
                     </div>
@@ -1246,10 +1261,10 @@ export function ProcurementPage() {
                     </div>
                     
                     <div className="flex items-center gap-4">
-                      <Badge className={cn(getStatusColor(equipmentItem.status))}>
+                      <Badge variant="outline" className={cn(getStatusColor(equipmentItem.status))}>
                         {equipmentItem.status.replace('-', ' ')}
                       </Badge>
-                      <Badge className={cn(getConditionColor(equipmentItem.condition))}>
+                      <Badge variant="outline" className={cn(getConditionBadgeColor(equipmentItem.condition))}>
                         {equipmentItem.condition}
                       </Badge>
                     </div>

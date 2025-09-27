@@ -85,13 +85,13 @@ export function TeamMembersList() {
   const getAvailabilityIcon = (status: 'busy' | 'free') => {
     return status === 'free' 
       ? <CheckCircle2 className="h-4 w-4 text-green-500" />
-      : <XCircle className="h-4 w-4 text-red-500" />;
+      : <XCircle className="h-4 w-4 text-destructive" />;
   };
   
   const getAvailabilityColor = (status: 'busy' | 'free') => {
     return status === 'free' 
-      ? 'bg-green-100 text-green-800'
-      : 'bg-red-100 text-red-800';
+      ? 'bg-green-500/10 text-green-600 border-green-500/20'
+      : 'bg-destructive/10 text-destructive border-destructive/20';
   };
 
   return (
@@ -231,7 +231,7 @@ export function TeamMembersList() {
                             </Avatar>
                             <div 
                               className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${
-                                member.isOnline ? 'bg-green-500' : 'bg-red-500'
+                                member.isOnline ? 'bg-green-500' : 'bg-destructive'
                               }`}
                               title={member.isOnline ? 'Online' : 'Offline'}
                             />
@@ -279,7 +279,7 @@ export function TeamMembersList() {
                       
                       <TableCell>
                         <Badge 
-                          variant="secondary" 
+                          variant="outline" 
                           className={`${getAvailabilityColor(member.availabilityStatus)} flex items-center gap-1 w-fit`}
                         >
                           {getAvailabilityIcon(member.availabilityStatus)}

@@ -847,8 +847,8 @@ export function TeamProjectsPage() {
                       <TableRow key={file.id} className="hover:bg-accent/50">
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded bg-red-100 flex items-center justify-center">
-                              <FileText className="h-4 w-4 text-red-600" />
+                            <div className="h-8 w-8 rounded bg-destructive/10 flex items-center justify-center">
+                              <FileText className="h-4 w-4 text-destructive" />
                             </div>
                             <div className="space-y-1">
                               <div className="font-medium">{file.name}</div>

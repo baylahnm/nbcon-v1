@@ -369,25 +369,25 @@ export function EmployersPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-600 border-green-500/20';
       case 'inactive':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground border-muted';
       case 'on-leave':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
       case 'compliant':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-600 border-green-500/20';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
       case 'overdue':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-600 border-green-500/20';
       case 'in-progress':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-primary/10 text-primary border-primary/20';
       case 'not-started':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground border-muted';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground border-muted';
     }
   };
 
@@ -608,7 +608,7 @@ export function EmployersPage() {
                         {formatCurrency(employee.salary)}
                       </TableCell>
                       <TableCell>
-                        <Badge className={cn(getStatusColor(employee.status))}>
+                        <Badge variant="outline" className={cn(getStatusColor(employee.status))}>
                           {employee.status.replace('-', ' ')}
                         </Badge>
                       </TableCell>
@@ -678,7 +678,7 @@ export function EmployersPage() {
                     </div>
                     
                     <div className="flex items-center justify-between pt-2 border-t">
-                      <Badge className={cn(getStatusColor(employee.status))}>
+                      <Badge variant="outline" className={cn(getStatusColor(employee.status))}>
                         {employee.status.replace('-', ' ')}
                       </Badge>
                       <div className="flex items-center space-x-1">
@@ -806,7 +806,7 @@ export function EmployersPage() {
                         </div>
 
                         <div className="flex flex-col items-end space-y-2">
-                          <Badge className={cn(getStatusColor(course.status))}>
+                          <Badge variant="outline" className={cn(getStatusColor(course.status))}>
                             {course.status.replace('-', ' ')}
                           </Badge>
                           <Button variant="outline" size="sm" onClick={() => handleViewCourse(course.id)}>
@@ -892,7 +892,7 @@ export function EmployersPage() {
                               <h4 className="font-medium">{item.title}</h4>
                               <p className="text-sm text-muted-foreground">{item.description}</p>
                             </div>
-                            <Badge className={cn(getStatusColor(item.status))}>
+                            <Badge variant="outline" className={cn(getStatusColor(item.status))}>
                               {item.status}
                             </Badge>
                           </div>
@@ -948,7 +948,7 @@ export function EmployersPage() {
                     <div>
                       <h3 className="text-lg font-semibold">{employee.name}</h3>
                       <p className="text-muted-foreground">{employee.arabicName}</p>
-                      <Badge className={cn(getStatusColor(employee.status))}>
+                      <Badge variant="outline" className={cn(getStatusColor(employee.status))}>
                         {employee.status.replace('-', ' ')}
                       </Badge>
                     </div>
@@ -1072,7 +1072,7 @@ export function EmployersPage() {
                       </div>
                       <Progress value={course.progress} className="h-3" />
                     </div>
-                    <Badge className={cn(getStatusColor(course.status))}>
+                    <Badge variant="outline" className={cn(getStatusColor(course.status))}>
                       {course.status.replace('-', ' ')}
                     </Badge>
                   </div>
@@ -1141,7 +1141,7 @@ export function EmployersPage() {
                     <div className="p-4 bg-muted/50 rounded-lg">
                       <div className="flex items-center justify-between">
                         <span className="text-sm">Current Status</span>
-                        <Badge className={cn(getStatusColor(compliance.status))}>
+                        <Badge variant="outline" className={cn(getStatusColor(compliance.status))}>
                           {compliance.status}
                         </Badge>
                       </div>

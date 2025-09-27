@@ -203,7 +203,14 @@ export function AnalyticsPage() {
     }
   ];
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+  // Theme-based colors using CSS custom properties
+  const COLORS = [
+    'hsl(var(--primary))',
+    'hsl(var(--primary) / 0.8)',
+    'hsl(var(--primary) / 0.6)',
+    'hsl(var(--primary) / 0.4)',
+    'hsl(var(--muted-foreground))'
+  ];
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-SA', {
@@ -217,13 +224,13 @@ export function AnalyticsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'on-track':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-600 border-green-500/20';
       case 'over-budget':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'under-budget':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-primary/10 text-primary border-primary/20';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground border-muted';
     }
   };
 
@@ -359,8 +366,8 @@ export function AnalyticsPage() {
                       ]}
                       labelFormatter={(label) => `Project: ${label}`}
                     />
-                    <Bar dataKey="planned" fill="#8884d8" name="planned" />
-                    <Bar dataKey="actual" fill="#82ca9d" name="actual" />
+                    <Bar dataKey="planned" fill="hsl(var(--primary))" name="planned" />
+                    <Bar dataKey="actual" fill="hsl(var(--primary) / 0.7)" name="actual" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -380,8 +387,8 @@ export function AnalyticsPage() {
                     <XAxis dataKey="month" />
                     <YAxis tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`} />
                     <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                    <Area type="monotone" dataKey="budget" stackId="1" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                    <Area type="monotone" dataKey="spent" stackId="2" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
+                    <Area type="monotone" dataKey="budget" stackId="1" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.6} />
+                    <Area type="monotone" dataKey="spent" stackId="2" stroke="hsl(var(--primary) / 0.7)" fill="hsl(var(--primary) / 0.7)" fillOpacity={0.6} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -418,12 +425,12 @@ export function AnalyticsPage() {
                       <TableCell className="text-right">{formatCurrency(project.planned)}</TableCell>
                       <TableCell className="text-right">{formatCurrency(project.actual)}</TableCell>
                       <TableCell className={`text-right ${
-                        project.variance > 0 ? 'text-red-600' : 'text-green-600'
+                        project.variance > 0 ? 'text-destructive' : 'text-green-600'
                       }`}>
                         {project.variance > 0 ? '+' : ''}{formatCurrency(project.variance)}
                       </TableCell>
                       <TableCell>
-                        <Badge className={cn(getStatusColor(project.status))}>
+                        <Badge variant="outline" className={cn(getStatusColor(project.status))}>
                           {project.status.replace('-', ' ')}
                         </Badge>
                       </TableCell>
@@ -456,7 +463,7 @@ export function AnalyticsPage() {
                       labelLine={false}
                       label={({ name, percentage }) => `${name} ${percentage}%`}
                       outerRadius={80}
-                      fill="#8884d8"
+                      fill="hsl(var(--primary))"
                       dataKey="value"
                     >
                       {costBreakdownData.map((entry, index) => (
@@ -479,19 +486,19 @@ export function AnalyticsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-start space-x-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="h-4 w-4 text-red-600 mt-0.5" />
+              <div className="flex items-start space-x-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-red-800">Over Budget</p>
-                  <p className="text-xs text-red-700">Aramco Refinery project exceeded budget by SAR 150,000</p>
+                  <p className="text-sm font-medium text-destructive">Over Budget</p>
+                  <p className="text-xs text-destructive/80">Aramco Refinery project exceeded budget by SAR 150,000</p>
                 </div>
               </div>
               
-              <div className="flex items-start space-x-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <AlertCircle className="h-4 w-4 text-yellow-600 mt-0.5" />
+              <div className="flex items-start space-x-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-800">Budget Warning</p>
-                  <p className="text-xs text-yellow-700">Qiddiya Complex approaching 90% of allocated budget</p>
+                  <p className="text-sm font-medium text-orange-600">Budget Warning</p>
+                  <p className="text-xs text-orange-600/80">Qiddiya Complex approaching 90% of allocated budget</p>
                 </div>
               </div>
             </CardContent>
