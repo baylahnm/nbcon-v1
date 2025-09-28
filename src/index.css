@@ -16,6 +16,10 @@
   animation: scroll 30s linear infinite;
 }
 
+.group:hover .animate-scroll {
+  animation-play-state: paused;
+}
+
 /* Sidebar width variables */
 :root {
   --sidebar-width: 16rem;
