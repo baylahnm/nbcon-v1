@@ -465,7 +465,7 @@ export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       mode: 'system',
-      preset: 'light',
+      preset: 'wazeer',
       custom: {},
       applied: {},
       isOrgLocked: false,

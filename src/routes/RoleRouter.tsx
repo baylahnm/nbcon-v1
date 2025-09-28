@@ -39,6 +39,7 @@ import { ProfilePage as EnterpriseProfilePage } from "@/pages/enterprise/Profile
 import { MessagesPage as EnterpriseMessagesPage } from "@/pages/enterprise/MessagesPage";
 import { AIAssistantPage } from "@/pages/enterprise/AIAssistantPage";
 import { CalendarPage as EnterpriseCalendarPage } from "@/pages/enterprise/CalendarPage";
+import PostProjectPage from "@/pages/enterprise/PostProjectPage";
 
 export function useActiveRole(): UserRole | null {
   const { profile } = useAuthStore();
@@ -155,6 +156,7 @@ export default function RoleRouter() {
           <Route path="calendar/event/:eventId" element={<EnterpriseCalendarPage />} />
           <Route path="team-projects" element={<TeamProjectsPage />} />
           <Route path="team-projects/:projectId" element={<TeamProjectsPage />} />
+          <Route path="post-project" element={<PostProjectPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="messages" element={<EnterpriseMessagesPage />} />
           <Route path="messages/:threadId" element={<EnterpriseMessagesPage />} />

@@ -2469,101 +2469,189 @@ const HomePage = () => {
               <p className="text-muted-foreground">Quick access to our most requested engineering services</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
               {/* Site Inspection */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Building className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">Site Inspection</h4>
-                    <p className="text-sm text-muted-foreground">SAR 150/day</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <Building className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">150</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">Site Inspection</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Comprehensive site assessment and inspection services for construction projects
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
 
               {/* Electrical Design */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Zap className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">Electrical Design</h4>
-                    <p className="text-sm text-muted-foreground">SAR 300/day</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <Zap className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">300</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">Electrical Design</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Professional electrical system design and engineering solutions
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
 
               {/* Structural Analysis */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Cog className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">Structural Analysis</h4>
-                    <p className="text-sm text-muted-foreground">SAR 500/day</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <Cog className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">500</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">Structural Analysis</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Advanced structural engineering and analysis for complex projects
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
 
               {/* HVAC Design */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Home className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">HVAC Design</h4>
-                    <p className="text-sm text-muted-foreground">SAR 250/day</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <Home className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">250</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">HVAC Design</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Energy-efficient heating, ventilation, and air conditioning systems
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
 
               {/* Surveying */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <MapIcon className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">Surveying</h4>
-                    <p className="text-sm text-muted-foreground">SAR 200/day</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <MapIcon className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">200</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">Surveying</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Precision land surveying and mapping services for construction
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
 
               {/* HSE Consulting */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Shield className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">HSE Consulting</h4>
-                    <p className="text-sm text-muted-foreground">SAR 180/day</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <Shield className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">180</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">HSE Consulting</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Health, Safety, and Environment consulting for workplace compliance
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
 
               {/* Drone Surveying */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Camera className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">Drone Surveying</h4>
-                    <p className="text-sm text-muted-foreground">SAR TBD</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <Camera className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">TBD</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">Drone Surveying</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Advanced aerial surveying and mapping using drone technology
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
 
               {/* Equipment Maintenance */}
-              <Card className="p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Wrench className="w-8 h-8 text-primary" />
-                  <div>
-                    <h4 className="font-semibold">Equipment Maintenance</h4>
-                    <p className="text-sm text-muted-foreground">SAR TBD</p>
+              <Card className="group relative overflow-hidden bg-card backdrop-blur-sm border border-border shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform duration-300">
+                      <Wrench className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-bold text-primary">TBD</span>
+                      <span className="text-sm text-muted-foreground ml-1">SAR/day</span>
+                    </div>
                   </div>
+                  <h4 className="text-lg font-semibold text-card-foreground mb-2">Equipment Maintenance</h4>
+                  <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                    Professional maintenance and repair services for construction equipment
+                  </p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                    Hire Now
+                  </Button>
                 </div>
-                <Button size="sm" className="w-full">Hire Now</Button>
               </Card>
             </div>
 

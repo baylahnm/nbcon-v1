@@ -38,6 +38,7 @@ export const R = {
     dashboard: "/enterprise/dashboard",
     calendar: "/enterprise/calendar",
     teamProjects: "/enterprise/team-projects",
+    postProject: "/enterprise/post-project",
     analytics: "/enterprise/analytics",
     messages: "/enterprise/messages",
     ai: "/enterprise/ai",

@@ -76,7 +76,7 @@ export const AVAILABILITY_STATUSES = [
 export const DEFAULTS = {
   CURRENCY: 'SAR',
   LANGUAGE: 'en',
-  THEME: 'light',
+  THEME: 'wazeer',
   SERVICE_RADIUS: 50,
   PAGE_SIZE: 20,
 };

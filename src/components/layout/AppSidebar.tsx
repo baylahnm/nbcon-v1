@@ -56,6 +56,7 @@ const makeTopMenu = (role?: string): MenuItem[] => {
         { title: 'Dashboard', url: R.enterprise.dashboard, icon: Home },
         { title: 'Calendar', url: R.enterprise.calendar, icon: Calendar },
         { title: 'Team & Projects', url: R.enterprise.teamProjects, icon: Users },
+        { title: 'Post Project', url: R.enterprise.postProject, icon: Plus, isSpecial: true },
         { title: 'Analytics & Reports', url: R.enterprise.analytics, icon: BarChart3 },
         { title: 'Messages', url: R.enterprise.messages, icon: MessageSquare },
         { title: 'AI Assistant', url: R.enterprise.ai, icon: Bot },
