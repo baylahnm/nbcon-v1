@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const themes = [
+  { key: 'wazeer', label: 'Wazeer', icon: Palette },
   { key: 'light', label: 'Light', icon: Sun },
   { key: 'dark', label: 'Dark', icon: Moon },
-  { key: 'wazeer', label: 'Wazeer', icon: Palette },
   { key: 'sunset', label: 'Sunset', icon: Sunset },
   { key: 'abstract', label: 'Abstract', icon: Paintbrush },
   { key: 'nika', label: 'Nika', icon: CircleDot },
