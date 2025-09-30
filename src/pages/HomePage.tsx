@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { TypewriterText } from '@/components/ui/typewriter-text';
+import StarBorder from '@/components/StarBorder';
+import InteractiveSelector from '@/components/ui/interactive-selector';
 import { 
   Shield, 
   Briefcase, 
@@ -50,7 +52,11 @@ import {
   FileSpreadsheet,
   TrendingUp,
   Settings,
-  Truck
+  Truck,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram
 } from 'lucide-react';
 import CalendarMini from '@/components/calendar/CalendarMini';
 import { useCalendarStore } from '@/stores/useCalendarStore';
@@ -421,9 +427,6 @@ const HomePage = () => {
               <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.enterprise}
               </Link>
-              <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
-                {t.nav.help}
-              </Link>
             </nav>
 
             {/* Right Side */}
@@ -433,6 +436,7 @@ const HomePage = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
+                className="h-8"
               >
                 <Globe className="w-4 h-4 mr-1" />
                 {language === 'en' ? 'عربي' : 'EN'}
@@ -443,13 +447,8 @@ const HomePage = () => {
 
               {/* Auth Buttons */}
               <Link to="/auth">
-                <Button variant="ghost" size="sm">
-                  {t.nav.signIn}
-                </Button>
-              </Link>
-              <Link to="/auth/role">
                 <Button size="sm">
-                  {t.nav.getStarted}
+                  {t.nav.signIn}
                 </Button>
               </Link>
             </div>
@@ -483,7 +482,7 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row gap-4">
             <Link to="/client/jobs/create">
               <Button size="lg" className="w-full sm:w-auto">
-                {t.hero.postJob}
+                {t.nav.getStarted}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -694,6 +693,10 @@ const HomePage = () => {
             />
           </h2>
           <div className="relative overflow-hidden group">
+            {/* Left blur gradient */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
+            {/* Right blur gradient */}
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
             <div className="flex animate-scroll space-x-8 opacity-100 group-hover:pause-animation">
               {/* First set of logos */}
               <img src="/clintes-logos/Advanced.png" alt="Advanced" className="h-48 w-48 object-contain flex-shrink-0 transition-all duration-300 hover:scale-110 hover:brightness-110 hover:drop-shadow-lg" />
@@ -1434,7 +1437,7 @@ const HomePage = () => {
                     <span className="text-xs text-muted-foreground">Overall Progress</span>
                     <span className="text-xs font-medium text-primary">60%</span>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-2">
+                  <div className="w-full bg-background rounded-full h-2">
                     <div className="bg-primary h-2 rounded-full" style={{width: '60%'}}></div>
                   </div>
                 </div>
@@ -2036,7 +2039,7 @@ const HomePage = () => {
                   <span className="text-xs text-muted-foreground">CPD Hours This Year</span>
                   <span className="text-xs font-medium text-primary">24/40</span>
                 </div>
-                <div className="w-full bg-muted rounded-full h-2">
+                <div className="w-full bg-background rounded-full h-2">
                   <div className="bg-primary h-2 rounded-full" style={{width: '60%'}}></div>
                 </div>
               </div>
@@ -2842,8 +2845,13 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Popular Services Section */}
+      <section className="py-[200px]">
+        <InteractiveSelector />
+      </section>
+
       {/* Testimonials Section */}
-      <section className="py-20 px-4 bg-muted/30">
+      <section className="py-20 px-0 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted by Thousands of Happy Customers</h2>
@@ -2852,8 +2860,15 @@ const HomePage = () => {
             </p>
           </div>
           
-           {/* Testimonial Cards */}
-           <div className="flex overflow-x-auto gap-6 mb-12 pb-4 scrollbar-hide testimonials-scroll">
+           {/* Testimonial Cards with Blur Effect */}
+           <div className="relative">
+             {/* Left blur gradient */}
+             <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-muted/30 to-transparent z-10 pointer-events-none"></div>
+             
+             {/* Right blur gradient */}
+             <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-muted/30 to-transparent z-10 pointer-events-none"></div>
+             
+             <div className="flex overflow-x-auto gap-6 mb-12 pb-4 scrollbar-hide testimonials-scroll">
              {/* Testimonial 1 */}
              <Card className="p-6 hover:shadow-lg transition-shadow flex-shrink-0 w-96">
                <div className="flex items-center mb-4">
@@ -2973,6 +2988,7 @@ const HomePage = () => {
                  "Excellent service and support. The platform's compliance features and secure payment system make it the best choice for engineering projects."
                </p>
              </Card>
+             </div>
            </div>
           
           {/* Pagination Controls */}
@@ -3527,114 +3543,113 @@ const HomePage = () => {
 
 
 
-      {/* Footer */}
-      <footer className="bg-background border-t py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-            {/* Company Info */}
-            <div className="lg:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">nb</span>
-                </div>
-                <span className="font-bold text-xl">nbcon</span>
-              </div>
-              <p className="text-muted-foreground mb-6 max-w-md">
-                Saudi Arabia's premier engineering marketplace connecting verified professionals with clients through AI-powered matching and secure milestone payments.
-              </p>
-              <div className="flex space-x-4">
-                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
-                  <Globe className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
-                  <MessageSquare className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
-                  <Users className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" className="w-10 h-10 p-0">
-                  <Phone className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+       {/* Footer */}
+       <footer className="bg-primary pt-12 pb-12">
+         <div className="container mx-auto px-4">
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-6 border-b border-sidebar-border pb-6">
+             {/* Company Info */}
+             <div className="lg:col-span-2">
+               <div className="flex items-center space-x-2 mb-4">
+                 <div className="w-8 h-8 rounded bg-primary-foreground flex items-center justify-center">
+                   <span className="text-primary font-bold text-sm">nb</span>
+                 </div>
+                 <span className="font-bold text-xl text-primary-foreground">nbcon</span>
+               </div>
+               <p className="text-primary-foreground/80 mb-6 max-w-md">
+                 Saudi Arabia's premier engineering marketplace connecting verified professionals with clients through AI-powered matching and secure milestone payments.
+               </p>
+               <div className="flex space-x-4 bg-primary p-0 rounded-lg">
+                 <Button variant="outline" size="sm" className="w-[30px] h-[30px] p-0 border-0 hover:bg-primary-foreground/10 group bg-primary-foreground dark:bg-primary-foreground">
+                   <Facebook className="w-4 h-4 text-primary group-hover:text-secondary transition-colors" />
+                 </Button>
+                 <Button variant="outline" size="sm" className="w-[30px] h-[30px] p-0 border-0 hover:bg-primary-foreground/10 group bg-primary-foreground dark:bg-primary-foreground">
+                   <Twitter className="w-4 h-4 text-primary group-hover:text-secondary transition-colors" />
+                 </Button>
+                 <Button variant="outline" size="sm" className="w-[30px] h-[30px] p-0 border-0 hover:bg-primary-foreground/10 group bg-primary-foreground dark:bg-primary-foreground">
+                   <Linkedin className="w-4 h-4 text-primary group-hover:text-secondary transition-colors" />
+                 </Button>
+                 <Button variant="outline" size="sm" className="w-[30px] h-[30px] p-0 border-0 hover:bg-primary-foreground/10 group bg-primary-foreground dark:bg-primary-foreground">
+                   <Instagram className="w-4 h-4 text-primary group-hover:text-secondary transition-colors" />
+                 </Button>
+               </div>
+             </div>
 
-            {/* Product */}
-            <div>
-              <h4 className="font-semibold mb-4">{t.footer.product.title}</h4>
-              <ul className="space-y-3">
-                {t.footer.product.links.map((link, index) => (
-                  <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+             {/* Product */}
+             <div>
+               <h4 className="font-semibold mb-4 text-primary-foreground">{t.footer.product.title}</h4>
+               <ul className="space-y-3">
+                 {t.footer.product.links.map((link, index) => (
+                   <li key={index}>
+                     <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                       {link}
+                     </Link>
+                   </li>
+                 ))}
+               </ul>
+             </div>
 
-            {/* For Clients */}
-            <div>
-              <h4 className="font-semibold mb-4">{t.footer.clients.title}</h4>
-              <ul className="space-y-3">
-                {t.footer.clients.links.map((link, index) => (
-                  <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+             {/* For Clients */}
+             <div>
+               <h4 className="font-semibold mb-4 text-primary-foreground">{t.footer.clients.title}</h4>
+               <ul className="space-y-3">
+                 {t.footer.clients.links.map((link, index) => (
+                   <li key={index}>
+                     <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                       {link}
+                     </Link>
+                   </li>
+                 ))}
+               </ul>
+             </div>
 
-            {/* For Engineers */}
-            <div>
-              <h4 className="font-semibold mb-4">{t.footer.engineers.title}</h4>
-              <ul className="space-y-3">
-                {t.footer.engineers.links.map((link, index) => (
-                  <li key={index}>
-                    <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+             {/* For Engineers */}
+             <div>
+               <h4 className="font-semibold mb-4 text-primary-foreground">{t.footer.engineers.title}</h4>
+               <ul className="space-y-3">
+                 {t.footer.engineers.links.map((link, index) => (
+                   <li key={index}>
+                     <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                       {link}
+                     </Link>
+                   </li>
+                 ))}
+               </ul>
+             </div>
           </div>
 
-          <Separator className="mb-8" />
 
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 mb-4 md:mb-0">
-            <p className="text-sm text-muted-foreground">
-              {t.footer.copyright}
-            </p>
-              <div className="flex space-x-6">
-                <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Privacy Policy
-                </Link>
-                <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Terms of Service
-                </Link>
-                <Link to="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Cookie Policy
-                </Link>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground">Follow us:</span>
-              <div className="flex space-x-2">
-                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-                  <Globe className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-                  <MessageSquare className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-                  <Users className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
+           <div className="flex flex-col md:flex-row justify-between items-center">
+             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 mb-4 md:mb-0">
+             <p className="text-sm text-primary-foreground/70">
+               {t.footer.copyright}
+             </p>
+               <div className="flex space-x-6">
+                 <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                   Privacy Policy
+                 </Link>
+                 <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                   Terms of Service
+                 </Link>
+                 <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                   Cookie Policy
+                 </Link>
+               </div>
+             </div>
+             <div className="flex items-center space-x-4">
+               <span className="text-sm text-primary-foreground/70">Follow us:</span>
+               <div className="flex space-x-2">
+                 <Button variant="ghost" size="sm" className="w-8 h-8 p-0 hover:bg-primary-foreground/10">
+                   <Globe className="w-4 h-4 text-primary-foreground/70" />
+                 </Button>
+                 <Button variant="ghost" size="sm" className="w-8 h-8 p-0 hover:bg-primary-foreground/10">
+                   <MessageSquare className="w-4 h-4 text-primary-foreground/70" />
+                 </Button>
+                 <Button variant="ghost" size="sm" className="w-8 h-8 p-0 hover:bg-primary-foreground/10">
+                   <Users className="w-4 h-4 text-primary-foreground/70" />
+                 </Button>
+               </div>
+             </div>
+           </div>
         </div>
       </footer>
     </div>

@@ -17,6 +17,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { R, RH } from '@/lib/routes';
 import { toast } from 'sonner';
+import { useThemeStore, THEME_TOKENS, type ThemePreset } from '@/stores/theme';
 import { 
   Settings,
   User,
@@ -176,6 +177,19 @@ export function SettingsPage() {
     updateQuery({ tab: value });
   };
 
+  const themes = [
+    { id: "light", name: "Light", description: "Clean and bright interface", icon: Sun },
+    { id: "dark", name: "Dark", description: "Easy on the eyes", icon: Moon },
+    { id: "wazeer", name: "Wazeer", description: "Professional and elegant", icon: Palette },
+    { id: "sunset", name: "Sunset", description: "Warm and inviting", icon: Sunset },
+    { id: "abstract", name: "Abstract", description: "Creative and modern", icon: Sparkles },
+    { id: "nika", name: "Nika", description: "Bold and vibrant", icon: Circle },
+    { id: "lagoon", name: "Lagoon", description: "Fresh and calming", icon: Waves },
+    { id: "dark-nature", name: "Dark Nature", description: "Natural and earthy", icon: TreePine },
+    { id: "full-gradient", name: "Full Gradient", description: "Vibrant and dynamic", icon: Paintbrush },
+    { id: "sea-purple", name: "Sea Purple", description: "Deep and mysterious", icon: Droplets }
+  ];
+
   const [settings, setSettings] = useState<UserSettings>({
     // Account
     email: 'ahmed.almansouri@neom-engineering.sa',
@@ -212,6 +226,231 @@ export function SettingsPage() {
     language: 'en',
     timezone: 'Asia/Riyadh'
   });
+
+  // Theme store
+  const {
+    preset,
+    applied,
+    applyPreset,
+    updateToken,
+    resetSection,
+    resetAll,
+    importTheme,
+    exportTheme,
+    randomize,
+    save
+  } = useThemeStore();
+
+  // Theme handlers
+  const handlePresetChange = (newPreset: ThemePreset) => {
+    applyPreset(newPreset);
+  };
+
+  const handleTokenChange = (key: string, value: string) => {
+    updateToken(key, value);
+  };
+
+  const handleResetToPreset = () => {
+    resetAll();
+    toast.success('Theme reset to preset');
+  };
+
+  const handleSaveTheme = async () => {
+    try {
+      await save();
+      toast.success('Theme saved successfully');
+    } catch (error) {
+      toast.error('Failed to save theme');
+    }
+  };
+
+  const handleExportTheme = () => {
+    const themeData = exportTheme();
+    const dataStr = JSON.stringify(themeData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `theme-${preset}-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast.success('Theme exported successfully');
+  };
+
+  const handleImportTheme = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const themeData = JSON.parse(e.target?.result as string);
+            importTheme(themeData);
+            toast.success('Theme imported successfully');
+          } catch (error) {
+            toast.error('Invalid theme file');
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleResetTheme = () => {
+    resetAll();
+    toast.success('Theme reset to default');
+  };
+
+  // Token Editor Component
+  function TokenEditor({
+    token,
+    value,
+    onChange
+  }: {
+    token: { key: string; description: string };
+    value: string;
+    onChange: (value: string) => void;
+  }) {
+    // Convert HSL to RGB for display
+    const hslToRgb = (hsl: string) => {
+      const match = hsl.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
+      if (!match) return '#000000';
+      
+      const h = parseInt(match[1]) / 360;
+      const s = parseInt(match[2]) / 100;
+      const l = parseInt(match[3]) / 100;
+      
+      const hue2rgb = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      };
+      
+      let r, g, b;
+      if (s === 0) {
+        r = g = b = l;
+      } else {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+      }
+      
+      return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
+    };
+
+    const displayValue = value.includes('--') ? value : hslToRgb(value);
+    const isCssVar = value.includes('--');
+
+    return (
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">
+          {(() => {
+            const friendlyNames: { [key: string]: string } = {
+              '--background': 'Main background color',
+              '--foreground': 'Main text color',
+              '--card': 'Card background color',
+              '--card-foreground': 'Card text color',
+              '--popover': 'Popover background color',
+              '--popover-foreground': 'Popover text color',
+              '--primary': 'Primary color',
+              '--primary-foreground': 'Primary text color',
+              '--primary-light': 'Light primary color',
+              '--primary-dark': 'Dark primary color',
+              '--secondary': 'Secondary color',
+              '--secondary-foreground': 'Secondary text color',
+              '--muted': 'Muted color',
+              '--muted-foreground': 'Muted text color',
+              '--accent': 'Accent color',
+              '--accent-foreground': 'Accent text color',
+              '--destructive': 'Destructive color',
+              '--destructive-foreground': 'Destructive text color',
+              '--border': 'Border color',
+              '--input': 'Input border color',
+              '--input-background': 'Input background color',
+              '--input-foreground': 'Input text color',
+              '--input-placeholder': 'Input placeholder color',
+              '--ring': 'Focus ring color',
+              '--success': 'Success color',
+              '--success-foreground': 'Success text color',
+              '--warning': 'Warning color',
+              '--warning-foreground': 'Warning text color',
+              '--info': 'Info color',
+              '--info-foreground': 'Info text color',
+              '--sidebar-background': 'Sidebar background',
+              '--sidebar-foreground': 'Sidebar text color',
+              '--sidebar-primary': 'Sidebar primary color',
+              '--sidebar-primary-foreground': 'Sidebar primary text',
+              '--sidebar-accent': 'Sidebar accent color',
+              '--sidebar-accent-foreground': 'Sidebar accent text',
+              '--sidebar-border': 'Sidebar border color',
+              '--sidebar-ring': 'Sidebar focus ring'
+            };
+            return friendlyNames[token.key] || token.key;
+          })()}
+        </Label>
+        <div className="flex items-center gap-2">
+          {!isCssVar && (
+            <input
+              type="color"
+              value={displayValue.startsWith('rgb') ? 
+                `#${Math.round(parseInt(displayValue.match(/\d+/g)?.[0] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[1] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[2] || '0')).toString(16).padStart(2, '0')}` : 
+                displayValue
+              }
+              onChange={(e) => {
+                const hex = e.target.value;
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                
+                // Convert RGB to HSL
+                const rNorm = r / 255;
+                const gNorm = g / 255;
+                const bNorm = b / 255;
+                
+                const max = Math.max(rNorm, gNorm, bNorm);
+                const min = Math.min(rNorm, gNorm, bNorm);
+                let h = 0, s = 0, l = (max + min) / 2;
+                
+                if (max !== min) {
+                  const d = max - min;
+                  s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                  
+                  switch (max) {
+                    case rNorm: h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0); break;
+                    case gNorm: h = (bNorm - rNorm) / d + 2; break;
+                    case bNorm: h = (rNorm - gNorm) / d + 4; break;
+                  }
+                  h /= 6;
+                }
+                
+                const hslValue = `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+                onChange(hslValue);
+              }}
+              className="w-8 h-8 rounded border border-sidebar-border cursor-pointer"
+              title={`Click to change color (${displayValue})`}
+            />
+          )}
+          <Input
+            value={displayValue}
+            onChange={(e) => onChange(e.target.value)}
+            className="font-mono text-xs flex-1"
+            placeholder="Enter hex value (e.g., #3b82f6)"
+          />
+        </div>
+      </div>
+    );
+  }
 
   const [apiKeys] = useState<ApiKey[]>([
     {
@@ -1115,24 +1354,13 @@ export function SettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 pb-2">
-                {[
-                  { id: "light", name: "Light", description: "Clean and bright interface", icon: Sun },
-                  { id: "dark", name: "Dark", description: "Easy on the eyes", icon: Moon },
-                  { id: "wazeer", name: "Wazeer", description: "Professional and elegant", icon: Palette },
-                  { id: "sunset", name: "Sunset", description: "Warm and inviting", icon: Sunset },
-                  { id: "abstract", name: "Abstract", description: "Creative and modern", icon: Sparkles },
-                  { id: "nika", name: "Nika", description: "Bold and vibrant", icon: Circle },
-                  { id: "lagoon", name: "Lagoon", description: "Fresh and calming", icon: Waves },
-                  { id: "dark-nature", name: "Dark Nature", description: "Natural and earthy", icon: TreePine },
-                  { id: "full-gradient", name: "Full Gradient", description: "Vibrant and dynamic", icon: Paintbrush },
-                  { id: "sea-purple", name: "Sea Purple", description: "Deep and mysterious", icon: Droplets }
-                ].map((theme) => {
+                {themes.map((theme) => {
                   const Icon = theme.icon;
                   return (
                     <Button
                       key={theme.id}
-                      variant={settings.theme === theme.id ? 'default' : 'outline'}
-                      onClick={() => handleSettingChange('theme', theme.id)}
+                      variant={preset === theme.id ? 'default' : 'outline'}
+                      onClick={() => handlePresetChange(theme.id as ThemePreset)}
                       className="flex flex-col items-center gap-1 h-auto py-1 px-0.5 text-xs"
                     >
                       <Icon className="h-3 w-3" />
@@ -1150,17 +1378,43 @@ export function SettingsPage() {
               <CardTitle>Custom Theme Tokens</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="text-center py-8">
-                <Palette className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Advanced Theme Customization</h3>
-                <p className="text-muted-foreground mb-4">
-                  Customize individual theme tokens to create your perfect interface
-                </p>
-                <Button variant="outline" className="gap-2" onClick={handleOpenThemeEditor}>
-                  <Settings className="h-4 w-4" />
-                  Open Theme Editor
-                </Button>
-              </div>
+              {['core', 'card', 'primary', 'secondary', 'status', 'ui', 'sidebar'].map((category) => (
+                <div key={category} className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold capitalize">{category}</h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => resetSection(category)}
+                    >
+                      Reset {category}
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {THEME_TOKENS.filter(token => {
+                      if (token.category === category) {
+                        // Exclude specific sidebar tokens
+                        if (category === 'sidebar' && 
+                            (token.key === '--sidebar-primary' || 
+                             token.key === '--sidebar-primary-foreground' || 
+                             token.key === '--sidebar-ring')) {
+                          return false;
+                        }
+                        return true;
+                      }
+                      return false;
+                    }).map((token) => (
+                      <TokenEditor
+                        key={token.key}
+                        token={token}
+                        value={applied[token.key] || token.value}
+                        onChange={(value) => handleTokenChange(token.key, value)}
+                      />
+                    ))}
+                  </div>
+                  <Separator />
+                </div>
+              ))}
             </CardContent>
           </Card>
 
@@ -1170,46 +1424,58 @@ export function SettingsPage() {
               <CardTitle>Advanced Options</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium">Export Theme</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Download your current theme configuration
-                  </p>
-                </div>
-                <Button variant="outline" className="gap-2">
-                  <Download className="h-4 w-4" />
-                  Export JSON
-                </Button>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium">Import Theme</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Upload a theme configuration file
-                  </p>
-                </div>
-                <Button variant="outline" className="gap-2">
-                  <Upload className="h-4 w-4" />
-                  Import JSON
-                </Button>
-              </div>
+               <div className="flex items-center justify-between">
+                 <div>
+                   <h4 className="font-medium">Export Theme</h4>
+                   <p className="text-sm text-muted-foreground">
+                     Download your current theme configuration
+                   </p>
+                 </div>
+                 <Button variant="outline" className="gap-2" onClick={handleExportTheme}>
+                   <Download className="h-4 w-4" />
+                   Export JSON
+                 </Button>
+               </div>
+               
+               <div className="flex items-center justify-between">
+                 <div>
+                   <h4 className="font-medium">Import Theme</h4>
+                   <p className="text-sm text-muted-foreground">
+                     Upload a theme configuration file
+                   </p>
+                 </div>
+                 <Button variant="outline" className="gap-2" onClick={handleImportTheme}>
+                   <Upload className="h-4 w-4" />
+                   Import JSON
+                 </Button>
+               </div>
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium">Reset Theme</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Reset to default theme settings
-                  </p>
-                </div>
-                <Button variant="outline" className="gap-2">
-                  <RefreshCw className="h-4 w-4" />
-                  Reset
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+               <div className="flex items-center justify-between">
+                 <div>
+                   <h4 className="font-medium">Reset Theme</h4>
+                   <p className="text-sm text-muted-foreground">
+                     Reset to default theme settings
+                   </p>
+                 </div>
+                 <Button variant="outline" className="gap-2" onClick={handleResetTheme}>
+                   <RefreshCw className="h-4 w-4" />
+                   Reset
+                 </Button>
+               </div>
+
+               <div className="pt-6 border-t">
+                 <div className="flex items-center justify-end gap-3">
+                   <Button variant="outline" onClick={handleResetToPreset}>
+                     Reset to Preset
+                   </Button>
+                   <Button onClick={handleSaveTheme}>
+                     <Save className="h-4 w-4 mr-2" />
+                     Save
+                   </Button>
+                 </div>
+               </div>
+             </CardContent>
+           </Card>
         </TabsContent>
       </Tabs>
 

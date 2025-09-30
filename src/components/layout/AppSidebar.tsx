@@ -38,7 +38,7 @@ const makeTopMenu = (role?: string): MenuItem[] => {
     case 'client':
       return [
         { title: 'Dashboard', url: R.client.dashboard, icon: Home },
-        { title: 'Post New Job', url: R.client.jobNew, icon: Plus, isSpecial: true },
+        { title: 'Post New Job', url: R.client.jobNew, icon: Plus },
         { title: 'Browse Engineers', url: R.client.browse, icon: Users },
         { title: 'My Projects', url: R.client.jobs, icon: Briefcase },
         { title: 'Calendar', url: R.client.calendar, icon: Calendar },
@@ -139,6 +139,7 @@ export function AppSidebar() {
                     asChild 
                     isActive={isPathActive(item.url)}
                     variant={item.isSpecial ? "outline" : "ghost"}
+                    className="shadow-none border-none"
                   >
                     <NavLink to={item.url}>
                       <item.icon className="mr-3 h-4 w-4 flex-shrink-0" />
