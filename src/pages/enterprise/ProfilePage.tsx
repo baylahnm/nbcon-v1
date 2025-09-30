@@ -387,8 +387,8 @@ export function ProfilePage() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Company Logo & Basic Info */}
-        <div className="lg:col-span-1">
+        {/* Company Logo & Basic Info - moved above tabs */}
+        <div className="lg:col-span-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-center">Company Logo</CardTitle>
@@ -431,7 +431,7 @@ export function ProfilePage() {
         </div>
 
         {/* Main Content */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-4">
           <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
             <div className="border-b border-sidebar-border mb-6">
               <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">

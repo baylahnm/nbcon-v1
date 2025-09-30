@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/stores/auth";
 import { ROLE_BASE, UserRole } from "@/lib/auth/role";
 import EngineerLayout from "@/layouts/EngineerLayout";
 import ClientLayout from "@/layouts/ClientLayout";
-import EnterpriseLayout from "@/layouts/EnterpriseLayout";
+import React from "react";
+const EnterpriseLayout = React.lazy(() => import("@/layouts/EnterpriseLayout"));
 import AdminLayout from "@/layouts/AdminLayout";
 import EngineerDashboard from "@/pages/dashboard/EngineerDashboard";
-import ClientDashboard from "@/pages/dashboard/ClientDashboard";
+import ClientDashboardPage from "@/pages/client/DashboardPage";
 import BrowseEngineers from "@/pages/browse/BrowseEngineers";
 import CreateJob from "@/pages/jobs/CreateJob";
 import JobsList from "@/pages/jobs/JobsList";
@@ -15,8 +16,11 @@ import CheckIn from "@/pages/engineer/CheckIn";
 import UploadDeliverable from "@/pages/jobs/UploadDeliverable";
 import JobDetails from "@/pages/jobs/JobDetails";
 import { MessagingPage } from "@/pages/messaging/MessagingPage";
+import ClientMessagesPage from "@/pages/client/MessagesPage";
 import SettingsPage from "@/pages/settings/SettingsPage";
 import ProfilePage from "@/pages/settings/ProfilePage";
+import ClientSettingsPage from "@/pages/client/SettingsPage";
+import ClientProfilePage from "@/pages/client/ProfilePage";
 import VerificationPage from "@/pages/settings/VerificationPage";
 import ThemePage from "@/pages/settings/ThemePage";
 import HelpPage from "@/pages/support/HelpPage";
@@ -27,12 +31,18 @@ import { ChatPage } from "@/features/ai/ChatPage";
 import { PaymentsContent } from "@/features/finance/components/PaymentsContent";
 import { DashboardPage as EnterpriseDashboardPage } from "@/pages/enterprise/DashboardPage";
 import { TeamProjectsPage } from "@/pages/enterprise/TeamProjectsPage";
-import { AnalyticsPage } from "@/pages/enterprise/AnalyticsPage";
+const AnalyticsPage = React.lazy(() =>
+  import("@/pages/enterprise/AnalyticsPage").then((m) => ({ default: m.AnalyticsPage }))
+);
 import { EmployersPage } from "@/pages/enterprise/EmployersPage";
-import { ProcurementPage } from "@/pages/enterprise/ProcurementPage";
+const ProcurementPage = React.lazy(() =>
+  import("@/pages/enterprise/ProcurementPage").then((m) => ({ default: m.ProcurementPage }))
+);
 import { PerformancePage } from "@/pages/enterprise/PerformancePage";
 import { VendorsPage } from "@/pages/enterprise/VendorsPage";
-import { FinancePage } from "@/pages/enterprise/FinancePage";
+const FinancePage = React.lazy(() =>
+  import("@/pages/enterprise/FinancePage").then((m) => ({ default: m.FinancePage }))
+);
 import { HelpPage as EnterpriseHelpPage } from "@/pages/enterprise/HelpPage";
 import { SettingsPage as EnterpriseSettingsPage } from "@/pages/enterprise/SettingsPage";
 import { ProfilePage as EnterpriseProfilePage } from "@/pages/enterprise/ProfilePage";
@@ -40,6 +50,9 @@ import { MessagesPage as EnterpriseMessagesPage } from "@/pages/enterprise/Messa
 import { AIAssistantPage } from "@/pages/enterprise/AIAssistantPage";
 import { CalendarPage as EnterpriseCalendarPage } from "@/pages/enterprise/CalendarPage";
 import PostProjectPage from "@/pages/enterprise/PostProjectPage";
+import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
+import RouteFallback from "@/components/RouteFallback";
+import Forbidden from "@/pages/Forbidden";
 
 export function useActiveRole(): UserRole | null {
   const { profile } = useAuthStore();
@@ -85,9 +98,10 @@ export default function RoleRouter() {
   }
 
   return (
-    <>
-      <LegacyRedirects />
-      <Routes>
+    <RouteErrorBoundary>
+      <Suspense fallback={<RouteFallback />}>
+        <LegacyRedirects />
+        <Routes>
         <Route path="/" element={<Navigate to={`${ROLE_BASE[role]}/dashboard`} replace />} />
 
         <Route path="/engineer" element={<EngineerLayout />}>
@@ -122,7 +136,7 @@ export default function RoleRouter() {
 
         <Route path="/client" element={<ClientLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<ClientDashboard />} />
+          <Route path="dashboard" element={<ClientDashboardPage />} />
           <Route path="browse" element={<BrowseEngineers />} />
           <Route path="myprojects" element={<JobsList />} />
           {/* Deep links */}
@@ -135,18 +149,18 @@ export default function RoleRouter() {
           <Route path="calendar/event/:eventId" element={<CalendarPage />} />
           <Route path="payments" element={<PaymentsContent />} />
           <Route path="payments/:paymentId" element={<PaymentsContent />} />
-          <Route path="messages" element={<MessagingPage />} />
-          <Route path="messages/:threadId" element={<MessagingPage />} />
+          <Route path="messages" element={<ClientMessagesPage />} />
+          <Route path="messages/:threadId" element={<ClientMessagesPage />} />
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="ai/thread/:threadId" element={<ChatPage onBack={() => window.history.back()} />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<ClientProfilePage />} />
           <Route path="network" element={<MyNetwork />} />
           <Route path="network/:userId" element={<MyNetwork />} />
           <Route path="learning" element={<LearningPage />} />
           <Route path="learning/:courseId" element={<LearningPage />} />
           <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
           <Route path="help" element={<HelpPage />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route path="settings" element={<ClientSettingsPage />} />
         </Route>
 
         <Route path="/enterprise" element={<EnterpriseLayout />}>
@@ -187,8 +201,10 @@ export default function RoleRouter() {
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
+        <Route path="/403" element={<Forbidden />} />
         <Route path="*" element={<Navigate to={`${ROLE_BASE[role]}/dashboard`} replace />} />
       </Routes>
-    </>
+      </Suspense>
+    </RouteErrorBoundary>
   );
 }

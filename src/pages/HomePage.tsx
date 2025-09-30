@@ -24,6 +24,7 @@ import {
   Star,
   ArrowRight,
   Globe,
+  Globe2,
   Phone,
   Clock,
   Award,
@@ -156,6 +157,8 @@ const HomePage = () => {
   const currentUserInitials = getUserInitials(profile);
 
   const isRTL = language === 'ar';
+
+  const [calendarTab, setCalendarTab] = useState<'projects' | 'messages' | 'analytics'>('projects');
 
   // Content structure for both languages
   const content = {
@@ -438,7 +441,11 @@ const HomePage = () => {
                 onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
                 className="h-8"
               >
-                <Globe className="w-4 h-4 mr-1" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-1">
+                  <path className="st0" d="M2,16c0.1,0,8-5,9-7c0.6-1.3,1-5,1-5h3H1h7V1"/>
+                  <line className="st0" x1="4" y1="8" x2="12" y2="16"/>
+                  <polygon className="st0" points="15,19 21,19 23,23 18,11 13,23 "/>
+                </svg>
                 {language === 'en' ? 'عربي' : 'EN'}
               </Button>
 
@@ -650,7 +657,7 @@ const HomePage = () => {
                       {/* Quick Actions */}
                       <div className="space-y-2">
                         <div className="text-xs text-muted-foreground font-medium">Quick Actions</div>
-                        <div className="flex space-x-1">
+                        <div className="flex space-x-2">
                           {dashboardRole === 'clients' ? (
                             <>
                               <button className="flex-1 bg-primary text-primary-foreground text-xs py-1 px-2 rounded text-center">
@@ -1011,20 +1018,37 @@ const HomePage = () => {
                       
                       {/* Role Tabs */}
                       <div className="flex space-x-1 mt-3">
-                        <button className="px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium">
+                        <button
+                          onClick={() => setCalendarTab('projects')}
+                          className={calendarTab === 'projects'
+                            ? 'px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium'
+                            : 'px-3 py-1 bg-sidebar-background text-sidebar-foreground rounded text-xs font-medium'}
+                        >
                           Projects
                         </button>
-                        <button className="px-3 py-1 bg-sidebar-background text-sidebar-foreground rounded text-xs font-medium">
+                        <button
+                          onClick={() => setCalendarTab('messages')}
+                          className={calendarTab === 'messages'
+                            ? 'px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium'
+                            : 'px-3 py-1 bg-sidebar-background text-sidebar-foreground rounded text-xs font-medium'}
+                        >
                           Messages
                         </button>
-                        <button className="px-3 py-1 bg-sidebar-background text-sidebar-foreground rounded text-xs font-medium">
+                        <button
+                          onClick={() => setCalendarTab('analytics')}
+                          className={calendarTab === 'analytics'
+                            ? 'px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium'
+                            : 'px-3 py-1 bg-sidebar-background text-sidebar-foreground rounded text-xs font-medium'}
+                        >
                           Analytics
                         </button>
                       </div>
                     </div>
                     
-                    {/* Content Area - Calendar Demo */}
+                    {/* Content Area - Tabs content */}
                     <div className="flex-1 p-4 space-y-4">
+                      {calendarTab === 'projects' && (
+                        <>
                       {/* Calendar Header */}
                       <div className="flex items-center justify-between">
                         <h4 className="text-sm font-medium text-foreground">September 2025</h4>
@@ -1110,6 +1134,80 @@ const HomePage = () => {
                           </div>
                         </div>
                       </div>
+                        </>
+                      )}
+
+                      {calendarTab === 'messages' && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-medium text-foreground">Messages</h4>
+                            <span className="text-xs text-muted-foreground">2 new</span>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between p-2 bg-muted rounded text-xs">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
+                                  <span className="text-primary text-xs font-bold">E</span>
+                                </div>
+                                <div>
+                                  <div className="font-medium">Eng. Ahmed</div>
+                                  <div className="text-muted-foreground">Sent site photos</div>
+                                </div>
+                              </div>
+                              <span className="text-muted-foreground">2m</span>
+                            </div>
+                            <div className="flex items-center justify-between p-2 bg-muted rounded text-xs">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
+                                  <span className="text-primary text-xs font-bold">C</span>
+                                </div>
+                                <div>
+                                  <div className="font-medium">Client</div>
+                                  <div className="text-muted-foreground">Please confirm delivery</div>
+                                </div>
+                              </div>
+                              <span className="text-muted-foreground">10m</span>
+                            </div>
+                          </div>
+                          <div>
+                            <Button size="sm" className="w-full">Open Inbox</Button>
+                          </div>
+                        </div>
+                      )}
+
+                      {calendarTab === 'analytics' && (
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="p-2 bg-primary/10 rounded text-center">
+                              <div className="text-xs text-muted-foreground">Revenue</div>
+                              <div className="text-lg font-bold text-primary">SAR 120k</div>
+                            </div>
+                            <div className="p-2 bg-accent/10 rounded text-center">
+                              <div className="text-xs text-muted-foreground">Utilization</div>
+                              <div className="text-lg font-bold text-accent-foreground">87%</div>
+                            </div>
+                            <div className="p-2 bg-secondary/20 rounded text-center">
+                              <div className="text-xs text-muted-foreground">On-time</div>
+                              <div className="text-lg font-bold text-secondary-foreground">94%</div>
+                            </div>
+                          </div>
+                          <div className="bg-muted rounded p-3 text-xs">
+                            <div className="mb-2 font-medium">7-day trend</div>
+                            <div className="flex items-end gap-1 h-16">
+                              <div className="bg-primary h-6 w-2 rounded-t"></div>
+                              <div className="bg-primary h-8 w-2 rounded-t"></div>
+                              <div className="bg-primary h-5 w-2 rounded-t"></div>
+                              <div className="bg-primary h-7 w-2 rounded-t"></div>
+                              <div className="bg-primary h-10 w-2 rounded-t"></div>
+                              <div className="bg-primary h-7 w-2 rounded-t"></div>
+                              <div className="bg-primary h-9 w-2 rounded-t"></div>
+                            </div>
+                          </div>
+                          <div>
+                            <Button size="sm" className="w-full">View Analytics</Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -2851,7 +2949,7 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-0 bg-muted/30">
+      <section className="py-[100px] px-0 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted by Thousands of Happy Customers</h2>
@@ -3544,7 +3642,7 @@ const HomePage = () => {
 
 
        {/* Footer */}
-       <footer className="bg-primary pt-12 pb-12">
+       <footer className="bg-primary pt-12 pb-12 rounded-t-[50px]">
          <div className="container mx-auto px-4">
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-6 border-b border-sidebar-border pb-6">
              {/* Company Info */}

@@ -722,7 +722,7 @@ export function SettingsPage() {
               <Separator />
 
               {/* Change Password */}
-              <div className="space-y-4">
+        <div className="space-y-4 p-6">
                 <h4 className="font-medium">Change Password</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -866,7 +866,7 @@ export function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Company Logo */}
-              <div className="space-y-4">
+        <div className="space-y-4 p-6">
                 <Label>Company Logo</Label>
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-20 w-20">
@@ -953,7 +953,7 @@ export function SettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-4">
+        <div className="space-y-4 p-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <Label className="flex items-center gap-2">
@@ -1108,11 +1108,11 @@ export function SettingsPage() {
               </div>
 
               {settings.twoFactorEnabled && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-green-800 font-medium">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      <span className="text-sm text-primary font-medium">
                         Two-factor authentication is enabled
                       </span>
                     </div>
@@ -1496,7 +1496,7 @@ export function SettingsPage() {
               if (!apiKey) return null;
               
               return (
-                <div className="space-y-6">
+        <div className="space-y-6 p-6">
                   {/* API Key Header */}
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
