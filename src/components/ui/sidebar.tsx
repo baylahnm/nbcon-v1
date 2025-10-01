@@ -197,7 +197,7 @@ function Sidebar({
               width: "var(--sidebar-width)",
             } as React.CSSProperties
           }
-          side={side}
+          side="left"
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>

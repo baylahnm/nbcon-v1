@@ -121,7 +121,7 @@ const InteractiveSelector = () => {
   }, []);
 
   return (
-    <div className="relative w-full bg-gradient-to-br from-background via-background to-muted/20 py-0 px-4">
+    <div className="relative w-full bg-gradient-to-br from-background via-background to-muted/20 py-0">
       {/* Header Section */}
       <div className="max-w-7xl mx-auto text-center mb-16">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">

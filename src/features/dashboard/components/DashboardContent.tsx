@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Home, Search, Plus, TrendingUp, MoreHorizontal, Calendar, Users, 
@@ -47,6 +47,11 @@ export function DashboardContent() {
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [dashboardComponents, setDashboardComponents] = useState<any[]>([]);
   const [hoveredBorder, setHoveredBorder] = useState<string | null>(null);
+  
+  // Ref and state for Quick Actions scroll arrows
+  const quickActionsContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
   const [containerLayout, setContainerLayout] = useState({
     rows: 1,
     columns: 1,
@@ -59,6 +64,68 @@ export function DashboardContent() {
   
   // Inline edit mode
   const { isEditMode, toggleEditMode } = useInlineDashboardEditStore();
+
+  // Function to update arrow visibility based on scroll position
+  const updateArrowVisibility = useCallback(() => {
+    if (!quickActionsContainerRef.current) return;
+    
+    const container = quickActionsContainerRef.current;
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    
+    // Show left arrow if not at the beginning
+    setShowLeftArrow(scrollLeft > 0);
+    
+    // Show right arrow if not at the end (with small tolerance for floating point precision)
+    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1);
+  }, []);
+
+  // Function to handle horizontal scrolling with arrow buttons
+  const scrollQuickActions = (direction: 'left' | 'right') => {
+    if (!quickActionsContainerRef.current) return;
+    
+    const container = quickActionsContainerRef.current;
+    const buttonWidth = 120; // Approximate width of each button + gap
+    const scrollAmount = buttonWidth;
+    
+    if (direction === 'left') {
+      container.scrollBy({
+        left: -scrollAmount,
+        behavior: 'smooth'
+      });
+    } else {
+      container.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+    
+    // Update arrow visibility after scrolling
+    setTimeout(updateArrowVisibility, 300); // Wait for smooth scroll to complete
+  };
+
+  // useEffect for Quick Actions scroll tracking
+  useEffect(() => {
+    const container = quickActionsContainerRef.current;
+    if (!container) return;
+
+    // Initial check
+    updateArrowVisibility();
+
+    // Add scroll event listener
+    container.addEventListener('scroll', updateArrowVisibility);
+    
+    // Add resize event listener to handle window size changes
+    const handleResize = () => {
+      setTimeout(updateArrowVisibility, 100); // Small delay to ensure layout has updated
+    };
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => {
+      container.removeEventListener('scroll', updateArrowVisibility);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [updateArrowVisibility]);
 
   // Load engineer specializations
   useEffect(() => {
@@ -568,7 +635,44 @@ export function DashboardContent() {
                   </CardHeader>
                   <CardContent className="p-4 flex-1 flex flex-col">
                    <div className="relative quick-actions-container">
-                     <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
+                     {/* Arrow Navigation */}
+                     <div className="flex justify-between items-center mb-2">
+                       <div className="w-10">
+                         {showLeftArrow && (
+                           <button 
+                             onClick={() => scrollQuickActions('left')}
+                             className="p-1.5 bg-background border border-border rounded-full hover:bg-muted transition-all duration-200 shadow-sm opacity-100"
+                             aria-label="Scroll left"
+                           >
+                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                             </svg>
+                           </button>
+                         )}
+                       </div>
+                       <span className="text-xs text-muted-foreground">Swipe or use arrows</span>
+                       <div className="w-10 flex justify-end">
+                         {showRightArrow && (
+                           <button 
+                             onClick={() => scrollQuickActions('right')}
+                             className="p-1.5 bg-background border border-border rounded-full hover:bg-muted transition-all duration-200 shadow-sm opacity-100"
+                             aria-label="Scroll right"
+                           >
+                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                             </svg>
+                           </button>
+                         )}
+                       </div>
+                     </div>
+
+                     <div 
+                       ref={quickActionsContainerRef}
+                       className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80 hide-scrollbar"
+                       style={{
+                         scrollBehavior: 'smooth'
+                       }}
+                     >
                     
                     {profile?.role === 'enterprise' ? (
                       <>

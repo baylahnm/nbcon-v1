@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { create } from 'zustand';
 
 export type CalendarView = 'month' | 'week' | 'day' | 'agenda';
 export type UserRole = 'client' | 'engineer' | 'enterprise' | 'admin';
 export type EventType = 'job' | 'milestone' | 'visit' | 'invoice' | 'call' | 'payout';
-export type EventStatus = 'draft' | 'open' | 'quoted' | 'in-progress' | 'completed' | 'cancelled';
+export type EventStatus = 'draft' | 'open' | 'quoted' | 'in-progress' | 'completed' | 'cancelled' | 'scheduled';
 
 export interface CalendarEvent {
   id: string;
@@ -38,6 +38,7 @@ export interface CalendarFilters {
   roleContext: 'mine' | 'team' | 'company';
   cities: string[];
   searchTerm: string;
+  projectIds: string[];
 }
 
 const mockEvents: CalendarEvent[] = [
@@ -172,31 +173,31 @@ const mockEvents: CalendarEvent[] = [
   },
   {
     id: '7',
-    title: 'Milestone Review - Bridge Construction',
-    description: 'Quarterly milestone review for highway bridge project',
+    title: 'Structural Review - Metro Project',
+    description: 'Engineering review for Riyadh metro tunnel construction',
     startTime: new Date(2025, 8, 16, 10, 0),
-    endTime: new Date(2025, 8, 16, 11, 0),
+    endTime: new Date(2025, 8, 16, 13, 0),
     allDay: false,
-    type: 'milestone',
-    status: 'completed',
+    type: 'job',
+    status: 'in-progress',
     location: 'Riyadh',
-    client: 'Ministry of Transport',
+    client: 'Riyadh Metro Company',
     assignees: [
       { id: '11', name: 'Hassan Al-Mutairi', initials: 'HM' },
-      { id: '12', name: 'Jana Al-Sabah', initials: 'JA' }
+      { id: '12', name: 'Lamia Al-Saud', initials: 'LS' }
     ],
-    amount: 75000,
+    amount: 32000,
     priority: 'High',
     projectId: 'PROJ-006',
     isRecurring: false,
-    tags: ['milestone', 'bridge', 'review']
+    tags: ['metro', 'structural', 'review']
   },
   {
     id: '8',
-    title: 'Electrical Systems Analysis',
-    description: 'Power distribution analysis for residential development',
-    startTime: new Date(2025, 8, 16, 13, 0),
-    endTime: new Date(2025, 8, 16, 17, 0),
+    title: 'Electrical Design Workshop',
+    description: 'Workshop on electrical systems design for SABIC facility',
+    startTime: new Date(2025, 8, 16, 11, 0),
+    endTime: new Date(2025, 8, 16, 14, 0),
     allDay: false,
     type: 'job',
     status: 'in-progress',
@@ -429,190 +430,216 @@ const mockEvents: CalendarEvent[] = [
   }
 ];
 
-export function useCalendarStore() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<CalendarView>('week');
-  const [userRole, setUserRole] = useState<UserRole>('engineer');
-  const [isHijri, setIsHijri] = useState(false);
-  const [filters, setFilters] = useState<CalendarFilters>({
-    eventTypes: [],
-    statuses: [],
-    dateRange: { start: null, end: null },
-    roleContext: 'mine',
-    cities: [],
-    searchTerm: ''
+const createInitialFilters = (): CalendarFilters => ({
+  eventTypes: [],
+  statuses: [],
+  dateRange: { start: null, end: null },
+  roleContext: 'mine',
+  cities: [],
+  searchTerm: '',
+  projectIds: [],
+});
+
+const computeFilteredEvents = (events: CalendarEvent[], filters: CalendarFilters) => {
+  const searchTerm = filters.searchTerm.trim().toLowerCase();
+
+  return events.filter(event => {
+    if (searchTerm) {
+      const matchesSearch =
+        event.title.toLowerCase().includes(searchTerm) ||
+        event.description.toLowerCase().includes(searchTerm) ||
+        event.client.toLowerCase().includes(searchTerm) ||
+        event.location.toLowerCase().includes(searchTerm) ||
+        event.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+
+      if (!matchesSearch) {
+        return false;
+      }
+    }
+
+    if (filters.eventTypes.length > 0 && !filters.eventTypes.includes(event.type)) {
+      return false;
+    }
+
+    if (filters.statuses.length > 0 && !filters.statuses.includes(event.status)) {
+      return false;
+    }
+
+    if (filters.projectIds.length > 0) {
+      if (!event.projectId || !filters.projectIds.includes(event.projectId)) {
+        return false;
+      }
+    }
+
+    if (filters.dateRange.start && event.startTime < filters.dateRange.start) {
+      return false;
+    }
+
+    if (filters.dateRange.end && event.startTime > filters.dateRange.end) {
+      return false;
+    }
+
+    if (filters.cities.length > 0 && !filters.cities.includes(event.location)) {
+      return false;
+    }
+
+    return true;
   });
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
-  const [events, setEvents] = useState<CalendarEvent[]>(mockEvents);
+};
 
-  const filteredEvents = useMemo(() => {
-    return events.filter(event => {
-      // Search term filter
-      if (filters.searchTerm) {
-        const searchLower = filters.searchTerm.toLowerCase();
-        const matchesSearch = 
-          event.title.toLowerCase().includes(searchLower) ||
-          event.description.toLowerCase().includes(searchLower) ||
-          event.client.toLowerCase().includes(searchLower) ||
-          event.location.toLowerCase().includes(searchLower) ||
-          event.tags.some(tag => tag.toLowerCase().includes(searchLower));
-        
-        if (!matchesSearch) return false;
-      }
+export interface CalendarStore {
+  currentDate: Date;
+  view: CalendarView;
+  userRole: UserRole;
+  isHijri: boolean;
+  filters: CalendarFilters;
+  showFilters: boolean;
+  selectedEvent: CalendarEvent | null;
+  events: CalendarEvent[];
+  allEvents: CalendarEvent[];
+  setCurrentDate: (date: Date) => void;
+  setView: (view: CalendarView) => void;
+  setUserRole: (role: UserRole) => void;
+  setIsHijri: (value: boolean) => void;
+  updateFilters: (filters: Partial<CalendarFilters>) => void;
+  clearFilters: () => void;
+  setSelectedEvent: (event: CalendarEvent | null) => void;
+  setShowFilters: (show: boolean) => void;
+  addEvent: (eventData: Omit<CalendarEvent, 'id'>) => CalendarEvent;
+  updateEvent: (eventId: string, eventData: Partial<CalendarEvent>) => void;
+  deleteEvent: (eventId: string) => void;
+  getEventsForDate: (date: Date) => CalendarEvent[];
+  getEventsForWeek: (startDate: Date) => CalendarEvent[];
+  getEventsForMonth: (date: Date) => CalendarEvent[];
+  getEventsForProject: (projectId: string) => CalendarEvent[];
+  getEventTypeColor: (type: EventType) => string;
+  getStatusColor: (status: EventStatus) => string;
+  formatCurrency: (amount: number) => string;
+}
 
-      // Event type filter
-      if (filters.eventTypes.length > 0 && !filters.eventTypes.includes(event.type)) {
-        return false;
-      }
-
-      // Status filter
-      if (filters.statuses.length > 0 && !filters.statuses.includes(event.status)) {
-        return false;
-      }
-
-      // Date range filter
-      if (filters.dateRange.start && event.startTime < filters.dateRange.start) {
-        return false;
-      }
-      if (filters.dateRange.end && event.startTime > filters.dateRange.end) {
-        return false;
-      }
-
-      // City filter
-      if (filters.cities.length > 0 && !filters.cities.includes(event.location)) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [filters]);
-
-  const getEventsForDate = (date: Date) => {
-    return filteredEvents.filter(event => {
-      const eventDate = new Date(event.startTime);
-      return eventDate.toDateString() === date.toDateString();
-    });
-  };
-
-  const getEventsForWeek = (startDate: Date) => {
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 6);
-    
-    return filteredEvents.filter(event => {
-      const eventDate = new Date(event.startTime);
-      return eventDate >= startDate && eventDate <= endDate;
-    });
-  };
-
-  const getEventsForMonth = (date: Date) => {
-    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    
-    return filteredEvents.filter(event => {
-      const eventDate = new Date(event.startTime);
-      return eventDate >= startOfMonth && eventDate <= endOfMonth;
-    });
-  };
-
-  const getEventTypeColor = (type: EventType) => {
-    const colors = {
-      job: 'bg-primary/10 text-primary border-primary/20',
-      milestone: 'bg-success/10 text-success border-success/20',
-      visit: 'bg-warning/10 text-warning border-warning/20',
-      invoice: 'bg-destructive/10 text-destructive border-destructive/20',
-      call: 'bg-info/10 text-info border-info/20',
-      payout: 'bg-accent/10 text-accent border-accent/20'
-    };
-    return colors[type] || 'bg-muted text-muted-foreground border-border';
-  };
-
-  const getStatusColor = (status: EventStatus) => {
-    const colors = {
-      draft: 'bg-muted text-muted-foreground',
-      open: 'bg-info/10 text-info',
-      quoted: 'bg-warning/10 text-warning',
-      'in-progress': 'bg-primary/10 text-primary',
-      completed: 'bg-success/10 text-success',
-      cancelled: 'bg-destructive/10 text-destructive'
-    };
-    return colors[status] || 'bg-muted text-muted-foreground';
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('ar-SA', {
-      style: 'currency',
-      currency: 'SAR',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
-
-  const updateFilters = (newFilters: Partial<CalendarFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      eventTypes: [],
-      statuses: [],
-      dateRange: { start: null, end: null },
-      roleContext: 'mine',
-      cities: [],
-      searchTerm: ''
-    });
-  };
-
-  const addEvent = (eventData: Omit<CalendarEvent, 'id'>) => {
-    const newEvent: CalendarEvent = {
-      ...eventData,
-      id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    };
-    setEvents(prev => [...prev, newEvent]);
-  };
-
-  const updateEvent = (eventId: string, eventData: Partial<CalendarEvent>) => {
-    setEvents(prev => prev.map(event => 
-      event.id === eventId ? { ...event, ...eventData } : event
-    ));
-  };
-
-  const deleteEvent = (eventId: string) => {
-    setEvents(prev => prev.filter(event => event.id !== eventId));
-  };
+export const useCalendarStore = create<CalendarStore>((set, get) => {
+  const initialFilters = createInitialFilters();
+  const initialAllEvents = [...mockEvents];
 
   return {
-    // State
-    currentDate,
-    view,
-    userRole,
-    isHijri,
-    filters,
-    selectedEvent,
-    showFilters,
-    
-    // Data
-    events: filteredEvents,
-    allEvents: events,
-    
-    // Actions
-    setCurrentDate,
-    setView,
-    setUserRole,
-    setIsHijri,
-    updateFilters,
-    clearFilters,
-    setSelectedEvent,
-    setShowFilters,
-    addEvent,
-    updateEvent,
-    deleteEvent,
-    
-    // Computed
-    getEventsForDate,
-    getEventsForWeek,
-    getEventsForMonth,
-    getEventTypeColor,
-    getStatusColor,
-    formatCurrency
+    currentDate: new Date(),
+    view: 'week',
+    userRole: 'engineer',
+    isHijri: false,
+    filters: initialFilters,
+    showFilters: false,
+    selectedEvent: null,
+    events: computeFilteredEvents(initialAllEvents, initialFilters),
+    allEvents: initialAllEvents,
+    setCurrentDate: (date) => set({ currentDate: date }),
+    setView: (view) => set({ view }),
+    setUserRole: (role) => set({ userRole: role }),
+    setIsHijri: (value) => set({ isHijri: value }),
+    updateFilters: (newFilters) => set(state => {
+      const filters = { ...state.filters, ...newFilters };
+      return {
+        filters,
+        events: computeFilteredEvents(state.allEvents, filters),
+      };
+    }),
+    clearFilters: () => set(state => {
+      const filters = createInitialFilters();
+      return {
+        filters,
+        events: computeFilteredEvents(state.allEvents, filters),
+      };
+    }),
+    setSelectedEvent: (event) => set({ selectedEvent: event }),
+    setShowFilters: (show) => set({ showFilters: show }),
+    addEvent: (eventData) => {
+      const newEvent: CalendarEvent = {
+        ...eventData,
+        id: `event-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      };
+      set(state => {
+        const allEvents = [...state.allEvents, newEvent].sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+        return {
+          allEvents,
+          events: computeFilteredEvents(allEvents, state.filters),
+        };
+      });
+      return newEvent;
+    },
+    updateEvent: (eventId, eventData) => set(state => {
+      const allEvents = state.allEvents
+        .map(event => (event.id === eventId ? { ...event, ...eventData } : event))
+        .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+      const selectedEvent =
+        state.selectedEvent?.id === eventId
+          ? { ...state.selectedEvent, ...eventData } as CalendarEvent
+          : state.selectedEvent;
+      return {
+        allEvents,
+        events: computeFilteredEvents(allEvents, state.filters),
+        selectedEvent,
+      };
+    }),
+    deleteEvent: (eventId) => set(state => {
+      const allEvents = state.allEvents.filter(event => event.id !== eventId);
+      const selectedEvent = state.selectedEvent?.id === eventId ? null : state.selectedEvent;
+      return {
+        allEvents,
+        events: computeFilteredEvents(allEvents, state.filters),
+        selectedEvent,
+      };
+    }),
+    getEventsForDate: (date) => {
+      const dayString = date.toDateString();
+      return get().events.filter(event => event.startTime.toDateString() === dayString);
+    },
+    getEventsForWeek: (startDate) => {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+      endDate.setHours(23, 59, 59, 999);
+      return get().events.filter(event => event.startTime >= start && event.startTime <= endDate);
+    },
+    getEventsForMonth: (date) => {
+      const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+      startOfMonth.setHours(0, 0, 0, 0);
+      const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      endOfMonth.setHours(23, 59, 59, 999);
+      return get().events.filter(event => event.startTime >= startOfMonth && event.startTime <= endOfMonth);
+    },
+    getEventsForProject: (projectId) => {
+      return get()
+        .allEvents
+        .filter(event => event.projectId === projectId)
+        .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    },
+    getEventTypeColor: (type) => {
+      const colors: Record<EventType, string> = {
+        job: 'bg-primary/10 text-primary border-primary/20',
+        milestone: 'bg-success/10 text-success border-success/20',
+        visit: 'bg-warning/10 text-warning border-warning/20',
+        invoice: 'bg-destructive/10 text-destructive border-destructive/20',
+        call: 'bg-info/10 text-info border-info/20',
+        payout: 'bg-accent/10 text-accent border-accent/20',
+      };
+      return colors[type] || 'bg-muted text-muted-foreground border-border';
+    },
+    getStatusColor: (status) => {
+      const colors: Record<EventStatus, string> = {
+        draft: 'bg-muted text-muted-foreground',
+        open: 'bg-info/10 text-info',
+        quoted: 'bg-warning/10 text-warning',
+        'in-progress': 'bg-primary/10 text-primary',
+        completed: 'bg-success/10 text-success',
+        cancelled: 'bg-destructive/10 text-destructive',
+        scheduled: 'bg-info/10 text-info',
+      };
+      return colors[status] || 'bg-muted text-muted-foreground';
+    },
+    formatCurrency: (amount) => new Intl.NumberFormat('ar-SA', {
+      style: 'currency',
+      currency: 'SAR',
+      minimumFractionDigits: 0,
+    }).format(amount),
   };
-}
+});

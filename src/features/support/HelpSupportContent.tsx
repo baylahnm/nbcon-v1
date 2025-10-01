@@ -166,7 +166,7 @@ const supportContacts: SupportContact[] = [
   {
     type: "emergency",
     label: "Emergency Technical Support",
-    value: "+966 11 234 5678",
+    value: "+966566222179",
     availability: "24/7",
     language: "Arabic, English",
     priority: "high",
@@ -175,7 +175,7 @@ const supportContacts: SupportContact[] = [
   {
     type: "phone",
     label: "Riyadh Office Support",
-    value: "+966 11 123 4567",
+    value: "+966566222179",
     availability: "Sun-Thu, 8AM-6PM AST",
     language: "Arabic, English",
     priority: "medium",
@@ -193,7 +193,7 @@ const supportContacts: SupportContact[] = [
   {
     type: "email",
     label: "Email Support",
-    value: "support@nbcon.sa",
+    value: "info@nbcon.app",
     availability: "24-48 hours response",
     language: "Arabic, English",
     priority: "medium",
@@ -369,7 +369,7 @@ export function HelpSupportContent() {
         <Alert className="border-destructive/20 bg-destructive/5">
           <AlertDescription className="text-destructive">
             <strong>Emergency Support:</strong> For critical safety issues or system emergencies affecting active work sites, 
-            call our 24/7 hotline at <strong>+966 11 234 5678</strong>. For payment disputes exceeding 50,000 SAR, contact our legal team immediately.
+            call our 24/7 hotline at <strong>+966566222179</strong>. For payment disputes exceeding 50,000 SAR, contact our legal team immediately.
           </AlertDescription>
         </Alert>
 

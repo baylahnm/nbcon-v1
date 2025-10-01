@@ -20,6 +20,43 @@
   animation-play-state: paused;
 }
 
+/* Hide scrollbars for horizontal scroll containers */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+/* Slide animations for mobile sidebar */
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.data-\[state\=open\]\:slide-in-from-left {
+  animation: slide-in-from-left 0.3s ease-out;
+}
+
+.data-\[state\=closed\]\:slide-out-to-left {
+  animation: slide-out-to-left 0.3s ease-in;
+}
+
 /* Sidebar width variables */
 :root {
   --sidebar-width: 16rem;

@@ -592,7 +592,7 @@ export function SettingsContent() {
                 
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" defaultValue="nasser.baylah@nbcon.sa" />
+                  <Input id="email" type="email" defaultValue="info@nbcon.app" />
                 </div>
                 
                 <div>

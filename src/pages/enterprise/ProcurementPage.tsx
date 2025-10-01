@@ -221,7 +221,7 @@ export function ProcurementPage() {
       location: 'Riyadh, Saudi Arabia',
       contact: 'Abdullah Al-Rajhi',
       email: 'abdullah@alrajhi-eng.sa',
-      phone: '+966 11 234 5678',
+      phone: '+966566222179',
       contractValue: 2500000,
       lastOrder: '2024-09-15',
       reliability: 95
@@ -625,7 +625,7 @@ export function ProcurementPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Phone</label>
-                  <Input placeholder="+966 11 234 5678" />
+                  <Input placeholder="+966566222179" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Email</label>

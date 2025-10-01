@@ -52,13 +52,36 @@ function SheetContent({
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left";
 }) {
+  // Check if this is a mobile sidebar based on data-mobile attribute
+  const isMobileSidebar = props['data-mobile'] === 'true';
+  
+  // Define side-specific positioning classes
+  const sideClasses = {
+    left: "left-0 top-0 h-full w-full max-w-sm -translate-x-full data-[state=open]:translate-x-0 data-[state=closed]:translate-x-[-100%]",
+    right: "right-0 top-0 h-full w-full max-w-sm translate-x-full data-[state=open]:translate-x-0 data-[state=closed]:translate-x-full",
+    top: "left-0 top-0 w-full -translate-y-full data-[state=open]:translate-y-0 data-[state=closed]:translate-y-[-100%]",
+    bottom: "left-0 bottom-0 w-full translate-y-full data-[state=open]:translate-y-0 data-[state=closed]:translate-y-full"
+  };
+
+  // Use center positioning for non-sidebar sheets, side positioning for mobile sidebars
+  const positioningClasses = isMobileSidebar 
+    ? sideClasses[side]
+    : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-[80vh] rounded-lg";
+
+  const animationClasses = isMobileSidebar
+    ? "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left duration-300"
+    : "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-200";
+
   return (
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed left-1/2 top-1/2 z-50 flex w-full max-w-md max-h-[80vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-lg border p-6 shadow-lg duration-200",
+          "bg-background fixed z-50 flex overflow-y-auto flex-col gap-4 border shadow-lg",
+          positioningClasses,
+          animationClasses,
+          isMobileSidebar ? "p-0" : "p-6",
           className,
         )}
         {...props}

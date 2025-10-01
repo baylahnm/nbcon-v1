@@ -46,6 +46,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { EngineerProfile } from "./profiles/EngineerProfile";
+import { FunctionalEngineerProfile } from "./profiles/FunctionalEngineerProfile";
 import { ClientProfile } from "./profiles/ClientProfile";
 import { EnterpriseProfile } from "./profiles/EnterpriseProfile";
 
@@ -154,7 +155,7 @@ const sampleProfileData: ProfileData = {
   personalInfo: {
     firstName: "Nasser",
     lastName: "Baylah",
-    email: "nasser.baylah@nbcon.sa",
+    email: "info@nbcon.app",
     phone: "+966 55 123 4567",
     dateOfBirth: "1988-03-15",
     nationality: "Saudi Arabian",
@@ -331,13 +332,13 @@ export function ProfileContent() {
   const renderRoleSpecificProfile = () => {
     switch (profile?.role) {
       case 'engineer':
-        return <EngineerProfile />;
+        return <FunctionalEngineerProfile />;
       case 'client':
         return <ClientProfile />;
       case 'enterprise':
         return <EnterpriseProfile />;
       default:
-        return <EngineerProfile />; // Default to engineer profile
+        return <FunctionalEngineerProfile />; // Default to functional engineer profile
     }
   };
 

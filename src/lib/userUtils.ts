@@ -6,6 +6,7 @@ import { UserProfile } from '@/stores/auth';
 export const getUserDisplayName = (profile: UserProfile | null): string => {
   if (!profile) return 'User';
   
+  // Try first_name and last_name first (from profile data)
   if (profile.first_name && profile.last_name) {
     return `${profile.first_name} ${profile.last_name}`;
   }
@@ -14,10 +15,12 @@ export const getUserDisplayName = (profile: UserProfile | null): string => {
     return profile.first_name;
   }
   
+  // Fallback to name field
   if (profile.name) {
     return profile.name;
   }
   
+  // Last resort - use email prefix
   if (profile.email) {
     return profile.email.split('@')[0];
   }
@@ -72,4 +75,23 @@ export const getUserRoleDisplay = (profile: UserProfile | null): string => {
   };
   
   return roleMap[profile.role] || profile.role;
+};
+
+/**
+ * Get the user's profile image URL
+ */
+export const getUserProfileImage = (profile: UserProfile | null): string | null => {
+  if (!profile) return null;
+  
+  // Try avatar_url first (from profile data)
+  if (profile.avatar_url) {
+    return profile.avatar_url;
+  }
+  
+  // Fallback to avatar field
+  if (profile.avatar) {
+    return profile.avatar;
+  }
+  
+  return null;
 };

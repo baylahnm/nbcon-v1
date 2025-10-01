@@ -267,7 +267,7 @@ export function EngineerProfile() {
     personalInfo: {
       firstName: "Nasser",
       lastName: "Baylah",
-      email: profile?.email || "nasser.baylah@nbcon.sa",
+      email: profile?.email || "info@nbcon.app",
       phone: "+966 55 123 4567",
       dateOfBirth: "1988-03-15",
       nationality: "Saudi Arabian",

@@ -1,12 +1,12 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'next-themes';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuthStore } from '@/stores/auth';
 import { R } from '@/lib/routes';
-import { getUserDisplayName, getUserInitials } from '@/lib/userUtils';
+import { getUserDisplayName, getUserInitials, getUserProfileImage } from '@/lib/userUtils';
 import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -159,6 +159,10 @@ export function AppSidebar() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className={cn("w-full justify-start p-3 h-auto", collapsed && "justify-center")}>
                 <Avatar className="h-8 w-8 m-0">
+                  <AvatarImage 
+                    src={getUserProfileImage(profile) || undefined} 
+                    alt={getUserDisplayName(profile)}
+                  />
                   <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                     {getInitials()}
                   </AvatarFallback>

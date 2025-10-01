@@ -202,7 +202,7 @@ export function SettingsPage() {
     companyNameArabic: 'شركة نيوم للاستشارات الهندسية',
     companyLogo: undefined,
     website: 'www.neom-engineering.sa',
-    phoneNumber: '+966 11 234 5678',
+    phoneNumber: '+966566222179',
     address: 'King Fahd Road, Al Olaya District, Riyadh 11543',
     
     // Notifications
@@ -923,7 +923,7 @@ export function SettingsPage() {
                     id="phoneNumber"
                     value={settings.phoneNumber}
                     onChange={(e) => handleSettingChange('phoneNumber', e.target.value)}
-                    placeholder="+966 11 234 5678"
+                    placeholder="+966566222179"
                   />
                 </div>
               </div>

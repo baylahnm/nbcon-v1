@@ -202,7 +202,7 @@ export function ProfilePage() {
 
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
     email: 'info@neom-engineering.sa',
-    phone: '+966 11 234 5678',
+    phone: '+966566222179',
     fax: '+966 11 234 5679',
     website: 'www.neom-engineering.sa',
     address: 'King Fahd Road, Al Olaya District',

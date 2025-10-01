@@ -252,7 +252,7 @@ export function VendorsPage() {
       country: 'Saudi Arabia',
       contact: 'Abdullah Al-Rajhi',
       email: 'abdullah@alrajhi-eng.sa',
-      phone: '+966 11 234 5678',
+      phone: '+966566222179',
       website: 'www.alrajhi-engineering.sa',
       establishedYear: 1995,
       employeeCount: '500+',
@@ -1112,7 +1112,7 @@ export function VendorsPage() {
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Phone</Label>
-                  <Input placeholder="+966 XX XXX XXXX" className="mt-2" />
+                  <Input placeholder="+966566222179" className="mt-2" />
                 </div>
               </div>
               

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from 'next-themes';
 import { useAuthStore } from '@/stores/auth';
@@ -69,6 +69,13 @@ const HomePage = () => {
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
   const [dashboardRole, setDashboardRole] = useState<'engineers' | 'clients' | 'enterprise'>('engineers');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Ref for horizontal scroll container
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  
+  // State for arrow visibility
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
   // Typing effect for chat input placeholder
   const typingPhrases = [
     'Ask about engineering projects',
@@ -144,6 +151,68 @@ const HomePage = () => {
     container.addEventListener('scroll', handleScroll);
     return () => container.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Function to update arrow visibility based on scroll position
+  const updateArrowVisibility = useCallback(() => {
+    if (!cardsContainerRef.current) return;
+    
+    const container = cardsContainerRef.current;
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    
+    // Show left arrow if not at the beginning
+    setShowLeftArrow(scrollLeft > 0);
+    
+    // Show right arrow if not at the end (with small tolerance for floating point precision)
+    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1);
+  }, []);
+
+  // useEffect for cards container scroll tracking
+  useEffect(() => {
+    const container = cardsContainerRef.current;
+    if (!container) return;
+
+    // Initial check
+    updateArrowVisibility();
+
+    // Add scroll event listener
+    container.addEventListener('scroll', updateArrowVisibility);
+    
+    // Add resize event listener to handle window size changes
+    const handleResize = () => {
+      setTimeout(updateArrowVisibility, 100); // Small delay to ensure layout has updated
+    };
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => {
+      container.removeEventListener('scroll', updateArrowVisibility);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [updateArrowVisibility]);
+
+  // Function to handle horizontal scrolling with arrow buttons
+  const scrollCards = (direction: 'left' | 'right') => {
+    if (!cardsContainerRef.current) return;
+    
+    const container = cardsContainerRef.current;
+    const cardWidth = 324; // 300px minWidth + 24px gap
+    const scrollAmount = cardWidth;
+    
+    if (direction === 'left') {
+      container.scrollBy({
+        left: -scrollAmount,
+        behavior: 'smooth'
+      });
+    } else {
+      container.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+    
+    // Update arrow visibility after scrolling
+    setTimeout(updateArrowVisibility, 300); // Wait for smooth scroll to complete
+  };
 
   const { theme } = useTheme();
   const { profile } = useAuthStore();
@@ -265,8 +334,8 @@ const HomePage = () => {
         },
         info: {
           title: 'Contact Information',
-          email: 'support@nbcon.sa',
-          phone: '+966 XX XXX XXXX',
+          email: 'info@nbcon.app',
+          phone: '+966566222179',
           address: 'Riyadh, Saudi Arabia'
         }
       },
@@ -403,8 +472,8 @@ const HomePage = () => {
         },
         info: {
           title: 'معلومات الاتصال',
-          email: 'support@nbcon.sa',
-          phone: '+966 XX XXX XXXX',
+          email: 'info@nbcon.app',
+          phone: '+966566222179',
           address: 'الرياض، المملكة العربية السعودية'
         }
       },
@@ -440,8 +509,8 @@ const HomePage = () => {
     <div className={`min-h-screen bg-background ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Navigation Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center justify-between">
+        <div className="container mx-auto px-0">
+          <div className="flex h-16 items-center justify-between px-4">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
@@ -577,8 +646,8 @@ const HomePage = () => {
       </header>
 
       {/* Hero Section - Two Column Layout */}
-      <section id="hero" className="pt-16 md:pt-24 lg:pt-32 pb-16 md:pb-24 lg:pb-32 px-4">
-        <div className="container mx-auto">
+      <section id="hero" className="py-16 px-6 md:py-24 lg:py-32 md:px-0">
+        <div className="container mx-auto px-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Column - Content */}
             <div className="space-y-6 lg:space-y-8">
@@ -802,8 +871,8 @@ const HomePage = () => {
       </section>
 
       {/* Trust Strip */}
-      <section className="py-12 bg-background">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-16 px-6 md:py-12 md:px-0 bg-background">
+        <div className="container mx-auto px-0 text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             <TypewriterText 
               text={t.trust.title} 
@@ -891,8 +960,8 @@ const HomePage = () => {
       </section>
 
       {/* AI Chat Assistant */}
-      <section className="pt-[200px] pb-[200px] bg-muted/30">
-        <div className="container mx-auto px-4">
+      <section className="py-16 px-6 md:py-[200px] md:px-0 bg-muted/30">
+        <div className="container mx-auto px-0">
           <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-stretch">
               {/* AI Features - Left Column */}
@@ -1069,8 +1138,8 @@ const HomePage = () => {
       </section>
 
       {/* Dashboard Showcase */}
-      <section className="pt-[200px] pb-[200px] px-[16px]">
-        <div className="container mx-auto">
+      <section className="py-16 px-6 md:py-[200px] md:px-0">
+        <div className="container mx-auto px-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold mb-4">{t.dashboard.title}</h2>
@@ -1331,8 +1400,8 @@ const HomePage = () => {
       </section>
 
       {/* Our Popular Services */}
-      <section id="features" className="py-[200px] px-4 bg-muted/30">
-        <div className="container mx-auto">
+      <section id="features" className="py-16 px-6 md:py-[200px] md:px-0 bg-muted/30">
+        <div className="container mx-auto px-0">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Who Are We For?</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">A high-performing marketplace connecting certified engineers, clients, and enterprises—with transparent pricing, milestone payments, and built-in compliance.</p>
@@ -1374,9 +1443,49 @@ const HomePage = () => {
                   <p className="text-lg text-muted-foreground">Instant access to verified engineers, transparent pricing, milestone-based payments, and quality assurance.</p>
                 </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Mobile: Horizontal Scrollable Cards, Desktop: Grid */}
+            <div className="relative">
+              {/* Arrow Navigation - Mobile Only */}
+              <div className="md:hidden flex justify-between items-center mb-4">
+                <div className="w-10">
+                  {showLeftArrow && (
+                    <button 
+                      onClick={() => scrollCards('left')}
+                      className="p-2 bg-background border border-border rounded-full hover:bg-muted transition-all duration-200 shadow-sm opacity-100"
+                      aria-label="Scroll left"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <span className="text-sm text-muted-foreground">Swipe or use arrows</span>
+                <div className="w-10 flex justify-end">
+                  {showRightArrow && (
+                    <button 
+                      onClick={() => scrollCards('right')}
+                      className="p-2 bg-background border border-border rounded-full hover:bg-muted transition-all duration-200 shadow-sm opacity-100"
+                      aria-label="Scroll right"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Cards Container */}
+              <div 
+                ref={cardsContainerRef}
+                className="flex gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none"
+                style={{
+                  scrollBehavior: 'smooth'
+                }}
+              >
               {/* Browse Engineers */}
-              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1 snap-center flex-shrink-0 md:flex-shrink md:snap-none" style={{minWidth: '300px'}}>
               <div className="flex justify-between items-start mb-4">
                           <h3 className="text-lg font-semibold">Browse Engineers</h3>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Verified</span>
@@ -1445,7 +1554,7 @@ const HomePage = () => {
             </Card>
 
               {/* Post a Project */}
-              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1 snap-center flex-shrink-0 md:flex-shrink md:snap-none" style={{minWidth: '300px'}}>
               <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-semibold">Post a Project</h3>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Wizard</span>
@@ -1529,7 +1638,7 @@ const HomePage = () => {
             </Card>
 
               {/* Compare Proposals */}
-              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1 snap-center flex-shrink-0 md:flex-shrink md:snap-none" style={{minWidth: '300px'}}>
               <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-semibold">Compare Proposals</h3>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Side-by-Side</span>
@@ -1630,7 +1739,7 @@ const HomePage = () => {
             </Card>
 
               {/* Track Milestones */}
-              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1 snap-center flex-shrink-0 md:flex-shrink md:snap-none" style={{minWidth: '300px'}}>
               <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-semibold">Track Milestones</h3>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Escrow</span>
@@ -1710,7 +1819,7 @@ const HomePage = () => {
             </Card>
 
               {/* Real-time Messaging */}
-              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1 snap-center flex-shrink-0 md:flex-shrink md:snap-none" style={{minWidth: '300px'}}>
               <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-semibold">Real-time Messaging</h3>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Bilingual</span>
@@ -1788,7 +1897,7 @@ const HomePage = () => {
             </Card>
 
               {/* Compliance & Docs */}
-              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <Card className="p-6 h-[600px] flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1 snap-center flex-shrink-0 md:flex-shrink md:snap-none" style={{minWidth: '300px'}}>
               <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-semibold">Compliance & Docs</h3>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">SCE / ZATCA</span>
@@ -1861,7 +1970,8 @@ const HomePage = () => {
                   <Button size="sm" className="w-full">View All Documents</Button>
               </div>
             </Card>
-          </div>
+              </div>
+            </div>
               </>
             )}
 
@@ -2878,8 +2988,8 @@ const HomePage = () => {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-[200px] px-4">
-        <div className="container mx-auto">
+      <section className="py-16 px-6 md:py-[200px] md:px-0">
+        <div className="container mx-auto px-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Interactive Dashboard Demo */}
             <div className="relative">
@@ -3057,13 +3167,13 @@ const HomePage = () => {
       </section>
 
       {/* Popular Services Section */}
-      <section className="py-[200px]">
+      <section className="py-16 px-6 md:py-[200px] md:px-0">
         <InteractiveSelector />
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-[100px] px-0 bg-muted/30">
-        <div className="container mx-auto">
+      <section className="py-16 px-6 md:py-[100px] md:px-0 bg-muted/30">
+        <div className="container mx-auto px-0">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted by Thousands of Happy Customers</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -3255,7 +3365,7 @@ const HomePage = () => {
 
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-[200px] px-[16px]">
+      <section id="pricing" className="py-16 md:py-[200px]">
         <div className="container mx-auto p-0">
           <div className="max-w mx-auto text-center mb-6">
             <h2 className="text-3xl font-bold mb-3">Pricing</h2>
@@ -3559,8 +3669,8 @@ const HomePage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="pt-[100px] pb-[200px] bg-background">
-        <div className="container mx-auto px-4">
+      <section className="py-16 px-6 md:pt-[100px] md:pb-[200px] md:px-0 bg-background">
+        <div className="container mx-auto px-0">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -3753,8 +3863,8 @@ const HomePage = () => {
       </section>
 
       {/* Contact Us Section */}
-      <section id="about" className="py-[200px] px-4 bg-background">
-        <div className="container mx-auto">
+      <section id="about" className="py-16 px-6 md:py-[200px] md:px-0 bg-background">
+        <div className="container mx-auto px-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Contact Form with Animated Border */}
             <div className="relative">
@@ -3775,7 +3885,7 @@ const HomePage = () => {
                       </div>
                       <div className="flex items-center space-x-2 text-xs text-muted-foreground">
                         <Globe className="w-4 h-4" />
-                        <span>nbcon.sa/contact</span>
+                        <span>nbcon.app/contact</span>
                       </div>
                     </div>
 
@@ -3849,7 +3959,7 @@ const HomePage = () => {
                             <input 
                               type="tel" 
                               className="flex-1 px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                              placeholder="+966 5X XXX XXXX"
+                              placeholder="+966566222179"
                             />
                           </div>
                         </div>
@@ -3976,8 +4086,8 @@ const HomePage = () => {
       </section>
 
        {/* Footer */}
-       <footer className="bg-primary pt-12 pb-12 rounded-t-[50px]">
-         <div className="container mx-auto px-4">
+       <footer className="bg-primary pt-12 pb-12 px-6 rounded-t-[50px]">
+         <div className="container mx-auto px-0">
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-6 border-b border-sidebar-border pb-6">
              {/* Company Info */}
              <div className="lg:col-span-2">
