@@ -164,11 +164,11 @@ const HomePage = () => {
   const content = {
     en: {
       nav: {
-        product: 'Product',
+        product: 'Home',
+        features: 'Features',
+        services: 'Services',
         pricing: 'Pricing',
-        forClients: 'For Clients',
-        forEngineers: 'For Engineers',
-        enterprise: 'Enterprise',
+        about: 'Contact Us',
         help: 'Help',
         signIn: 'Sign In',
         getStarted: 'Get Started'
@@ -250,6 +250,23 @@ const HomePage = () => {
         features: ['One inbox for jobs & messages', 'Milestone approvals with escrow release', 'Finance snapshots and export'],
         cta: 'See the dashboard'
       },
+      contact: {
+        title: 'Get in Touch',
+        subtitle: 'Have questions? We\'d love to hear from you. Send us a message and we\'ll respond as soon as possible.',
+        form: {
+          name: 'Full Name',
+          email: 'Email Address',
+          phone: 'Phone Number',
+          message: 'Your Message',
+          submit: 'Send Message'
+        },
+        info: {
+          title: 'Contact Information',
+          email: 'support@nbcon.sa',
+          phone: '+966 XX XXX XXXX',
+          address: 'Riyadh, Saudi Arabia'
+        }
+      },
       footer: {
         product: {
           title: 'Product',
@@ -276,11 +293,11 @@ const HomePage = () => {
     },
     ar: {
       nav: {
-        product: 'المنتج',
+        product: 'الرئيسية',
+        features: 'المميزات',
+        services: 'الخدمات',
         pricing: 'التسعير',
-        forClients: 'للعملاء',
-        forEngineers: 'للمهندسين',
-        enterprise: 'الشركات',
+        about: 'تواصل معنا',
         help: 'المساعدة',
         signIn: 'تسجيل الدخول',
         getStarted: 'ابدأ الآن'
@@ -371,6 +388,23 @@ const HomePage = () => {
         ],
         cta: 'تابعنا على تويتر/لينكدإن • اقرأ المزيد من القصص'
       },
+      contact: {
+        title: 'تواصل معنا',
+        subtitle: 'لديك أسئلة؟ نحن نحب أن نسمع منك. أرسل لنا رسالة وسنرد في أقرب وقت ممكن.',
+        form: {
+          name: 'الاسم الكامل',
+          email: 'البريد الإلكتروني',
+          phone: 'رقم الهاتف',
+          message: 'رسالتك',
+          submit: 'إرسال الرسالة'
+        },
+        info: {
+          title: 'معلومات الاتصال',
+          email: 'support@nbcon.sa',
+          phone: '+966 XX XXX XXXX',
+          address: 'الرياض، المملكة العربية السعودية'
+        }
+      },
       footer: {
         product: {
           title: 'المنتج',
@@ -415,21 +449,21 @@ const HomePage = () => {
 
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center space-x-6 nav-links">
-              <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
+              <a href="/#hero" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.product}
-              </Link>
+              </a>
+              <a href="/#features" className="text-sm font-medium hover:text-primary transition-colors">
+                {t.nav.features}
+              </a>
+              <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors">
+                {t.nav.services}
+              </a>
               <a href="/#pricing" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.pricing}
               </a>
-              <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
-                {t.nav.forClients}
-              </Link>
-              <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
-                {t.nav.forEngineers}
-              </Link>
-              <Link to="#" className="text-sm font-medium hover:text-primary transition-colors">
-                {t.nav.enterprise}
-              </Link>
+              <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors">
+                {t.nav.about}
+              </a>
             </nav>
 
             {/* Right Side */}
@@ -464,7 +498,7 @@ const HomePage = () => {
       </header>
 
       {/* Hero Section - Two Column Layout */}
-      <section className="pt-[200px] pb-[200px] px-4">
+      <section id="hero" className="pt-[200px] pb-[200px] px-4">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Content */}
@@ -1218,7 +1252,7 @@ const HomePage = () => {
       </section>
 
       {/* Our Popular Services */}
-      <section className="py-[200px] px-4 bg-muted/30">
+      <section id="features" className="py-[200px] px-4 bg-muted/30">
         <div className="container mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Who Are We For?</h2>
@@ -3639,7 +3673,228 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Contact Us Section */}
+      <section id="about" className="py-[200px] px-4 bg-background">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left Column - Contact Form with Animated Border */}
+            <div className="relative">
+              <div className="relative rounded-2xl p-[2px] overflow-hidden">
+                {/* Laser Flow animated border */}
+                <div className="pointer-events-none absolute inset-0 z-0 animate-[spin_8s_linear_infinite] bg-[conic-gradient(hsl(var(--primary))_0%,hsl(var(--accent))_25%,hsl(var(--secondary))_50%,hsl(var(--destructive))_75%,hsl(var(--primary))_100%)] opacity-60" />
+                {/* Contact Form in Browser Window */}
+                <div className="relative z-10">
+                {/* Browser Window Frame */}
+                <div className="relative">
+                  <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden">
+                    {/* Browser Header */}
+                    <div className="bg-muted/50 px-4 py-3 border-b border-border flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                        <Globe className="w-4 h-4" />
+                        <span>nbcon.sa/contact</span>
+                      </div>
+                    </div>
 
+                    {/* Contact Form */}
+                    <div className="p-8 bg-background">
+                      <form className="space-y-5">
+                        {/* First & Last Name Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-2">{language === 'en' ? 'First name' : 'الاسم الأول'}</label>
+                            <input 
+                              type="text" 
+                              className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                              placeholder={language === 'en' ? 'First name' : 'الاسم الأول'}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium mb-2">{language === 'en' ? 'Last name' : 'الاسم الأخير'}</label>
+                            <input 
+                              type="text" 
+                              className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                              placeholder={language === 'en' ? 'Last name' : 'الاسم الأخير'}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                          <label className="block text-sm font-medium mb-2">{t.contact.form.email}</label>
+                          <input 
+                            type="email" 
+                            className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                            placeholder="you@company.com"
+                          />
+                        </div>
+
+                        {/* Company Size & Location Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-2">{language === 'en' ? 'Company size' : 'حجم الشركة'}</label>
+                            <select className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all appearance-none">
+                              <option>{language === 'en' ? '1-10 people' : '1-10 موظف'}</option>
+                              <option>{language === 'en' ? '11-50 people' : '11-50 موظف'}</option>
+                              <option>{language === 'en' ? '51-200 people' : '51-200 موظف'}</option>
+                              <option>{language === 'en' ? '200+ people' : '200+ موظف'}</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium mb-2">{language === 'en' ? 'Location' : 'الموقع'}</label>
+                            <select className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all appearance-none">
+                              <option>🇸🇦 {language === 'en' ? 'Saudi Arabia' : 'المملكة العربية السعودية'}</option>
+                              <option>🇦🇪 {language === 'en' ? 'UAE' : 'الإمارات'}</option>
+                              <option>🇰🇼 {language === 'en' ? 'Kuwait' : 'الكويت'}</option>
+                              <option>🇧🇭 {language === 'en' ? 'Bahrain' : 'البحرين'}</option>
+                              <option>🇴🇲 {language === 'en' ? 'Oman' : 'عمان'}</option>
+                              <option>🇶🇦 {language === 'en' ? 'Qatar' : 'قطر'}</option>
+                              <option>🌍 {language === 'en' ? 'Other' : 'أخرى'}</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Phone */}
+                        <div>
+                          <label className="block text-sm font-medium mb-2">{language === 'en' ? 'Phone number' : 'رقم الهاتف'}</label>
+                          <div className="flex gap-2">
+                            <select className="px-3 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                              <option>SA +966</option>
+                              <option>AE +971</option>
+                              <option>KW +965</option>
+                            </select>
+                            <input 
+                              type="tel" 
+                              className="flex-1 px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                              placeholder="+966 5X XXX XXXX"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Message */}
+                        <div>
+                          <label className="block text-sm font-medium mb-2">{language === 'en' ? 'Message' : 'الرسالة'}</label>
+                          <textarea 
+                            rows={4}
+                            className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
+                            placeholder={language === 'en' ? 'Tell us about your engineering project...' : 'أخبرنا عن مشروعك الهندسي...'}
+                          ></textarea>
+                        </div>
+
+                        {/* Services Interested In */}
+                        <div>
+                          <label className="block text-sm font-medium mb-3">{language === 'en' ? 'Services interested in' : 'الخدمات المهتم بها'}</label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                              <input type="checkbox" className="w-4 h-4 text-primary border-input rounded focus:ring-primary" />
+                              <span className="text-sm">{language === 'en' ? 'Find Engineers' : 'إيجاد مهندسين'}</span>
+                            </label>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                              <input type="checkbox" className="w-4 h-4 text-primary border-input rounded focus:ring-primary" />
+                              <span className="text-sm">{language === 'en' ? 'Post Projects' : 'نشر مشاريع'}</span>
+                            </label>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                              <input type="checkbox" className="w-4 h-4 text-primary border-input rounded focus:ring-primary" />
+                              <span className="text-sm">{language === 'en' ? 'Enterprise Solutions' : 'حلول المؤسسات'}</span>
+                            </label>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                              <input type="checkbox" className="w-4 h-4 text-primary border-input rounded focus:ring-primary" />
+                              <span className="text-sm">{language === 'en' ? 'Other' : 'أخرى'}</span>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <Button type="submit" size="lg" className="w-full text-base py-6">
+                          {t.contact.form.submit}
+                          <ArrowRight className="w-5 h-5 ml-2" />
+                        </Button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+
+              {/* Trusted By Logos */}
+              <div className="mt-8">
+                <p className="text-xs text-muted-foreground text-center mb-4">{language === 'en' ? 'Trusted by leading companies' : 'موثوق به من قبل الشركات الرائدة'}</p>
+                <div className="flex items-center justify-center space-x-6 opacity-40">
+                  <span className="text-xs font-semibold">ARAMCO</span>
+                  <span className="text-xs font-semibold">NEOM</span>
+                  <span className="text-xs font-semibold">PIF</span>
+                  <span className="text-xs font-semibold">SABIC</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Contact Information */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">{t.contact.title}</h2>
+                <p className="text-xl text-muted-foreground">{t.contact.subtitle}</p>
+              </div>
+
+              <div className="space-y-6">
+                {/* Quick Contact */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">{language === 'en' ? 'Email Us' : 'راسلنا'}</h3>
+                    <p className="text-muted-foreground">{language === 'en' ? 'Get in touch via email for detailed inquiries and support.' : 'تواصل معنا عبر البريد للاستفسارات والدعم.'}</p>
+                    <a href={`mailto:${t.contact.info.email}`} className="text-primary hover:underline mt-2 inline-block">{t.contact.info.email}</a>
+                  </div>
+                </div>
+
+                {/* Phone Support */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">{language === 'en' ? 'Call Us' : 'اتصل بنا'}</h3>
+                    <p className="text-muted-foreground">{language === 'en' ? 'Speak directly with our support team for immediate assistance.' : 'تحدث مباشرة مع فريق الدعم للحصول على مساعدة فورية.'}</p>
+                    <a href={`tel:${t.contact.info.phone}`} className="text-primary hover:underline mt-2 inline-block">{t.contact.info.phone}</a>
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">{language === 'en' ? 'Visit Us' : 'زرنا'}</h3>
+                    <p className="text-muted-foreground">{language === 'en' ? 'Find us in the heart of Saudi Arabia\'s engineering hub.' : 'تجدنا في قلب مركز الهندسة في المملكة.'}</p>
+                    <p className="text-primary mt-2">{t.contact.info.address}</p>
+                  </div>
+                </div>
+
+                {/* Live Chat */}
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">{language === 'en' ? 'Live Chat' : 'دردشة مباشرة'}</h3>
+                    <p className="text-muted-foreground">{language === 'en' ? 'Chat with us in real-time. Available 24/7 for instant support.' : 'تحدث معنا مباشرة. متاح على مدار الساعة للدعم الفوري.'}</p>
+                    <Button className="mt-3" size="sm">
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      {language === 'en' ? 'Start Chat' : 'ابدأ المحادثة'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
        {/* Footer */}
        <footer className="bg-primary pt-12 pb-12 rounded-t-[50px]">

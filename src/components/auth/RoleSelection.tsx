@@ -157,11 +157,10 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const userId = user.id || 'a938012d-b35b-40ab-91d4-bcbd5678216a';
 
       const completeUser: AuthenticatedUser = {
-        id: user.id || 'a938012d-b35b-40ab-91d4-bcbd5678216a', // Valid UUID format
+        id: userId,
         email: user.email || '',
         name: user.name || '',
         role: selectedRole,
@@ -174,8 +173,8 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
         avatar: `user-${selectedRole}-1`
       };
 
+      // Let parent component (AuthenticationSystem) handle the routing logic
       onRoleSelected(completeUser);
-      navigate(`/auth/registration/${selectedRole}`, { state: { user: completeUser } });
     } catch (error) {
       console.error('Role selection failed:', error);
     } finally {
@@ -301,7 +300,7 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
         <div className="flex items-center justify-center gap-4">
           <Button 
             variant="outline" 
-            onClick={onBack}
+            onClick={() => navigate('/auth')}
             className="px-8"
           >
             <ArrowRight className="w-4 h-4 mr-2 rotate-180" />

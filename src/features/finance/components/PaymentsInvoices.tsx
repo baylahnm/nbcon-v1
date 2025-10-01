@@ -325,7 +325,7 @@ export function PaymentsInvoices() {
       </div>
 
       <Dialog open={isInvoiceBuilderOpen} onOpenChange={setIsInvoiceBuilderOpen}>
-        <DialogContent className="w-[90vw] sm:w-[85vw] md:w-[80vw] lg:w-[75vw] h-full overflow-hidden p-0">
+        <DialogContent className="max-w-[95vw] w-full h-full overflow-hidden p-0">
           <DialogHeader className="px-4 pt-3">
             <DialogTitle className="text-base">Create Invoice</DialogTitle>
           </DialogHeader>

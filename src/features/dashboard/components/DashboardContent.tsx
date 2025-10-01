@@ -52,6 +52,7 @@ export function DashboardContent() {
     columns: 1,
     gridTemplate: '1fr'
   });
+  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [isToolbarVisible, setIsToolbarVisible] = useState(false);
   const { profile, user } = useAuthStore();
   const navigate = useNavigate();
@@ -225,19 +226,15 @@ export function DashboardContent() {
       switch (action) {
         case 'add-column-left':
           newLayout.columns += 1;
-          newLayout.gridTemplate = `1fr ${newLayout.gridTemplate}`;
           break;
         case 'add-column-right':
           newLayout.columns += 1;
-          newLayout.gridTemplate = `${newLayout.gridTemplate} 1fr`;
           break;
         case 'add-row-top':
           newLayout.rows += 1;
-          newLayout.gridTemplate = `1fr / ${newLayout.gridTemplate}`;
           break;
         case 'add-row-bottom':
           newLayout.rows += 1;
-          newLayout.gridTemplate = `${newLayout.gridTemplate} / 1fr`;
           break;
         default:
           break;
@@ -245,12 +242,54 @@ export function DashboardContent() {
       
       return newLayout;
     });
+
+    if (action === 'add-row-bottom') {
+      const placeholderId = `placeholder-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+      setDashboardComponents(prev => ([
+        ...prev,
+        {
+          id: placeholderId,
+          title: 'Empty Cell',
+          type: 'placeholder',
+          createdAt: Date.now()
+        }
+      ]));
+    }
   };
 
   // Function to handle toolbar tool selection
   const handleToolbarToolSelect = (tool: string) => {
     console.log(`Toolbar tool selected: ${tool}`);
-    // TODO: Implement toolbar tool actions
+    switch (tool) {
+      case 'select':
+        setSelectedComponentId(null);
+        break;
+      case 'add-row':
+        handleBorderAction('add-row-bottom');
+        break;
+      case 'add-column':
+        handleBorderAction('add-column-right');
+        break;
+      case 'add-component':
+        setIsAddComponentOpen(true);
+        break;
+      case 'remove-component':
+        setDashboardComponents(prev => {
+          if (prev.length === 0) return prev;
+          if (selectedComponentId) {
+            const next = prev.filter(c => c.id !== selectedComponentId);
+            setSelectedComponentId(null);
+            return next;
+          }
+          // Remove last if none selected
+          const next = [...prev];
+          next.pop();
+          return next;
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   // Financial data
@@ -717,16 +756,19 @@ export function DashboardContent() {
                         <div 
                           className="grid gap-4 h-full"
                           style={{
-                            gridTemplateColumns: containerLayout.gridTemplate.includes('/') 
-                              ? containerLayout.gridTemplate.split('/')[1] 
-                              : containerLayout.gridTemplate,
-                            gridTemplateRows: containerLayout.gridTemplate.includes('/') 
-                              ? containerLayout.gridTemplate.split('/')[0] 
-                              : '1fr'
+                            gridTemplateColumns: `repeat(${containerLayout.columns}, 1fr)`,
+                            gridTemplateRows: `repeat(${containerLayout.rows}, 1fr)`
                           }}
                         >
                           {dashboardComponents.map((component) => (
-                            <Card key={component.id} className="p-4">
+                            <Card 
+                              key={component.id} 
+                              className={`p-4 ${selectedComponentId === component.id ? 'ring-2 ring-primary' : ''}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedComponentId(component.id);
+                              }}
+                            >
                               <CardHeader className="pb-2">
                                 <CardTitle className="text-sm font-medium">{component.title}</CardTitle>
                               </CardHeader>

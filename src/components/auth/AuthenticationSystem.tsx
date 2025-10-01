@@ -4,6 +4,7 @@ import { AuthContent } from "./AuthContent";
 import { VerifyOTPContent } from "./VerifyOTPContent";
 import { RoleSelection } from "./RoleSelection";
 import { ProfileSetup } from "./ProfileSetup";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AuthenticatedUser {
   id: string;
@@ -88,9 +89,31 @@ export function AuthenticationSystem({ onAuthenticationComplete, onBackToHome }:
     setCurrentStep('role-selection');
   };
 
-  const handleRoleSelected = (user: AuthenticatedUser) => {
+  const handleRoleSelected = async (user: AuthenticatedUser) => {
     setCurrentUser(user);
-    setCurrentStep('profile-setup');
+    
+    try {
+      // Check if user profile already exists in database
+      const { data: existingProfile, error } = await supabase
+        .from('profiles')
+        .select('id, role')
+        .eq('user_id', user.id)
+        .single();
+
+      // If profile exists, user is returning - go to dashboard
+      // If profile doesn't exist or error, user is new - go to registration
+      if (existingProfile && !error) {
+        // Existing user - complete authentication and route to dashboard
+        onAuthenticationComplete(user);
+      } else {
+        // New user - navigate to registration page
+        navigate(`/auth/registration/${user.role}`, { state: { user }, replace: true });
+      }
+    } catch (error) {
+      console.error('Error checking user profile:', error);
+      // On error, default to registration page for safety
+      navigate(`/auth/registration/${user.role}`, { state: { user }, replace: true });
+    }
   };
 
   const handleProfileComplete = (user: AuthenticatedUser) => {

@@ -30,7 +30,7 @@ const InteractiveSelector = () => {
       description: "Comprehensive site assessment and inspection services for construction projects",
       image: "/popular-services/Site Inspection.png",
       icon: <Eye size={24} className="text-foreground" />,
-      price: "150 SAR/day",
+      price: "#1",
       action: "Hire Now"
     },
     {
@@ -38,7 +38,7 @@ const InteractiveSelector = () => {
       description: "Professional electrical system design and engineering solutions",
       image: "/popular-services/Electrical Design.png",
       icon: <Zap size={24} className="text-foreground" />,
-      price: "300 SAR/day",
+      price: "#2",
       action: "Hire Now"
     },
     {
@@ -46,7 +46,7 @@ const InteractiveSelector = () => {
       description: "Advanced structural engineering and analysis for complex projects",
       image: "/popular-services/Structural Analysis.png",
       icon: <Building2 size={24} className="text-foreground" />,
-      price: "500 SAR/day",
+      price: "#3",
       action: "Hire Now"
     },
     {
@@ -54,7 +54,7 @@ const InteractiveSelector = () => {
       description: "Energy-efficient heating, ventilation, and air conditioning systems",
       image: "/popular-services/HVAC Design.png",
       icon: <Thermometer size={24} className="text-foreground" />,
-      price: "250 SAR/day",
+      price: "#4",
       action: "Hire Now"
     },
     {
@@ -62,7 +62,7 @@ const InteractiveSelector = () => {
       description: "Precision land surveying and mapping services for construction",
       image: "/popular-services/Surveying.png",
       icon: <Mountain size={24} className="text-foreground" />,
-      price: "200 SAR/day",
+      price: "#5",
       action: "Hire Now"
     },
     {
@@ -70,7 +70,7 @@ const InteractiveSelector = () => {
       description: "Health, Safety, and Environment consulting for workplace compliance",
       image: "/popular-services/HSE.png",
       icon: <Shield size={24} className="text-foreground" />,
-      price: "180 SAR/day",
+      price: "#6",
       action: "Hire Now"
     },
     {
@@ -78,7 +78,7 @@ const InteractiveSelector = () => {
       description: "Advanced aerial surveying and mapping using drone technology",
       image: "/popular-services/Drone Surveying.png",
       icon: <Camera size={24} className="text-foreground" />,
-      price: "400 SAR/day",
+      price: "#7",
       action: "Hire Now"
     },
     {
@@ -86,7 +86,7 @@ const InteractiveSelector = () => {
       description: "Professional maintenance and repair services for construction equipment",
       image: "/popular-services/Equipment Maintenance.png",
       icon: <Wrench size={24} className="text-foreground" />,
-      price: "220 SAR/day",
+      price: "#8",
       action: "Hire Now"
     },
     {
@@ -94,7 +94,7 @@ const InteractiveSelector = () => {
       description: "Comprehensive soil analysis and geotechnical testing services",
       image: "/popular-services/Soil  Testing.png",
       icon: <Droplets size={24} className="text-foreground" />,
-      price: "160 SAR/day",
+      price: "#9",
       action: "Hire Now"
     }
   ];
@@ -126,7 +126,7 @@ const InteractiveSelector = () => {
       <div className="max-w-7xl mx-auto text-center mb-16">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
           <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-          Popular Services
+          Top Ranked
         </div>
         <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
           Popular Services

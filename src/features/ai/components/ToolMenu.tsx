@@ -111,7 +111,7 @@ export function ToolMenu({ currentMode, onModeChange, onClose, isRTL = false }: 
               key={tool.id}
               variant="ghost"
               className={`w-full justify-start h-auto p-3 ${
-                isSelected ? 'bg-muted' : 'hover:bg-muted/50'
+                isSelected ? 'bg-primary/10 border border-primary/20' : 'hover:bg-primary/10'
               } ${!isAvailable ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={() => isAvailable && handleModeSelect(tool.id)}
               disabled={!isAvailable}
@@ -119,7 +119,7 @@ export function ToolMenu({ currentMode, onModeChange, onClose, isRTL = false }: 
               <div className="flex items-start gap-3 w-full">
                 {/* Icon */}
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                  isSelected ? tool.color : 'bg-muted'
+                  isSelected ? 'bg-primary/10 text-primary' : 'bg-muted'
                 }`}>
                   <Icon className="w-4 h-4" />
                 </div>
