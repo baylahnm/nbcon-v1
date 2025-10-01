@@ -3,7 +3,7 @@ export function PortfolioGlance({ projects, statusCounts }:{
 }) {
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-3 gap-2 text-center text-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-sm">
         {Object.entries(statusCounts).map(([k,v])=>(
           <div key={k} className="rounded-lg border border-[var(--border)] p-2">
             <div className="opacity-70">{k}</div><div className="font-semibold">{v}</div>

@@ -372,7 +372,7 @@ export default function CreateJob() {
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="budget_min">Minimum Budget (SAR) *</Label>
                 <Input
@@ -410,7 +410,7 @@ export default function CreateJob() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="location_city">City *</Label>
                 <Select value={formData.location_city} onValueChange={(value) => handleInputChange('location_city', value)}>
@@ -451,7 +451,7 @@ export default function CreateJob() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="start_date">Preferred Start Date</Label>
                 <Input

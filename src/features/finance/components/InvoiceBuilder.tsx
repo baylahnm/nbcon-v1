@@ -341,7 +341,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
               <CardTitle>Invoice Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="invoiceNumber">Invoice Number</Label>
                   <Input
@@ -360,7 +360,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="dueDate">Due Date</Label>
                   <Input
@@ -432,7 +432,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                   rows={3}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="companyEmail">Email</Label>
                   <Input
@@ -453,7 +453,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="gstin">VAT</Label>
                   <Input
@@ -532,7 +532,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Primary Logo */}
                     <div>
                       <Label className="text-xs text-gray-600 mb-2 block">Primary Logo</Label>
@@ -672,7 +672,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                   placeholder="client@example.com"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="clientGstin">VAT</Label>
                   <Input
@@ -692,7 +692,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="placeOfSupply">Place of Supply</Label>
                   <Input
@@ -792,7 +792,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
               <CardTitle>Bank Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="bankName">Bank Name</Label>
                   <Input
@@ -812,7 +812,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="ifscCode">IFSC Code</Label>
                   <Input
@@ -841,7 +841,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
               <CardTitle>Tax & Discount</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="discountRate">Discount (%)</Label>
                   <Input
@@ -892,7 +892,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
           <h2 className="mb-4">Invoice Preview</h2>
           <Card>
             <CardContent className="p-0">
-              <div className="invoice-preview bg-white text-black w-[210mm] min-h-[297mm] max-w-full mx-auto">
+              <div className="invoice-preview bg-white text-black w-full max-w-[210mm] min-h-[297mm] mx-auto">
                 {/* Header */}
                 <div
                   className="text-white p-6 flex justify-between items-start rounded-t"
@@ -912,7 +912,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
 
                 <div className="p-6 space-y-6">
                   {/* Invoice Details */}
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                     <div>
                       <div className="text-gray-600">Invoice Number</div>
                       <div className="font-medium">{invoiceData.invoiceNumber}</div>
@@ -976,7 +976,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
                   </div>
 
                   {/* Line Items Table */}
-                  <div>
+                  <div className="overflow-x-auto">
                     <table className="w-full text-xs border border-gray-200">
                       <thead>
                         <tr style={{ backgroundColor: tableHeaderColor, color: tableTextColor }}>

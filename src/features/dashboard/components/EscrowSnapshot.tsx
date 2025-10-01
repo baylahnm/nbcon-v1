@@ -10,7 +10,7 @@ export function EscrowSnapshot({ data, onDrill }:{
     { k:"disputed",  label:"Disputed" },
   ];
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {items.map(({k,label})=>(
         <button key={k} onClick={()=>onDrill?.(k)}
           className="rounded-xl bg-[var(--bg)] p-3 text-left shadow-[inset_0_4px_0_hsl(var(--foreground)/0.08),inset_0_-4px_0_hsl(var(--foreground)/0.06),inset_4px_0_0_hsl(var(--foreground)/0.06),inset_-4px_0_0_hsl(var(--foreground)/0.06)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]">

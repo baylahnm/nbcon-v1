@@ -94,7 +94,7 @@ export const QuickActionsWidget: React.FC<QuickActionsWidgetProps> = ({
 
         {/* Quick Stats */}
         <div className="mt-4 pt-3 border-t border-sidebar-border">
-          <div className="grid grid-cols-3 gap-2 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-center">
             <div>
               <div className="text-lg font-bold text-primary">5</div>
               <div className="text-xs text-muted-foreground">Active</div>

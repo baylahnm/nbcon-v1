@@ -73,7 +73,7 @@ export const FinancialWidget: React.FC<FinancialWidgetProps> = ({
     >
       <div className="h-full flex flex-col space-y-4">
         {/* Revenue Overview */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Card className="p-3">
             <div className="text-center">
               <div className="text-lg font-bold text-success">{financialData.monthlyRevenue}</div>

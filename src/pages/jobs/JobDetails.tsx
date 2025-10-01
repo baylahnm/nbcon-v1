@@ -32,7 +32,7 @@ export default function JobDetails(){
         </Link>
       </header>
 
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <Card className="md:col-span-2 shadow-md border-0">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">

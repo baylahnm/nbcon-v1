@@ -57,7 +57,9 @@ import {
   Facebook,
   Twitter,
   Linkedin,
-  Instagram
+  Instagram,
+  Menu,
+  X
 } from 'lucide-react';
 import CalendarMini from '@/components/calendar/CalendarMini';
 import { useCalendarStore } from '@/stores/useCalendarStore';
@@ -66,6 +68,7 @@ const HomePage = () => {
   const [language, setLanguage] = useState<'en' | 'ar'>('en');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
   const [dashboardRole, setDashboardRole] = useState<'engineers' | 'clients' | 'enterprise'>('engineers');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Typing effect for chat input placeholder
   const typingPhrases = [
     'Ask about engineering projects',
@@ -447,7 +450,7 @@ const HomePage = () => {
               <span className="font-bold text-xl nbcon-logo">nbcon</span>
             </Link>
 
-            {/* Navigation Links */}
+            {/* Desktop Navigation Links */}
             <nav className="hidden md:flex items-center space-x-6 nav-links">
               <a href="/#hero" className="text-sm font-medium hover:text-primary transition-colors">
                 {t.nav.product}
@@ -467,13 +470,13 @@ const HomePage = () => {
             </nav>
 
             {/* Right Side */}
-            <div className="flex items-center space-x-4 header-buttons">
+            <div className="flex items-center space-x-2 md:space-x-4 header-buttons">
               {/* Language Toggle */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
-                className="h-8"
+                className="h-8 hidden sm:flex"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-1">
                   <path className="st0" d="M2,16c0.1,0,8-5,9-7c0.6-1.3,1-5,1-5h3H1h7V1"/>
@@ -483,39 +486,115 @@ const HomePage = () => {
                 {language === 'en' ? 'عربي' : 'EN'}
               </Button>
 
-              {/* Theme Toggle */}
-              <ThemeToggle />
+              {/* Theme Toggle - Hidden on mobile */}
+              <div className="hidden sm:block">
+                <ThemeToggle />
+              </div>
 
-              {/* Auth Buttons */}
-              <Link to="/auth">
+              {/* Auth Button - Smaller on mobile */}
+              <Link to="/auth" className="hidden sm:block">
                 <Button size="sm">
                   {t.nav.signIn}
                 </Button>
               </Link>
+
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden h-9 w-9 p-0"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
             </div>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden py-4 space-y-3 border-t animate-in slide-in-from-top-2">
+              <a 
+                href="/#hero" 
+                className="block px-4 py-2 text-sm font-medium hover:bg-muted rounded-md transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.nav.product}
+              </a>
+              <a 
+                href="/#features" 
+                className="block px-4 py-2 text-sm font-medium hover:bg-muted rounded-md transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.nav.features}
+              </a>
+              <a 
+                href="/#services" 
+                className="block px-4 py-2 text-sm font-medium hover:bg-muted rounded-md transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.nav.services}
+              </a>
+              <a 
+                href="/#pricing" 
+                className="block px-4 py-2 text-sm font-medium hover:bg-muted rounded-md transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.nav.pricing}
+              </a>
+              <a 
+                href="/#about" 
+                className="block px-4 py-2 text-sm font-medium hover:bg-muted rounded-md transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.nav.about}
+              </a>
+              <Separator />
+              <div className="flex items-center justify-between px-4">
+                <span className="text-sm font-medium">Language</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
+                  className="h-8"
+                >
+                  {language === 'en' ? 'عربي' : 'EN'}
+                </Button>
+              </div>
+              <div className="flex items-center justify-between px-4">
+                <span className="text-sm font-medium">Theme</span>
+                <ThemeToggle />
+              </div>
+              <div className="px-4 pt-2">
+                <Link to="/auth" className="block" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full">
+                    {t.nav.signIn}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Hero Section - Two Column Layout */}
-      <section id="hero" className="pt-[200px] pb-[200px] px-4">
+      <section id="hero" className="pt-16 md:pt-24 lg:pt-32 pb-16 md:pb-24 lg:pb-32 px-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Column - Content */}
-            <div className="space-y-8">
+            <div className="space-y-6 lg:space-y-8">
               {/* Trust Badge */}
-              <div className="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-sm font-medium text-primary">
-                <Shield className="w-4 h-4 mr-2" />
-                100% Trusted Engineering Platform in Saudi Arabia
+              <div className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 bg-primary/10 rounded-full text-xs md:text-sm font-medium text-primary">
+                <Shield className="w-3 h-3 md:w-4 md:h-4 mr-2" />
+                <span className="line-clamp-1">100% Trusted Engineering Platform in Saudi Arabia</span>
               </div>
               
               {/* Main Title */}
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight text-foreground hero-title">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground hero-title">
               {t.hero.title}
           </h1>
               
               {/* Subtitle */}
-              <p className="text-xl text-muted-foreground leading-relaxed">
+              <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed">
             {t.hero.subtitle}
           </p>
           

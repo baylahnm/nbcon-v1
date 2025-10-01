@@ -202,7 +202,7 @@ export default function BrowseEngineers() {
           </div>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardContent className="p-6">
@@ -293,7 +293,7 @@ export default function BrowseEngineers() {
                   <div className="space-y-6 mt-6">
                     <div>
                       <Label className="text-base font-medium">Price Range (SAR/hour)</Label>
-                      <div className="grid grid-cols-2 gap-2 mt-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                         <Input
                           placeholder="Min"
                           type="number"
@@ -323,7 +323,7 @@ export default function BrowseEngineers() {
       </Card>
 
       {/* Engineers Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEngineers.map((engineer) => (
           <Card key={engineer.id} className="hover:shadow-medium transition-shadow">
             <CardHeader className="pb-3">
