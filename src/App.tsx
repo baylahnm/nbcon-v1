@@ -17,6 +17,7 @@ import VerificationPage from "@/pages/settings/VerificationPage";
 import ThemePage from "@/pages/settings/ThemePage";
 import RoleRouter from "@/routes/RoleRouter";
 import NotFound from "./pages/NotFound";
+import { AuthCallback } from "@/components/auth/AuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/auth/registration/client" element={<ClientRegistration />} />
           <Route path="/auth/registration/enterprise" element={<EnterpriseRegistration />} />
           <Route path="/auth/profile/:role" element={<Navigate to="/auth/role" replace />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           
           {/* Mount the unified role-aware router */}
           <Route path="/*" element={<RoleRouter />} />
