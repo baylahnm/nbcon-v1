@@ -57,10 +57,10 @@ function SheetContent({
   
   // Define side-specific positioning classes
   const sideClasses = {
-    left: "left-0 top-0 h-full w-full max-w-sm -translate-x-full data-[state=open]:translate-x-0 data-[state=closed]:translate-x-[-100%]",
-    right: "right-0 top-0 h-full w-full max-w-sm translate-x-full data-[state=open]:translate-x-0 data-[state=closed]:translate-x-full",
-    top: "left-0 top-0 w-full -translate-y-full data-[state=open]:translate-y-0 data-[state=closed]:translate-y-[-100%]",
-    bottom: "left-0 bottom-0 w-full translate-y-full data-[state=open]:translate-y-0 data-[state=closed]:translate-y-full"
+    left: "fixed inset-y-0 left-0 top-0 h-full w-full max-w-sm -translate-x-full data-[state=open]:translate-x-0 data-[state=closed]:translate-x-[-100%]",
+    right: "fixed inset-y-0 right-0 top-0 h-full w-full max-w-sm translate-x-full data-[state=open]:translate-x-0 data-[state=closed]:translate-x-full",
+    top: "fixed left-0 top-0 w-full -translate-y-full data-[state=open]:translate-y-0 data-[state=closed]:translate-y-[-100%]",
+    bottom: "fixed left-0 bottom-0 w-full translate-y-full data-[state=open]:translate-y-0 data-[state=closed]:translate-y-full"
   };
 
   // Use center positioning for non-sidebar sheets, side positioning for mobile sidebars
@@ -152,3 +152,4 @@ export {
   SheetTitle,
   SheetDescription,
 };
+

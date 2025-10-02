@@ -798,7 +798,7 @@ export function DashboardContent() {
 
                         {/* Upload Deliverable */}
                         <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                          <Link to="/engineer/upload">
+                          <Link to="/engineer/job/upload">
                             <Upload className="w-6 h-6 text-primary" />
                             <span className="text-sm font-medium">Upload</span>
                           </Link>
