@@ -45,7 +45,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   const [activeTool, setActiveTool] = useState<string>('select');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const { position, isDragging, dragRef, handleMouseDown } = useDraggable({
+  const { position, isDragging, dragRef, handleMouseDown, handleTouchStart } = useDraggable({
     initialPosition: { x: 50, y: 50 },
     bounds: 'window',
     disabled: embedded // Disable dragging when embedded
@@ -76,6 +76,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         ${!embedded && isDragging ? 'scale-105 shadow-xl' : 'hover:shadow-md'}
         ${isCollapsed ? 'w-12' : 'w-auto'}
         ${!embedded ? 'max-w-[calc(100vw-1rem)] md:max-w-none' : ''}
+        ${!embedded ? 'touch-none' : ''}
       `}
       style={embedded ? {} : {
         left: position.x,
@@ -83,11 +84,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         cursor: isDragging ? 'grabbing' : 'grab'
       }}
       onMouseDown={embedded ? undefined : handleMouseDown}
+      onTouchStart={embedded ? undefined : handleTouchStart}
     >
       {/* Drag Handle - Only show when not embedded */}
       {!embedded && (
-        <div className="flex items-center justify-between p-2 border-b border-border/50">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between p-2 border-b border-border/50 touch-none">
+          <div className="flex items-center gap-2 min-h-[44px] flex-1">
             <GripHorizontal className="h-4 w-4 text-muted-foreground" />
             {!isCollapsed && (
               <span className="text-sm font-medium text-foreground">Toolbar</span>

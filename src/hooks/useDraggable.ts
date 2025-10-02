@@ -11,6 +11,7 @@ interface UseDraggableReturn {
   isDragging: boolean;
   dragRef: React.RefObject<HTMLDivElement>;
   handleMouseDown: (e: React.MouseEvent) => void;
+  handleTouchStart: (e: React.TouchEvent) => void;
 }
 
 export const useDraggable = (options: UseDraggableOptions = {}): UseDraggableReturn => {
@@ -21,6 +22,17 @@ export const useDraggable = (options: UseDraggableOptions = {}): UseDraggableRet
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<HTMLDivElement>(null);
 
+  const startDrag = useCallback((clientX: number, clientY: number) => {
+    if (disabled || !dragRef.current) return;
+    
+    const rect = dragRef.current.getBoundingClientRect();
+    setDragOffset({
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    });
+    setIsDragging(true);
+  }, [disabled]);
+
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (disabled) return;
     
@@ -30,23 +42,33 @@ export const useDraggable = (options: UseDraggableOptions = {}): UseDraggableRet
     // Don't start dragging if clicking on interactive elements
     if (isClickableElement) return;
     
-    if (dragRef.current) {
-      const rect = dragRef.current.getBoundingClientRect();
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-      setIsDragging(true);
+    startDrag(e.clientX, e.clientY);
+    e.preventDefault();
+    e.stopPropagation();
+  }, [disabled, startDrag]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (disabled) return;
+    
+    const target = e.target as HTMLElement;
+    const isClickableElement = target.closest('button') || target.closest('input') || target.closest('textarea');
+    
+    // Don't start dragging if touching interactive elements
+    if (isClickableElement) return;
+    
+    const touch = e.touches[0];
+    if (touch) {
+      startDrag(touch.clientX, touch.clientY);
       e.preventDefault();
       e.stopPropagation();
     }
-  }, [disabled]);
+  }, [disabled, startDrag]);
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+  const updatePosition = useCallback((clientX: number, clientY: number) => {
     if (!isDragging) return;
 
-    let newX = e.clientX - dragOffset.x;
-    let newY = e.clientY - dragOffset.y;
+    let newX = clientX - dragOffset.x;
+    let newY = clientY - dragOffset.y;
 
     // Apply bounds
     if (bounds === 'window' && dragRef.current) {
@@ -61,7 +83,22 @@ export const useDraggable = (options: UseDraggableOptions = {}): UseDraggableRet
     setPosition({ x: newX, y: newY });
   }, [isDragging, dragOffset, bounds]);
 
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    updatePosition(e.clientX, e.clientY);
+  }, [updatePosition]);
+
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    const touch = e.touches[0];
+    if (touch) {
+      updatePosition(touch.clientX, touch.clientY);
+    }
+  }, [updatePosition]);
+
   const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
   }, []);
 
@@ -70,17 +107,22 @@ export const useDraggable = (options: UseDraggableOptions = {}): UseDraggableRet
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
       };
     }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
   return {
     position,
     isDragging,
     dragRef,
-    handleMouseDown
+    handleMouseDown,
+    handleTouchStart
   };
 };
