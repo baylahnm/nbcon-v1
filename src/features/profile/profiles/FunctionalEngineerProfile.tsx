@@ -402,7 +402,7 @@ export function FunctionalEngineerProfile() {
         {/* Profile Overview Card */}
         <Card>
           <CardContent className="p-6">
-             <div className="flex items-start gap-6">
+             <div className="flex items-start gap-6 sm:flex-row flex-col">
                <ProfileImageUpload
                  currentImage={currentData.personalInfo.profileImage}
                  firstName={currentData.personalInfo.firstName}
@@ -413,30 +413,30 @@ export function FunctionalEngineerProfile() {
                  disabled={!isEditing}
                />
 
-              <div className="flex-1 space-y-4">
+              <div className="flex-1 space-y-3 sm:mt-0 mt-2">
                 <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h2>{currentData.personalInfo.firstName} {currentData.personalInfo.lastName}</h2>
-                    <Badge className={getStatusColor(currentData.professionalInfo.sceStatus)}>
+                  <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                    <h2 className="text-base sm:text-lg">{currentData.personalInfo.firstName} {currentData.personalInfo.lastName}</h2>
+                    <Badge className={`${getStatusColor(currentData.professionalInfo.sceStatus)} text-[10px] px-1.5 py-0`}>
                       <Shield className="w-3 h-3 mr-1" />
                       SCE {currentData.professionalInfo.sceStatus === "verified" ? "Verified" : "Pending"}
                     </Badge>
                   </div>
-                  <p className="text-muted-foreground">{currentData.professionalInfo.title}</p>
+                  <p className="text-muted-foreground text-sm sm:text-base">{currentData.professionalInfo.title}</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-muted-foreground" />
-                    <span>{currentData.personalInfo.city}, {currentData.personalInfo.province}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm">
+                    <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                    <span className="line-clamp-2 sm:line-clamp-1">{currentData.personalInfo.city}, {currentData.personalInfo.province}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-muted-foreground" />
+                  <div className="flex items-center gap-2 text-xs sm:text-sm">
+                    <Briefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
                     <span>{currentData.professionalInfo.experience}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Building className="w-4 h-4 text-muted-foreground" />
-                    <span>{currentData.professionalInfo.company}</span>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm">
+                    <Building className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                    <span className="line-clamp-2 sm:line-clamp-1">{currentData.professionalInfo.company}</span>
                   </div>
                 </div>
 
@@ -454,14 +454,14 @@ export function FunctionalEngineerProfile() {
                 </div>
               </div>
 
-              <div className="text-right space-y-2">
+              <div className="sm:text-right text-left sm:space-y-2 space-y-1 sm:self-auto self-stretch sm:pt-0 pt-2 border-t sm:border-0">
                 {isEditing ? (
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 sm:justify-end">
                     <Button
                       onClick={handleSave}
                       disabled={isSaving}
                       variant="default"
-                      className="bg-primary hover:bg-primary/90"
+                      className="bg-primary hover:bg-primary/90 h-8 text-xs px-3 sm:h-9 sm:text-sm sm:px-4"
                     >
                       {isSaving ? (
                         <>
@@ -479,6 +479,7 @@ export function FunctionalEngineerProfile() {
                       onClick={handleCancel}
                       variant="outline"
                       disabled={isSaving}
+                      className="h-8 text-xs px-3 sm:h-9 sm:text-sm sm:px-4"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Cancel
@@ -488,12 +489,13 @@ export function FunctionalEngineerProfile() {
                   <Button
                     onClick={handleEdit}
                     variant="outline"
+                    className="h-8 text-xs px-3 sm:h-9 sm:text-sm sm:px-4 sm:w-auto w-full"
                   >
                     <Edit className="w-4 h-4 mr-2" />
                     Edit Profile
                   </Button>
                 )}
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs sm:text-sm text-muted-foreground">
                   Profile: {currentData.settings.profileVisibility}
                   {currentData.settings.profileVisibility === "public" && <Eye className="w-4 h-4 inline ml-1" />}
                 </div>

@@ -1,10 +1,24 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import {
+  SERVICE_MODE_CONFIG,
+  SERVICE_MODES,
+  ServiceMode,
+  ServiceModeConfig,
+} from '@/features/ai/services/config';
+
+type CoreMode = 'chat' | 'research' | 'image' | 'agent' | 'connectors';
+export type AiMode = CoreMode | ServiceMode;
+
+const DEFAULT_HINT = '';
+
+const isServiceMode = (mode: AiMode): mode is ServiceMode =>
+  SERVICE_MODES.includes(mode as ServiceMode);
 
 export interface Thread {
   id: string;
   title: string;
-  mode: 'chat' | 'research' | 'image' | 'agent' | 'connectors';
+  mode: AiMode;
   createdAt: string;
   updatedAt: string;
   isStarred: boolean;
@@ -19,7 +33,7 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
-  mode: 'chat' | 'research' | 'image' | 'agent' | 'connectors';
+  mode: AiMode;
   attachments?: Attachment[];
   citations?: Citation[];
   images?: GeneratedImage[];
@@ -63,6 +77,7 @@ export interface ComposerState {
   };
   lang: 'en' | 'ar';
   translate: boolean;
+  hint: string;
 }
 
 export interface Settings {
@@ -78,29 +93,35 @@ interface AiState {
   threads: Thread[];
   activeThreadId: string | null;
   messagesByThread: Record<string, Message[]>;
-  
+
   // UI state
-  mode: 'chat' | 'research' | 'image' | 'agent' | 'connectors';
+  mode: AiMode;
   isGenerating: boolean;
   drawerOpen: boolean;
-  
+  activeServiceMode: ServiceMode | null;
+
   // Composer state
   composer: ComposerState;
-  
+
+  // Service catalog
+  availableServiceModes: ServiceMode[];
+  serviceModes: Record<ServiceMode, ServiceModeConfig>;
+
   // Settings
   settings: Settings;
-  
+
   // Actions
-  newThread: (mode?: 'chat' | 'research' | 'image' | 'agent' | 'connectors') => void;
+  newThread: (mode?: AiMode) => void;
   setActiveThread: (threadId: string) => void;
   sendMessage: (content: string, attachments?: Attachment[]) => Promise<void>;
   addMessage: (message: Omit<Message, 'id' | 'timestamp'>) => void;
   updateMessage: (messageId: string, updates: Partial<Message>) => void;
   stopGeneration: () => void;
-  
+
   // Mode management
-  switchMode: (mode: 'chat' | 'research' | 'image' | 'agent' | 'connectors') => void;
-  
+  switchMode: (mode: AiMode) => void;
+  activateServiceMode: (mode: ServiceMode) => void;
+
   // Composer actions
   setComposerText: (text: string) => void;
   attachFile: (file: Attachment) => void;
@@ -110,24 +131,24 @@ interface AiState {
   setVoiceTranscript: (transcript: string) => void;
   setLanguage: (lang: 'en' | 'ar') => void;
   toggleTranslate: () => void;
-  
+
   // Settings
   toggleRTL: () => void;
   toggleHijri: () => void;
   setTemperature: (temperature: number) => void;
   setVoiceEnabled: (enabled: boolean) => void;
   setAutoTranslate: (enabled: boolean) => void;
-  
+
   // Thread management
   saveThread: (threadId: string) => void;
   starThread: (threadId: string) => void;
   archiveThread: (threadId: string) => void;
   deleteThread: (threadId: string) => void;
-  
+
   // Drawer
   toggleDrawer: () => void;
   setDrawerOpen: (open: boolean) => void;
-  
+
   // Utility
   getActiveThread: () => Thread | null;
   getActiveMessages: () => Message[];
@@ -144,12 +165,16 @@ export const useAiStore = create<AiState>()(
       mode: 'chat',
       isGenerating: false,
       drawerOpen: false,
+      activeServiceMode: null,
       composer: {
         text: '',
         files: [],
         lang: 'en',
         translate: false,
+        hint: DEFAULT_HINT,
       },
+      availableServiceModes: SERVICE_MODES,
+      serviceModes: SERVICE_MODE_CONFIG,
       settings: {
         rtl: false,
         hijri: false,
@@ -161,9 +186,10 @@ export const useAiStore = create<AiState>()(
       // Thread management
       newThread: (mode = 'chat') => {
         const threadId = `thread_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const config = isServiceMode(mode) ? SERVICE_MODE_CONFIG[mode] : undefined;
         const newThread: Thread = {
           id: threadId,
-          title: 'New Conversation',
+          title: config?.defaultThreadTitle ?? 'New Conversation',
           mode,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -180,28 +206,42 @@ export const useAiStore = create<AiState>()(
             [threadId]: [],
           },
           mode,
+          activeServiceMode: isServiceMode(mode) ? mode : null,
+          composer: {
+            ...state.composer,
+            hint: config?.composerHint ?? DEFAULT_HINT,
+          },
         }));
       },
 
       setActiveThread: (threadId: string) => {
-        const thread = get().threads.find(t => t.id === threadId);
+        const thread = get().threads.find((t) => t.id === threadId);
         if (thread) {
-          set({
+          const serviceMode = isServiceMode(thread.mode) ? thread.mode : null;
+          const hint = serviceMode
+            ? SERVICE_MODE_CONFIG[serviceMode].composerHint
+            : DEFAULT_HINT;
+          set((state) => ({
             activeThreadId: threadId,
             mode: thread.mode,
-          });
+            activeServiceMode: serviceMode,
+            composer: {
+              ...state.composer,
+              hint,
+            },
+          }));
         }
       },
 
       sendMessage: async (content: string, attachments?: Attachment[]) => {
         const state = get();
         if (!state.activeThreadId) {
-          get().newThread();
+          get().newThread(state.mode);
         }
 
-        const threadId = state.activeThreadId!;
+        const threadId = get().activeThreadId!;
         const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
+
         // Add user message
         const userMessage: Message = {
           id: messageId,
@@ -209,7 +249,7 @@ export const useAiStore = create<AiState>()(
           role: 'user',
           content,
           timestamp: new Date().toISOString(),
-          mode: state.mode,
+          mode: get().mode,
           attachments,
         };
 
@@ -219,43 +259,42 @@ export const useAiStore = create<AiState>()(
         // Set generating state
         set({ isGenerating: true });
 
+        const assistantMessageId = `msg_${Date.now() + 1}_${Math.random()
+          .toString(36)
+          .substr(2, 9)}`;
+
         try {
-          // Simulate AI response (replace with actual API call)
-          const assistantMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;
           const assistantMessage: Message = {
             id: assistantMessageId,
             threadId,
             role: 'assistant',
             content: '',
             timestamp: new Date().toISOString(),
-            mode: state.mode,
+            mode: get().mode,
             isStreaming: true,
           };
 
           get().addMessage(assistantMessage);
 
-          // Simulate streaming response
           const responses = [
             "I understand you're asking about ",
             content.toLowerCase(),
-            ". Let me help you with that. ",
-            "Based on the information provided, ",
-            "I can offer some insights and recommendations. ",
-            "Would you like me to elaborate on any specific aspect?"
+            '. Let me help you with that. ',
+            'Based on the information provided, ',
+            'I can offer some insights and recommendations. ',
+            'Would you like me to elaborate on any specific aspect?',
           ];
 
           for (let i = 0; i < responses.length; i++) {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise((resolve) => setTimeout(resolve, 500));
             get().updateMessage(assistantMessageId, {
               content: responses.slice(0, i + 1).join(''),
             });
           }
 
-          // Mark as complete
           get().updateMessage(assistantMessageId, {
             isStreaming: false,
           });
-
         } catch (error) {
           get().updateMessage(assistantMessageId, {
             isStreaming: false,
@@ -269,8 +308,10 @@ export const useAiStore = create<AiState>()(
       addMessage: (message) => {
         const messageWithId: Message = {
           ...message,
-          id: message.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          timestamp: message.timestamp || new Date().toISOString(),
+          id:
+            message.id ??
+            `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          timestamp: message.timestamp ?? new Date().toISOString(),
         };
 
         set((state) => {
@@ -278,16 +319,15 @@ export const useAiStore = create<AiState>()(
           const currentMessages = state.messagesByThread[threadId] || [];
           const updatedMessages = [...currentMessages, messageWithId];
 
-          // Update thread
-          const updatedThreads = state.threads.map(thread => 
-            thread.id === threadId 
+          const updatedThreads = state.threads.map((thread) =>
+            thread.id === threadId
               ? {
                   ...thread,
                   updatedAt: new Date().toISOString(),
                   messageCount: updatedMessages.length,
                   lastMessage: messageWithId.content.substring(0, 100),
                 }
-              : thread
+              : thread,
           );
 
           return {
@@ -303,10 +343,10 @@ export const useAiStore = create<AiState>()(
       updateMessage: (messageId, updates) => {
         set((state) => {
           const updatedMessagesByThread = { ...state.messagesByThread };
-          
-          Object.keys(updatedMessagesByThread).forEach(threadId => {
-            updatedMessagesByThread[threadId] = updatedMessagesByThread[threadId].map(msg =>
-              msg.id === messageId ? { ...msg, ...updates } : msg
+
+          Object.keys(updatedMessagesByThread).forEach((threadId) => {
+            updatedMessagesByThread[threadId] = updatedMessagesByThread[threadId].map((msg) =>
+              msg.id === messageId ? { ...msg, ...updates } : msg,
             );
           });
 
@@ -318,10 +358,9 @@ export const useAiStore = create<AiState>()(
 
       stopGeneration: () => {
         set({ isGenerating: false });
-        // Update any streaming messages
         const state = get();
-        Object.values(state.messagesByThread).forEach(messages => {
-          messages.forEach(message => {
+        Object.values(state.messagesByThread).forEach((messages) => {
+          messages.forEach((message) => {
             if (message.isStreaming) {
               get().updateMessage(message.id, { isStreaming: false });
             }
@@ -331,7 +370,38 @@ export const useAiStore = create<AiState>()(
 
       // Mode management
       switchMode: (mode) => {
-        set({ mode });
+        const hint = isServiceMode(mode)
+          ? SERVICE_MODE_CONFIG[mode].composerHint
+          : DEFAULT_HINT;
+        set((state) => ({
+          mode,
+          activeServiceMode: isServiceMode(mode) ? mode : null,
+          composer: {
+            ...state.composer,
+            hint,
+          },
+        }));
+      },
+
+      activateServiceMode: (mode) => {
+        const state = get();
+        const activeThread = state.activeThreadId
+          ? state.threads.find((thread) => thread.id === state.activeThreadId)
+          : null;
+
+        if (!activeThread || activeThread.mode !== mode) {
+          get().newThread(mode);
+          return;
+        }
+
+        set((current) => ({
+          mode,
+          activeServiceMode: mode,
+          composer: {
+            ...current.composer,
+            hint: SERVICE_MODE_CONFIG[mode].composerHint,
+          },
+        }));
       },
 
       // Composer actions
@@ -354,7 +424,7 @@ export const useAiStore = create<AiState>()(
         set((state) => ({
           composer: {
             ...state.composer,
-            files: state.composer.files.filter(f => f.id !== attachmentId),
+            files: state.composer.files.filter((f) => f.id !== attachmentId),
           },
         }));
       },
@@ -375,10 +445,12 @@ export const useAiStore = create<AiState>()(
         set((state) => ({
           composer: {
             ...state.composer,
-            voice: {
-              ...state.composer.voice,
-              isRecording: false,
-            },
+            voice: state.composer.voice
+              ? {
+                  ...state.composer.voice,
+                  isRecording: false,
+                }
+              : undefined,
           },
         }));
       },
@@ -387,11 +459,16 @@ export const useAiStore = create<AiState>()(
         set((state) => ({
           composer: {
             ...state.composer,
-            text: state.composer.text + (state.composer.text ? ' ' : '') + transcript,
-            voice: {
-              ...state.composer.voice,
+            text:
+              state.composer.text +
+              (state.composer.text ? ' ' : '') +
               transcript,
-            },
+            voice: state.composer.voice
+              ? {
+                  ...state.composer.voice,
+                  transcript,
+                }
+              : undefined,
           },
         }));
       },
@@ -413,11 +490,13 @@ export const useAiStore = create<AiState>()(
 
       // Settings
       toggleRTL: () => {
-        set((state) => ({
-          settings: { ...state.settings, rtl: !state.settings.rtl },
-        }));
-        // Update document direction
-        document.documentElement.dir = get().settings.rtl ? 'rtl' : 'ltr';
+        set((state) => {
+          const rtl = !state.settings.rtl;
+          document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+          return {
+            settings: { ...state.settings, rtl },
+          };
+        });
       },
 
       toggleHijri: () => {
@@ -446,33 +525,38 @@ export const useAiStore = create<AiState>()(
 
       // Thread management
       saveThread: (threadId) => {
-        // Implementation for saving thread
         console.log('Saving thread:', threadId);
       },
 
       starThread: (threadId) => {
         set((state) => ({
-          threads: state.threads.map(thread =>
-            thread.id === threadId ? { ...thread, isStarred: !thread.isStarred } : thread
+          threads: state.threads.map((thread) =>
+            thread.id === threadId
+              ? { ...thread, isStarred: !thread.isStarred }
+              : thread,
           ),
         }));
       },
 
       archiveThread: (threadId) => {
         set((state) => ({
-          threads: state.threads.map(thread =>
-            thread.id === threadId ? { ...thread, isArchived: !thread.isArchived } : thread
+          threads: state.threads.map((thread) =>
+            thread.id === threadId
+              ? { ...thread, isArchived: !thread.isArchived }
+              : thread,
           ),
         }));
       },
 
       deleteThread: (threadId) => {
         set((state) => {
-          const { [threadId]: deleted, ...remainingMessages } = state.messagesByThread;
+          const { [threadId]: _deleted, ...remainingMessages } = state.messagesByThread;
+          const isActive = state.activeThreadId === threadId;
           return {
-            threads: state.threads.filter(thread => thread.id !== threadId),
+            threads: state.threads.filter((thread) => thread.id !== threadId),
             messagesByThread: remainingMessages,
-            activeThreadId: state.activeThreadId === threadId ? null : state.activeThreadId,
+            activeThreadId: isActive ? null : state.activeThreadId,
+            activeServiceMode: isActive ? null : state.activeServiceMode,
           };
         });
       },
@@ -489,7 +573,7 @@ export const useAiStore = create<AiState>()(
       // Utility
       getActiveThread: () => {
         const state = get();
-        return state.threads.find(thread => thread.id === state.activeThreadId) || null;
+        return state.threads.find((thread) => thread.id === state.activeThreadId) || null;
       },
 
       getActiveMessages: () => {
@@ -516,6 +600,6 @@ export const useAiStore = create<AiState>()(
         messagesByThread: state.messagesByThread,
         settings: state.settings,
       }),
-    }
-  )
+    },
+  ),
 );

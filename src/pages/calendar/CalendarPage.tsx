@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,7 +59,53 @@ export default function CalendarPage() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(() => searchParams.get('project') ?? 'all');
+
+  // Mobile toolbar horizontal scroll controls
+  const toolbarRef = useRef<HTMLDivElement | null>(null);
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+
+  useEffect(() => {
+    const el = toolbarRef.current;
+    if (!el) return;
+
+    const updateArrows = () => {
+      const atStart = el.scrollLeft <= 1;
+      const atEnd = el.scrollWidth - el.clientWidth - el.scrollLeft <= 1;
+      setIsAtStart(atStart);
+      setIsAtEnd(atEnd);
+    };
+
+    updateArrows();
+    el.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows);
+    return () => {
+      el.removeEventListener('scroll', updateArrows as EventListener);
+      window.removeEventListener('resize', updateArrows);
+    };
+  }, []);
+
+  const scrollToSnap = (direction: 'left' | 'right') => {
+    const container = toolbarRef.current;
+    if (!container) return;
+    const children = Array.from(container.children) as HTMLElement[];
+    if (children.length === 0) return;
+
+    const currentLeft = container.scrollLeft;
+    const getChildLeft = (el: HTMLElement) => el.offsetLeft;
+
+    if (direction === 'right') {
+      const next = children.find((child) => getChildLeft(child) > currentLeft + 1);
+      (next ?? children[children.length - 1]).scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    } else {
+      // left
+      const prevCandidates = children.filter((child) => getChildLeft(child) < currentLeft - 1);
+      const prev = prevCandidates.length ? prevCandidates[prevCandidates.length - 1] : children[0];
+      prev.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    }
+  };
 
   useEffect(() => {
     const projectParam = searchParams.get('project');
@@ -222,8 +269,20 @@ export default function CalendarPage() {
           </div>
         </div>
         
-        <div className="flex items-center justify-between mt-4 mb-4">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center sm:justify-between mt-4 mb-4">
+          {/* Mobile left arrow */}
+          <Button
+            variant="outline"
+            size="icon"
+            className={`sm:hidden mr-2 ${isAtStart ? 'invisible' : 'visible'}`}
+            aria-label="Scroll left"
+            onClick={() => scrollToSnap('left')}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+
+          <div ref={toolbarRef} className="flex items-center overflow-x-auto snap-x snap-mandatory flex-nowrap gap-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-1">
+          <div className="flex items-center gap-4 shrink-0 snap-start">
             <div className="text-lg font-medium">
               {formatDate(currentDate)}
             </div>
@@ -239,7 +298,7 @@ export default function CalendarPage() {
               </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0 snap-start">
             <div className="flex items-center gap-2">
               <Switch id="hijri-switch" checked={isHijri} onCheckedChange={setIsHijri} />
               <Label htmlFor="hijri-switch" className="text-sm">Hijri</Label>
@@ -288,7 +347,29 @@ export default function CalendarPage() {
               <Plus className="h-4 w-4 mr-2" />
               Create
             </Button>
+            {/* Mobile: open sidebar as dialog */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="sm:hidden"
+              onClick={() => setShowSidebarMobile(true)}
+              aria-label="Open details"
+            >
+              Details
+            </Button>
           </div>
+          </div>
+
+          {/* Mobile right arrow */}
+          <Button
+            variant="outline"
+            size="icon"
+            className={`sm:hidden ml-2 ${isAtEnd ? 'invisible' : 'visible'}`}
+            aria-label="Scroll right"
+            onClick={() => scrollToSnap('right')}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -371,9 +452,9 @@ export default function CalendarPage() {
           <CalendarContent onCreateEvent={handleDoubleClickCreateEvent} />
         </div>
         
-        {/* Right Sidebar - Mini Calendar */}
+        {/* Right Sidebar - Mini Calendar (hidden on mobile) */}
         <div 
-          className="w-80 p-6 overflow-y-auto border-l"
+          className="hidden lg:block w-80 p-6 overflow-y-auto border-l"
           style={{
             backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
             borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
@@ -403,6 +484,23 @@ export default function CalendarPage() {
         onSave={handleCreateEvent}
         initialDate={currentDate}
       />
+
+      {/* Mobile Sidebar Dialog */}
+      <Dialog open={showSidebarMobile} onOpenChange={setShowSidebarMobile}>
+        <DialogContent position="bottom" className="sm:inset-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:right-auto sm:h-auto sm:max-h-[80vh] sm:w-full sm:max-w-md sm:rounded-lg sm:p-6 sm:-translate-x-1/2 sm:-translate-y-1/2">
+          <DialogHeader className="gap-1">
+            <DialogTitle>Details</DialogTitle>
+          </DialogHeader>
+          <CalendarMini
+            currentDate={currentDate}
+            onDateSelect={(d) => { handleDateSelect(d); setShowSidebarMobile(false); }}
+            events={events}
+            isHijri={isHijri}
+            userRole={userRole}
+            onEventSelect={(e) => { handleEventSelect(e); setShowSidebarMobile(false); }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

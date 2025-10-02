@@ -208,35 +208,41 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
                 onClick={() => handleThreadSelect(thread)}
               >
                 <CardContent className="p-0">
-                  <div className="flex items-start gap-3">
-                    {/* Mode Icon */}
-                    <div className="flex-shrink-0 mt-1">
+                  {isCompact ? (
+                    <div className="flex items-center justify-center">
                       <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                        {getModeIcon(thread.mode)}
+                        <MessageSquare className="w-4 h-4" />
                       </div>
                     </div>
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-sm truncate">
-                            {thread.title}
-                          </h3>
-                          {thread.lastMessage && (
-                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                              {thread.lastMessage}
-                            </p>
-                          )}
+                  ) : (
+                    <div className="flex items-start gap-3">
+                      {/* Mode Icon */}
+                      <div className="flex-shrink-0 mt-1">
+                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                          {getModeIcon(thread.mode)}
                         </div>
+                      </div>
 
-                        {/* Actions */}
-                        <div className="flex items-center gap-1">
-                          <Badge variant="outline" className="text-xs">
-                            {getModeLabel(thread.mode)}
-                          </Badge>
-                          
-                          {!isCompact && (
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium text-sm truncate">
+                              {thread.title}
+                            </h3>
+                            {thread.lastMessage && (
+                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                {thread.lastMessage}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex items-center gap-1">
+                            <Badge variant="outline" className="text-xs">
+                              {getModeLabel(thread.mode)}
+                            </Badge>
+                            
                             <div className="flex items-center gap-1">
                               <Button
                                 variant="ghost"
@@ -276,25 +282,25 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
                                 <Trash2 className="w-3 h-3" />
                               </Button>
                             </div>
-                          )}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Footer */}
-                      <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Clock className="w-3 h-3" />
-                          <span>{formatRelativeTime(thread.updatedAt)}</span>
-                          {settings.hijri && <HijriBadge date={thread.updatedAt} />}
-                        </div>
-                        
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <MessageSquare className="w-3 h-3" />
-                          <span>{thread.messageCount}</span>
+                        {/* Footer */}
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Clock className="w-3 h-3" />
+                            <span>{formatRelativeTime(thread.updatedAt)}</span>
+                            {settings.hijri && <HijriBadge date={thread.updatedAt} />}
+                          </div>
+                          
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <MessageSquare className="w-3 h-3" />
+                            <span>{thread.messageCount}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             ))

@@ -1,11 +1,13 @@
 import { supabase } from '@/integrations/supabase/client';
+import { SERVICE_MODE_CONFIG, ServiceMode, ServiceModeConfig } from '@/features/ai/services/config';
+import type { AiMode } from '../store/useAiStore';
 import { useAuthStore, getStoredUser } from '@/stores/auth';
 import { Message, Attachment, Citation, GeneratedImage } from '../store/useAiStore';
 
 export interface ChatRequest {
   message: string;
   threadId: string;
-  mode: 'chat' | 'research' | 'image' | 'agent' | 'connectors';
+  mode: AiMode;
   attachments?: Attachment[];
   temperature?: number;
   lang?: 'en' | 'ar';
@@ -35,10 +37,118 @@ export interface HijriDate {
   monthName: string;
 }
 
+export interface ServicePlan {
+  service: ServiceMode;
+  title: string;
+  prompt: string;
+  tools: {
+    id: string;
+    description: string;
+  }[];
+  output: {
+    format: string;
+    deliverables: string[];
+  };
+  input: Record<string, unknown>;
+  instructions: string;
+}
+
+export interface ServiceCatalogResponse {
+  services: Record<ServiceMode, ServiceModeConfig>;
+}
+
+export interface ServicePlanResponse {
+  plan: ServicePlan;
+}
+
 class AiClient {
-  private baseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://api.nbcon.sa/ai' 
+  private baseUrl = process.env.NODE_ENV === 'production'
+    ? 'https://api.nbcon.sa/ai'
     : 'http://localhost:54321/functions/v1';
+
+  private async buildAuthHeaders(additional: HeadersInit = {}): Promise<HeadersInit> {
+    try {
+      const token = await this.getAuthToken();
+      return {
+        ...additional,
+        Authorization: `Bearer ${token}`,
+      };
+    } catch {
+      return additional;
+    }
+  }
+
+  private getServiceUrl(service?: ServiceMode): string {
+    const segment = this.baseUrl.includes('functions/v1') ? 'ai-service' : 'service';
+    return service ? `${this.baseUrl}/${segment}/${service}` : `${this.baseUrl}/${segment}`;
+  }
+
+  private buildFallbackPlan(service: ServiceMode, payload: Record<string, unknown>): ServicePlan {
+    const config = SERVICE_MODE_CONFIG[service];
+    return {
+      service,
+      title: config.title,
+      prompt: config.systemPrompt,
+      tools: config.tools.map((tool) => ({
+        id: tool.id,
+        description: tool.description,
+      })),
+      output: {
+        format: 'markdown',
+        deliverables: config.workflow.map((stage) => stage.title),
+      },
+      input: payload,
+      instructions:
+        'Use the workflow stages to collect missing information and summarise the recommended next steps for the service.',
+    };
+  }
+
+  async listServiceWorkflows(): Promise<Record<ServiceMode, ServiceModeConfig>> {
+    try {
+      const response = await fetch(this.getServiceUrl(), {
+        headers: await this.buildAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Service catalog request failed: ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as Partial<ServiceCatalogResponse>;
+      if (data?.services) {
+        return data.services;
+      }
+    } catch (error) {
+      console.warn('Falling back to local service catalog', error);
+    }
+
+    return SERVICE_MODE_CONFIG;
+  }
+
+  async planServiceWorkflow(
+    service: ServiceMode,
+    payload: Record<string, unknown> = {},
+  ): Promise<ServicePlan> {
+    try {
+      const response = await fetch(this.getServiceUrl(service), {
+        method: 'POST',
+        headers: await this.buildAuthHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Service planning failed: ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as ServicePlanResponse;
+      if (data?.plan) {
+        return data.plan;
+      }
+    } catch (error) {
+      console.warn(`Falling back to local service plan for ${service}`, error);
+    }
+
+    return this.buildFallbackPlan(service, payload);
+  }
 
   // Chat streaming
   async streamChat(request: ChatRequest): Promise<ReadableStream<Uint8Array>> {
@@ -387,7 +497,7 @@ class AiClient {
     return session.access_token;
   }
 
-    private async getCurrentUserId(): Promise<string | null> {
+  private async getCurrentUserId(): Promise<string | null> {
     const { data: { user } } = await supabase.auth.getUser();
     if (user?.id) {
       return user.id;

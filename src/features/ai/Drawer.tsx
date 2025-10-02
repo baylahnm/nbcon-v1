@@ -83,27 +83,27 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
     const modes = {
       chat: { 
         icon: MessageSquare, 
-        label: settings.rtl ? 'محادثة' : 'Chat',
+        label: settings.rtl ? 'Ã™â€¦Ã˜Â­Ã˜Â§Ã˜Â¯Ã˜Â«Ã˜Â©' : 'Chat',
         color: 'text-blue-600'
       },
       research: { 
         icon: SearchIcon, 
-        label: settings.rtl ? 'بحث' : 'Research',
+        label: settings.rtl ? 'Ã˜Â¨Ã˜Â­Ã˜Â«' : 'Research',
         color: 'text-green-600'
       },
       image: { 
         icon: ImageIcon, 
-        label: settings.rtl ? 'صورة' : 'Image',
+        label: settings.rtl ? 'Ã˜ÂµÃ™Ë†Ã˜Â±Ã˜Â©' : 'Image',
         color: 'text-purple-600'
       },
       agent: { 
         icon: Cog, 
-        label: settings.rtl ? 'وكيل' : 'Agent',
+        label: settings.rtl ? 'Ã™Ë†Ã™Æ’Ã™Å Ã™â€ž' : 'Agent',
         color: 'text-orange-600'
       },
       connectors: { 
         icon: LinkIcon, 
-        label: settings.rtl ? 'موصلات' : 'Connectors',
+        label: settings.rtl ? 'Ã™â€¦Ã™Ë†Ã˜ÂµÃ™â€žÃ˜Â§Ã˜Âª' : 'Connectors',
         color: 'text-gray-600'
       }
     };
@@ -125,7 +125,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
               <Bot className="w-4 h-4 text-primary" />
             </div>
             <h2 className="font-semibold text-sm">
-              {settings.rtl ? 'الذكاء الاصطناعي' : 'AI Assistant'}
+              {settings.rtl ? 'Ã˜Â§Ã™â€žÃ˜Â°Ã™Æ’Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜Â§Ã˜ÂµÃ˜Â·Ã™â€ Ã˜Â§Ã˜Â¹Ã™Å ' : 'AI Assistant'}
             </h2>
           </div>
           <div className="flex items-center gap-1">
@@ -175,13 +175,13 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                 className="w-full"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                {settings.rtl ? 'محادثة جديدة' : 'New Chat'}
+                {settings.rtl ? 'Ã™â€¦Ã˜Â­Ã˜Â§Ã˜Â¯Ã˜Â«Ã˜Â© Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯Ã˜Â©' : 'New Chat'}
               </Button>
 
               {/* Recent Threads */}
               <div className="space-y-2">
                 <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {settings.rtl ? 'المحادثات الأخيرة' : 'Recent Chats'}
+                  {settings.rtl ? 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜Â§Ã˜Â¯Ã˜Â«Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â£Ã˜Â®Ã™Å Ã˜Â±Ã˜Â©' : 'Recent Chats'}
                 </h3>
                 <ScrollArea className="h-64 overflow-y-auto">
                   <div className="space-y-1">
@@ -226,18 +226,21 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
           <div className="flex-1 flex flex-col min-h-0">
             {/* Messages */}
             <ScrollArea className="flex-1 p-4 overflow-y-auto">
-              <div className="space-y-3">
-                {lastMessages.length === 0 ? (
-                  <div className="text-center py-8">
+              {lastMessages.length === 0 ? (
+                <div className="space-y-6">
+                  <div className="text-center py-6">
                     <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
                       <ModeIcon className="w-6 h-6 text-muted-foreground" />
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {settings.rtl ? 'ابدأ محادثة جديدة' : 'Start a new conversation'}
+                      Start a new conversation or choose a guided workflow below.
                     </p>
                   </div>
-                ) : (
-                  lastMessages.map((message) => (
+                  <ServiceModeSelector />
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {lastMessages.map((message) => (
                     <MessageBubble
                       key={message.id}
                       message={message}
@@ -245,10 +248,11 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                       showHijri={settings.hijri}
                       isCompact
                     />
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </ScrollArea>
+
 
             {/* Composer */}
             <div className="p-4 border-t border-sidebar-border bg-background">
@@ -267,7 +271,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
               className="flex-1"
             >
               <ArrowRight className="w-4 h-4 mr-2" />
-              {settings.rtl ? 'فتح في الذكاء الاصطناعي' : 'Open in AI'}
+              {settings.rtl ? 'Ã™ÂÃ˜ÂªÃ˜Â­ Ã™ÂÃ™Å  Ã˜Â§Ã™â€žÃ˜Â°Ã™Æ’Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜Â§Ã˜ÂµÃ˜Â·Ã™â€ Ã˜Â§Ã˜Â¹Ã™Å ' : 'Open in AI'}
             </Button>
           </div>
         </div>

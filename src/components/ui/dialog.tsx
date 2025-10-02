@@ -49,15 +49,20 @@ function DialogOverlay({
 function DialogContent({
   className,
   children,
+  position = "center",
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & { position?: "center" | "bottom" }) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed left-1/2 top-1/2 z-50 grid w-full max-w-md max-h-[80vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border p-6 shadow-lg duration-200",
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 grid gap-4 border shadow-lg duration-200",
+          position === "center" &&
+            "fixed left-1/2 top-1/2 w-full max-w-md max-h-[80vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 rounded-lg p-6",
+          position === "bottom" &&
+            "fixed inset-x-0 bottom-0 top-auto w-full h-[85svh] max-h-[90svh] overflow-y-auto rounded-t-lg p-4",
           className,
         )}
         {...props}

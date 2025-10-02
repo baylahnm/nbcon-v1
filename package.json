@@ -8,7 +8,9 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve:ai": "npx --yes supabase@latest functions serve ai --env-file .env",
+    "serve:ai-service": "npx --yes supabase@latest functions serve ai-service --env-file .env"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

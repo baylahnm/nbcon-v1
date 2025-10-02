@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { 
   Bot, 
   MessageSquare, 
@@ -7,6 +7,8 @@ import {
   Cog, 
   Link as LinkIcon,
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   Settings,
   Star,
   Archive,
@@ -129,52 +131,69 @@ export function ChatPage({ onBack }: ChatPageProps) {
 
   const modeInfo = getModeInfo();
   const ModeIcon = modeInfo.icon;
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <div className="w-80 border-r border-sidebar-border bg-muted/30 flex flex-col">
+      <div className={`${isCollapsed ? 'w-20' : 'w-80'} border-r border-sidebar-border bg-muted/30 flex flex-col transition-all duration-300`}>
         {/* Header */}
         <div className="p-4 border-b border-sidebar-border">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-lg font-semibold flex items-center gap-2">
-              <Bot className="w-5 h-5 text-primary" />
-              {settings.rtl ? 'الذكاء الاصطناعي' : 'AI Assistant'}
-            </h1>
-            {onBack && (
-              <Button variant="ghost" size="sm" onClick={onBack}>
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
+            {!isCollapsed ? (
+              <h1 className="text-lg font-semibold flex items-center gap-2">
+                <Bot className="w-5 h-5 text-primary" />
+                {settings.rtl ? 'الذكاء الاصطناعي' : 'AI Assistant'}
+              </h1>
+            ) : (
+              <div className="flex justify-center w-full">
+                <Bot className="w-5 h-5 text-primary" />
+              </div>
             )}
+            <div className="flex items-center gap-2">
+              {onBack && !isCollapsed && (
+                <Button variant="ghost" size="sm" onClick={onBack}>
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+              )}
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+              >
+                {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+              </Button>
+            </div>
           </div>
 
-          {/* Mode Selector */}
-          <Card>
-            <CardContent className="p-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <ModeIcon className="w-4 h-4 text-primary" />
+          {!isCollapsed && (
+            <Card>
+              <CardContent className="p-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <ModeIcon className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-sm">{modeInfo.label}</div>
+                    <div className="text-xs text-muted-foreground">{modeInfo.description}</div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => switchMode(mode === 'chat' ? 'research' : 'chat')}
+                  >
+                    <MoreHorizontal className="w-4 h-4" />
+                  </Button>
                 </div>
-                <div className="flex-1">
-                  <div className="font-medium text-sm">{modeInfo.label}</div>
-                  <div className="text-xs text-muted-foreground">{modeInfo.description}</div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => switchMode(mode === 'chat' ? 'research' : 'chat')}
-                >
-                  <MoreHorizontal className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
         </div>
 
         {/* Threads List */}
-        <div className="flex-1 p-4">
-          <ThreadList onThreadSelect={handleThreadSelect} />
+        <div className={`${isCollapsed ? 'p-2' : 'p-4'} flex-1`}>
+          <ThreadList onThreadSelect={handleThreadSelect} isCompact={isCollapsed} />
         </div>
       </div>
 
