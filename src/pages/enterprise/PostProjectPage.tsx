@@ -11,6 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { CurrencyProvider } from '@/hooks/useCurrency';
 import { useProjectStore } from '@/hooks/useProjectStore';
 import { usePostProjectRouting } from '@/hooks/usePostProjectRouting';
+import { useTeamStore } from '@/hooks/useTeamStore';
+import { useCalendarStore } from '@/stores/useCalendarStore';
 import { R } from '@/lib/routes';
 import { 
   Plus, 
@@ -36,6 +38,17 @@ import PostFromTemplateTab from './tabs/PostFromTemplateTab';
 import TemplateMarketplaceTab from './tabs/TemplateMarketplaceTab';
 import SidebarPreview from './components/SidebarPreview';
 
+const mapUrgencyToPriority = (urgency?: 'low' | 'medium' | 'high'): 'Low' | 'Medium' | 'High' => {
+  switch (urgency) {
+    case 'high':
+      return 'High';
+    case 'low':
+      return 'Low';
+    default:
+      return 'Medium';
+  }
+};
+
 const PostProjectPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -50,7 +63,7 @@ const PostProjectPage: React.FC = () => {
     setCurrentSection,
     validateAllSections,
     saveDraft,
-    submitProject,
+    clearDraft,
     getProgress,
   } = useProjectStore();
 
@@ -60,6 +73,10 @@ const PostProjectPage: React.FC = () => {
     handleSaveDraft,
     handleSubmitProject,
   } = usePostProjectRouting();
+
+  const createProject = useTeamStore(state => state.createProject);
+  const updateProject = useTeamStore(state => state.updateProject);
+  const addCalendarEvent = useCalendarStore(state => state.addEvent);
 
   // Auto-save functionality
   useEffect(() => {
@@ -82,9 +99,147 @@ const PostProjectPage: React.FC = () => {
       return;
     }
 
+    const isValid = validateAllSections();
+
+    if (!isValid) {
+      toast({
+        title: 'Incomplete project',
+        description: 'Complete all required sections before submitting your project.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const basics = projectData.basics;
+    const timeline = projectData.timeline;
+
+    if (!basics || !timeline?.startDate || !timeline?.endDate) {
+      toast({
+        title: 'Timeline required',
+        description: 'Please provide both start and end dates before submitting your project.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
+
     try {
+      const projectLocation = basics.isRemote ? 'Remote' : basics.location || 'TBD';
+      const baseTags = [
+        'project',
+        basics.category,
+        basics.language,
+        basics.urgency ? `${basics.urgency}-urgency` : null,
+      ].filter(Boolean) as string[];
+      const uniqueTags = Array.from(new Set(baseTags));
+
+      const project = createProject({
+        name: basics.title,
+        subtitle: projectData.scope?.description?.slice(0, 140),
+        startDate: timeline.startDate,
+        endDate: timeline.endDate,
+        location: projectLocation,
+        category: basics.category,
+        status: 'planning',
+        budgetMin: basics.budget?.min,
+        budgetMax: basics.budget?.max,
+        currency: basics.budget?.currency,
+        calendarEventIds: [],
+      });
+
+      const startTime = new Date(`${timeline.startDate}T00:00:00`);
+      const endTime = new Date(`${timeline.endDate}T23:59:59`);
+      if (endTime < startTime) {
+        endTime.setTime(startTime.getTime());
+        endTime.setHours(23, 59, 59, 999);
+      }
+
+      const createdEventIds: string[] = [];
+
+      const primaryEvent = addCalendarEvent({
+        title: basics.title,
+        description: projectData.scope?.description || 'Enterprise project created via posting workflow.',
+        startTime,
+        endTime,
+        allDay: true,
+        type: 'job',
+        status: 'open',
+        location: projectLocation,
+        client: basics.category || 'Enterprise Client',
+        assignees: [],
+        amount: basics.budget?.max ?? basics.budget?.min ?? 0,
+        priority: mapUrgencyToPriority(basics.urgency),
+        projectId: project.id,
+        isRecurring: false,
+        tags: uniqueTags,
+      });
+      createdEventIds.push(primaryEvent.id);
+
+      const milestoneEvents = (projectData.scope?.milestones || [])
+        .filter(milestone => milestone.dueDate)
+        .map(milestone => {
+          const milestoneStart = new Date(`${milestone.dueDate}T00:00:00`);
+          const milestoneEnd = new Date(`${milestone.dueDate}T23:59:59`);
+          return addCalendarEvent({
+            title: `${basics.title}: ${milestone.name}`,
+            description: milestone.description || 'Milestone due',
+            startTime: milestoneStart,
+            endTime: milestoneEnd,
+            allDay: true,
+            type: 'milestone',
+            status: 'scheduled',
+            location: projectLocation,
+            client: 'Project Milestone',
+            assignees: [],
+            amount: 0,
+            priority: 'Medium',
+            projectId: project.id,
+            isRecurring: false,
+            tags: Array.from(new Set(['milestone', ...uniqueTags])),
+          });
+        });
+      createdEventIds.push(...milestoneEvents.map(event => event.id));
+
+      const deliverableEvents = (projectData.scope?.deliverables || [])
+        .filter(deliverable => deliverable.dueDate)
+        .map(deliverable => {
+          const deliverableStart = new Date(`${deliverable.dueDate}T00:00:00`);
+          const deliverableEnd = new Date(`${deliverable.dueDate}T23:59:59`);
+          return addCalendarEvent({
+            title: `${basics.title}: ${deliverable.title}`,
+            description: deliverable.description || 'Deliverable due',
+            startTime: deliverableStart,
+            endTime: deliverableEnd,
+            allDay: true,
+            type: 'milestone',
+            status: 'scheduled',
+            location: projectLocation,
+            client: 'Project Deliverable',
+            assignees: [],
+            amount: 0,
+            priority: 'Medium',
+            projectId: project.id,
+            isRecurring: false,
+            tags: Array.from(new Set(['deliverable', ...uniqueTags])),
+          });
+        });
+      createdEventIds.push(...deliverableEvents.map(event => event.id));
+
+      updateProject(project.id, {
+        status: 'active',
+        calendarEventIds: createdEventIds,
+      });
+
+      clearDraft();
       await handleSubmitProject();
+    } catch (error) {
+      console.error('Failed to submit project', error);
+      toast({
+        title: 'Submission failed',
+        description: 'We could not submit your project. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }

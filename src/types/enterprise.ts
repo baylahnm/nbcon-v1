@@ -3,6 +3,7 @@ export type ProjectRole = 'owner' | 'manager' | 'engineer' | 'client' | 'viewer'
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type NotificationType = 'task_assigned' | 'task_updated' | 'status_changed' | 'submission' | 'mention';
+export type ProjectStatus = 'draft' | 'planning' | 'active' | 'completed' | 'on-hold';
 
 export interface User {
   id: string;
@@ -24,6 +25,15 @@ export interface Project {
   ownerId: string;
   createdAt: string;
   updatedAt: string;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
+  category?: string;
+  status?: ProjectStatus;
+  budgetMin?: number;
+  budgetMax?: number;
+  currency?: string;
+  calendarEventIds?: string[];
 }
 
 export interface ProjectMember {

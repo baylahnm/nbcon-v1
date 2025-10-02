@@ -66,7 +66,7 @@ function SheetContent({
   // Use center positioning for non-sidebar sheets, side positioning for mobile sidebars
   const positioningClasses = isMobileSidebar 
     ? sideClasses[side]
-    : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-[80vh] rounded-lg";
+    : "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-[80vh] rounded-lg";
 
   const animationClasses = isMobileSidebar
     ? "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left duration-300"
@@ -78,7 +78,7 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "bg-background fixed z-50 flex overflow-y-auto flex-col gap-4 border shadow-lg",
+          "bg-background z-50 flex overflow-y-auto flex-col gap-4 border shadow-lg",
           positioningClasses,
           animationClasses,
           isMobileSidebar ? "p-0" : "p-6",

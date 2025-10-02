@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -8,13 +9,18 @@ import {
   SheetHeader, 
   SheetTitle 
 } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import CreateEventDialog from '@/components/calendar/CreateEventDialog';
+import { useToast } from '@/components/ui/use-toast';
 import { 
   Users, 
   MapPin, 
   Clock, 
-  DollarSign
+  DollarSign,
+  Pencil,
+  Trash2
 } from 'lucide-react';
-import { useCalendarStore, EventType, EventStatus } from '@/stores/useCalendarStore';
+import { useCalendarStore, EventType, EventStatus, CalendarEvent } from '@/stores/useCalendarStore';
 import { useThemeStore } from '@/stores/theme';
 
 interface CalendarContentProps {
@@ -33,16 +39,51 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps 
     getEventsForMonth,
     getEventTypeColor,
     getStatusColor,
-    formatCurrency
+    formatCurrency,
+    updateEvent,
+    deleteEvent
   } = useCalendarStore();
 
   const { applied: themeTokens } = useThemeStore();
+  const { toast } = useToast();
+
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!selectedEvent) {
+      setIsEditDialogOpen(false);
+    }
+  }, [selectedEvent]);
 
   const handleTimeSlotDoubleClick = (date: Date, hour: number) => {
     if (onCreateEvent) {
       const timeString = `${hour.toString().padStart(2, '0')}:00`;
       onCreateEvent(date, timeString);
     }
+  };
+
+  const handleEditEvent = () => {
+    if (selectedEvent) {
+      setIsEditDialogOpen(true);
+    }
+  };
+
+  const handleUpdateEvent = (eventData: Omit<CalendarEvent, 'id'>) => {
+    if (!selectedEvent) return;
+    updateEvent(selectedEvent.id, eventData);
+    setIsEditDialogOpen(false);
+    toast({ title: 'Event updated', description: 'Changes saved.' });
+  };
+
+  const handleDeleteEvent = () => {
+    if (!selectedEvent) return;
+    if (!window.confirm('Delete this event? This action cannot be undone.')) {
+      return;
+    }
+    deleteEvent(selectedEvent.id);
+    setSelectedEvent(null);
+    setIsEditDialogOpen(false);
+    toast({ title: 'Event deleted', description: 'The event has been removed.' });
   };
 
   const getWeekDays = () => {
@@ -192,7 +233,7 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps 
         {/* All Day Events */}
         {weekEvents.filter(event => event.allDay).length > 0 && (
           <div 
-            className="pb-4 mb-4 border-b"
+            className="p-4 mb-4 border-b"
             style={{
               borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
             }}
@@ -209,7 +250,7 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps 
               {weekEvents.filter(event => event.allDay).map(event => (
                 <div
                   key={event.id}
-                  className={`p-2 rounded cursor-pointer hover:shadow-sm ${getEventTypeColor(event.type)}`}
+                  className={`p-4 rounded cursor-pointer hover:shadow-sm ${getEventTypeColor(event.type)}`}
                   onClick={() => setSelectedEvent(event)}
                 >
                   <div className="flex items-center justify-between">
@@ -543,6 +584,18 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps 
       {/* Event Details Drawer */}
       <Sheet open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
         <SheetContent className="w-[50vw] sm:max-w-none">
+          {selectedEvent && (
+            <div className="absolute right-16 top-4 flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleEditEvent}>
+                <Pencil className="h-4 w-4 mr-2" />
+                Edit
+              </Button>
+              <Button variant="destructive" size="sm" onClick={handleDeleteEvent}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
+              </Button>
+            </div>
+          )}
           <SheetHeader>
             <SheetTitle>{selectedEvent?.title}</SheetTitle>
             <SheetDescription>
@@ -622,6 +675,16 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps 
           )}
         </SheetContent>
       </Sheet>
+
+      {selectedEvent && (
+        <CreateEventDialog
+          isOpen={isEditDialogOpen}
+          onClose={() => setIsEditDialogOpen(false)}
+          onSave={handleUpdateEvent}
+          initialEvent={selectedEvent}
+          mode="edit"
+        />
+      )}
     </div>
   );
 }

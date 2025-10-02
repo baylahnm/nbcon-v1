@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Calendar as CalendarIcon, X, Filter } from 'lucide-react';
 import { useCalendarStore, EventType, EventStatus } from '@/stores/useCalendarStore';
+import { useTeamStore } from '@/hooks/useTeamStore';
 
 interface CalendarFiltersProps {
   isOpen: boolean;
@@ -29,7 +30,14 @@ export default function CalendarFilters({ isOpen, onClose }: CalendarFiltersProp
     getStatusColor
   } = useCalendarStore();
 
+  const { getProjectsWithDetails } = useTeamStore();
+  const projects = getProjectsWithDetails();
+
   const [localFilters, setLocalFilters] = useState(filters);
+  
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
 
   const eventTypes: { value: EventType; label: string }[] = [
     { value: 'job', label: 'Job' },
@@ -46,7 +54,8 @@ export default function CalendarFilters({ isOpen, onClose }: CalendarFiltersProp
     { value: 'quoted', label: 'Quoted' },
     { value: 'in-progress', label: 'In Progress' },
     { value: 'completed', label: 'Completed' },
-    { value: 'cancelled', label: 'Cancelled' }
+    { value: 'cancelled', label: 'Cancelled' },
+    { value: 'scheduled', label: 'Scheduled' }
   ];
 
   const saudiCities = [
@@ -95,6 +104,17 @@ export default function CalendarFilters({ isOpen, onClose }: CalendarFiltersProp
     }));
   };
 
+  const handleProjectChange = (projectId: string, checked: boolean) => {
+    const newProjectIds = checked
+      ? Array.from(new Set([...localFilters.projectIds, projectId]))
+      : localFilters.projectIds.filter(id => id !== projectId);
+    
+    setLocalFilters(prev => ({
+      ...prev,
+      projectIds: newProjectIds
+    }));
+  };
+
   const handleDateRangeChange = (field: 'start' | 'end', value: string) => {
     const date = value ? new Date(value) : null;
     setLocalFilters(prev => ({
@@ -118,7 +138,8 @@ export default function CalendarFilters({ isOpen, onClose }: CalendarFiltersProp
       dateRange: { start: null, end: null },
       roleContext: 'mine' as const,
       cities: [],
-      searchTerm: ''
+      searchTerm: '',
+      projectIds: []
     };
     setLocalFilters(clearedFilters);
     clearFilters();
@@ -129,6 +150,7 @@ export default function CalendarFilters({ isOpen, onClose }: CalendarFiltersProp
       localFilters.eventTypes.length +
       localFilters.statuses.length +
       localFilters.cities.length +
+      localFilters.projectIds.length +
       (localFilters.dateRange.start ? 1 : 0) +
       (localFilters.dateRange.end ? 1 : 0) +
       (localFilters.searchTerm ? 1 : 0)
@@ -268,6 +290,31 @@ export default function CalendarFilters({ isOpen, onClose }: CalendarFiltersProp
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Projects */}
+          <div className="space-y-3">
+            <Label>Projects</Label>
+            <div className="max-h-32 overflow-y-auto border rounded-md p-2 space-y-1">
+              {projects.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No projects available yet.</p>
+              ) : (
+                projects.map(project => (
+                  <div key={project.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`project-${project.id}`}
+                      checked={localFilters.projectIds.includes(project.id)}
+                      onCheckedChange={(checked) =>
+                        handleProjectChange(project.id, checked as boolean)
+                      }
+                    />
+                    <Label htmlFor={`project-${project.id}`} className="text-sm">
+                      {project.name}
+                    </Label>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
 
           {/* Cities */}
