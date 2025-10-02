@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -25,10 +26,16 @@ import CalendarMini from '@/components/calendar/CalendarMini';
 import CalendarFilters from '@/components/calendar/CalendarFilters';
 import CreateEventDialog from '@/components/calendar/CreateEventDialog';
 import { useCalendarStore, CalendarView, UserRole } from '@/stores/useCalendarStore';
+import type { CalendarEvent } from '@/stores/useCalendarStore';
+import { useTeamStore } from '@/hooks/useTeamStore';
 import { useThemeStore } from '@/stores/theme';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function CalendarPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { getProjectsWithDetails } = useTeamStore();
+  const projectOptions = getProjectsWithDetails().map(project => ({ id: project.id, name: project.name }));
+
   const { 
     showFilters, 
     setShowFilters,
@@ -51,6 +58,23 @@ export default function CalendarPage() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState(() => searchParams.get('project') ?? 'all');
+
+  useEffect(() => {
+    const projectParam = searchParams.get('project');
+
+    if (projectParam) {
+      if (selectedProjectId !== projectParam) {
+        setSelectedProjectId(projectParam);
+      }
+      updateFilters({ projectIds: [projectParam] });
+    } else {
+      if (selectedProjectId !== 'all') {
+        setSelectedProjectId('all');
+      }
+      updateFilters({ projectIds: [] });
+    }
+  }, [searchParams, selectedProjectId, updateFilters]);
 
   // Debounce search updates to filters
   useEffect(() => {
@@ -64,7 +88,7 @@ export default function CalendarPage() {
     setCurrentDate(date);
   };
 
-  const handleEventSelect = (event: any) => {
+  const handleEventSelect = (event: CalendarEvent) => {
     setSelectedEvent(event);
   };
 
@@ -98,7 +122,22 @@ export default function CalendarPage() {
     updateFilters({ searchTerm: value });
   };
 
-  const handleCreateEvent = async (eventData: any) => {
+  const handleProjectSelect = (value: string) => {
+    setSelectedProjectId(value);
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (value === 'all') {
+      updateFilters({ projectIds: [] });
+      nextParams.delete('project');
+    } else {
+      updateFilters({ projectIds: [value] });
+      nextParams.set('project', value);
+    }
+
+    setSearchParams(nextParams);
+  };
+
+  const handleCreateEvent = async (eventData: Omit<CalendarEvent, 'id'>) => {
     try {
       // optimistic add to local store
       addEvent(eventData);
@@ -130,7 +169,7 @@ export default function CalendarPage() {
         'VERSION:2.0',
         'PRODID:-//nbcon//Calendar//EN'
       ];
-      events.forEach((evt: any, idx: number) => {
+      events.forEach((evt, idx) => {
         const uid = `nbcon-${idx}-${Date.now()}@nbcon`;
         const dtStamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         const toICS = (d: Date) => new Date(d).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -286,6 +325,20 @@ export default function CalendarPage() {
               </SelectContent>
             </Select>
             
+            <Select value={selectedProjectId} onValueChange={handleProjectSelect}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="All Projects" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Projects</SelectItem>
+                {projectOptions.map(project => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <Select defaultValue="all">
               <SelectTrigger className="w-[120px]">
                 <SelectValue />

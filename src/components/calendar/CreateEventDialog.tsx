@@ -29,6 +29,8 @@ interface CreateEventDialogProps {
   onClose: () => void;
   onSave: (event: Omit<CalendarEvent, 'id'>) => void;
   initialDate?: Date;
+  initialEvent?: CalendarEvent;
+  mode?: 'create' | 'edit';
 }
 
 // Theme-aware label component
@@ -268,10 +270,39 @@ export default function CreateEventDialog({
   isOpen, 
   onClose, 
   onSave, 
-  initialDate 
+  initialDate,
+  initialEvent,
+  mode = 'create'
 }: CreateEventDialogProps) {
   const { applied: themeTokens } = useThemeStore();
-  
+
+  const isEditMode = mode === 'edit';
+
+  const buildInitialFormData = (event?: CalendarEvent) => {
+    const startDate = event ? new Date(event.startTime) : initialDate ? new Date(initialDate) : null;
+    const endDate = event ? new Date(event.endTime) : startDate ? new Date(startDate.getTime() + 60 * 60 * 1000) : null;
+    const assignees = event?.assignees ? [...event.assignees] : ([] as CalendarEvent['assignees']);
+    const tags = event?.tags ? [...event.tags] : ([] as CalendarEvent['tags']);
+
+    return {
+      title: event?.title ?? '',
+      description: event?.description ?? '',
+      startTime: startDate ? startDate.toISOString().slice(0, 16) : '',
+      endTime: endDate ? endDate.toISOString().slice(0, 16) : '',
+      allDay: event?.allDay ?? false,
+      type: (event?.type ?? 'job') as EventType,
+      status: (event?.status ?? 'open') as EventStatus,
+      location: event?.location ?? '',
+      client: event?.client ?? '',
+      assignees,
+      amount: event?.amount ?? 0,
+      priority: (event?.priority ?? 'Medium') as 'High' | 'Medium' | 'Low',
+      projectId: event?.projectId ?? '',
+      isRecurring: event?.isRecurring ?? false,
+      tags,
+    };
+  };
+
   // Inject custom CSS for datetime picker theming
   useEffect(() => {
     const styleId = 'datetime-picker-theme';
@@ -427,26 +458,27 @@ export default function CreateEventDialog({
     };
   }, [themeTokens]);
   
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    startTime: initialDate ? initialDate.toISOString().slice(0, 16) : '',
-    endTime: initialDate ? new Date(initialDate.getTime() + 60 * 60 * 1000).toISOString().slice(0, 16) : '',
-    allDay: false,
-    type: 'job' as EventType,
-    status: 'open' as EventStatus,
-    location: '',
-    client: '',
-    assignees: [] as Array<{ id: string; name: string; initials: string }>,
-    amount: 0,
-    priority: 'Medium' as 'High' | 'Medium' | 'Low',
-    projectId: '',
-    isRecurring: false,
-    tags: [] as string[]
-  });
-
+  const [formData, setFormData] = useState(() => buildInitialFormData(initialEvent));
   const [newTag, setNewTag] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(buildInitialFormData(initialEvent));
+      setErrors({});
+      setNewTag('');
+    }
+  }, [isOpen, initialEvent, initialDate]);
+
+  const resetForm = () => {
+    setFormData(buildInitialFormData(initialEvent));
+    setErrors({});
+    setNewTag('');
+  };
+
+  const dialogTitle = isEditMode ? 'Edit Event' : 'Create New Event';
+  const dialogDescription = isEditMode ? 'Update the event details below.' : 'Add a new event to your calendar. Fill in the details below.';
+  const submitLabel = isEditMode ? 'Save Changes' : 'Create Event';
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -535,34 +567,16 @@ export default function CreateEventDialog({
     };
 
     onSave(eventData);
-    onClose();
+    handleClose();
   };
 
   const handleClose = () => {
-    setFormData({
-      title: '',
-      description: '',
-      startTime: initialDate ? initialDate.toISOString().slice(0, 16) : '',
-      endTime: initialDate ? new Date(initialDate.getTime() + 60 * 60 * 1000).toISOString().slice(0, 16) : '',
-      allDay: false,
-      type: 'job',
-      status: 'open',
-      location: '',
-      client: '',
-      assignees: [],
-      amount: 0,
-      priority: 'Medium',
-      projectId: '',
-      isRecurring: false,
-      tags: []
-    });
-    setErrors({});
-    setNewTag('');
+    resetForm();
     onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
       <DialogContent 
         className="fixed right-0 top-0 h-svh w-[50vw] max-w-none translate-x-0 translate-y-0 left-auto grid overflow-y-auto"
         style={{
@@ -579,12 +593,12 @@ export default function CreateEventDialog({
               className="h-5 w-5" 
               style={{ color: `hsl(${themeTokens['--primary'] || '142 65% 47%'})` }}
             />
-            Create New Event
+            {dialogTitle}
           </DialogTitle>
           <DialogDescription
             style={{ color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})` }}
           >
-            Add a new event to your calendar. Fill in the details below.
+            {dialogDescription}
           </DialogDescription>
         </DialogHeader>
 
@@ -1000,10 +1014,11 @@ export default function CreateEventDialog({
               color: `hsl(${themeTokens['--primary-foreground'] || '0 0% 100%'})`
             }}
           >
-            Create Event
+            {submitLabel}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
+

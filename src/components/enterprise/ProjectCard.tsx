@@ -165,7 +165,10 @@ export function NewProjectCard() {
   
   const handleCreate = () => {
     if (name.trim()) {
-      createProject(name.trim(), subtitle.trim() || undefined);
+      createProject({
+        name: name.trim(),
+        subtitle: subtitle.trim() || undefined,
+      });
       setName('');
       setSubtitle('');
       setIsCreating(false);

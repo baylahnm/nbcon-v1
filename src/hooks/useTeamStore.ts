@@ -14,8 +14,23 @@ import {
   TaskWithDetails,
   ProjectRole,
   TaskStatus,
-  TaskPriority
+  TaskPriority,
+  ProjectStatus
 } from '@/types/enterprise';
+
+interface CreateProjectInput {
+  name: string;
+  subtitle?: string;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
+  category?: string;
+  status?: ProjectStatus;
+  budgetMin?: number;
+  budgetMax?: number;
+  currency?: string;
+  calendarEventIds?: string[];
+}
 
 // Mock data
 const mockUsers: User[] = [
@@ -250,7 +265,7 @@ interface TeamStore {
   setEditingProject: (projectId: string | null) => void;
   
   // Project actions
-  createProject: (name: string, subtitle?: string) => void;
+  createProject: (input: CreateProjectInput) => Project;
   updateProject: (projectId: string, updates: Partial<Project>) => void;
   deleteProject: (projectId: string) => void;
   addProjectMember: (projectId: string, userId: string, role: ProjectRole) => void;
@@ -304,27 +319,39 @@ export const useTeamStore = create<TeamStore>((set, get) => ({
   setEditingProject: (projectId) => set({ editingProject: projectId }),
   
   // Project actions
-  createProject: (name, subtitle) => {
+  createProject: (input) => {
+    const timestamp = new Date().toISOString();
     const newProject: Project = {
       id: Date.now().toString(),
-      name,
-      subtitle,
+      name: input.name,
+      subtitle: input.subtitle,
       ownerId: get().currentUserId,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      startDate: input.startDate,
+      endDate: input.endDate,
+      location: input.location,
+      category: input.category,
+      status: input.status ?? 'planning',
+      budgetMin: input.budgetMin,
+      budgetMax: input.budgetMax,
+      currency: input.currency,
+      calendarEventIds: input.calendarEventIds ?? []
     };
     
     const newMember: ProjectMember = {
       projectId: newProject.id,
       userId: get().currentUserId,
       role: 'owner',
-      createdAt: new Date().toISOString()
+      createdAt: timestamp
     };
     
     set(state => ({
       projects: [...state.projects, newProject],
       projectMembers: [...state.projectMembers, newMember]
     }));
+    
+    return newProject;
   },
   
   updateProject: (projectId, updates) => {

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useCalendarStore } from '@/stores/useCalendarStore';
 import { 
   Plus, 
   Users, 
@@ -30,6 +32,7 @@ import { TaskModal } from './TaskModal';
 import { ProjectRole, TaskStatus, TaskWithDetails } from '@/types/enterprise';
 import { can, canModifyTask, getPriorityColor, getStatusColor, getRoleColor } from '@/utils/permissions';
 import { toast } from 'sonner';
+import { R } from '@/lib/routes';
 
 interface ProjectDrawerProps {
   isOpen: boolean;
@@ -49,6 +52,16 @@ export function ProjectDrawer({ isOpen, onClose, projectId }: ProjectDrawerProps
     removeMember,
     users
   } = useTeamStore();
+  
+  const navigate = useNavigate();
+  const getEventTypeColor = useCalendarStore(state => state.getEventTypeColor);
+  const projectCalendarEvents = useCalendarStore(state => state.getEventsForProject(projectId));
+  const upcomingEvents = useMemo(() => {
+    const now = Date.now();
+    return projectCalendarEvents
+      .filter(event => event.endTime.getTime() >= now)
+      .slice(0, 3);
+  }, [projectCalendarEvents]);
   
   const [selectedTask, setSelectedTask] = useState<TaskWithDetails | undefined>();
   const [taskModalMode, setTaskModalMode] = useState<'create' | 'edit'>('create');
@@ -174,6 +187,56 @@ export function ProjectDrawer({ isOpen, onClose, projectId }: ProjectDrawerProps
             </SheetTitle>
           </SheetHeader>
           
+          <div className="mt-6 space-y-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <div className="text-base font-semibold flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Upcoming Schedule
+                  </div>
+                  <p className="text-sm text-muted-foreground">Synced from the shared calendar</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`${R.enterprise.calendar}?project=${projectId}`)}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  View Calendar
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {upcomingEvents.length > 0 ? (
+                  upcomingEvents.map(event => (
+                    <div key={event.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="space-y-1">
+                        <p className="font-medium line-clamp-1">{event.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {event.startTime.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                          {' - '}
+                          {event.allDay
+                            ? 'All day'
+                            : `${event.startTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })} - ${event.endTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={`text-xs capitalize ${getEventTypeColor(event.type)}`}>
+                          {event.type}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs capitalize">
+                          {event.status.replace('-', ' ')}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No upcoming events scheduled.</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
           <Tabs defaultValue="tasks" className="mt-6">
             <div className="border-b border-sidebar-border mb-6">
               <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
