@@ -45,7 +45,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   const [activeTool, setActiveTool] = useState<string>('select');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const { position, isDragging, dragRef, handleMouseDown } = useDraggable({
+  const { position, isDragging, dragRef, handleMouseDown, handleTouchStart } = useDraggable({
     initialPosition: { x: 50, y: 50 },
     bounds: 'window',
     disabled: embedded // Disable dragging when embedded
@@ -75,6 +75,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         transition-all duration-200 select-none
         ${!embedded && isDragging ? 'scale-105 shadow-xl' : 'hover:shadow-md'}
         ${isCollapsed ? 'w-12' : 'w-auto'}
+        ${!embedded ? 'max-w-[calc(100vw-1rem)] md:max-w-none' : ''}
+        ${!embedded ? 'touch-none' : ''}
       `}
       style={embedded ? {} : {
         left: position.x,
@@ -82,11 +84,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         cursor: isDragging ? 'grabbing' : 'grab'
       }}
       onMouseDown={embedded ? undefined : handleMouseDown}
+      onTouchStart={embedded ? undefined : handleTouchStart}
     >
       {/* Drag Handle - Only show when not embedded */}
       {!embedded && (
-        <div className="flex items-center justify-between p-2 border-b border-border/50">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between p-2 border-b border-border/50 touch-none">
+          <div className="flex items-center gap-2 min-h-[44px] flex-1">
             <GripHorizontal className="h-4 w-4 text-muted-foreground" />
             {!isCollapsed && (
               <span className="text-sm font-medium text-foreground">Toolbar</span>
@@ -107,7 +110,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       {/* Toolbar Content */}
       {!isCollapsed && (
         <div className="p-2">
-          <div className="flex items-center gap-1">
+          {/* Desktop: Horizontal layout */}
+          <div className="hidden md:flex items-center gap-1">
             {/* Left Group: Manipulate canvas content */}
             <div className="flex items-center gap-1">
               <ToolbarButton
@@ -196,6 +200,109 @@ export const Toolbar: React.FC<ToolbarProps> = ({
                 onClick={() => handleToolClick('rotate-90')}
                 isActive={activeTool === 'rotate-90'}
               />
+              <ToolbarButton
+                icon={ZoomIn}
+                label="Zoom in"
+                onClick={() => handleToolClick('zoom-in')}
+                isActive={activeTool === 'zoom-in'}
+              />
+              <ToolbarButton
+                icon={ZoomOut}
+                label="Zoom out"
+                onClick={() => handleToolClick('zoom-out')}
+                isActive={activeTool === 'zoom-out'}
+              />
+            </div>
+          </div>
+
+          {/* Mobile: Vertical layout */}
+          <div className="md:hidden flex flex-col gap-2">
+            {/* Row 1: Basic tools */}
+            <div className="flex items-center gap-1 flex-wrap">
+              <ToolbarButton
+                icon={MousePointer}
+                label="Select"
+                onClick={() => handleToolClick('select')}
+                isActive={activeTool === 'select'}
+              />
+              <ToolbarButton
+                icon={Rows}
+                label="Add row"
+                onClick={() => handleToolClick('add-row')}
+                isActive={activeTool === 'add-row'}
+              />
+              <ToolbarButton
+                icon={Columns}
+                label="Add column"
+                onClick={() => handleToolClick('add-column')}
+                isActive={activeTool === 'add-column'}
+              />
+              <ToolbarButton
+                icon={PlusSquare}
+                label="Add new container"
+                onClick={() => handleToolClick('add-component')}
+                isActive={activeTool === 'add-component'}
+              />
+            </div>
+
+            {/* Row 2: Action tools */}
+            <div className="flex items-center gap-1 flex-wrap">
+              <ToolbarButton
+                icon={Trash2}
+                label="Remove component"
+                onClick={() => handleToolClick('remove-component')}
+                isActive={activeTool === 'remove-component'}
+              />
+              <ToolbarButton
+                icon={MoveDiagonal}
+                label="Resize component"
+                onClick={() => handleToolClick('resize-component')}
+                isActive={activeTool === 'resize-component'}
+              />
+              <ToolbarButton
+                icon={Undo2}
+                label="Undo"
+                onClick={() => onUndo?.()}
+                isActive={false}
+              />
+              <ToolbarButton
+                icon={Save}
+                label="Save"
+                onClick={() => onSave?.()}
+                isActive={false}
+              />
+            </div>
+
+            {/* Row 3: Input and UI tools */}
+            <div className="flex items-center gap-1 flex-wrap">
+              <ToolbarButton
+                icon={TextCursorInput}
+                label="Add input"
+                onClick={() => handleToolClick('add-input')}
+                isActive={activeTool === 'add-input'}
+              />
+              <ToolbarButton
+                icon={Square}
+                label="Add button"
+                onClick={() => handleToolClick('add-button')}
+                isActive={activeTool === 'add-button'}
+              />
+              <ToolbarButton
+                icon={Crosshair}
+                label="Centre"
+                onClick={() => handleToolClick('centre')}
+                isActive={activeTool === 'centre'}
+              />
+              <ToolbarButton
+                icon={RotateCw}
+                label="Rotate 90°"
+                onClick={() => handleToolClick('rotate-90')}
+                isActive={activeTool === 'rotate-90'}
+              />
+            </div>
+
+            {/* Row 4: Zoom tools */}
+            <div className="flex items-center gap-1 flex-wrap">
               <ToolbarButton
                 icon={ZoomIn}
                 label="Zoom in"

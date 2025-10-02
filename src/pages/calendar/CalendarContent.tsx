@@ -583,89 +583,166 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps 
 
       {/* Event Details Drawer */}
       <Sheet open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <SheetContent className="w-[50vw] sm:max-w-none">
+        <SheetContent className="w-[50vw] sm:max-w-none bg-card border-border shadow-2xl">
           {selectedEvent && (
-            <div className="absolute right-16 top-4 flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleEditEvent}>
+            <div className="absolute right-4 top-4 flex gap-2 z-10">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleEditEvent}
+                className="h-9 px-3 bg-background/80 backdrop-blur-sm border-border/50 hover:bg-accent/80 transition-all duration-200"
+              >
                 <Pencil className="h-4 w-4 mr-2" />
                 Edit
               </Button>
-              <Button variant="destructive" size="sm" onClick={handleDeleteEvent}>
+              <Button 
+                variant="destructive" 
+                size="sm" 
+                onClick={handleDeleteEvent}
+                className="h-9 px-3 bg-destructive/90 hover:bg-destructive transition-all duration-200 shadow-lg"
+              >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
               </Button>
             </div>
           )}
-          <SheetHeader>
-            <SheetTitle>{selectedEvent?.title}</SheetTitle>
-            <SheetDescription>
-              {selectedEvent?.description}
-            </SheetDescription>
+          <SheetHeader className="pb-6 border-b border-border/50">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <Clock className="h-5 w-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <SheetTitle className="text-xl font-bold text-foreground leading-tight">
+                  {selectedEvent?.title}
+                </SheetTitle>
+                <SheetDescription className="text-muted-foreground text-sm mt-1 leading-relaxed">
+                  {selectedEvent?.description}
+                </SheetDescription>
+              </div>
+            </div>
           </SheetHeader>
           
           {selectedEvent && (
-            <div className="mt-6 space-y-4">
-              <div className="flex items-center gap-2">
-                <Badge className={getEventTypeColor(selectedEvent.type)}>
+            <div className="mt-6 space-y-6">
+              {/* Status Badges */}
+              <div className="flex items-center gap-3">
+                <Badge className={`${getEventTypeColor(selectedEvent.type)} text-xs font-semibold px-3 py-1.5 rounded-full`}>
                   {selectedEvent.type}
                 </Badge>
-                <Badge className={getStatusColor(selectedEvent.status)}>
+                <Badge className={`${getStatusColor(selectedEvent.status)} text-xs font-semibold px-3 py-1.5 rounded-full`}>
                   {selectedEvent.status}
                 </Badge>
               </div>
               
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-gray-500" />
-                  <span>
-                    {selectedEvent.startTime.toLocaleString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      hour12: true
-                    })}
-                  </span>
+              {/* Event Details Cards */}
+              <div className="grid gap-4">
+                {/* Time Card */}
+                <div className="p-4 rounded-xl bg-background border border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+                      <Clock className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-foreground">Date & Time</div>
+                      <div className="text-sm text-muted-foreground">
+                        {selectedEvent.startTime.toLocaleString('en-US', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-gray-500" />
-                  <span>{selectedEvent.location}</span>
+                {/* Location Card */}
+                <div className="p-4 rounded-xl bg-background border border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+                      <MapPin className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-foreground">Location</div>
+                      <div className="text-sm text-muted-foreground">{selectedEvent.location}</div>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="h-4 w-4 text-gray-500" />
-                  <span>{selectedEvent.client}</span>
+                {/* Client Card */}
+                <div className="p-4 rounded-xl bg-background border border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+                      <Users className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-foreground">Client</div>
+                      <div className="text-sm text-muted-foreground">{selectedEvent.client}</div>
+                    </div>
+                  </div>
                 </div>
                 
+                {/* Budget Card */}
                 {selectedEvent.amount > 0 && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <DollarSign className="h-4 w-4 text-gray-500" />
-                    <span className="font-medium">{formatCurrency(selectedEvent.amount)}</span>
+                  <div className="p-4 rounded-xl bg-background border border-border">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+                        <DollarSign className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-foreground">Budget</div>
+                        <div className="text-lg font-bold text-foreground">{formatCurrency(selectedEvent.amount)}</div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
               
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Assignees</div>
+              {/* Assignees Section */}
+              <div className="p-4 rounded-xl bg-background border border-border">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-1 rounded bg-primary text-primary-foreground">
+                    <Users className="h-4 w-4" />
+                  </div>
+                  <div className="text-sm font-semibold text-foreground">Team Members</div>
+                </div>
                 <div className="flex -space-x-2">
                   {selectedEvent.assignees.map(assignee => (
-                    <Avatar key={assignee.id} className="h-8 w-8 border-2 border-background">
-                      <AvatarFallback className="text-xs bg-gradient-primary text-primary-foreground">
-                        {assignee.initials}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div key={assignee.id} className="relative group">
+                      <Avatar className="h-10 w-10 border-3 border-background shadow-lg hover:scale-110 transition-transform duration-200">
+                        <AvatarFallback className="text-sm font-semibold bg-primary text-primary-foreground">
+                          {assignee.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-background rounded-full"></div>
+                    </div>
                   ))}
+                  <div className="h-10 w-10 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-muted-foreground hover:bg-muted/50 transition-colors duration-200 cursor-pointer group">
+                    <span className="text-muted-foreground/60 group-hover:text-muted-foreground text-lg">+</span>
+                  </div>
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Tags</div>
-                <div className="flex flex-wrap gap-1">
+              {/* Tags Section */}
+              <div className="p-4 rounded-xl bg-background border border-border">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-1 rounded bg-primary text-primary-foreground">
+                    <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="text-sm font-semibold text-foreground">Tags</div>
+                </div>
+                <div className="flex flex-wrap gap-2">
                   {selectedEvent.tags.map(tag => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
+                    <Badge 
+                      key={tag} 
+                      variant="secondary" 
+                      className="text-xs px-3 py-1.5 rounded-full bg-muted text-muted-foreground border-border hover:bg-muted/80 transition-colors duration-200"
+                    >
                       {tag}
                     </Badge>
                   ))}

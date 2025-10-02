@@ -24,6 +24,8 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChatComposer } from "@/features/ai/components/ChatComposer";
+import { useAiStore } from "@/features/ai/store/useAiStore";
+import { MessageBubble } from "@/features/ai/components/MessageBubble";
 import { Link } from "react-router-dom";
 import { R } from "@/lib/routes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,6 +38,46 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+// AI Conversation Preview Component
+function AIConversationPreview() {
+  const { getActiveMessages, settings } = useAiStore();
+  const activeMessages = getActiveMessages();
+  const lastMessages = activeMessages.slice(-3); // Show last 3 messages
+
+  if (lastMessages.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center mx-auto mb-2">
+          <MessageSquare className="w-4 h-4 text-muted-foreground" />
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {settings.rtl ? 'ابدأ محادثة جديدة' : 'Start a new conversation'}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2 max-h-32 overflow-y-auto">
+      {lastMessages.map((message) => (
+        <div key={message.id} className="text-xs">
+          <div className="flex items-start gap-2">
+            <div className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="text-muted-foreground text-xs mb-1">
+                {message.role === 'user' ? 'You' : 'AI'}
+              </div>
+              <div className="text-foreground text-xs line-clamp-2">
+                {message.content}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function DashboardContent() {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -608,7 +650,10 @@ export function DashboardContent() {
             <Link to={getAIRoute()}>Open</Link>
           </Button>
         </div>
-        <ChatComposer isCompact />
+        <div className="bg-background border rounded-lg p-4 space-y-3">
+          <AIConversationPreview />
+          <ChatComposer isCompact />
+        </div>
       </div>
               </CardContent>
             </Card>
