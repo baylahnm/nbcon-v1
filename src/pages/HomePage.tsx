@@ -669,13 +669,13 @@ const HomePage = () => {
           
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/client/jobs/create">
+            <Link to="/auth">
               <Button size="lg" className="w-full sm:w-auto">
                 {t.nav.getStarted}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
-            <Link to="/client/browse">
+            <Link to="/auth">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto border-[var(--primary)] hover:border-[var(--primary)] browse-engineers-btn">
                 {t.hero.browse}
               </Button>
@@ -1152,10 +1152,12 @@ const HomePage = () => {
                   </li>
                 ))}
               </ul>
-              <Button>
-                {t.dashboard.cta}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              <Link to="/auth">
+                <Button>
+                  {t.dashboard.cta}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
             <div className="relative">
               <div className="relative rounded-2xl p-[2px] h-[570px] overflow-hidden">
