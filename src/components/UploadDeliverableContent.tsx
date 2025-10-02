@@ -454,7 +454,7 @@ export function UploadDeliverableContent() {
           )}
 
           {selectedMilestone && (
-            <div className="p-4 bg-info/10 rounded-lg border border-info/20 space-y-3">
+            <div className="p-4 bg-background rounded-lg border border-border space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium">{selectedMilestone.name}</h4>
                 <Badge className={getStatusColor(selectedMilestone.status)}>

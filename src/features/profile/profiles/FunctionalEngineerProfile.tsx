@@ -390,7 +390,7 @@ export function FunctionalEngineerProfile() {
       <div className="w-full space-y-6">
         {/* Header */}
         <div className="space-y-2">
-          <h1 className="flex items-center gap-2">
+          <h1 className="text-xl font-bold flex items-center gap-2">
             <User className="w-6 h-6 text-primary" />
             Profile
           </h1>
