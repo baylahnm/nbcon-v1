@@ -12,6 +12,7 @@ export const NAV: Record<UserRole, NavItem[]> = {
   engineer: [
     { labelKey: "nav.dashboard", to: "/engineer/dashboard", icon: "dashboard" },
     { labelKey: "nav.jobs", to: "/engineer/jobs", icon: "briefcase" },
+    { labelKey: "nav.ranking", to: "/engineer/ranking", icon: "trophy" },
     { labelKey: "nav.calendar", to: "/engineer/calendar", icon: "calendar" },
     { labelKey: "nav.messages", to: "/engineer/messages", icon: "chat" },
     { labelKey: "nav.ai", to: "/engineer/ai", icon: "bot" },

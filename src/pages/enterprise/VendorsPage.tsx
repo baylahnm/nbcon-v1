@@ -677,7 +677,7 @@ export function VendorsPage() {
                     <div className="flex items-center space-x-3">
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={vendor.logo} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary text-primary-foreground">
                           {vendor.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
@@ -803,7 +803,7 @@ export function VendorsPage() {
                     <div className="flex items-center space-x-4">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={vendor.logo} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary text-primary-foreground">
                           {vendor.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
@@ -916,7 +916,7 @@ export function VendorsPage() {
                   <div className="flex items-start space-x-4">
                     <Avatar className="h-16 w-16">
                       <AvatarImage src={vendor.logo} />
-                      <AvatarFallback className="text-lg">
+                      <AvatarFallback className="text-lg bg-primary text-primary-foreground">
                         {vendor.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>

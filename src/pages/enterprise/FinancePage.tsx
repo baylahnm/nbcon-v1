@@ -15,12 +15,16 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { InvoiceBuilder } from '@/features/finance/components/InvoiceBuilder';
+import QuotationPage from '@/features/finance/components/quotations/QuotationPage';
+import { useQuotations } from '@/features/finance/hooks/useQuotations';
 import { R, RH } from '@/lib/routes';
 import { toast } from 'sonner';
 import { 
   DollarSign,
   Download,
   Filter,
+  Grid3X3,
+  List,
   Search,
   Calendar as CalendarIcon,
   TrendingUp,
@@ -100,12 +104,31 @@ interface Receipt {
 }
 
 export function FinancePage() {
+  // Get quotations data for status overview
+  const { quotations } = useQuotations();
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedProject, setSelectedProject] = useState<string>('all');
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
   const [activeTab, setActiveTab] = useState('transactions');
+
+  // Invoice filter states
+  const [invoiceSearchTerm, setInvoiceSearchTerm] = useState('');
+  const [invoiceTypeFilter, setInvoiceTypeFilter] = useState<string>('all');
+  const [invoiceStatusFilter, setInvoiceStatusFilter] = useState<string>('all');
+  const [invoiceProjectFilter, setInvoiceProjectFilter] = useState<string>('all');
+
+  // Receipt filter states
+  const [receiptSearchTerm, setReceiptSearchTerm] = useState('');
+  const [receiptCategoryFilter, setReceiptCategoryFilter] = useState<string>('all');
+  const [receiptStatusFilter, setReceiptStatusFilter] = useState<string>('all');
+  const [receiptProjectFilter, setReceiptProjectFilter] = useState<string>('all');
+
+  // View mode states
+  const [invoiceViewMode, setInvoiceViewMode] = useState<'grid' | 'list'>('list');
+  const [receiptViewMode, setReceiptViewMode] = useState<'grid' | 'list'>('list');
   
   // Sheet states for right-side panels
   const [showTransactionDetails, setShowTransactionDetails] = useState<string | null>(null);
@@ -610,6 +633,36 @@ export function FinancePage() {
     return matchesSearch && matchesStatus && matchesType && matchesProject;
   });
 
+  // Filter invoices
+  const filteredInvoices = invoices.filter(invoice => {
+    const matchesSearch = invoiceSearchTerm === '' ||
+                         invoice.invoiceNumber.toLowerCase().includes(invoiceSearchTerm.toLowerCase()) ||
+                         invoice.client.toLowerCase().includes(invoiceSearchTerm.toLowerCase()) ||
+                         invoice.project.toLowerCase().includes(invoiceSearchTerm.toLowerCase());
+    const matchesType = invoiceTypeFilter === 'all' || 
+                       (invoiceTypeFilter === 'paid' && invoice.status === 'paid') ||
+                       (invoiceTypeFilter === 'pending' && invoice.status === 'pending') ||
+                       (invoiceTypeFilter === 'overdue' && invoice.status === 'overdue') ||
+                       (invoiceTypeFilter === 'draft' && invoice.status === 'draft');
+    const matchesStatus = invoiceStatusFilter === 'all' || invoice.status === invoiceStatusFilter;
+    const matchesProject = invoiceProjectFilter === 'all' || invoice.project === invoiceProjectFilter;
+    
+    return matchesSearch && matchesType && matchesStatus && matchesProject;
+  });
+
+  // Filter receipts
+  const filteredReceipts = receipts.filter(receipt => {
+    const matchesSearch = receiptSearchTerm === '' ||
+                         receipt.receiptNumber.toLowerCase().includes(receiptSearchTerm.toLowerCase()) ||
+                         receipt.vendor.toLowerCase().includes(receiptSearchTerm.toLowerCase()) ||
+                         receipt.project.toLowerCase().includes(receiptSearchTerm.toLowerCase());
+    const matchesCategory = receiptCategoryFilter === 'all' || receipt.category === receiptCategoryFilter;
+    const matchesStatus = receiptStatusFilter === 'all' || receipt.status === receiptStatusFilter;
+    const matchesProject = receiptProjectFilter === 'all' || receipt.project === receiptProjectFilter;
+    
+    return matchesSearch && matchesCategory && matchesStatus && matchesProject;
+  });
+
   const handleExport = (format: 'excel' | 'pdf', type: 'transactions' | 'invoices' | 'receipts') => {
     toast.success(`Exporting ${type} to ${format.toUpperCase()}...`);
     // Simulate export process
@@ -753,6 +806,166 @@ export function FinancePage() {
         </motion.div>
       </div>
 
+      {/* Status Overview */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {/* Transaction History Status */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Transaction History</CardTitle>
+            <Banknote className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Transactions</span>
+                <span className="font-medium">{filteredTransactions.length}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Value</span>
+                <span className="font-medium">SAR {filteredTransactions.reduce((sum, t) => sum + t.amount, 0).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Completed</span>
+                <Badge className="text-xs bg-green-100 text-green-800 border-green-200">
+                  {filteredTransactions.filter(t => t.status === 'completed').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Pending</span>
+                <Badge className="text-xs bg-orange-100 text-orange-800 border-orange-200">
+                  {filteredTransactions.filter(t => t.status === 'pending').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Processing</span>
+                <Badge className="text-xs bg-blue-100 text-blue-800 border-blue-200">
+                  {filteredTransactions.filter(t => t.status === 'processing').length}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Invoices Status */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Invoices</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Invoices</span>
+                <span className="font-medium">{filteredInvoices.length}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Value</span>
+                <span className="font-medium">SAR {filteredInvoices.reduce((sum, i) => sum + i.amount, 0).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Paid</span>
+                <Badge className="text-xs bg-green-100 text-green-800 border-green-200">
+                  {filteredInvoices.filter(i => i.status === 'paid').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Pending</span>
+                <Badge className="text-xs bg-orange-100 text-orange-800 border-orange-200">
+                  {filteredInvoices.filter(i => i.status === 'pending').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Overdue</span>
+                <Badge variant="destructive" className="text-xs">
+                  {filteredInvoices.filter(i => i.status === 'overdue').length}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Receipts Status */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Receipts</CardTitle>
+            <Receipt className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Receipts</span>
+                <span className="font-medium">{filteredReceipts.length}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Value</span>
+                <span className="font-medium">SAR {filteredReceipts.reduce((sum, r) => sum + r.amount, 0).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Verified</span>
+                <Badge className="text-xs bg-green-100 text-green-800 border-green-200">
+                  {filteredReceipts.filter(r => r.status === 'verified').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Pending</span>
+                <Badge className="text-xs bg-orange-100 text-orange-800 border-orange-200">
+                  {filteredReceipts.filter(r => r.status === 'pending').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Rejected</span>
+                <Badge variant="destructive" className="text-xs">
+                  {filteredReceipts.filter(r => r.status === 'rejected').length}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quotations Status */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Quotations</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Quotations</span>
+                <span className="font-medium">{quotations.length}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Value</span>
+                <span className="font-medium">SAR {quotations.reduce((sum, q) => sum + q.items.reduce((itemSum, item) => itemSum + item.total, 0), 0).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Draft</span>
+                <Badge className="text-xs bg-orange-100 text-orange-800 border-orange-200">
+                  {quotations.filter(q => q.status === 'draft').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Sent</span>
+                <Badge className="text-xs bg-blue-100 text-blue-800 border-blue-200">
+                  {quotations.filter(q => q.status === 'sent').length}
+                </Badge>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Accepted</span>
+                <Badge className="text-xs bg-green-100 text-green-800 border-green-200">
+                  {quotations.filter(q => q.status === 'accepted').length}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
         <div className="border-b border-sidebar-border mb-6">
@@ -769,6 +982,10 @@ export function FinancePage() {
             <TabsTrigger value="receipts" className="flex items-center gap-2 px-4 py-3 min-w-fit">
               <Receipt className="h-4 w-4" />
               Receipts
+            </TabsTrigger>
+            <TabsTrigger value="quotations" className="flex items-center gap-2 px-4 py-3 min-w-fit">
+              <FileText className="h-4 w-4" />
+              Quotations
             </TabsTrigger>
             </div>
           </TabsList>
@@ -848,25 +1065,26 @@ export function FinancePage() {
             </CardHeader>
             <CardContent>
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Transaction</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Project</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                <TableHeader className="border">
+                  <TableRow className="bg-primary">
+                    <TableHead className="text-primary-foreground">Transaction</TableHead>
+                    <TableHead className="text-primary-foreground">Type</TableHead>
+                    <TableHead className="text-primary-foreground">Amount</TableHead>
+                    <TableHead className="text-primary-foreground">Status</TableHead>
+                    <TableHead className="text-primary-foreground">Project</TableHead>
+                    <TableHead className="text-primary-foreground">Date</TableHead>
+                    <TableHead className="text-right text-primary-foreground">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody className="border">
                   {filteredTransactions.map((transaction, index) => (
-                    <motion.tr
-                      key={transaction.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="group hover:bg-muted/50"
+                    <>
+                      <motion.tr
+                        key={transaction.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="group hover:bg-muted/50"
                     >
                       <TableCell>
                         <div className="flex items-center space-x-3">
@@ -925,7 +1143,7 @@ export function FinancePage() {
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100">
+                            <Button variant="ghost" size="sm">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -946,6 +1164,12 @@ export function FinancePage() {
                         </DropdownMenu>
                       </TableCell>
                     </motion.tr>
+                    {index < filteredTransactions.length - 1 && (
+                      <tr>
+                        <td colSpan={7} className="border-b border-border/50 h-px bg-transparent"></td>
+                      </tr>
+                    )}
+                    </>
                   ))}
                 </TableBody>
               </Table>
@@ -955,8 +1179,77 @@ export function FinancePage() {
 
         {/* Invoices Tab */}
         <TabsContent value="invoices" className="space-y-6">
+          {/* Invoice Filters */}
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Invoices & Billing</h3>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search invoices..." 
+                  className="pl-10 w-64"
+                  value={invoiceSearchTerm}
+                  onChange={(e) => setInvoiceSearchTerm(e.target.value)}
+                />
+              </div>
+              
+              <Select value={invoiceTypeFilter} onValueChange={setInvoiceTypeFilter}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={invoiceStatusFilter} onValueChange={setInvoiceStatusFilter}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="sent">Sent</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={invoiceProjectFilter} onValueChange={setInvoiceProjectFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Project" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Projects</SelectItem>
+                  <SelectItem value="NEOM Smart City Infrastructure">NEOM Smart City</SelectItem>
+                  <SelectItem value="Refinery Safety Audit">Aramco Refinery</SelectItem>
+                  <SelectItem value="Green Energy Complex">PIF Green Energy</SelectItem>
+                  <SelectItem value="Marine Infrastructure">Red Sea Global</SelectItem>
+                  <SelectItem value="Entertainment Complex">Qiddiya</SelectItem>
+                  <SelectItem value="Grid Modernization">Saudi Electric</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <div className="flex items-center border rounded-lg">
+                <Button 
+                  className={invoiceViewMode === 'grid' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}
+                  variant={invoiceViewMode === 'grid' ? 'default' : 'outline'}
+                  onClick={() => setInvoiceViewMode('grid')}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button 
+                  className={invoiceViewMode === 'list' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}
+                  variant={invoiceViewMode === 'list' ? 'default' : 'outline'}
+                  onClick={() => setInvoiceViewMode('list')}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
             <div className="flex items-center space-x-2">
               <Button 
                 variant="outline" 
@@ -977,89 +1270,147 @@ export function FinancePage() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {invoices.map((invoice, index) => (
+          <div className={invoiceViewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+            {filteredInvoices.map((invoice, index) => (
               <motion.div
                 key={invoice.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <FileText className="h-5 w-5 text-primary" />
-                        <div>
-                          <CardTitle className="text-base">{invoice.invoiceNumber}</CardTitle>
-                          <p className="text-sm text-muted-foreground">{invoice.client}</p>
+                {invoiceViewMode === 'grid' ? (
+                  <Card className="hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        {/* Header */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                              <FileText className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <CardTitle className="text-base">#{invoice.invoiceNumber}</CardTitle>
+                              <p className="text-sm text-muted-foreground">{invoice.client}</p>
+                            </div>
+                          </div>
+                          <Badge className={cn(getStatusColor(invoice.status))}>
+                            {getStatusIcon(invoice.status)}
+                            <span className="ml-1">{invoice.status}</span>
+                          </Badge>
+                        </div>
+
+                        {/* Amount */}
+                        <div className="text-center">
+                          <p className="font-bold text-2xl text-primary">{formatCurrency(invoice.amount)}</p>
+                          <p className="text-sm text-muted-foreground">{invoice.items} items</p>
+                        </div>
+
+                        {/* Details */}
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Project:</span>
+                            <span>{invoice.project}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Issued:</span>
+                            <span>{new Date(invoice.issueDate).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Due:</span>
+                            <span>{new Date(invoice.dueDate).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Terms:</span>
+                            <span>{invoice.paymentTerms} days</span>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-between pt-4">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleViewInvoice(invoice.id)}
+                          >
+                            <Eye className="h-3 w-3 mr-2" />
+                            View
+                          </Button>
+                          <div className="flex space-x-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => console.log('Downloading PDF for invoice:', invoice.id)}
+                            >
+                              <Download className="h-3 w-3" />
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => console.log('Sending invoice:', invoice.id)}
+                            >
+                              <Send className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                      <Badge className={cn(getStatusColor(invoice.status))}>
-                        {getStatusIcon(invoice.status)}
-                        <span className="ml-1">{invoice.status}</span>
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <p className="font-medium text-lg">{formatCurrency(invoice.amount)}</p>
-                      <p className="text-sm text-muted-foreground">{invoice.project}</p>
-                    </div>
-                    
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Issue Date:</span>
-                        <span>{new Date(invoice.issueDate).toLocaleDateString()}</span>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card className="hover:shadow-lg transition-shadow">
+                    <div className="flex items-center justify-between p-6">
+                      <div className="flex items-center space-x-4">
+                        <FileText className="h-5 w-5 text-primary" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <CardTitle className="text-base">{invoice.invoiceNumber}</CardTitle>
+                              <p className="text-sm text-muted-foreground">{invoice.client}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{invoice.project}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-medium text-lg">{formatCurrency(invoice.amount)}</p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <span>Issue: {new Date(invoice.issueDate).toLocaleDateString()}</span>
+                                <span>Due: {new Date(invoice.dueDate).toLocaleDateString()}</span>
+                                <span>Items: {invoice.items}</span>
+                                <span>Terms: {invoice.paymentTerms}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Due Date:</span>
-                        <span>{new Date(invoice.dueDate).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Items:</span>
-                        <span>{invoice.items}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Terms:</span>
-                        <span>{invoice.paymentTerms}</span>
+                      <div className="flex items-center space-x-4">
+                        <Badge className={cn(getStatusColor(invoice.status))}>
+                          {getStatusIcon(invoice.status)}
+                          <span className="ml-1">{invoice.status}</span>
+                        </Badge>
+                        <div className="flex space-x-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleViewInvoice(invoice.id)}
+                          >
+                            <Eye className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => console.log('Downloading PDF for invoice:', invoice.id)}
+                          >
+                            <Download className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => console.log('Sending invoice:', invoice.id)}
+                          >
+                            <Send className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {invoice.description}
-                    </p>
-
-                    <div className="flex space-x-2 pt-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="flex-1 gap-1"
-                        onClick={() => handleViewInvoice(invoice.id)}
-                      >
-                        <Eye className="h-3 w-3" />
-                        View
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="flex-1 gap-1"
-                        onClick={() => console.log('Downloading PDF for invoice:', invoice.id)}
-                      >
-                        <Download className="h-3 w-3" />
-                        PDF
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="gap-1"
-                        onClick={() => console.log('Sending invoice:', invoice.id)}
-                      >
-                        <Send className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                  </Card>
+                )}
               </motion.div>
             ))}
           </div>
@@ -1067,100 +1418,234 @@ export function FinancePage() {
 
         {/* Receipts Tab */}
         <TabsContent value="receipts" className="space-y-6">
+          {/* Receipt Filters */}
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Receipts & Documentation</h3>
-            <Button 
-              variant="outline" 
-              onClick={() => handleExport('excel', 'receipts')}
-              className="gap-2"
-            >
-              <Download className="h-4 w-4" />
-              Export All
-            </Button>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search receipts..." 
+                  className="pl-10 w-64"
+                  value={receiptSearchTerm}
+                  onChange={(e) => setReceiptSearchTerm(e.target.value)}
+                />
+              </div>
+              
+              <Select value={receiptCategoryFilter} onValueChange={setReceiptCategoryFilter}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="Materials">Materials</SelectItem>
+                  <SelectItem value="Safety">Safety</SelectItem>
+                  <SelectItem value="Specialized Materials">Specialized</SelectItem>
+                  <SelectItem value="Equipment Rental">Equipment</SelectItem>
+                  <SelectItem value="Technology">Technology</SelectItem>
+                  <SelectItem value="Logistics">Logistics</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={receiptStatusFilter} onValueChange={setReceiptStatusFilter}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="verified">Verified</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={receiptProjectFilter} onValueChange={setReceiptProjectFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Project" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Projects</SelectItem>
+                  <SelectItem value="Aramco Refinery">Aramco Refinery</SelectItem>
+                  <SelectItem value="PIF Green Energy">PIF Green Energy</SelectItem>
+                  <SelectItem value="SABIC Plant">SABIC Plant</SelectItem>
+                  <SelectItem value="Red Sea Project">Red Sea Project</SelectItem>
+                  <SelectItem value="NEOM Smart City">NEOM Smart City</SelectItem>
+                  <SelectItem value="Multiple Projects">Multiple Projects</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <div className="flex items-center border rounded-lg">
+                <Button 
+                  className={receiptViewMode === 'grid' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}
+                  variant={receiptViewMode === 'grid' ? 'default' : 'outline'}
+                  onClick={() => setReceiptViewMode('grid')}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button 
+                  className={receiptViewMode === 'list' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}
+                  variant={receiptViewMode === 'list' ? 'default' : 'outline'}
+                  onClick={() => setReceiptViewMode('list')}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button 
+                variant="outline" 
+                onClick={() => handleExport('excel', 'receipts')}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export All
+              </Button>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {receipts.map((receipt, index) => (
+          <div className={receiptViewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+            {filteredReceipts.map((receipt, index) => (
               <motion.div
                 key={receipt.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Receipt className="h-5 w-5 text-primary" />
-                        <div>
-                          <CardTitle className="text-base">{receipt.receiptNumber}</CardTitle>
-                          <p className="text-sm text-muted-foreground">{receipt.vendor}</p>
+                {receiptViewMode === 'grid' ? (
+                  <Card className="hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        {/* Header */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                              <Receipt className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <CardTitle className="text-base">{receipt.receiptNumber}</CardTitle>
+                              <p className="text-sm text-muted-foreground">{receipt.vendor}</p>
+                            </div>
+                          </div>
+                          <Badge className={cn(getStatusColor(receipt.status))}>
+                            {getStatusIcon(receipt.status)}
+                            <span className="ml-1">{receipt.status}</span>
+                          </Badge>
+                        </div>
+
+                        {/* Amount */}
+                        <div className="text-center">
+                          <p className="font-bold text-2xl text-primary">{formatCurrency(receipt.amount)}</p>
+                          <p className="text-sm text-muted-foreground">{receipt.category}</p>
+                        </div>
+
+                        {/* Details */}
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Project:</span>
+                            <span>{receipt.project}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Date:</span>
+                            <span>{new Date(receipt.date).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Payment:</span>
+                            <span>{receipt.paymentMethod}</span>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-between pt-4">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleViewReceipt(receipt.id)}
+                          >
+                            <Eye className="h-3 w-3 mr-2" />
+                            View
+                          </Button>
+                          <div className="flex space-x-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => console.log('Downloading receipt:', receipt.id)}
+                            >
+                              <Download className="h-3 w-3" />
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => console.log('Printing receipt:', receipt.id)}
+                            >
+                              <Printer className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                      <Badge className={cn(getStatusColor(receipt.status))}>
-                        {getStatusIcon(receipt.status)}
-                        <span className="ml-1">{receipt.status}</span>
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <p className="font-medium text-lg">{formatCurrency(receipt.amount)}</p>
-                      <p className="text-sm text-muted-foreground">{receipt.project}</p>
-                    </div>
-                    
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Date:</span>
-                        <span>{new Date(receipt.date).toLocaleDateString()}</span>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card className="hover:shadow-lg transition-shadow">
+                    <div className="flex items-center justify-between p-6">
+                      <div className="flex items-center space-x-4">
+                        <Receipt className="h-5 w-5 text-primary" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <CardTitle className="text-base">{receipt.receiptNumber}</CardTitle>
+                              <p className="text-sm text-muted-foreground">{receipt.vendor}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{receipt.project}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-medium text-lg">{formatCurrency(receipt.amount)}</p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <span>Date: {new Date(receipt.date).toLocaleDateString()}</span>
+                                <span>Category: {receipt.category}</span>
+                                <span>Payment: {receipt.paymentMethod}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Category:</span>
-                        <span>{receipt.category}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Payment:</span>
-                        <span>{receipt.paymentMethod}</span>
+                      <div className="flex items-center space-x-4">
+                        <Badge className={cn(getStatusColor(receipt.status))}>
+                          {getStatusIcon(receipt.status)}
+                          <span className="ml-1">{receipt.status}</span>
+                        </Badge>
+                        <div className="flex space-x-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleViewReceipt(receipt.id)}
+                          >
+                            <Eye className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => console.log('Downloading receipt:', receipt.id)}
+                          >
+                            <Download className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => console.log('Printing receipt:', receipt.id)}
+                          >
+                            <Printer className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {receipt.description}
-                    </p>
-
-                    <div className="flex space-x-2 pt-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="flex-1 gap-1"
-                        onClick={() => handleViewReceipt(receipt.id)}
-                      >
-                        <Eye className="h-3 w-3" />
-                        View
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="flex-1 gap-1"
-                        onClick={() => console.log('Downloading receipt:', receipt.id)}
-                      >
-                        <Download className="h-3 w-3" />
-                        Download
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="gap-1"
-                        onClick={() => console.log('Printing receipt:', receipt.id)}
-                      >
-                        <Printer className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                  </Card>
+                )}
               </motion.div>
             ))}
           </div>
+        </TabsContent>
+
+        {/* Quotations Tab */}
+        <TabsContent value="quotations" className="space-y-6">
+          <QuotationPage />
         </TabsContent>
       </Tabs>
 

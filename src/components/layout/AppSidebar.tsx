@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useAuthStore } from '@/stores/auth';
 import { R } from '@/lib/routes';
 import { getUserDisplayName, getUserInitials, getUserProfileImage } from '@/lib/userUtils';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MenuItem {
@@ -29,6 +29,7 @@ const makeTopMenu = (role?: string): MenuItem[] => {
         { title: 'Messages', url: R.engineer.messages, icon: MessageSquare },
         { title: 'AI Assistant', url: R.engineer.ai, icon: Bot },
         { title: 'Profile', url: R.engineer.profile, icon: User },
+        { title: 'Ranking', url: '/engineer/ranking', icon: Trophy },
         { title: 'Network', url: R.engineer.network, icon: Users },
         { title: 'Learning', url: R.engineer.learning, icon: BookOpen },
         { title: 'Payments', url: R.engineer.payments, icon: DollarSign },

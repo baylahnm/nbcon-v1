@@ -29,6 +29,7 @@ import CalendarPage from "@/pages/calendar/CalendarPage";
 import LearningPage from "@/pages/learning/LearningPage";
 import { ChatPage } from "@/features/ai/ChatPage";
 import { PaymentsContent } from "@/features/finance/components/PaymentsContent";
+import RankingPage from "@/pages/engineer/RankingPage";
 import { DashboardPage as EnterpriseDashboardPage } from "@/pages/enterprise/DashboardPage";
 import { TeamProjectsPage } from "@/pages/enterprise/TeamProjectsPage";
 const AnalyticsPage = React.lazy(() =>
@@ -123,6 +124,7 @@ export default function RoleRouter() {
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="ai/thread/:threadId" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="ranking" element={<RankingPage />} />
           <Route path="network" element={<MyNetwork />} />
           <Route path="network/:userId" element={<MyNetwork />} />
           <Route path="learning" element={<LearningPage />} />
