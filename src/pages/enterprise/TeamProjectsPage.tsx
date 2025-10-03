@@ -354,22 +354,23 @@ export function TeamProjectsPage() {
           </div>
 
           {/* Team Hours Table */}
-          <Card>
-            <CardHeader>
+          <Card className="border-0 bg-background">
+            <CardHeader className="p-0">
               <CardTitle className="text-base">Team Hours</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <ScrollArea className="h-[480px]">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Member</TableHead>
-                      <TableHead>Project</TableHead>
-                      <TableHead className="text-right">Hours</TableHead>
-                      <TableHead className="text-right">Overtime</TableHead>
-                      <TableHead className="text-right">Allocation</TableHead>
-                    </TableRow>
-                  </TableHeader>
+                <div className="rounded-lg overflow-hidden border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-b bg-primary hover:bg-primary">
+                        <TableHead className="text-primary-foreground">Member</TableHead>
+                        <TableHead className="text-primary-foreground">Project</TableHead>
+                        <TableHead className="text-right text-primary-foreground">Hours</TableHead>
+                        <TableHead className="text-right text-primary-foreground">Overtime</TableHead>
+                        <TableHead className="text-right text-primary-foreground">Allocation</TableHead>
+                      </TableRow>
+                    </TableHeader>
                   <TableBody>
                     {projects.flatMap((p) => (
                       p.members.map((m) => (
@@ -400,6 +401,7 @@ export function TeamProjectsPage() {
                     ))}
                   </TableBody>
                 </Table>
+                </div>
               </ScrollArea>
             </CardContent>
           </Card>
@@ -543,23 +545,24 @@ export function TeamProjectsPage() {
           </div>
 
           {/* Project Performance Table */}
-          <Card>
-            <CardHeader>
+          <Card className="border-0 bg-background">
+            <CardHeader className="p-0">
               <CardTitle className="text-base">Project Performance</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <ScrollArea className="h-[400px]">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Project</TableHead>
-                      <TableHead>Team Size</TableHead>
-                      <TableHead>Progress</TableHead>
-                      <TableHead>Tasks</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Last Updated</TableHead>
-                    </TableRow>
-                  </TableHeader>
+                <div className="rounded-lg overflow-hidden border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-b bg-primary hover:bg-primary">
+                        <TableHead className="text-primary-foreground">Project</TableHead>
+                        <TableHead className="text-primary-foreground">Team Size</TableHead>
+                        <TableHead className="text-primary-foreground">Progress</TableHead>
+                        <TableHead className="text-primary-foreground">Tasks</TableHead>
+                        <TableHead className="text-primary-foreground">Status</TableHead>
+                        <TableHead className="text-primary-foreground">Last Updated</TableHead>
+                      </TableRow>
+                    </TableHeader>
                   <TableBody>
                     {projects.map((project) => (
                       <TableRow key={project.id} className="hover:bg-accent/50">
@@ -613,6 +616,7 @@ export function TeamProjectsPage() {
                     ))}
                   </TableBody>
                 </Table>
+                </div>
               </ScrollArea>
             </CardContent>
           </Card>
@@ -801,8 +805,8 @@ export function TeamProjectsPage() {
           </div>
 
           {/* File Browser */}
-          <Card>
-            <CardHeader>
+          <Card className="border-0 bg-background">
+            <CardHeader className="p-0">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Project Files</CardTitle>
                 <div className="flex gap-2">
@@ -817,20 +821,21 @@ export function TeamProjectsPage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <ScrollArea className="h-[400px]">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Project</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Size</TableHead>
-                      <TableHead>Modified</TableHead>
-                      <TableHead>Shared By</TableHead>
-                      <TableHead className="w-[100px]">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
+                <div className="rounded-lg overflow-hidden border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-b bg-primary hover:bg-primary">
+                        <TableHead className="text-primary-foreground">Name</TableHead>
+                        <TableHead className="text-primary-foreground">Project</TableHead>
+                        <TableHead className="text-primary-foreground">Type</TableHead>
+                        <TableHead className="text-primary-foreground">Size</TableHead>
+                        <TableHead className="text-primary-foreground">Modified</TableHead>
+                        <TableHead className="text-primary-foreground">Shared By</TableHead>
+                        <TableHead className="w-[100px] text-primary-foreground">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
                   <TableBody>
                     {projects.flatMap(project => 
                       project.members.slice(0, 2).map((member, index) => ({
@@ -890,6 +895,7 @@ export function TeamProjectsPage() {
                     ))}
                   </TableBody>
                 </Table>
+                </div>
               </ScrollArea>
             </CardContent>
           </Card>

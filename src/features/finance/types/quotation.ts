@@ -34,6 +34,7 @@ export interface ClientInfo {
   crNumber?: string;
   placeOfSupply?: string;
   countryOfSupply?: string;
+  signature?: string;
 }
 
 export interface CompanyInfo {

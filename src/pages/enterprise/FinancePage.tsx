@@ -726,18 +726,24 @@ export function FinancePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Income</CardTitle>
-              <ArrowUpRight className="h-4 w-4 text-green-600" />
+          <Card className="relative overflow-hidden bg-card border-green-200/50 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300 hover:-translate-y-1">
+            <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-card-foreground">Total Income</CardTitle>
+              <div className="p-2 bg-primary rounded-lg">
+                <ArrowUpRight className="h-4 w-4 text-primary-foreground" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-green-600">
+            <CardContent className="relative">
+              <div className="text-3xl font-bold text-green-600 mb-1">
                 {formatCurrency(totalIncome)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-medium">
                 Completed payments
               </p>
+              <div className="mt-3 flex items-center text-xs text-muted-foreground">
+                <TrendingUp className="h-3 w-3 mr-1" />
+                +12.5% from last month
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -747,18 +753,24 @@ export function FinancePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
-              <ArrowDownRight className="h-4 w-4 text-red-600" />
+          <Card className="relative overflow-hidden bg-card border-red-200/50 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 hover:-translate-y-1">
+            <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-card-foreground">Total Expenses</CardTitle>
+              <div className="p-2 bg-primary rounded-lg">
+                <ArrowDownRight className="h-4 w-4 text-primary-foreground" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-red-600">
+            <CardContent className="relative">
+              <div className="text-3xl font-bold text-red-600 mb-1">
                 {formatCurrency(totalExpenses)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-medium">
                 Completed payments
               </p>
+              <div className="mt-3 flex items-center text-xs text-muted-foreground">
+                <TrendingUp className="h-3 w-3 mr-1" />
+                +8.2% from last month
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -768,18 +780,24 @@ export function FinancePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Income</CardTitle>
-              <Clock className="h-4 w-4 text-yellow-600" />
+          <Card className="relative overflow-hidden bg-card border-yellow-200/50 hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+            <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-card-foreground">Pending Income</CardTitle>
+              <div className="p-2 bg-primary rounded-lg">
+                <Clock className="h-4 w-4 text-primary-foreground" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-yellow-600">
+            <CardContent className="relative">
+              <div className="text-3xl font-bold text-yellow-600 mb-1">
                 {formatCurrency(pendingIncome)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-medium">
                 Awaiting payment
               </p>
+              <div className="mt-3 flex items-center text-xs text-muted-foreground">
+                <Clock className="h-3 w-3 mr-1" />
+                3 pending transactions
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -789,18 +807,24 @@ export function FinancePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
-              <TrendingUp className="h-4 w-4 text-blue-600" />
+          <Card className="relative overflow-hidden bg-card border-blue-200/50 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1">
+            <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-card-foreground">Net Profit</CardTitle>
+              <div className="p-2 bg-primary rounded-lg">
+                <TrendingUp className="h-4 w-4 text-primary-foreground" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-blue-600">
+            <CardContent className="relative">
+              <div className="text-3xl font-bold text-blue-600 mb-1">
                 {formatCurrency(totalIncome - totalExpenses)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-medium">
                 Current period
               </p>
+              <div className="mt-3 flex items-center text-xs text-muted-foreground">
+                <TrendingUp className="h-3 w-3 mr-1" />
+                +15.3% from last month
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -1059,14 +1083,15 @@ export function FinancePage() {
           </div>
 
           {/* Transaction History Table */}
-          <Card>
+          <Card className="bg-background border-0">
             <CardHeader>
               <CardTitle>Transaction History ({filteredTransactions.length})</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader className="border">
-                  <TableRow className="bg-primary">
+      <CardContent className="p-0">
+        <div className="rounded-lg overflow-hidden border">
+                <Table>
+                <TableHeader>
+                  <TableRow className="bg-primary hover:bg-primary">
                     <TableHead className="text-primary-foreground">Transaction</TableHead>
                     <TableHead className="text-primary-foreground">Type</TableHead>
                     <TableHead className="text-primary-foreground">Amount</TableHead>
@@ -1076,7 +1101,7 @@ export function FinancePage() {
                     <TableHead className="text-right text-primary-foreground">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="border">
+                <TableBody className="bg-background">
                   {filteredTransactions.map((transaction, index) => (
                     <>
                       <motion.tr
@@ -1172,7 +1197,8 @@ export function FinancePage() {
                     </>
                   ))}
                 </TableBody>
-              </Table>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

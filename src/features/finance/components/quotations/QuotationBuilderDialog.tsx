@@ -24,8 +24,8 @@ const QuotationBuilderDialog: React.FC<QuotationBuilderDialogProps> = ({
   onOpenChange,
   quotationId
 }) => {
-  const { createQuotation, updateQuotation, getQuotationById } = useQuotations();
-  const { formData, validateForm, validateFormForPreview, getPreviewQuotation, resetForm, loadQuotation, clearDraft } = useQuotationBuilder();
+  const { createQuotation, updateQuotation, getQuotationById, quotations } = useQuotations();
+  const { formData, validateForm, validateFormForPreview, getPreviewQuotation, resetForm, loadQuotation, clearDraft } = useQuotationBuilder(quotations);
   const [activeTab, setActiveTab] = useState('builder');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -116,55 +116,12 @@ const QuotationBuilderDialog: React.FC<QuotationBuilderDialogProps> = ({
         </DialogHeader>
         
         <div className="h-full overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-            <div className="px-4 border-b">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="builder">Builder</TabsTrigger>
-                <TabsTrigger value="preview">Preview</TabsTrigger>
-              </TabsList>
-            </div>
-            
-            <div className="flex-1 overflow-hidden">
-              <TabsContent value="builder" className="h-full overflow-y-auto">
-                <QuotationBuilder
-                  onSave={handleSave}
-                  onPreview={handlePreview}
-                  onExport={handleExport}
-                />
-              </TabsContent>
-              
-              <TabsContent value="preview" className="h-full overflow-y-auto p-4">
-                {formData.items.length > 0 && formData.company.name && formData.client.name ? (
-                  <QuotationPreview
-                    quotation={getPreviewQuotation()}
-                    onExport={handleExport}
-                    onSend={() => toast.success('Send functionality coming soon')}
-                    onAccept={() => toast.success('Accept functionality coming soon')}
-                    onReject={() => toast.success('Reject functionality coming soon')}
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-muted-foreground">
-                    <div className="text-center">
-                      <p className="text-lg mb-2">Incomplete quotation</p>
-                      <p className="text-sm mb-4">Please fill in the required information to see the preview:</p>
-                      <ul className="text-sm text-left mb-4">
-                        {!formData.company.name && <li>• Company name</li>}
-                        {!formData.client.name && <li>• Client name</li>}
-                        {formData.items.length === 0 && <li>• At least one item</li>}
-                      </ul>
-                      <Button 
-                        variant="outline" 
-                        className="mt-4"
-                        onClick={() => setActiveTab('builder')}
-                      >
-                        Go to Builder
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </TabsContent>
-            </div>
-          </Tabs>
+          <QuotationBuilder
+            onSave={handleSave}
+            onPreview={handlePreview}
+            onExport={handleExport}
+            existingQuotations={quotations}
+          />
         </div>
       </DialogContent>
     </Dialog>

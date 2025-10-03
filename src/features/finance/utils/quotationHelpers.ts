@@ -7,6 +7,27 @@ export const generateQuotationNumber = (existingCount: number = 0): string => {
   return `QUO-${year}-${count.toString().padStart(4, '0')}`;
 };
 
+// Generate next quotation number based on existing quotations
+export const generateNextQuotationNumber = (existingQuotations: Array<{ quotationNumber: string }>): string => {
+  const year = new Date().getFullYear();
+  const yearPrefix = `QUO-${year}-`;
+  
+  // Filter quotations for current year and extract numbers
+  const currentYearQuotations = existingQuotations
+    .filter(q => q.quotationNumber.startsWith(yearPrefix))
+    .map(q => {
+      const numberPart = q.quotationNumber.replace(yearPrefix, '');
+      const number = parseInt(numberPart);
+      return isNaN(number) ? 0 : number;
+    });
+  
+  // Find the highest number and increment by 1
+  const maxNumber = currentYearQuotations.length > 0 ? Math.max(...currentYearQuotations) : 0;
+  const nextNumber = maxNumber + 1;
+  
+  return `${yearPrefix}${nextNumber.toString().padStart(4, '0')}`;
+};
+
 // Calculate validity date
 export const calculateValidUntil = (validityDays: number): string => {
   const date = new Date();

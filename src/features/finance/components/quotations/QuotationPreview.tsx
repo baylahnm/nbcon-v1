@@ -345,7 +345,17 @@ const QuotationPreview: React.FC<QuotationPreviewProps> = ({
                 </div>
                 <div>
                   <Label className="text-sm">Signature</Label>
-                  <div className="border border-gray-300 h-16 rounded mt-1"></div>
+                  <div className="border border-gray-300 h-16 rounded mt-1 flex items-center justify-center overflow-hidden">
+                    {quotation.client.signature ? (
+                      <img 
+                        src={quotation.client.signature} 
+                        alt="Client Signature" 
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-gray-400 text-sm">Client Signature</span>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <Label className="text-sm">Date</Label>
@@ -364,7 +374,17 @@ const QuotationPreview: React.FC<QuotationPreviewProps> = ({
                 </div>
                 <div>
                   <Label className="text-sm">Signature</Label>
-                  <div className="border border-gray-300 h-16 rounded mt-1"></div>
+                  <div className="border border-gray-300 h-16 rounded mt-1 flex items-center justify-center overflow-hidden">
+                    {quotation.company.signature ? (
+                      <img 
+                        src={quotation.company.signature} 
+                        alt="Company Signature" 
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-gray-400 text-sm">Company Signature</span>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <Label className="text-sm">Date</Label>

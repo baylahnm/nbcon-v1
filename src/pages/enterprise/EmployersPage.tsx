@@ -569,19 +569,20 @@ export function EmployersPage() {
             </div>
           </div>
 
-          <Card>
+          <Card className="border-0 bg-background">
             <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>Position</TableHead>
-                    <TableHead>Department</TableHead>
-                    <TableHead className="text-right">Base Salary</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
+              <div className="rounded-lg overflow-hidden border">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-b bg-primary hover:bg-primary">
+                      <TableHead className="text-primary-foreground">Employee</TableHead>
+                      <TableHead className="text-primary-foreground">Position</TableHead>
+                      <TableHead className="text-primary-foreground">Department</TableHead>
+                      <TableHead className="text-right text-primary-foreground">Base Salary</TableHead>
+                      <TableHead className="text-primary-foreground">Status</TableHead>
+                      <TableHead className="text-right text-primary-foreground">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
                 <TableBody>
                   {filteredEmployees.map((employee, index) => (
                     <motion.tr
@@ -620,7 +621,8 @@ export function EmployersPage() {
                     </motion.tr>
                   ))}
                 </TableBody>
-              </Table>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

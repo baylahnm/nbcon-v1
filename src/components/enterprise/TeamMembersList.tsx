@@ -193,115 +193,124 @@ export function TeamMembersList() {
         </Card>
         
         {/* Team Members Table */}
-        <Card>
-          <CardHeader>
+        <Card className="border-0 bg-background">
+          <CardHeader className="p-0">
             <h3 className="font-medium">Team Directory</h3>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             <ScrollArea className="h-[500px]">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Member</TableHead>
-                    <TableHead>Specialty</TableHead>
-                    <TableHead>Experience</TableHead>
-                    <TableHead>Company</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="w-[100px]">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((member) => (
-                    <motion.tr
-                      key={member.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                      className="group hover:bg-accent/50"
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="relative">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src={member.avatar} />
-                              <AvatarFallback className="bg-primary text-primary-foreground">
-                                {member.name.split(' ').map(n => n[0]).join('')}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div 
-                              className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${
-                                member.isOnline ? 'bg-green-500' : 'bg-destructive'
-                              }`}
-                              title={member.isOnline ? 'Online' : 'Offline'}
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <p className="font-medium">{member.name}</p>
-                            <p className="text-sm text-muted-foreground">{member.email}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Award className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{member.specialty}</span>
-                        </div>
-                      </TableCell>
-                      
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{member.yearsOfExperience} years</span>
-                        </div>
-                      </TableCell>
-                      
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Building className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{member.company}</span>
-                        </div>
-                      </TableCell>
-                      
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Mail className="h-3 w-3" />
-                            <span>{member.email}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Phone className="h-3 w-3" />
-                            <span>{member.phoneNumber}</span>
-                          </div>
-                        </div>
-                      </TableCell>
-                      
-                      <TableCell>
-                        <Badge 
-                          variant="outline" 
-                          className={`${getAvailabilityColor(member.availabilityStatus)} flex items-center gap-1 w-fit`}
-                        >
-                          {getAvailabilityIcon(member.availabilityStatus)}
-                          {member.availabilityStatus === 'free' ? 'Available' : 'Busy'}
-                        </Badge>
-                      </TableCell>
-                      
-                      <TableCell>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleAddToProject(member)}
-                          disabled={userProjects.length === 0}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <UserPlus className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </motion.tr>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="rounded-lg overflow-hidden border">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-b bg-primary hover:bg-primary">
+                      <TableHead className="border-r text-primary-foreground">Member</TableHead>
+                      <TableHead className="border-r text-primary-foreground">Specialty</TableHead>
+                      <TableHead className="border-r text-primary-foreground">Experience</TableHead>
+                      <TableHead className="border-r text-primary-foreground">Company</TableHead>
+                      <TableHead className="border-r text-primary-foreground">Contact</TableHead>
+                      <TableHead className="border-r text-primary-foreground">Status</TableHead>
+                      <TableHead className="w-[100px] text-primary-foreground">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers.map((member, index) => (
+                      <>
+                            <motion.tr
+                              key={member.id}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.2 }}
+                              className="group hover:bg-accent/50"
+                            >
+                              <TableCell className="border-r">
+                            <div className="flex items-center gap-3">
+                              <div className="relative">
+                                <Avatar className="h-10 w-10">
+                                  <AvatarImage src={member.avatar} />
+                                  <AvatarFallback className="bg-primary text-primary-foreground">
+                                    {member.name.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div 
+                                  className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${
+                                    member.isOnline ? 'bg-green-500' : 'bg-destructive'
+                                  }`}
+                                  title={member.isOnline ? 'Online' : 'Offline'}
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <p className="font-medium">{member.name}</p>
+                                <p className="text-sm text-muted-foreground">{member.email}</p>
+                              </div>
+                            </div>
+                              </TableCell>
+                              
+                              <TableCell className="border-r">
+                                <div className="flex items-center gap-2">
+                                  <Award className="h-4 w-4 text-muted-foreground" />
+                                  <span className="text-sm">{member.specialty}</span>
+                                </div>
+                              </TableCell>
+                              
+                              <TableCell className="border-r">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-sm">{member.yearsOfExperience} years</span>
+                            </div>
+                              </TableCell>
+                              
+                              <TableCell className="border-r">
+                                <div className="flex items-center gap-2">
+                                  <Building className="h-4 w-4 text-muted-foreground" />
+                                  <span className="text-sm">{member.company}</span>
+                                </div>
+                              </TableCell>
+                              
+                              <TableCell className="border-r">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <Mail className="h-3 w-3" />
+                                <span>{member.email}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <Phone className="h-3 w-3" />
+                                <span>{member.phoneNumber}</span>
+                              </div>
+                            </div>
+                              </TableCell>
+                              
+                              <TableCell className="border-r">
+                                <Badge 
+                                  variant="outline" 
+                                  className={`${getAvailabilityColor(member.availabilityStatus)} flex items-center gap-1 w-fit`}
+                                >
+                                  {getAvailabilityIcon(member.availabilityStatus)}
+                                  {member.availabilityStatus === 'free' ? 'Available' : 'Busy'}
+                                </Badge>
+                              </TableCell>
+                              
+                              <TableCell>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleAddToProject(member)}
+                                  disabled={userProjects.length === 0}
+                                  className="transition-opacity"
+                                >
+                                  <UserPlus className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                        </motion.tr>
+                        {index < filteredUsers.length - 1 && (
+                          <tr>
+                            <td colSpan={7} className="border-b border-border/50 h-px bg-transparent"></td>
+                          </tr>
+                        )}
+                      </>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
               
               {/* Empty State */}
               {filteredUsers.length === 0 && (

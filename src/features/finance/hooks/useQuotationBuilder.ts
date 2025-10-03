@@ -1,18 +1,18 @@
 import { useState, useCallback, useEffect } from 'react';
 import { QuotationFormData, QuotationItem, QuotationTerms, Quotation } from '../types/quotation';
-import { calculateQuotationTotals, getDefaultQuotationTerms, getDefaultQuotationTheme, generateQuotationNumber } from '../utils/quotationHelpers';
+import { calculateQuotationTotals, getDefaultQuotationTerms, getDefaultQuotationTheme, generateQuotationNumber, generateNextQuotationNumber } from '../utils/quotationHelpers';
 
 // Local storage key for quotation builder memory
 const QUOTATION_BUILDER_MEMORY_KEY = 'quotation-builder-draft';
 
 // Get default form data
-const getDefaultFormData = (): QuotationFormData => {
+const getDefaultFormData = (existingQuotations: Array<{ quotationNumber: string }> = []): QuotationFormData => {
   const today = new Date();
   const validUntil = new Date(today);
   validUntil.setDate(today.getDate() + 30); // Default 30 days validity
   
   return {
-    quotationNumber: '',
+    quotationNumber: generateNextQuotationNumber(existingQuotations),
     date: today.toISOString().split('T')[0],
     validUntil: validUntil.toISOString().split('T')[0],
     preparedBy: '',
@@ -41,18 +41,18 @@ const getDefaultFormData = (): QuotationFormData => {
 };
 
 // Load saved form data from localStorage
-const loadSavedFormData = (): QuotationFormData => {
+const loadSavedFormData = (existingQuotations: Array<{ quotationNumber: string }> = []): QuotationFormData => {
   try {
     const saved = localStorage.getItem(QUOTATION_BUILDER_MEMORY_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
       // Merge with defaults to ensure all fields exist
-      return { ...getDefaultFormData(), ...parsed };
+      return { ...getDefaultFormData(existingQuotations), ...parsed };
     }
   } catch (error) {
     console.error('Failed to load saved quotation data:', error);
   }
-  return getDefaultFormData();
+  return getDefaultFormData(existingQuotations);
 };
 
 // Save form data to localStorage
@@ -64,8 +64,8 @@ const saveFormData = (data: QuotationFormData) => {
   }
 };
 
-export const useQuotationBuilder = () => {
-  const [formData, setFormData] = useState<QuotationFormData>(loadSavedFormData);
+export const useQuotationBuilder = (existingQuotations: Array<{ quotationNumber: string }> = []) => {
+  const [formData, setFormData] = useState<QuotationFormData>(() => loadSavedFormData(existingQuotations));
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Auto-save form data to localStorage whenever it changes
@@ -287,16 +287,22 @@ export const useQuotationBuilder = () => {
 
   // Reset form
   const resetForm = useCallback(() => {
-    setFormData(getDefaultFormData());
+    setFormData(getDefaultFormData(existingQuotations));
     setErrors({});
     // Clear saved data from localStorage
     localStorage.removeItem(QUOTATION_BUILDER_MEMORY_KEY);
-  }, []);
+  }, [existingQuotations]);
 
   // Clear saved draft
   const clearDraft = useCallback(() => {
     localStorage.removeItem(QUOTATION_BUILDER_MEMORY_KEY);
   }, []);
+
+  // Generate new quotation number
+  const generateNewQuotationNumber = useCallback(() => {
+    const newNumber = generateNextQuotationNumber(existingQuotations);
+    updateField('quotationNumber', newNumber);
+  }, [existingQuotations, updateField]);
 
   // Load quotation data
   const loadQuotation = useCallback((quotation: QuotationFormData) => {
@@ -350,6 +356,7 @@ export const useQuotationBuilder = () => {
     getPreviewQuotation,
     resetForm,
     loadQuotation,
-    clearDraft
+    clearDraft,
+    generateNewQuotationNumber
   };
 };

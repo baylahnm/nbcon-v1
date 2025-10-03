@@ -18,22 +18,74 @@ import {
   Save,
   Download,
   Eye,
-  Calculator
+  Calculator,
+  Palette,
+  Upload,
+  X
 } from 'lucide-react';
 import { useQuotationBuilder } from '../../hooks/useQuotationBuilder';
 import { QuotationItem } from '../../types/quotation';
 import { formatCurrency } from '../../utils/quotationHelpers';
+import QuotationPreview from './QuotationPreview';
+
+// Helper function to get computed CSS variable values
+const getCSSVariableValue = (variable: string): string => {
+  if (typeof window !== 'undefined') {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue(variable)
+      .trim();
+  }
+  return '';
+};
+
+// Helper function to convert HSL values to hex
+const hslToHex = (hsl: string): string => {
+  if (!hsl || hsl === '') return '#000000';
+  
+  // Parse HSL values
+  const values = hsl.match(/\d+/g);
+  if (!values || values.length < 3) return '#000000';
+  
+  const h = parseInt(values[0]) / 360;
+  const s = parseInt(values[1]) / 100;
+  const l = parseInt(values[2]) / 100;
+  
+  const hue2rgb = (p: number, q: number, t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+  };
+  
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  
+  const r = hue2rgb(p, q, h + 1/3);
+  const g = hue2rgb(p, q, h);
+  const b = hue2rgb(p, q, h - 1/3);
+  
+  const toHex = (c: number) => {
+    const hex = Math.round(c * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
 
 interface QuotationBuilderProps {
   onSave?: () => void;
   onPreview?: () => void;
   onExport?: () => void;
+  existingQuotations?: Array<{ quotationNumber: string }>;
 }
 
 const QuotationBuilder: React.FC<QuotationBuilderProps> = ({ 
   onSave, 
   onPreview, 
-  onExport 
+  onExport,
+  existingQuotations = []
 }) => {
   const {
     formData,
@@ -49,8 +101,70 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
     updateCondition,
     removeCondition,
     validateForm,
-    clearDraft
-  } = useQuotationBuilder();
+    clearDraft,
+    getPreviewQuotation,
+    generateNewQuotationNumber
+  } = useQuotationBuilder(existingQuotations);
+
+  // Get initial theme colors for display in color pickers
+  const getInitialColors = () => {
+    const primaryHSL = getCSSVariableValue('--primary');
+    const cardHSL = getCSSVariableValue('--card');
+    const foregroundHSL = getCSSVariableValue('--foreground');
+    
+    return {
+      headerColor: primaryHSL ? hslToHex(primaryHSL) : '#27c862',
+      tableHeaderColor: cardHSL ? hslToHex(cardHSL) : '#f0f0f0',
+      headerTextColor: '#ffffff',
+      tableTextColor: foregroundHSL ? hslToHex(foregroundHSL) : '#000000',
+      signatureStampBgColor: '#f3f4f6'
+    };
+  };
+
+  const [showThemeSettings, setShowThemeSettings] = useState(false);
+  const [showQuotationDetails, setShowQuotationDetails] = useState(true);
+  const [showCompanyInfo, setShowCompanyInfo] = useState(true);
+  const [showClientInfo, setShowClientInfo] = useState(true);
+  const [showItems, setShowItems] = useState(true);
+  const [showTerms, setShowTerms] = useState(true);
+  const [showNotes, setShowNotes] = useState(true);
+  const [showTotals, setShowTotals] = useState(true);
+
+  // Handle company signature upload
+  const handleCompanySignatureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        updateNestedField('company', 'signature', result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle client signature upload
+  const handleClientSignatureUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        updateNestedField('client', 'signature', result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Remove company signature
+  const removeCompanySignature = () => {
+    updateNestedField('company', 'signature', '');
+  };
+
+  // Remove client signature
+  const removeClientSignature = () => {
+    updateNestedField('client', 'signature', '');
+  };
 
   const handleSave = () => {
     if (validateForm()) {
@@ -71,7 +185,7 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
   };
 
   return (
-    <div className="w-full p-6 space-y-6">
+    <div className="w-full p-6 space-y-6 h-full overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -106,25 +220,44 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        {/* Left Column */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Left Column - Quotation Builder */}
         <div className="space-y-6">
           {/* Quotation Details */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
               <CardTitle>Quotation Details</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowQuotationDetails(!showQuotationDetails)}
+              >
+                {showQuotationDetails ? 'Hide' : 'Show'}
+              </Button>
             </CardHeader>
+            {showQuotationDetails && (
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="quotationNumber">Quotation Number</Label>
-                  <Input
-                    id="quotationNumber"
-                    placeholder="Auto-generated"
-                    value={formData.quotationNumber}
-                    onChange={(e) => updateField('quotationNumber', e.target.value)}
-                    className={errors.quotationNumber ? 'border-red-500' : ''}
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="quotationNumber"
+                      placeholder="Auto-generated"
+                      value={formData.quotationNumber}
+                      onChange={(e) => updateField('quotationNumber', e.target.value)}
+                      className={errors.quotationNumber ? 'border-red-500' : ''}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={generateNewQuotationNumber}
+                      className="shrink-0"
+                    >
+                      Generate
+                    </Button>
+                  </div>
                   {errors.quotationNumber && (
                     <p className="text-sm text-red-500 mt-1">{errors.quotationNumber}</p>
                   )}
@@ -189,13 +322,22 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 )}
               </div>
             </CardContent>
+            )}
           </Card>
 
           {/* Company Information */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
               <CardTitle>Company Information</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowCompanyInfo(!showCompanyInfo)}
+              >
+                {showCompanyInfo ? 'Hide' : 'Show'}
+              </Button>
             </CardHeader>
+            {showCompanyInfo && (
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="companyName">Company Name</Label>
@@ -262,13 +404,225 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 </div>
               </div>
             </CardContent>
+            )}
+          </Card>
+
+          {/* Theme Settings */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="w-4 h-4" />
+                Theme Settings
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowThemeSettings(!showThemeSettings)}
+              >
+                {showThemeSettings ? 'Hide' : 'Show'}
+              </Button>
+            </CardHeader>
+            {showThemeSettings && (
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="header-color" className="text-sm">Header Color</Label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="header-color"
+                        type="color"
+                        value={formData.theme.headerColor}
+                        onChange={(e) => updateNestedField('theme', 'headerColor', e.target.value)}
+                        className="w-12 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
+                      />
+                      <Input
+                        value={formData.theme.headerColor}
+                        onChange={(e) => updateNestedField('theme', 'headerColor', e.target.value)}
+                        className="flex-1 text-xs"
+                        placeholder="#27c862"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="header-text-color" className="text-sm">Header Text Color</Label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="header-text-color"
+                        type="color"
+                        value={formData.theme.headerTextColor}
+                        onChange={(e) => updateNestedField('theme', 'headerTextColor', e.target.value)}
+                        className="w-12 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
+                      />
+                      <Input
+                        value={formData.theme.headerTextColor}
+                        onChange={(e) => updateNestedField('theme', 'headerTextColor', e.target.value)}
+                        className="flex-1 text-xs"
+                        placeholder="#ffffff"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="table-header-color" className="text-sm">Table Header Color</Label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="table-header-color"
+                        type="color"
+                        value={formData.theme.tableHeaderColor}
+                        onChange={(e) => updateNestedField('theme', 'tableHeaderColor', e.target.value)}
+                        className="w-12 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
+                      />
+                      <Input
+                        value={formData.theme.tableHeaderColor}
+                        onChange={(e) => updateNestedField('theme', 'tableHeaderColor', e.target.value)}
+                        className="flex-1 text-xs"
+                        placeholder="#f0f0f0"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="table-text-color" className="text-sm">Table Text Color</Label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="table-text-color"
+                        type="color"
+                        value={formData.theme.tableTextColor}
+                        onChange={(e) => updateNestedField('theme', 'tableTextColor', e.target.value)}
+                        className="w-12 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
+                      />
+                      <Input
+                        value={formData.theme.tableTextColor}
+                        onChange={(e) => updateNestedField('theme', 'tableTextColor', e.target.value)}
+                        className="flex-1 text-xs"
+                        placeholder="#000000"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="signature-bg-color" className="text-sm">Signature Background</Label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="signature-bg-color"
+                        type="color"
+                        value={formData.theme.signatureStampBgColor}
+                        onChange={(e) => updateNestedField('theme', 'signatureStampBgColor', e.target.value)}
+                        className="w-12 h-8 border border-gray-300 rounded cursor-pointer hover:border-primary transition-colors"
+                      />
+                      <Input
+                        value={formData.theme.signatureStampBgColor}
+                        onChange={(e) => updateNestedField('theme', 'signatureStampBgColor', e.target.value)}
+                        className="flex-1 text-xs"
+                        placeholder="#f3f4f6"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-end">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const defaultColors = getInitialColors();
+                        updateNestedField('theme', 'headerColor', defaultColors.headerColor);
+                        updateNestedField('theme', 'headerTextColor', defaultColors.headerTextColor);
+                        updateNestedField('theme', 'tableHeaderColor', defaultColors.tableHeaderColor);
+                        updateNestedField('theme', 'tableTextColor', defaultColors.tableTextColor);
+                        updateNestedField('theme', 'signatureStampBgColor', defaultColors.signatureStampBgColor);
+                      }}
+                    >
+                      Reset to Default
+                    </Button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="text-sm">Company Signature</Label>
+                    <div className="border border-gray-300 h-24 rounded flex items-center justify-center relative overflow-hidden">
+                      {formData.company.signature ? (
+                        <>
+                          <img 
+                            src={formData.company.signature} 
+                            alt="Company Signature" 
+                            className="max-h-full max-w-full object-contain"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={removeCompanySignature}
+                            className="absolute top-1 right-1 h-6 w-6 p-0 z-10"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </>
+                      ) : (
+                        <div className="text-center text-gray-500">
+                          <Upload className="h-6 w-6 mx-auto mb-2" />
+                          <p className="text-xs">Upload Company Signature</p>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCompanySignatureUpload}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="text-sm">Client Signature</Label>
+                    <div className="border border-gray-300 h-24 rounded flex items-center justify-center relative overflow-hidden">
+                      {formData.client.signature ? (
+                        <>
+                          <img 
+                            src={formData.client.signature} 
+                            alt="Client Signature" 
+                            className="max-h-full max-w-full object-contain"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={removeClientSignature}
+                            className="absolute top-1 right-1 h-6 w-6 p-0 z-10"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </>
+                      ) : (
+                        <div className="text-center text-gray-500">
+                          <Upload className="h-6 w-6 mx-auto mb-2" />
+                          <p className="text-xs">Upload Client Signature</p>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleClientSignatureUpload}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            )}
           </Card>
 
           {/* Client Information */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
               <CardTitle>Client Information</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowClientInfo(!showClientInfo)}
+              >
+                {showClientInfo ? 'Hide' : 'Show'}
+              </Button>
             </CardHeader>
+            {showClientInfo && (
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="clientName">Client Name</Label>
@@ -335,27 +689,35 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 </div>
               </div>
             </CardContent>
+            )}
           </Card>
-        </div>
 
-        {/* Right Column */}
-        <div className="space-y-6">
           {/* Quotation Items */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
               <CardTitle>Quotation Items</CardTitle>
-              <Button onClick={addItem} size="sm">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Item
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={addItem} size="sm">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Item
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowItems(!showItems)}
+                >
+                  {showItems ? 'Hide' : 'Show'}
+                </Button>
+              </div>
             </CardHeader>
+            {showItems && (
             <CardContent>
               <div className="space-y-4">
                 {formData.items.map((item, index) => (
                   <div key={item.id} className="grid grid-cols-12 gap-2 items-end p-4 border rounded-lg">
                     <div className="col-span-1">
                       <Label>#</Label>
-                      <div className="h-10 flex items-center justify-center font-medium text-sm bg-muted rounded">
+                      <div className="h-10 flex items-center justify-center font-medium text-sm bg-muted rounded w-8">
                         {index + 1}
                       </div>
                     </div>
@@ -446,13 +808,22 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 )}
               </div>
             </CardContent>
+            )}
           </Card>
 
           {/* Terms & Conditions */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
               <CardTitle>Terms & Conditions</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTerms(!showTerms)}
+              >
+                {showTerms ? 'Hide' : 'Show'}
+              </Button>
             </CardHeader>
+            {showTerms && (
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -534,13 +905,22 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 </div>
               </div>
             </CardContent>
+            )}
           </Card>
 
           {/* Notes */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
               <CardTitle>Notes</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowNotes(!showNotes)}
+              >
+                {showNotes ? 'Hide' : 'Show'}
+              </Button>
             </CardHeader>
+            {showNotes && (
             <CardContent>
               <Textarea
                 placeholder="Additional notes or comments..."
@@ -549,13 +929,22 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 onChange={(e) => updateField('notes', e.target.value)}
               />
             </CardContent>
+            )}
           </Card>
 
           {/* Totals Summary */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between pb-6">
               <CardTitle>Totals Summary</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTotals(!showTotals)}
+              >
+                {showTotals ? 'Hide' : 'Show'}
+              </Button>
             </CardHeader>
+            {showTotals && (
             <CardContent className="space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
@@ -569,6 +958,41 @@ const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 <span>Total:</span>
                 <span>{formatCurrency(totals.total, formData.currency)}</span>
               </div>
+            </CardContent>
+            )}
+          </Card>
+        </div>
+
+        {/* Right Column - Live Preview */}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Live Preview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {formData.items.length > 0 && formData.company.name && formData.client.name ? (
+                <div className="scale-75 origin-top-left w-[133.33%] h-[133.33%] overflow-auto">
+                  <QuotationPreview
+                    quotation={getPreviewQuotation()}
+                    onExport={handleExport}
+                    onSend={() => console.log('Send functionality coming soon')}
+                    onAccept={() => console.log('Accept functionality coming soon')}
+                    onReject={() => console.log('Reject functionality coming soon')}
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-96 text-muted-foreground">
+                  <div className="text-center">
+                    <p className="text-lg mb-2">No preview available</p>
+                    <p className="text-sm">Fill in the required information to see the preview:</p>
+                    <ul className="text-sm text-left mt-4">
+                      {!formData.company.name && <li>• Company name</li>}
+                      {!formData.client.name && <li>• Client name</li>}
+                      {formData.items.length === 0 && <li>• At least one item</li>}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
