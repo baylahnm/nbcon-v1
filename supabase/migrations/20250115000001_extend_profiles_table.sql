@@ -1,6 +1,23 @@
 -- Extend profiles table to support comprehensive profile data
 -- This migration adds fields needed for the functional profile editing system
 
+-- First create the profiles table if it doesn't exist
+CREATE TABLE IF NOT EXISTS public.profiles (
+  user_id UUID NOT NULL PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  first_name TEXT,
+  last_name TEXT,
+  bio TEXT,
+  location_city TEXT,
+  location_region TEXT,
+  avatar_url TEXT,
+  role TEXT DEFAULT 'engineer',
+  preferred_language TEXT DEFAULT 'en',
+  theme_preference TEXT DEFAULT 'system',
+  rtl_enabled BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
 -- Add new columns to profiles table
 ALTER TABLE public.profiles 
 ADD COLUMN IF NOT EXISTS date_of_birth DATE,
@@ -119,3 +136,11 @@ COMMENT ON COLUMN public.profiles.show_email IS 'Whether to show email publicly'
 COMMENT ON COLUMN public.profiles.job_notifications IS 'Whether to receive job notifications';
 COMMENT ON COLUMN public.profiles.marketing_emails IS 'Whether to receive marketing emails';
 COMMENT ON COLUMN public.profiles.profile_image IS 'URL to profile image in storage';
+
+-- Enable Row Level Security
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for profiles
+CREATE POLICY "Users can view all profiles" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = user_id);

@@ -10,7 +10,7 @@ CREATE TYPE job_status AS ENUM ('draft', 'open', 'quoted', 'in_progress', 'compl
 CREATE TYPE job_priority AS ENUM ('low', 'normal', 'high', 'emergency');
 
 -- Create profiles table (extends Supabase auth.users)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
   role user_role NOT NULL,
@@ -134,50 +134,67 @@ ALTER TABLE public.verifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.jobs ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for profiles
+DROP POLICY IF EXISTS "Users can view all profiles" ON public.profiles;
 CREATE POLICY "Users can view all profiles" ON public.profiles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
 CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
 CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- RLS Policies for engineer_profiles
+DROP POLICY IF EXISTS "Anyone can view engineer profiles" ON public.engineer_profiles;
 CREATE POLICY "Anyone can view engineer profiles" ON public.engineer_profiles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Engineers can update their own profile" ON public.engineer_profiles;
 CREATE POLICY "Engineers can update their own profile" ON public.engineer_profiles FOR UPDATE USING (
   auth.uid() = user_id
 );
+DROP POLICY IF EXISTS "Engineers can insert their own profile" ON public.engineer_profiles;
 CREATE POLICY "Engineers can insert their own profile" ON public.engineer_profiles FOR INSERT WITH CHECK (
   auth.uid() = user_id
 );
 
 -- RLS Policies for client_profiles  
+DROP POLICY IF EXISTS "Users can view client profiles" ON public.client_profiles;
 CREATE POLICY "Users can view client profiles" ON public.client_profiles FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Clients can update their own profile" ON public.client_profiles;
 CREATE POLICY "Clients can update their own profile" ON public.client_profiles FOR UPDATE USING (
   auth.uid() = user_id
 );
+DROP POLICY IF EXISTS "Clients can insert their own profile" ON public.client_profiles;
 CREATE POLICY "Clients can insert their own profile" ON public.client_profiles FOR INSERT WITH CHECK (
   auth.uid() = user_id
 );
 
 -- RLS Policies for companies
+DROP POLICY IF EXISTS "Anyone can view companies" ON public.companies;
 CREATE POLICY "Anyone can view companies" ON public.companies FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Authenticated users can insert companies" ON public.companies;
 CREATE POLICY "Authenticated users can insert companies" ON public.companies FOR INSERT TO authenticated WITH CHECK (true);
+DROP POLICY IF EXISTS "Company members can update companies" ON public.companies;
 CREATE POLICY "Company members can update companies" ON public.companies FOR UPDATE TO authenticated USING (true);
 
 -- RLS Policies for verifications
+DROP POLICY IF EXISTS "Users can view their own verifications" ON public.verifications;
 CREATE POLICY "Users can view their own verifications" ON public.verifications FOR SELECT USING (
   auth.uid() = user_id
 );
+DROP POLICY IF EXISTS "Users can insert their own verifications" ON public.verifications;
 CREATE POLICY "Users can insert their own verifications" ON public.verifications FOR INSERT WITH CHECK (
   auth.uid() = user_id
 );
 
 -- RLS Policies for jobs
+DROP POLICY IF EXISTS "Anyone can view open jobs" ON public.jobs;
 CREATE POLICY "Anyone can view open jobs" ON public.jobs FOR SELECT USING (
   status IN ('open', 'quoted') OR 
   auth.uid() = client_id OR 
   auth.uid() = assigned_engineer_id
 );
+DROP POLICY IF EXISTS "Clients can create jobs" ON public.jobs;
 CREATE POLICY "Clients can create jobs" ON public.jobs FOR INSERT WITH CHECK (
   auth.uid() = client_id
 );
+DROP POLICY IF EXISTS "Job owners can update jobs" ON public.jobs;
 CREATE POLICY "Job owners can update jobs" ON public.jobs FOR UPDATE USING (
   auth.uid() = client_id OR auth.uid() = assigned_engineer_id
 );

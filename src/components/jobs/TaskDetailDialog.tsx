@@ -331,7 +331,7 @@ export function TaskDetailDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="fixed inset-0 sm:inset-auto sm:right-0 sm:top-0 sm:left-auto h-svh w-screen sm:w-[50vw] max-w-none translate-x-0 translate-y-0 grid overflow-y-auto rounded-none sm:rounded-lg p-4 sm:p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-0 data-[state=closed]:slide-out-to-bottom-0 sm:data-[state=open]:fade-in-0 sm:data-[state=closed]:fade-out-0 sm:data-[state=open]:zoom-in-95 sm:data-[state=closed]:zoom-out-95 duration-200">
+        <DialogContent className="fixed inset-0 sm:inset-auto sm:right-0 sm:top-0 sm:left-auto h-full w-screen sm:w-[50vw] max-w-none translate-x-0 translate-y-0 grid overflow-y-auto rounded-none sm:rounded-lg p-4 sm:p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-0 data-[state=closed]:slide-out-to-bottom-0 sm:data-[state=open]:fade-in-0 sm:data-[state=closed]:fade-out-0 sm:data-[state=open]:zoom-in-95 sm:data-[state=closed]:zoom-out-95 duration-200">
           <DialogHeader>
             <div className="flex items-center justify-between">
               <DialogTitle className="flex items-center gap-2">
