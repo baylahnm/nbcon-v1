@@ -1,27 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { 
-  Shield,
-  ArrowRight,
-  ArrowLeft,
-  RefreshCw,
-  CheckCircle,
+  ArrowRight, 
+  Shield, 
+  Clock, 
+  Mail, 
   Phone,
-  Mail,
-  Clock,
-  AlertCircle
+  CheckCircle,
+  RefreshCw,
+  Languages
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-
-interface VerifyOTPContentProps {
-  user: Partial<AuthenticatedUser>;
-  otpMethod: 'sms' | 'email';
-  onOTPVerified: (user: Partial<AuthenticatedUser>) => void;
-  onBack: () => void;
-  onResendOTP: () => void;
-}
+import { Label } from "@/components/ui/label";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { useThemeStore } from "@/stores/theme";
 
 interface AuthenticatedUser {
   id: string;
@@ -37,336 +32,276 @@ interface AuthenticatedUser {
   avatar?: string;
 }
 
-export function VerifyOTPContent({ user, otpMethod, onOTPVerified, onBack, onResendOTP }: VerifyOTPContentProps) {
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+interface VerifyOTPContentProps {
+  user: Partial<AuthenticatedUser>;
+  otpMethod: 'sms' | 'email';
+  onOTPVerified: (user: Partial<AuthenticatedUser>) => void;
+  onBack: () => void;
+  onResendOTP: () => void;
+}
+
+export default function VerifyOTPContent({ 
+  user, 
+  otpMethod, 
+  onOTPVerified, 
+  onBack, 
+  onResendOTP 
+}: VerifyOTPContentProps) {
+  const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
-  const [canResend, setCanResend] = useState(false);
-  const [language] = useState<'ar' | 'en'>(user.language || 'en');
-  
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [language, setLanguage] = useState<'ar' | 'en'>(user.language || 'en');
+  const { toast } = useToast();
+  const themeStore = useThemeStore();
 
-  // Countdown timer
+  // Countdown timer for resend button
   useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
       return () => clearTimeout(timer);
-    } else {
-      setCanResend(true);
     }
-  }, [timeLeft]);
+  }, [resendCooldown]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) return; // Prevent multiple characters
-    
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    setError(''); // Clear error when user types
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    // Auto-submit when all fields are filled
-    if (newOtp.every(digit => digit !== '') && newOtp.join('').length === 6) {
-      handleVerifyOTP(newOtp.join(''));
-    }
-  };
-
-  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      // Focus previous input on backspace if current is empty
-      inputRefs.current[index - 1]?.focus();
-    } else if (e.key === 'ArrowLeft' && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    } else if (e.key === 'ArrowRight' && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handlePaste = (e: React.ClipboardEvent) => {
+  const handleOTPSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
     
-    if (pastedData.length === 6) {
-      const newOtp = pastedData.split('');
-      setOtp(newOtp);
-      setError('');
-      
-      // Focus last input
-      inputRefs.current[5]?.focus();
-      
-      // Auto-submit
-      handleVerifyOTP(pastedData);
-    }
-  };
-
-  const handleVerifyOTP = async (otpCode: string = otp.join('')) => {
-    if (otpCode.length !== 6) {
-      setError(language === 'ar' ? 'يرجى إدخال رمز التحقق المكون من 6 أرقام' : 'Please enter the 6-digit verification code');
+    if (!otp.trim() || otp.length < 6) {
+      toast({
+        title: language === 'ar' ? 'خطأ' : 'Error',
+        description: language === 'ar' ? 'يرجى إدخال رمز التحقق الصحيح' : 'Please enter a valid verification code',
+        variant: "destructive",
+      });
       return;
     }
 
     setIsLoading(true);
-    setError('');
 
     try {
-      // Simulate API verification
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock verification - in real app, verify with backend
-      if (otpCode === '123456' || otpCode === '000000') { // Mock valid codes
+      // Verify OTP with Supabase
+      const { data, error } = await supabase.auth.verifyOtp({
+        token: otp,
+        type: 'email',
+        email: user.email
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.user) {
+        // OTP verified successfully
         const verifiedUser = {
           ...user,
+          id: data.user.id,
+          email: data.user.email || user.email,
           isVerified: true
         };
+
+        toast({
+          title: language === 'ar' ? 'تم التحقق بنجاح' : 'Verification Successful',
+          description: language === 'ar' ? 'تم التحقق من حسابك بنجاح' : 'Your account has been verified successfully',
+        });
+
         onOTPVerified(verifiedUser);
-      } else {
-        setError(language === 'ar' ? 'رمز التحقق غير صحيح' : 'Invalid verification code');
-        // Clear OTP on error
-        setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
       }
-    } catch (error) {
-      setError(language === 'ar' ? 'حدث خطأ في التحقق' : 'Verification failed. Please try again.');
+    } catch (error: any) {
+      console.error('OTP verification error:', error);
+      toast({
+        title: language === 'ar' ? 'خطأ في التحقق' : 'Verification Failed',
+        description: error.message || (language === 'ar' ? 'رمز التحقق غير صحيح' : 'Invalid verification code'),
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleResendOTP = async () => {
-    if (!canResend) return;
+  const handleResend = async () => {
+    if (resendCooldown > 0) return;
     
-    setIsLoading(true);
-    try {
-      // Simulate resend API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      onResendOTP();
-      setTimeLeft(300); // Reset timer
-      setCanResend(false);
-      setOtp(['', '', '', '', '', '']); // Clear current OTP
-      setError('');
-      inputRefs.current[0]?.focus();
-    } catch (error) {
-      setError(language === 'ar' ? 'فشل في إعادة الإرسال' : 'Failed to resend code');
-    } finally {
-      setIsLoading(false);
-    }
+    setResendCooldown(60); // 60 seconds cooldown
+    onResendOTP();
+    
+    toast({
+      title: language === 'ar' ? 'تم إرسال الرمز' : 'Code Sent',
+      description: language === 'ar' 
+        ? 'تم إرسال رمز تحقق جديد إلى ' + (otpMethod === 'email' ? user.email : user.phone)
+        : `New verification code sent to ${otpMethod === 'email' ? user.email : user.phone}`,
+    });
   };
 
-  const getMaskedContact = () => {
-    if (otpMethod === 'sms' && user.phone) {
-      // Mask phone number: +966501234567 -> +966****4567
-      const phone = user.phone;
-      if (phone.length > 4) {
-        return phone.slice(0, -4).replace(/\d/g, '*') + phone.slice(-4);
-      }
-      return phone;
-    } else if (otpMethod === 'email' && user.email) {
-      // Mask email: john@example.com -> j***@example.com
-      const [local, domain] = user.email.split('@');
-      if (local.length > 1) {
-        return local[0] + '*'.repeat(local.length - 1) + '@' + domain;
-      }
-      return user.email;
-    }
-    return '';
-  };
+  const isRTL = language === 'ar';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Language Toggle */}
-        <div className="flex justify-center mb-6">
-          <div className="flex items-center gap-2 bg-card border border-sidebar-border rounded-lg p-1">
+    <div className="min-h-screen bg-background flex">
+      {/* Left Side - OTP Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-md">
+          {/* Back Button */}
+          <div className="flex justify-start mb-4">
             <Button
-              variant={language === 'en' ? 'default' : 'ghost'}
+              variant="ghost"
               size="sm"
-              className="text-sm"
+              onClick={onBack}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
             >
-              English
-            </Button>
-            <Button
-              variant={language === 'ar' ? 'default' : 'ghost'}
-              size="sm"
-              className="text-sm"
-            >
-              العربية
+              <ArrowRight className="w-4 h-4 rotate-180" />
+              {language === 'ar' ? 'رجوع' : 'Back'}
             </Button>
           </div>
-        </div>
 
-        {/* Main OTP Card */}
-        <Card className="shadow-xl border-border/20">
-          <CardHeader className="text-center pb-4">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
-              <Shield className="w-8 h-8 text-primary-foreground" />
-            </div>
-            <CardTitle className="text-2xl text-foreground">
-              {language === 'ar' ? 'تحقق من هويتك' : 'Verify Your Identity'}
-            </CardTitle>
-            <p className="text-muted-foreground">
-              {language === 'ar' 
-                ? `تم إرسال رمز التحقق إلى ${getMaskedContact()}`
-                : `Verification code sent to ${getMaskedContact()}`
-              }
-            </p>
-            
-            {/* Method indicator */}
-            <div className="flex justify-center mt-3">
-              <Badge variant="secondary" className="flex items-center gap-2">
-                {otpMethod === 'sms' ? (
-                  <>
-                    <Phone className="w-3 h-3" />
-                    {language === 'ar' ? 'رسالة نصية' : 'SMS'}
-                  </>
-                ) : (
-                  <>
-                    <Mail className="w-3 h-3" />
-                    {language === 'ar' ? 'بريد إلكتروني' : 'Email'}
-                  </>
-                )}
-              </Badge>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <div className="space-y-6">
-              {/* OTP Input Fields */}
-              <div className="space-y-2">
-                <div className="text-center text-sm text-muted-foreground mb-4">
-                  {language === 'ar' ? 'أدخل الرمز المكون من 6 أرقام' : 'Enter the 6-digit code'}
-                </div>
-                
-                <div 
-                  className="flex justify-center gap-2"
-                  dir="ltr" // Always LTR for OTP inputs
-                >
-                  {otp.map((digit, index) => (
-                    <Input
-                      key={index}
-                      ref={(el) => inputRefs.current[index] = el}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      onChange={(e) => handleOtpChange(index, e.target.value.replace(/\D/g, ''))}
-                      onKeyDown={(e) => handleKeyDown(index, e)}
-                      onPaste={index === 0 ? handlePaste : undefined}
-                      className="w-12 h-12 text-center text-lg font-medium bg-input-background border-border"
-                      autoComplete="one-time-code"
-                    />
-                  ))}
-                </div>
-                
-                {error && (
-                  <div className="flex items-center gap-2 text-sm text-destructive justify-center mt-3">
-                    <AlertCircle className="w-4 h-4" />
-                    {error}
-                  </div>
-                )}
-              </div>
-
-              {/* Timer and Resend */}
-              <div className="text-center space-y-3">
-                {timeLeft > 0 ? (
-                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>
-                      {language === 'ar' 
-                        ? `إعادة الإرسال خلال ${formatTime(timeLeft)}`
-                        : `Resend code in ${formatTime(timeLeft)}`
-                      }
-                    </span>
-                  </div>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    onClick={handleResendOTP}
-                    disabled={isLoading}
-                    className="flex items-center gap-2"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                    {language === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code'}
-                  </Button>
-                )}
-              </div>
-
-              {/* Verify Button */}
-              <Button 
-                onClick={() => handleVerifyOTP()}
-                disabled={isLoading || otp.some(digit => digit === '')}
-                className="w-full"
+          {/* Language Toggle */}
+          <div className="flex justify-center mb-6">
+            <div className="flex items-center gap-2 bg-card border border-sidebar-border rounded-lg p-1">
+              <Button
+                variant={language === 'en' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setLanguage('en')}
+                className="text-sm"
               >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    {language === 'ar' ? 'جاري التحقق...' : 'Verifying...'}
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4" />
-                    {language === 'ar' ? 'تحقق من الرمز' : 'Verify Code'}
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                )}
+                English
               </Button>
-
-              {/* Back Button */}
-              <Button 
-                variant="outline" 
-                onClick={onBack}
-                className="w-full"
-                disabled={isLoading}
+              <Button
+                variant={language === 'ar' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setLanguage('ar')}
+                className="text-sm"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                {language === 'ar' ? 'رجوع' : 'Back'}
+                العربية
               </Button>
             </div>
+          </div>
 
-            {/* Security Notice */}
-            <div className="mt-6 pt-4 border-t border-border">
-              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                <Shield className="w-4 h-4" />
+          {/* Main OTP Card */}
+          <Card className="shadow-xl border-border/20">
+            <CardHeader className="text-center pb-4">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+                <Shield className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <CardTitle className="text-2xl text-foreground">
+                {language === 'ar' ? 'التحقق من الحساب' : 'Verify Your Account'}
+              </CardTitle>
+              <p className="text-muted-foreground">
+                {language === 'ar' 
+                  ? 'أدخل رمز التحقق المرسل إلى حسابك'
+                  : 'Enter the verification code sent to your account'
+                }
+              </p>
+            </CardHeader>
+
+            <CardContent>
+              {/* Contact Info */}
+              <div className={`flex items-center justify-center gap-2 text-sm text-muted-foreground mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                {otpMethod === 'email' ? (
+                  <Mail className="w-4 h-4" />
+                ) : (
+                  <Phone className="w-4 h-4" />
+                )}
                 <span>
-                  {language === 'ar' 
-                    ? 'رمز التحقق صالح لمدة 5 دقائق'
-                    : 'Verification code expires in 5 minutes'
-                  }
+                  {otpMethod === 'email' ? user.email : user.phone}
                 </span>
               </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Help Text */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            {language === 'ar' 
-              ? 'لم تستلم الرمز؟ تحقق من مجلد الرسائل غير المرغوب فيها أو جرب طريقة أخرى'
-              : 'Didn\'t receive the code? Check your spam folder or try a different method'
-            }
-          </p>
+              <form onSubmit={handleOTPSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label className={`text-sm font-medium ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {language === 'ar' ? 'رمز التحقق' : 'Verification Code'}
+                  </Label>
+                  
+                  <div className="flex justify-center">
+                    <InputOTP
+                      maxLength={6}
+                      value={otp}
+                      onChange={(value) => setOtp(value)}
+                      onComplete={(value) => {
+                        setOtp(value);
+                        if (value.length === 6) {
+                          handleOTPSubmit({ preventDefault: () => {} } as React.FormEvent);
+                        }
+                      }}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} className="bg-background" />
+                        <InputOTPSlot index={1} className="bg-background" />
+                        <InputOTPSlot index={2} className="bg-background" />
+                        <InputOTPSlot index={3} className="bg-background" />
+                        <InputOTPSlot index={4} className="bg-background" />
+                        <InputOTPSlot index={5} className="bg-background" />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full py-3"
+                  disabled={isLoading || otp.length < 6}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>{language === 'ar' ? 'جاري التحقق...' : 'Verifying...'}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>{language === 'ar' ? 'تحقق من الرمز' : 'Verify Code'}</span>
+                    </div>
+                  )}
+                </Button>
+              </form>
+
+              <div className="text-center space-y-4 mt-6">
+                <div className="text-sm text-muted-foreground">
+                  {language === 'ar' ? 'لم تستلم الرمز؟' : "Didn't receive the code?"}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  onClick={handleResend}
+                  disabled={resendCooldown > 0}
+                  className="w-full"
+                >
+                  {resendCooldown > 0 ? (
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      <span>
+                        {language === 'ar' 
+                          ? `إعادة الإرسال خلال ${resendCooldown}ث`
+                          : `Resend in ${resendCooldown}s`
+                        }
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="w-4 h-4" />
+                      <span>{language === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code'}</span>
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+      </div>
 
-        {/* Debug Info (Remove in production) */}
-        <div className="mt-4 p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground text-center">
-          <p className="font-medium mb-1">
-            {language === 'ar' ? 'للاختبار استخدم:' : 'For testing, use:'}
-          </p>
-          <p>123456 {language === 'ar' ? '(صحيح)' : '(valid)'} • 000000 {language === 'ar' ? '(صحيح)' : '(valid)'}</p>
+      {/* Right Side - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary/80 items-center justify-center p-8">
+        <div className="text-center space-y-6 text-primary-foreground">
+          <div className="w-24 h-24 mx-auto bg-primary-foreground/10 rounded-full flex items-center justify-center">
+            <Shield className="w-12 h-12 text-primary-foreground" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold mb-2">
+              {language === 'ar' ? 'nbcon' : 'nbcon'}
+            </h2>
+            <p className="text-lg opacity-90">
+              {language === 'ar' 
+                ? 'منصة الهندسة الاحترافية في المملكة العربية السعودية'
+                : 'Saudi Arabia\'s Professional Engineering Marketplace'
+              }
+            </p>
+          </div>
         </div>
       </div>
     </div>

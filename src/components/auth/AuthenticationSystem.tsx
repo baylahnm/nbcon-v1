@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContent } from "./AuthContent";
-import { VerifyOTPContent } from "./VerifyOTPContent";
+import VerifyOTPContent from "./VerifyOTPContent";
 import { RoleSelection } from "./RoleSelection";
 import { ProfileSetup } from "./ProfileSetup";
 import { supabase } from "@/integrations/supabase/client";
@@ -100,19 +100,77 @@ export function AuthenticationSystem({ onAuthenticationComplete, onBackToHome }:
         .eq('user_id', user.id)
         .single();
 
-      // If profile exists, user is returning - go to dashboard
-      // If profile doesn't exist or error, user is new - go to registration
       if (existingProfile && !error) {
-        // Existing user - complete authentication and route to dashboard
+        // Existing user - update role if it changed and complete authentication
+        if (existingProfile.role !== user.role) {
+          await supabase
+            .from('profiles')
+            .update({ role: user.role })
+            .eq('user_id', user.id);
+        }
         onAuthenticationComplete(user);
       } else {
-        // New user - navigate to registration page
-        navigate(`/auth/registration/${user.role}`, { state: { user }, replace: true });
+        // New user - create profile first
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              user_id: user.id,
+              role: user.role,
+              first_name: user.name.split(' ')[0],
+              last_name: user.name.split(' ').slice(1).join(' ') || '',
+              email: user.email,
+              phone: user.phone,
+              location_city: user.location.split(',')[0]?.trim() || 'Riyadh',
+              location_region: user.location.split(',').slice(1).join(',').trim() || 'Saudi Arabia',
+              preferred_language: user.language,
+              theme_preference: 'light',
+              rtl_enabled: user.language === 'ar',
+              avatar_url: user.avatar
+            }
+          ]);
+
+        if (insertError) {
+          console.error('Error creating user profile:', insertError);
+          // Navigate to registration page as fallback
+          navigate(`/auth/registration/${user.role}`, { state: { user }, replace: true });
+        } else {
+          // Profile created successfully - complete authentication
+          onAuthenticationComplete(user);
+        }
       }
     } catch (error) {
-      console.error('Error checking user profile:', error);
-      // On error, default to registration page for safety
-      navigate(`/auth/registration/${user.role}`, { state: { user }, replace: true });
+      console.error('Error in role selection:', error);
+      // On error, try to create profile or navigate to registration
+      try {
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              user_id: user.id,
+              role: user.role,
+              first_name: user.name.split(' ')[0],
+              last_name: user.name.split(' ').slice(1).join(' ') || '',
+              email: user.email,
+              phone: user.phone,
+              location_city: user.location.split(',')[0]?.trim() || 'Riyadh',
+              location_region: user.location.split(',').slice(1).join(',').trim() || 'Saudi Arabia',
+              preferred_language: user.language,
+              theme_preference: 'light',
+              rtl_enabled: user.language === 'ar',
+              avatar_url: user.avatar
+            }
+          ]);
+
+        if (!insertError) {
+          onAuthenticationComplete(user);
+        } else {
+          navigate(`/auth/registration/${user.role}`, { state: { user }, replace: true });
+        }
+      } catch (finalError) {
+        console.error('Final error in role selection:', finalError);
+        navigate(`/auth/registration/${user.role}`, { state: { user }, replace: true });
+      }
     }
   };
 
@@ -122,10 +180,24 @@ export function AuthenticationSystem({ onAuthenticationComplete, onBackToHome }:
     onAuthenticationComplete(user);
   };
 
-  const handleResendOTP = () => {
-    // In a real app, this would trigger an API call to resend OTP
-    console.log('Resending OTP to:', currentUser?.email || currentUser?.phone);
-    // Simulate resend success
+  const handleResendOTP = async () => {
+    if (!currentUser) return;
+    
+    try {
+      // Resend OTP using Supabase
+      if (currentUser.email) {
+        const { error } = await supabase.auth.resend({
+          type: 'signup',
+          email: currentUser.email
+        });
+        
+        if (error) {
+          console.error('Error resending OTP:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error in resend OTP:', error);
+    }
   };
 
   const handleBack = () => {

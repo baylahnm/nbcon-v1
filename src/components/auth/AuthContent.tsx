@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { 
   Eye, 
   EyeOff, 
@@ -30,11 +31,19 @@ import { Badge } from "@/components/ui/badge";
 // Function to ensure user profile exists in database
 const ensureUserProfileExists = async (user: AuthenticatedUser) => {
   try {
+    // Get current authenticated user
+    const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !authUser) {
+      console.error('No authenticated user found:', authError);
+      return;
+    }
+
     // Check if profile already exists
     const { data: existingProfile } = await supabase
       .from('profiles')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('user_id', authUser.id)
       .single();
 
     if (!existingProfile) {
@@ -43,7 +52,7 @@ const ensureUserProfileExists = async (user: AuthenticatedUser) => {
         .from('profiles')
         .insert([
           {
-            user_id: user.id,
+            user_id: authUser.id, // Use authenticated user ID
             role: user.role,
             first_name: user.name.split(' ')[0],
             last_name: user.name.split(' ').slice(1).join(' ') || '',
@@ -59,12 +68,14 @@ const ensureUserProfileExists = async (user: AuthenticatedUser) => {
 
       if (error) {
         console.error('Error creating user profile:', error);
+        throw error;
       } else {
         console.log('User profile created successfully');
       }
     }
   } catch (error) {
     console.error('Error ensuring user profile exists:', error);
+    throw error;
   }
 };
 
@@ -179,32 +190,87 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
       return;
     }
 
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock successful login
-      const mockUser: AuthenticatedUser = {
-        id: 'a938012d-b35b-40ab-91d4-bcbd5678216a', // Valid UUID format
+      // Authenticate with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: loginData.email,
-        name: 'Nasser Baylah',
-        role: 'engineer',
-        isVerified: true,
-        sceNumber: 'SCE-67892',
-        company: 'NEOM Development Authority',
-        location: 'Riyadh, Saudi Arabia',
-        phone: '+966501234567',
-        language: language,
-        avatar: 'engineer-male-1'
-      };
+        password: loginData.password,
+      });
 
-      // Ensure user profile exists in database
-      await ensureUserProfileExists(mockUser);
-      
-      onAuthSuccess(mockUser);
-    } catch (error) {
+      if (authError) {
+        // If user doesn't exist, try to create account
+        if (authError.message.includes('Invalid login credentials')) {
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email: loginData.email,
+            password: loginData.password,
+          });
+
+          if (signUpError) {
+            throw signUpError;
+          }
+
+          if (signUpData.user) {
+            // User created successfully, proceed to role selection
+            const newUser: Partial<AuthenticatedUser> = {
+              id: signUpData.user.id,
+              email: signUpData.user.email || loginData.email,
+              name: signUpData.user.email?.split('@')[0] || 'User',
+              isVerified: signUpData.user.email_confirmed_at ? true : false,
+              language: language,
+              avatar: 'user-default'
+            };
+
+            onNeedOTPVerification(newUser, 'email');
+            setIsLoading(false);
+            return;
+          }
+        } else {
+          throw authError;
+        }
+      } else if (authData.user) {
+        // Login successful, check if profile exists
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', authData.user.id)
+          .single();
+
+        if (profileError || !profile) {
+          // Profile doesn't exist, need to complete setup
+          const incompleteUser: Partial<AuthenticatedUser> = {
+            id: authData.user.id,
+            email: authData.user.email || '',
+            name: authData.user.user_metadata?.full_name || authData.user.email?.split('@')[0] || 'User',
+            isVerified: authData.user.email_confirmed_at ? true : false,
+            language: language,
+            avatar: authData.user.user_metadata?.avatar_url || 'user-default'
+          };
+
+          onNeedOTPVerification(incompleteUser, 'email');
+          setIsLoading(false);
+          return;
+        }
+
+        // Profile exists, create authenticated user
+        const authenticatedUser: AuthenticatedUser = {
+          id: authData.user.id,
+          email: authData.user.email || '',
+          name: profile.first_name + ' ' + profile.last_name,
+          role: profile.role,
+          isVerified: authData.user.email_confirmed_at ? true : false,
+          location: `${profile.location_city || ''}, ${profile.location_region || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || 'Riyadh, Saudi Arabia',
+          phone: profile.phone || '',
+          language: profile.preferred_language || 'en',
+          avatar: profile.avatar_url || 'user-default',
+          company: profile.company || ''
+        };
+
+        onAuthSuccess(authenticatedUser);
+      }
+    } catch (error: any) {
+      console.error('Authentication error:', error);
       setErrors({ 
-        submit: language === 'ar' ? 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.' : 'Login failed. Please try again.' 
+        submit: language === 'ar' ? 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.' : error.message || 'Login failed. Please try again.' 
       });
     } finally {
       setIsLoading(false);
@@ -240,6 +306,44 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
       // and then to our callback URL, so we don't set isLoading to false here
     } catch (error) {
       console.error('Google auth error:', error);
+      setErrors({ 
+        submit: language === 'ar' 
+          ? 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.' 
+          : 'An unexpected error occurred. Please try again.' 
+      });
+      setIsLoading(false);
+    }
+  };
+
+  const handleFacebookAuth = async () => {
+    setIsLoading(true);
+    setErrors({});
+
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        }
+      });
+
+      if (error) {
+        console.error('Facebook auth error:', error);
+        setErrors({ 
+          submit: language === 'ar' 
+            ? 'فشل تسجيل الدخول عبر فيسبوك. يرجى المحاولة مرة أخرى.' 
+            : 'Facebook login failed. Please try again.' 
+        });
+        setIsLoading(false);
+      }
+      // Note: If successful, the user will be redirected to Facebook's OAuth page
+      // and then to our callback URL, so we don't set isLoading to false here
+    } catch (error) {
+      console.error('Facebook auth error:', error);
       setErrors({ 
         submit: language === 'ar' 
           ? 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.' 
@@ -492,12 +596,19 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                     type="button"
                     variant="outline"
                     className="flex items-center justify-center gap-2 h-11"
-                    onClick={() => console.log('Facebook login')}
+                    onClick={handleFacebookAuth}
+                    disabled={isLoading}
                   >
                     <svg className="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
-                    <span>Facebook</span>
+                    <span>
+                      {isLoading ? (
+                        language === 'ar' ? 'جاري التحميل...' : 'Loading...'
+                      ) : (
+                        'Facebook'
+                      )}
+                    </span>
                   </Button>
                 </div>
 
@@ -638,12 +749,19 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                     type="button"
                     variant="outline"
                     className="flex items-center justify-center gap-2 h-11"
-                    onClick={() => console.log('Facebook signup')}
+                    onClick={handleFacebookAuth}
+                    disabled={isLoading}
                   >
                     <svg className="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
-                    <span>Facebook</span>
+                    <span>
+                      {isLoading ? (
+                        language === 'ar' ? 'جاري التحميل...' : 'Loading...'
+                      ) : (
+                        'Facebook'
+                      )}
+                    </span>
                   </Button>
                 </div>
 
@@ -781,7 +899,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       value={signupData.location} 
                       onValueChange={(value) => setSignupData({...signupData, location: value})}
                     >
-                      <SelectTrigger className="bg-input-background border-border">
+                      <SelectTrigger className="bg-background text-muted-foreground border-sidebar-border hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2">
                         <div className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-muted-foreground" />
                           <SelectValue placeholder={language === 'ar' ? 'اختر مدينتك' : 'Select your city'} />
@@ -1049,7 +1167,16 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <div className="flex-1">
                         <div className="text-xs font-medium text-foreground">{member.name}</div>
                         <div className="w-full bg-muted rounded-full h-1.5 mt-1">
-                          <div className={`${member.color} h-1.5 rounded-full`} style={{width: `${member.progress}%`}}></div>
+                          <motion.div 
+                            className={`${member.color} h-1.5 rounded-full`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${member.progress}%` }}
+                            transition={{ 
+                              duration: 1.5, 
+                              ease: "easeOut",
+                              delay: idx * 0.2 
+                            }}
+                          />
                         </div>
                       </div>
                       <span className="text-xs text-muted-foreground">{member.progress}%</span>

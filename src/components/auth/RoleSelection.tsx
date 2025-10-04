@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Building,
@@ -10,7 +10,9 @@ import {
   Briefcase,
   Award,
   Globe,
-  Star
+  Star,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +39,7 @@ interface AuthenticatedUser {
 }
 
 interface RoleOption {
-  id: 'engineer' | 'client' | 'enterprise';
+  id: 'engineer' | 'client' | 'enterprise' | 'admin';
   title: {
     en: string;
     ar: string;
@@ -53,12 +55,17 @@ interface RoleOption {
   };
   popular?: boolean;
   verified?: boolean;
+  restricted?: boolean;
 }
 
 export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionProps) {
-  const [selectedRole, setSelectedRole] = useState<'engineer' | 'client' | 'enterprise' | null>(null);
+  const [selectedRole, setSelectedRole] = useState<'engineer' | 'client' | 'enterprise' | 'admin' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [language] = useState<'ar' | 'en'>(user.language || 'en');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const roleOptions: RoleOption[] = [
@@ -148,19 +155,109 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
         ]
       },
       verified: !!user.company
+    },
+    {
+      id: 'admin',
+      title: {
+        en: 'Platform Administrator',
+        ar: 'مدير المنصة'
+      },
+      description: {
+        en: 'System administrator with full access to platform management and user oversight',
+        ar: 'مدير النظام مع الوصول الكامل لإدارة المنصة ومراقبة المستخدمين'
+      },
+      icon: <Shield className="w-6 h-6" />,
+      features: {
+        en: [
+          'Full platform management access',
+          'User account oversight and management',
+          'System configuration and settings',
+          'Analytics and reporting dashboard',
+          'Content moderation and verification'
+        ],
+        ar: [
+          'الوصول الكامل لإدارة المنصة',
+          'مراقبة وإدارة حسابات المستخدمين',
+          'تكوين وإعدادات النظام',
+          'لوحة التحليلات والتقارير',
+          'إدارة المحتوى والتحقق'
+        ]
+      },
+      restricted: true
     }
   ];
 
+  const updateScrollState = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      
+      // Update arrow visibility
+      setCanScrollLeft(scrollLeft > 10); // Small threshold for better UX
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10); // Small threshold for better UX
+      
+      // Update current index based on scroll position
+      const cardWidth = container.children[0]?.getBoundingClientRect().width || 320;
+      const gap = 24;
+      const containerPadding = 16; // Account for px-4 padding
+      const newIndex = Math.round((scrollLeft + containerPadding) / (cardWidth + gap));
+      const clampedIndex = Math.max(0, Math.min(newIndex, roleOptions.length - 1));
+      setCurrentIndex(clampedIndex);
+    }
+  };
+
+  const scrollToIndex = (index: number) => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.children[0]?.getBoundingClientRect().width || 320;
+      const gap = 24; // 6 * 4 (gap-6 in Tailwind)
+      const containerPadding = 16; // Account for px-4 padding
+      const scrollPosition = index * (cardWidth + gap) - containerPadding;
+      
+      container.scrollTo({
+        left: Math.max(0, scrollPosition),
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollLeft = () => {
+    const newIndex = Math.max(0, currentIndex - 1);
+    scrollToIndex(newIndex);
+  };
+
+  const scrollRight = () => {
+    const newIndex = Math.min(roleOptions.length - 1, currentIndex + 1);
+    scrollToIndex(newIndex);
+  };
+
+  // Add scroll event listener
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      updateScrollState();
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    
+    // Initial state update
+    updateScrollState();
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, [roleOptions.length]);
+
   const handleRoleSelection = async () => {
-    if (!selectedRole) return;
+    if (!selectedRole || !user.id) return;
 
     setIsLoading(true);
     
     try {
-      const userId = user.id || 'a938012d-b35b-40ab-91d4-bcbd5678216a';
-
       const completeUser: AuthenticatedUser = {
-        id: userId,
+        id: user.id,
         email: user.email || '',
         name: user.name || '',
         role: selectedRole,
@@ -184,7 +281,7 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-none">
         {/* Language Toggle */}
         <div className="flex justify-center mb-6">
           <div className="flex items-center gap-2 bg-card border border-sidebar-border rounded-lg p-1">
@@ -222,23 +319,72 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
         </div>
 
         {/* Role Options */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {roleOptions.map((role) => (
+        <div className="relative mb-8 mx-auto max-w-full">
+          {/* Navigation Buttons */}
+          {canScrollLeft && (
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -ml-4">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={scrollLeft}
+                className="rounded-full bg-background/80 backdrop-blur-sm border-2 shadow-lg hover:bg-accent transition-all duration-200"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+          
+          {canScrollRight && (
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 -mr-4">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={scrollRight}
+                className="rounded-full bg-background/80 backdrop-blur-sm border-2 shadow-lg hover:bg-accent transition-all duration-200"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+
+          {/* Scrollable Container */}
+          <div 
+            ref={scrollContainerRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pt-4 pb-4 px-4 sm:px-8 md:px-12"
+            style={{
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth'
+            }}
+          >
+            {roleOptions.map((role, index) => (
             <Card 
               key={role.id}
-              className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                selectedRole === role.id 
-                  ? 'ring-2 ring-primary border-primary' 
-                  : 'hover:border-primary/50'
+              className={`flex-shrink-0 w-72 sm:w-80 cursor-pointer transition-all duration-200 hover:shadow-lg snap-center ${
+                role.restricted 
+                  ? 'border-2 border-red-200 bg-red-50/50 hover:border-red-300 hover:bg-red-50' 
+                  : selectedRole === role.id 
+                    ? 'ring-2 ring-primary border-primary' 
+                    : 'hover:border-primary/50'
+              } ${
+                selectedRole === role.id && role.restricted
+                  ? 'ring-2 ring-red-500 border-red-500'
+                  : ''
               }`}
-              onClick={() => setSelectedRole(role.id)}
+              onClick={() => {
+                setSelectedRole(role.id);
+                scrollToIndex(index);
+              }}
             >
               <CardHeader className="text-center pb-4">
                 <div className="relative">
                   <div className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${
                     selectedRole === role.id 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-primary/10 text-primary'
+                      ? role.restricted 
+                        ? 'bg-red-500 text-white' 
+                        : 'bg-primary text-primary-foreground'
+                      : role.restricted
+                        ? 'bg-red-100 text-red-600'
+                        : 'bg-primary/10 text-primary'
                   }`}>
                     {role.icon}
                   </div>
@@ -256,6 +402,14 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
                     <Badge variant="secondary" className="absolute -top-2 -left-2 bg-success/10 text-success">
                       <CheckCircle className="w-3 h-3 mr-1" />
                       {language === 'ar' ? 'معتمد' : 'Verified'}
+                    </Badge>
+                  )}
+                  
+                  {/* Restricted Badge */}
+                  {role.restricted && (
+                    <Badge className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white">
+                      <Shield className="w-3 h-3 mr-1" />
+                      {language === 'ar' ? 'مقيد' : 'Restricted'}
                     </Badge>
                   )}
                 </div>
@@ -293,7 +447,8 @@ export function RoleSelection({ user, onRoleSelected, onBack }: RoleSelectionPro
                 )}
               </CardContent>
             </Card>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Action Buttons */}

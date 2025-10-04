@@ -411,6 +411,21 @@ All colors MUST be HSL.
     border-top-color: hsl(var(--sidebar-border)) !important;
   }
 
+  /* Hide scrollbar for horizontal scrollable cards */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+
+  /* Enhanced scroll snapping for centered cards */
+  .snap-center-enhanced {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
   .wazeer {
     /* Dashboard Theme Tokens (wazeer) - Legacy fallbacks */
     --color-primary: hsl(var(--primary));
