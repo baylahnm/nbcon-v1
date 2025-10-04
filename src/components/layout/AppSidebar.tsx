@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useAuthStore } from '@/stores/auth';
 import { R } from '@/lib/routes';
 import { getUserDisplayName, getUserInitials, getUserProfileImage } from '@/lib/userUtils';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MenuItem {
@@ -69,6 +69,16 @@ const makeTopMenu = (role?: string): MenuItem[] => {
         { title: 'Finance', url: R.enterprise.finance, icon: DollarSign },
         { title: 'Help & Support', url: R.enterprise.help, icon: HelpCircle },
         { title: 'Settings', url: R.enterprise.settings, icon: Settings }
+      ];
+    case 'admin':
+      return [
+        { title: 'Dashboard', url: '/admin/dashboard', icon: Home },
+        { title: 'Users', url: '/admin/users', icon: Users },
+        { title: 'Projects', url: '/admin/projects', icon: FolderOpen },
+        { title: 'Messages', url: '/admin/messages', icon: MessageSquare },
+        { title: 'Payments', url: '/admin/payments', icon: DollarSign },
+        { title: 'Risk Center', url: '/admin/risk', icon: Shield },
+        { title: 'Settings', url: '/admin/settings', icon: Settings }
       ];
     default:
       return [{ title: 'Dashboard', url: R.engineer.dashboard, icon: Home },

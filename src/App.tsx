@@ -9,6 +9,7 @@ import HomePage from "@/pages/HomePage";
 import EmailAuth from "@/pages/auth/EmailAuth";
 import PhoneAuth from "@/pages/auth/PhoneAuth";
 import VerifyOTP from "@/pages/auth/VerifyOTP";
+import ResetPassword from "@/pages/auth/ResetPassword";
 import RoleSelection from "@/pages/auth/RoleSelection";
 import EngineerRegistration from "@/pages/auth/registration/EngineerRegistration";
 import ClientRegistration from "@/pages/auth/registration/ClientRegistration";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/auth/phone" element={<PhoneAuth />} />
           <Route path="/auth/email" element={<EmailAuth />} />
           <Route path="/auth/verify" element={<VerifyOTP />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/role" element={<RoleSelection />} />
           <Route path="/auth/registration/engineer" element={<EngineerRegistration />} />
           <Route path="/auth/registration/client" element={<ClientRegistration />} />

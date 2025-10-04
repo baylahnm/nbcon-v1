@@ -54,6 +54,7 @@ import PostProjectPage from "@/pages/enterprise/PostProjectPage";
 import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import RouteFallback from "@/components/RouteFallback";
 import Forbidden from "@/pages/Forbidden";
+import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
 
 export function useActiveRole(): UserRole | null {
   const { profile } = useAuthStore();
@@ -195,7 +196,7 @@ export default function RoleRouter() {
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<div />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
           <Route path="users" element={<div />} />
           <Route path="projects" element={<div />} />
           <Route path="payments" element={<div />} />

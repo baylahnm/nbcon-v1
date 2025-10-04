@@ -16,6 +16,7 @@ import {
   Briefcase
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,7 +107,9 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
   const [language, setLanguage] = useState<'ar' | 'en'>('en');
+  const { toast } = useToast();
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -243,6 +246,54 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
           : 'An unexpected error occurred. Please try again.' 
       });
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!loginData.email) {
+      toast({
+        title: language === 'ar' ? 'خطأ' : 'Error',
+        description: language === 'ar' ? 'يرجى إدخال بريدك الإلكتروني أولاً' : 'Please enter your email address first',
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validateEmail(loginData.email)) {
+      toast({
+        title: language === 'ar' ? 'خطأ' : 'Error',
+        description: language === 'ar' ? 'يرجى إدخال بريد إلكتروني صحيح' : 'Please enter a valid email address',
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsForgotPasswordLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(loginData.email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: language === 'ar' ? 'تم إرسال البريد الإلكتروني' : 'Email Sent',
+        description: language === 'ar' 
+          ? 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد الخاص بك.'
+          : 'Password reset link has been sent to your email. Please check your inbox.',
+      });
+    } catch (error: any) {
+      toast({
+        title: language === 'ar' ? 'خطأ' : 'Error',
+        description: error.message || (language === 'ar' 
+          ? 'فشل في إرسال رابط إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى.'
+          : 'Failed to send password reset link. Please try again.'),
+        variant: "destructive",
+      });
+    } finally {
+      setIsForgotPasswordLoading(false);
     }
   };
 
@@ -518,8 +569,18 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         {language === 'ar' ? 'تذكرني' : 'Remember me'}
                       </Label>
                     </div>
-                    <Button variant="link" className="text-sm p-0 h-auto">
-                      {language === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
+                    <Button 
+                      type="button"
+                      variant="link" 
+                      className="text-sm p-0 h-auto"
+                      onClick={handleForgotPassword}
+                      disabled={isForgotPasswordLoading}
+                    >
+                      {isForgotPasswordLoading ? (
+                        language === 'ar' ? 'جاري الإرسال...' : 'Sending...'
+                      ) : (
+                        language === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'
+                      )}
                     </Button>
                   </div>
 
