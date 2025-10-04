@@ -1156,7 +1156,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                 </div>
                 <div className="space-y-2">
                   {[
-                    { name: language === 'ar' ? 'سارة محمد' : 'Sarah Mohammed', progress: 65, color: 'bg-primary' },
+                    { name: language === 'ar' ? 'ناصر بيله' : 'Nasser Baylah', progress: 65, color: 'bg-primary' },
                     { name: language === 'ar' ? 'خالد العلي' : 'Khalid Al-Ali', progress: 85, color: 'bg-green-500' },
                     { name: language === 'ar' ? 'فاطمة أحمد' : 'Fatima Ahmed', progress: 50, color: 'bg-yellow-500' },
                   ].map((member, idx) => (
