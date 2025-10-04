@@ -60,7 +60,7 @@ const tasks = [
 
 export default function FeatureSection() {
   return (
-    <section className="relative w-full py-20 px-4 bg-background text-foreground">
+    <section className="relative w-full py-20 px-4 bg-background text-foreground rounded-[10px]">
       <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-2 items-center gap-12">
         {/* LEFT SIDE - Task Loop with Vertical Bar */}
         <div className="relative w-full max-w-sm">

@@ -36,7 +36,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({
   }
 }) => {
   return (
-    <section id="about" className="py-16 px-6 md:py-[200px] md:px-0 bg-background">
+    <section id="about" className="py-[100px] px-6 md:px-0 bg-background">
       <div className="container mx-auto px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center px-4">
           {/* Left Column - Contact Form with Animated Border */}

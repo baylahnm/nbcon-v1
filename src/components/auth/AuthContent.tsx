@@ -1082,7 +1082,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
           </div>
 
           {/* Dashboard Mockup */}
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-card rounded-2xl shadow-2xl overflow-hidden border border-border">
             {/* Mockup Header */}
             <div className="bg-gradient-to-r from-muted/50 to-muted/30 px-6 py-4 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
