@@ -120,14 +120,26 @@ export default function VerifyOTPContent({
     if (resendCooldown > 0) return;
     
     setResendCooldown(60); // 60 seconds cooldown
-    onResendOTP();
+    setIsLoading(true);
     
-    toast({
-      title: language === 'ar' ? 'تم إرسال الرمز' : 'Code Sent',
-      description: language === 'ar' 
-        ? 'تم إرسال رمز تحقق جديد إلى ' + (otpMethod === 'email' ? user.email : user.phone)
-        : `New verification code sent to ${otpMethod === 'email' ? user.email : user.phone}`,
-    });
+    try {
+      await onResendOTP();
+      
+      toast({
+        title: language === 'ar' ? 'تم إرسال الرمز' : 'Code Sent',
+        description: language === 'ar' 
+          ? `تم إرسال رمز تحقق جديد إلى ${user.email}`
+          : `New verification code sent to ${user.email}`,
+      });
+    } catch (error) {
+      toast({
+        title: language === 'ar' ? 'خطأ في الإرسال' : 'Send Failed',
+        description: language === 'ar' ? 'فشل في إرسال رمز التحقق' : 'Failed to send verification code',
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isRTL = language === 'ar';
@@ -192,13 +204,9 @@ export default function VerifyOTPContent({
             <CardContent>
               {/* Contact Info */}
               <div className={`flex items-center justify-center gap-2 text-sm text-muted-foreground mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                {otpMethod === 'email' ? (
-                  <Mail className="w-4 h-4" />
-                ) : (
-                  <Phone className="w-4 h-4" />
-                )}
+                <Mail className="w-4 h-4" />
                 <span>
-                  {otpMethod === 'email' ? user.email : user.phone}
+                  {user.email}
                 </span>
               </div>
 
@@ -259,10 +267,15 @@ export default function VerifyOTPContent({
                 <Button
                   variant="outline"
                   onClick={handleResend}
-                  disabled={resendCooldown > 0}
+                  disabled={resendCooldown > 0 || isLoading}
                   className="w-full"
                 >
-                  {resendCooldown > 0 ? (
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>{language === 'ar' ? 'جاري الإرسال...' : 'Sending...'}</span>
+                    </div>
+                  ) : resendCooldown > 0 ? (
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4" />
                       <span>

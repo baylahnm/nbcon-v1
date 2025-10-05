@@ -193,10 +193,12 @@ export function AuthenticationSystem({ onAuthenticationComplete, onBackToHome }:
         
         if (error) {
           console.error('Error resending OTP:', error);
+          throw error;
         }
       }
     } catch (error) {
       console.error('Error in resend OTP:', error);
+      throw error;
     }
   };
 
