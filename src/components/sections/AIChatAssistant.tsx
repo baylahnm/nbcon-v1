@@ -44,7 +44,7 @@ export const AIChatAssistant: React.FC = () => {
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   nbcon AI Assistant
                 </h2>
-                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto pb-4">
                   Your intelligent engineering project partner powered by advanced AI technology. 
                   Automate your tasks and workflows with smart matching, real-time cost estimation, and compliance guidance.
                 </p>

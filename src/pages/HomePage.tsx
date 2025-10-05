@@ -17,7 +17,7 @@ import { AIChatAssistant } from '@/components/sections/AIChatAssistant';
 import { DashboardShowcase } from '@/components/sections/DashboardShowcase';
 import { FeaturesSectionWithBentoGrid } from '@/components/ui/feature-section-with-bento-grid';
 import Testimonials from '@/components/ui/testimonials-demo';
-import PricingSectionDemo from '@/components/ui/pricing-section-demo';
+import PricingSection from '@/components/sections/PricingSection';
 import { FAQSection } from '@/components/sections/FAQSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { Footer } from '@/components/sections/Footer';
@@ -303,7 +303,7 @@ const HomePage = () => {
         />
         <FeaturesSectionWithBentoGrid />
         <Testimonials />
-        <PricingSectionDemo />
+        <PricingSection />
         <FAQSection />
         <ContactSection 
           language={language}

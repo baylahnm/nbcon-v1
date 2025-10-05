@@ -213,7 +213,7 @@ export default function PricingSection6() {
             <Card
               className={`relative text-card-foreground border-border h-full min-h-[600px] flex flex-col ${
                 plan.popular
-                  ? "bg-gradient-to-r from-card via-accent to-card shadow-[0px_-13px_300px_0px_hsl(var(--primary))] z-20"
+                  ? "bg-gradient-to-r from-card via-accent to-card z-20"
                   : "bg-gradient-to-r from-card via-muted to-card z-10"
               }`}
             >
