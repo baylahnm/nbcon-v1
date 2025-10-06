@@ -1,4 +1,4 @@
-import { UploadDeliverableContent } from '@/components/UploadDeliverableContent';
+import { UploadDeliverableContent } from '@/features/deliverables/UploadDeliverableContent';
 
 export default function UploadDeliverable() {
   return <UploadDeliverableContent />;

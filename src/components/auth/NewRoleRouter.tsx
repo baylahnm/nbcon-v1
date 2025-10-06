@@ -52,8 +52,8 @@ import { MessagesPage as EnterpriseMessagesPage } from "@/pages/enterprise/Messa
 import { AIAssistantPage } from "@/pages/enterprise/AIAssistantPage";
 import { CalendarPage as EnterpriseCalendarPage } from "@/pages/enterprise/CalendarPage";
 import PostProjectPage from "@/pages/enterprise/PostProjectPage";
-import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
-import RouteFallback from "@/components/RouteFallback";
+import { RouteErrorBoundary } from "@/app/routing/RouteErrorBoundary";
+import RouteFallback from "@/app/routing/RouteFallback";
 import Forbidden from "@/pages/Forbidden";
 import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
 

@@ -235,8 +235,5 @@ export const engineers: Engineer[] = [
   }
 ];
 
-// Import all engineers from complete file
-import { allEngineers as extendedEngineers } from './engineers-complete';
-
-// Combine all engineers (first 3 + remaining 17)
-export const allEngineers = [...engineers, ...extendedEngineers];
+// Export the engineers array as allEngineers for compatibility
+export const allEngineers = engineers;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessagesContent } from '@/components/MessagesContent';
+import { MessagesContent } from '@/features/messaging/MessagesContent';
 
 export function MessagesPage() {
   return <MessagesContent />;
