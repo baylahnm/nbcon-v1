@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
-import { getLandingPage, getEffectiveRole } from '@/lib/auth/role-resolution';
+import { getLandingPage, getEffectiveRole } from '@/features/auth/lib/role-resolution';
 import { supabase } from '@/integrations/supabase/client';
-import { AuthContent } from './AuthContent';
-import VerifyOTPContent from './VerifyOTPContent';
+import { AuthContent } from '@/components/auth/AuthContent';
+import VerifyOTPContent from '@/components/auth/VerifyOTPContent';
 
 interface AuthenticatedUser {
   id: string;

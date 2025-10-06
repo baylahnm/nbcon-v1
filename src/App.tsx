@@ -5,9 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import HomePage from "@/pages/HomePage";
-import AccountTypeSelection from "@/pages/AccountTypeSelection";
-import { NewAuthFlow } from "@/components/auth/NewAuthFlow";
-import NewRoleRouter from "@/components/auth/NewRoleRouter";
+import AccountTypeSelection from "@/features/auth/pages/AccountTypeSelection";
+import { NewAuthFlow } from "@/features/auth/components/NewAuthFlow";
+import NewRoleRouter from "@/features/auth/components/NewRoleRouter";
 import NotFound from "./pages/NotFound";
 import { AuthCallback } from "@/components/auth/AuthCallback";
 

@@ -14,8 +14,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/lib/billing/plans';
-import { Subscription } from '@/lib/payments/stripe-service';
+import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/features/billing/lib/plans';
+import { Subscription } from '@/features/billing/services/stripe-service';
 
 interface SubscriptionCardProps {
   subscription: Subscription;

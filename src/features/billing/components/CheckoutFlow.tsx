@@ -20,8 +20,8 @@ import {
   getPriceIdForPlan, 
   getStripeErrorMessage,
   isPaidPlan 
-} from '@/lib/payments/stripe-service';
-import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/lib/billing/plans';
+} from '@/features/billing/services/stripe-service';
+import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/features/billing/lib/plans';
 
 interface CheckoutFlowProps {
   selectedPlan: string;

@@ -26,8 +26,8 @@ import {
   getPaymentMethods,
   Subscription,
   PaymentMethod
-} from '@/lib/payments/stripe-service';
-import { getPriceIdForPlan, isPaidPlan } from '@/lib/payments/stripe-service';
+} from '@/features/billing/services/stripe-service';
+import { getPriceIdForPlan, isPaidPlan } from '@/features/billing/services/stripe-service';
 
 export function BillingDashboard() {
   const { user } = useAuthStore();

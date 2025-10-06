@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/lib/billing/plans';
+import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/features/billing/lib/plans';
 
 const ACCOUNT_TYPES = [
   { 

@@ -1,4 +1,4 @@
-import { Role, Plan, PLAN_TO_ROLE, PLAN_FEATURES } from '@/lib/billing/plans';
+import { Role, Plan, PLAN_TO_ROLE, PLAN_FEATURES } from '@/features/billing/lib/plans';
 
 export interface Subscription {
   id: string;

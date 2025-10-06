@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
-import { getLandingPage, getEffectiveRole, hasRolePermission } from '@/lib/auth/role-resolution';
+import { getLandingPage, getEffectiveRole, hasRolePermission } from '@/features/auth/lib/role-resolution';
 import { UserRole } from '@/lib/auth/role';
 
 interface AuthGuardProps {

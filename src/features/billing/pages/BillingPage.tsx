@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { BillingDashboard } from '@/components/billing/BillingDashboard';
-import { CheckoutFlow } from '@/components/billing/CheckoutFlow';
-import { AccountTypeSelection } from '@/pages/AccountTypeSelection';
-import { AuthGuard } from '@/components/auth/AuthGuard';
+import { BillingDashboard } from '@/features/billing/components/BillingDashboard';
+import { CheckoutFlow } from '@/features/billing/components/CheckoutFlow';
+import { AccountTypeSelection } from '@/features/auth/pages/AccountTypeSelection';
+import { AuthGuard } from '@/features/auth/guards/AuthGuard';
 
 export default function BillingPage() {
   const [searchParams] = useSearchParams();
