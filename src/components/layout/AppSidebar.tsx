@@ -168,7 +168,7 @@ export function AppSidebar() {
         <div className="mt-auto p-4 border-t border-sidebar-border px-0 py-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={cn("w-full justify-start p-3 h-auto", collapsed && "justify-center")}>
+              <Button variant="ghost" className={cn("w-full justify-start p-3 h-auto gap-3", collapsed && "justify-center")}>
                 <Avatar className="h-8 w-8 m-0">
                   <AvatarImage 
                     src={getUserProfileImage(profile) || undefined} 

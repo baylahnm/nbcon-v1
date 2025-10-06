@@ -192,7 +192,7 @@ export function NewAuthFlow() {
         <AuthContent
           onAuthSuccess={handleAuthSuccess}
           onNeedOTPVerification={handleNeedOTPVerification}
-          onBackToHome={handleBackToHome}
+          onBack={handleBackToHome}
         />
       );
   }

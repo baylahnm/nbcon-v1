@@ -26,7 +26,7 @@ const PLANS = [
     id: 'client_monthly_45',
     name: 'Client',
     icon: Building,
-    color: 'bg-blue-500',
+    color: 'bg-primary',
     features: [
       'Unlimited Job Posting',
       'Smart Quote Management',
@@ -45,7 +45,7 @@ const PLANS = [
     id: 'engineer_monthly_60',
     name: 'Engineer',
     icon: Zap,
-    color: 'bg-green-500',
+    color: 'bg-primary',
     features: [
       'Smart Job Matching',
       'Quote Management',
@@ -65,7 +65,7 @@ const PLANS = [
     id: 'enterprise_monthly_120',
     name: 'Enterprise',
     icon: Users,
-    color: 'bg-purple-500',
+    color: 'bg-primary',
     features: [
       'Advanced RFP Management',
       'Team Management',
@@ -239,8 +239,8 @@ export function PlanUpgrade({ currentPlan, onPlanSelect, isLoading = false }: Pl
                         isCurrentPlan 
                           ? 'bg-muted text-muted-foreground cursor-not-allowed' 
                           : isSelected 
-                            ? 'bg-primary hover:bg-primary/90' 
-                            : 'bg-muted hover:bg-muted/80'
+                            ? 'bg-primary hover:bg-primary/90 text-primary-foreground' 
+                            : 'bg-background hover:bg-background/80 text-foreground'
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();

@@ -8,7 +8,8 @@ import {
   ArrowUpCircle, 
   ArrowDownCircle, 
   BarChart3, 
-  Settings 
+  Settings,
+  Crown
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePaymentsStore } from "../store/usePaymentsStore";
@@ -20,6 +21,7 @@ import { PaymentsPayout } from "./PaymentsPayout";
 import { PaymentsRefund } from "./PaymentsRefund";
 import { PaymentsReports } from "./PaymentsReports";
 import { PaymentsSettings } from "./PaymentsSettings";
+import { PaymentsSubscription } from "./PaymentsSubscription";
 
 export function PaymentsContent() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -71,6 +73,12 @@ export function PaymentsContent() {
       label: "Reports",
       icon: BarChart3,
       description: "Financial reports"
+    },
+    {
+      value: "subscription",
+      label: "Subscription",
+      icon: Crown,
+      description: "Manage subscription plan"
     },
     {
       value: "settings",
@@ -144,6 +152,10 @@ export function PaymentsContent() {
 
           <TabsContent value="reports" className="space-y-6">
             <PaymentsReports />
+          </TabsContent>
+
+          <TabsContent value="subscription" className="space-y-6">
+            <PaymentsSubscription />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
