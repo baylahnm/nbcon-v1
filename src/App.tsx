@@ -3,20 +3,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "@/pages/Index";
 import HomePage from "@/pages/HomePage";
-import EmailAuth from "@/pages/auth/EmailAuth";
-import PhoneAuth from "@/pages/auth/PhoneAuth";
-import VerifyOTP from "@/pages/auth/VerifyOTP";
-import ResetPassword from "@/pages/auth/ResetPassword";
-import RoleSelection from "@/pages/auth/RoleSelection";
-import EngineerRegistration from "@/pages/auth/registration/EngineerRegistration";
-import ClientRegistration from "@/pages/auth/registration/ClientRegistration";
-import EnterpriseRegistration from "@/pages/auth/registration/EnterpriseRegistration";
-import VerificationPage from "@/pages/settings/VerificationPage";
-import ThemePage from "@/pages/settings/ThemePage";
-import RoleRouter from "@/routes/RoleRouter";
+import AccountTypeSelection from "@/pages/AccountTypeSelection";
+import { NewAuthFlow } from "@/components/auth/NewAuthFlow";
+import NewRoleRouter from "@/components/auth/NewRoleRouter";
 import NotFound from "./pages/NotFound";
 import { AuthCallback } from "@/components/auth/AuthCallback";
 
@@ -32,20 +23,21 @@ const App = () => (
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/auth" element={<PhoneAuth />} />
-          <Route path="/auth/phone" element={<PhoneAuth />} />
-          <Route path="/auth/email" element={<EmailAuth />} />
-          <Route path="/auth/verify" element={<VerifyOTP />} />
-          <Route path="/auth/reset-password" element={<ResetPassword />} />
-          <Route path="/auth/role" element={<RoleSelection />} />
-          <Route path="/auth/registration/engineer" element={<EngineerRegistration />} />
-          <Route path="/auth/registration/client" element={<ClientRegistration />} />
-          <Route path="/auth/registration/enterprise" element={<EnterpriseRegistration />} />
-          <Route path="/auth/profile/:role" element={<Navigate to="/auth/role" replace />} />
+          
+          {/* New Authentication Flow */}
+          <Route path="/auth" element={<NewAuthFlow />} />
+          <Route path="/auth/verify" element={<NewAuthFlow />} />
+          <Route path="/auth/account-type" element={<AccountTypeSelection />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           
-          {/* Mount the unified role-aware router */}
-          <Route path="/*" element={<RoleRouter />} />
+          {/* Signup Routes - TODO: Implement these */}
+          <Route path="/signup/client" element={<div>Client Signup - Coming Soon</div>} />
+          <Route path="/signup/engineer" element={<div>Engineer Signup - Coming Soon</div>} />
+          <Route path="/signup/enterprise" element={<div>Enterprise Signup - Coming Soon</div>} />
+          <Route path="/signup/admin" element={<div>Admin Signup - Coming Soon</div>} />
+          
+          {/* Mount the new role-aware router */}
+          <Route path="/*" element={<NewRoleRouter />} />
 
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
