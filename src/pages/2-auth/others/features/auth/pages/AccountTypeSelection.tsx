@@ -22,7 +22,7 @@ const ACCOUNT_TYPES = [
     name: 'Client', 
     plan: 'client_monthly_45',
     icon: Building,
-    color: 'bg-blue-500',
+    color: 'bg-primary',
     features: [
       'Unlimited Job Posting',
       'Smart Quote Management', 
@@ -42,7 +42,7 @@ const ACCOUNT_TYPES = [
     name: 'Engineer', 
     plan: 'engineer_monthly_60',
     icon: User,
-    color: 'bg-green-500',
+    color: 'bg-primary',
     features: [
       'Smart Job Matching',
       'Quote Management',
@@ -63,7 +63,7 @@ const ACCOUNT_TYPES = [
     name: 'Enterprise', 
     plan: 'enterprise_monthly_120',
     icon: Users,
-    color: 'bg-purple-500',
+    color: 'bg-primary',
     features: [
       'Advanced RFP Management',
       'Team Management',
@@ -84,7 +84,7 @@ const ACCOUNT_TYPES = [
     name: 'Admin', 
     plan: 'admin_free',
     icon: Shield,
-    color: 'bg-red-500',
+    color: 'bg-destructive',
     features: [
       'All Platform Features',
       'User Management',
@@ -222,7 +222,7 @@ export default function AccountTypeSelection() {
                     className={`w-full ${
                       selectedType === type.id 
                         ? 'bg-primary hover:bg-primary/90' 
-                        : 'bg-muted hover:bg-muted/80'
+                        : 'bg-secondary hover:bg-secondary/80 border border-border'
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();

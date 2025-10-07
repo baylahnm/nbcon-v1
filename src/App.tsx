@@ -10,6 +10,10 @@ import { NewAuthFlow } from "@/pages/2-auth/others/features/auth/components/NewA
 import NewRoleRouter from "@/pages/2-auth/others/features/auth/components/NewRoleRouter";
 import NotFound from "@/pages/9-NotFound";
 import { AuthCallback } from "@/pages/1-HomePage/others/components/auth/AuthCallback";
+import ClientSignup from "@/pages/2-auth/signup/ClientSignup";
+import EngineerSignup from "@/pages/2-auth/signup/EngineerSignup";
+import EnterpriseSignup from "@/pages/2-auth/signup/EnterpriseSignup";
+import AdminSignup from "@/pages/2-auth/signup/AdminSignup";
 
 const queryClient = new QueryClient();
 
@@ -30,11 +34,11 @@ const App = () => (
           <Route path="/auth/account-type" element={<AccountTypeSelection />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           
-          {/* Signup Routes - TODO: Implement these */}
-          <Route path="/signup/client" element={<div>Client Signup - Coming Soon</div>} />
-          <Route path="/signup/engineer" element={<div>Engineer Signup - Coming Soon</div>} />
-          <Route path="/signup/enterprise" element={<div>Enterprise Signup - Coming Soon</div>} />
-          <Route path="/signup/admin" element={<div>Admin Signup - Coming Soon</div>} />
+          {/* Signup Routes */}
+          <Route path="/signup/client" element={<ClientSignup />} />
+          <Route path="/signup/engineer" element={<EngineerSignup />} />
+          <Route path="/signup/enterprise" element={<EnterpriseSignup />} />
+          <Route path="/signup/admin" element={<AdminSignup />} />
           
           {/* Mount the new role-aware router */}
           <Route path="/*" element={<NewRoleRouter />} />
