@@ -64,7 +64,7 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="platform-name">Platform Name</Label>
-                  <Input id="platform-name" defaultValue="nbcon Pro" />
+                  <Input id="platform-name" defaultValue="nbcon" />
                 </div>
                 <div>
                   <Label htmlFor="platform-description">Platform Description</Label>
@@ -72,7 +72,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <Label htmlFor="support-email">Support Email</Label>
-                  <Input id="support-email" type="email" defaultValue="support@nbcon.com" />
+                  <Input id="support-email" type="email" defaultValue="support@nbcon.app" />
                 </div>
                 <div>
                   <Label htmlFor="contact-phone">Contact Phone</Label>

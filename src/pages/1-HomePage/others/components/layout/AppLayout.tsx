@@ -65,7 +65,7 @@ export function AppLayout({
             <span className="text-2xl font-bold text-primary-foreground">nb</span>
           </div>
           <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
-          <p className="text-muted-foreground">Loading nbcon...</p>
+          <p className="text-muted-foreground">Loading nbocn...</p>
         </div>
       </div>;
   }
@@ -82,7 +82,7 @@ export function AppLayout({
               <div className="flex items-center gap-3">
                 <SidebarTrigger />
                 <div>
-                  <h1 className="text-lg font-bold">nbcon</h1>
+                  <h1 className="text-lg font-bold">nbocn</h1>
                   <p className="text-muted-foreground capitalize text-xs">
                     {profile.role} Dashboard
                   </p>

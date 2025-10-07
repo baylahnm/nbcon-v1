@@ -1,4 +1,4 @@
-// Stripe configuration for nbcon Pro
+// Stripe configuration for nbcon
 export const STRIPE_CONFIG = {
   // These should be set in your environment variables
   publishableKey: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '',

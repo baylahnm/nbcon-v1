@@ -2,7 +2,7 @@
 
 ## 🎯 **Complete Account Isolation Achieved**
 
-The NBCON Pro project has been completely reorganized with a clean, account-specific architecture that provides **complete isolation** between different user roles.
+The nbcon project has been completely reorganized with a clean, account-specific architecture that provides **complete isolation** between different user roles.
 
 ## 🏗️ **Current Architecture**
 

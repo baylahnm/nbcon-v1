@@ -1,10 +1,10 @@
-# 🏗️ nbcon Pro - Saudi Engineering Network
+# 🏗️ nbcon - Saudi Engineering Network
 
 **The Kingdom's First Comprehensive Digital Ecosystem for Professional Engineering Services**
 
 ## 🎯 **About**
 
-nbcon Pro is a revolutionary engineering marketplace platform designed specifically for Saudi Arabia's engineering sector. It combines Uber's on-demand convenience with LinkedIn's professional networking capabilities, connecting certified engineers with clients through AI-powered matching.
+nbocn is a revolutionary engineering marketplace platform designed specifically for Saudi Arabia's engineering sector. It combines Uber's on-demand convenience with LinkedIn's professional networking capabilities, connecting certified engineers with clients through AI-powered matching.
 
 ## 🚀 **Key Features**
 

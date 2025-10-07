@@ -186,7 +186,7 @@ export default function PricingSection6() {
           customVariants={revealVariants}
           className="text-muted-foreground"
         >
-          Get started with nbcon Pro—the Saudi-first engineering marketplace—for fast hiring, secure payments, and compliant operations.
+          Get started with nbocn—the Saudi-first engineering marketplace—for fast hiring, secure payments, and compliant operations.
         </TimelineContent>
 
         <TimelineContent

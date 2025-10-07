@@ -183,7 +183,7 @@ const HomePage = () => {
       },
       hero: {
         title: 'Hire SCE-verified engineers in minutes.',
-        subtitle: 'nbcon is Saudi Arabia\'s engineering marketplace—AI matching, milestone escrow, ZATCA e-invoicing, and bilingual workflows for every project phase.',
+        subtitle: 'nbocn is Saudi Arabia\'s engineering marketplace—AI matching, milestone escrow, ZATCA e-invoicing, and bilingual workflows for every project phase.',
         browse: 'Browse Engineers',
         features: ['SCE verification', 'Geofenced check-ins', 'Arabic/English', 'PDPL-ready'],
         microcopy: 'No credit card required. Cancel anytime.'
@@ -224,7 +224,7 @@ const HomePage = () => {
           title: 'For Engineers',
           links: ['Browse Jobs', 'Profile Setup', 'Verification', 'Resources']
         },
-        copyright: '© 2024 nbcon. All rights reserved.'
+        copyright: '© 2024 nbocn. All rights reserved.'
       }
     },
     ar: {
@@ -246,7 +246,7 @@ const HomePage = () => {
       },
       trust: {
         title: 'موثوق به من قبل الشركات الرائدة',
-        subtitle: 'انضم إلى آلاف العملاء الراضين الذين يثقون في nbcon لاحتياجاتهم الهندسية'
+        subtitle: 'انضم إلى آلاف العملاء الراضين الذين يثقون في nbocn لاحتياجاتهم الهندسية'
       },
       dashboard: {
         title: 'إدارة المشاريع الكاملة',
@@ -280,7 +280,7 @@ const HomePage = () => {
           title: 'للمهندسين',
           links: ['تصفح الوظائف', 'إعداد الملف', 'التحقق', 'الموارد']
         },
-        copyright: '© 2024 nbcon. جميع الحقوق محفوظة.'
+        copyright: '© 2024 nbocn. جميع الحقوق محفوظة.'
       }
     }
   };

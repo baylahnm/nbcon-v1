@@ -76,7 +76,7 @@ export interface ServicePlanResponse {
 
 class AiClient {
   private baseUrl = process.env.NODE_ENV === 'production'
-    ? 'https://api.nbcon.sa/ai'
+    ? 'https://api.nbcon.app/ai'
     : 'http://localhost:54321/functions/v1';
 
   private async buildAuthHeaders(additional: HeadersInit = {}): Promise<HeadersInit> {

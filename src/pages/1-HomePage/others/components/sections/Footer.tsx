@@ -35,7 +35,7 @@ const Footer: React.FC<FooterProps> = ({
       title: 'For Engineers',
       links: ['Browse Jobs', 'Profile Setup', 'Verification', 'Resources']
     },
-    copyright: '© 2024 nbcon. All rights reserved.'
+    copyright: '© 2024 nbocn. All rights reserved.'
   }
 }) => {
   return (

@@ -67,7 +67,7 @@ export function AuthGuard({ children, requiredRole, redirectTo }: AuthGuardProps
             <span className="text-2xl font-bold text-primary-foreground">nb</span>
           </div>
           <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-muted-foreground">Loading nbcon Pro...</p>
+          <p className="text-muted-foreground">Loading nbcon...</p>
         </div>
       </div>
     );

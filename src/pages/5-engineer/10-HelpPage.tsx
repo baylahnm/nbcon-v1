@@ -335,7 +335,7 @@ export default function HelpPage() {
                   <div className="flex-1">
                     <h3 className="font-semibold">Email Support</h3>
                     <p className="text-sm text-muted-foreground">Send us a detailed message</p>
-                    <p className="text-xs text-muted-foreground">support@nbcon.com</p>
+                    <p className="text-xs text-muted-foreground">support@nbcon.app</p>
                   </div>
                   <Button size="sm" variant="outline">Send Email</Button>
                 </div>

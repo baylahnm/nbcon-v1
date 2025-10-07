@@ -1,10 +1,10 @@
-# 📚 1-NBCON Pro Documentation
+# 📚 1-nbocn Documentation
 
-Welcome to the nbcon Pro project documentation! This document provides an overview of the current project structure and organization.
+Welcome to the nbocn project documentation! This document provides an overview of the current project structure and organization.
 
 ## 🎯 **Project Overview**
 
-NBCON Pro is a comprehensive engineering services platform that connects clients with qualified engineers across Saudi Arabia. The platform supports four main user roles:
+nbocn is a comprehensive engineering services platform that connects clients with qualified engineers across Saudi Arabia. The platform supports four main user roles:
 
 - **Engineers** - Individual professionals offering engineering services
 - **Clients** - Companies and individuals seeking engineering services  
