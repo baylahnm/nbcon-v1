@@ -1,0 +1,69 @@
+.star-border-container {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.border-gradient-bottom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    var(--star-color, white),
+    transparent,
+    var(--star-color, white),
+    transparent
+  );
+  background-size: 200% 200%;
+  animation: star-movement-bottom var(--star-speed, 6s) linear infinite;
+  z-index: 1;
+}
+
+.border-gradient-top {
+  position: absolute;
+  top: var(--star-thickness, 1px);
+  left: var(--star-thickness, 1px);
+  right: var(--star-thickness, 1px);
+  bottom: var(--star-thickness, 1px);
+  background: linear-gradient(
+    135deg,
+    transparent,
+    var(--star-color, white),
+    transparent,
+    var(--star-color, white),
+    transparent
+  );
+  background-size: 200% 200%;
+  animation: star-movement-top var(--star-speed, 6s) linear infinite reverse;
+  z-index: 2;
+}
+
+.inner-content {
+  position: relative;
+  z-index: 3;
+  background: inherit;
+  border-radius: inherit;
+}
+
+@keyframes star-movement-bottom {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+@keyframes star-movement-top {
+  0% {
+    background-position: 200% 200%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}

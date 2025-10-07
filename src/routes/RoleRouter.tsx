@@ -1,61 +1,61 @@
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useAuthStore } from "@/stores/auth";
-import { ROLE_BASE, UserRole } from "@/lib/auth/role";
-import EngineerLayout from "@/layouts/EngineerLayout";
-import ClientLayout from "@/layouts/ClientLayout";
+import { useAuthStore } from "@/pages/1-HomePage/others/stores/auth";
+import { ROLE_BASE, UserRole } from "@/pages/1-HomePage/others/lib/auth/role";
+import EngineerLayout from "@/pages/2-auth/others/layouts/EngineerLayout";
+import ClientLayout from "@/pages/2-auth/others/layouts/ClientLayout";
 import React from "react";
-const EnterpriseLayout = React.lazy(() => import("@/layouts/EnterpriseLayout"));
-import AdminLayout from "@/layouts/AdminLayout";
-import EngineerDashboard from "@/pages/dashboard/EngineerDashboard";
-import ClientDashboardPage from "@/pages/client/DashboardPage";
-import BrowseEngineers from "@/pages/browse/BrowseEngineers";
-import CreateJob from "@/pages/jobs/CreateJob";
-import JobsList from "@/pages/jobs/JobsList";
-import CheckIn from "@/pages/engineer/CheckIn";
-import UploadDeliverable from "@/pages/jobs/UploadDeliverable";
-import JobDetails from "@/pages/jobs/JobDetails";
-import { MessagingPage } from "@/pages/messaging/MessagingPage";
-import ClientMessagesPage from "@/pages/client/MessagesPage";
-import SettingsPage from "@/pages/settings/SettingsPage";
-import ProfilePage from "@/pages/settings/ProfilePage";
-import ClientSettingsPage from "@/pages/client/SettingsPage";
-import ClientProfilePage from "@/pages/client/ProfilePage";
-import VerificationPage from "@/pages/settings/VerificationPage";
-import ThemePage from "@/pages/settings/ThemePage";
-import HelpPage from "@/pages/support/HelpPage";
-import MyNetwork from "@/pages/network/MyNetwork";
-import CalendarPage from "@/pages/calendar/CalendarPage";
-import LearningPage from "@/pages/learning/LearningPage";
-import { ChatPage } from "@/features/ai/ChatPage";
-import { PaymentsContent } from "@/features/finance/components/PaymentsContent";
-import RankingPage from "@/pages/engineer/RankingPage";
-import EngineerSettingsPage from "@/pages/engineer/SettingsPage";
-import { DashboardPage as EnterpriseDashboardPage } from "@/pages/enterprise/DashboardPage";
-import { TeamProjectsPage } from "@/pages/enterprise/TeamProjectsPage";
+const EnterpriseLayout = React.lazy(() => import("@/pages/2-auth/others/layouts/EnterpriseLayout"));
+import AdminLayout from "@/pages/2-auth/others/layouts/AdminLayout";
+import EngineerDashboard from "@/pages/5-engineer/others/features/dashboard/routes/EngineerDashboard";
+import ClientDashboardPage from "@/pages/4-client/1-DashboardPage";
+import BrowseEngineers from "@/pages/4-client/3-BrowseEngineersPage";
+import CreateJob from "@/pages/4-client/others/features/jobs/CreateJob";
+import JobsList from "@/pages/5-engineer/others/features/jobs/JobsList";
+import CheckIn from "@/pages/5-engineer/12-CheckIn";
+import UploadDeliverable from "@/pages/5-engineer/others/features/deliverables/UploadDeliverableContent";
+import JobDetails from "@/pages/5-engineer/others/features/jobs/JobDetails";
+import { MessagingPage } from "@/pages/5-engineer/4-MessagesPage";
+import ClientMessagesPage from "@/pages/4-client/9-MessagesPage";
+import SettingsPage from "@/pages/5-engineer/11-SettingsPage";
+import ProfilePage from "@/pages/5-engineer/others/features/profile/ProfilePage";
+import ClientSettingsPage from "@/pages/4-client/12-SettingsPage";
+import ClientProfilePage from "@/pages/4-client/2-ProfilePage";
+import VerificationPage from "@/pages/5-engineer/others/features/settings/VerificationPage";
+import ThemePage from "@/pages/5-engineer/others/features/settings/ThemePage";
+import HelpPage from "@/pages/5-engineer/10-HelpPage";
+import MyNetwork from "@/pages/5-engineer/6-NetworkPage";
+import CalendarPage from "@/pages/5-engineer/3-CalendarPage";
+import LearningPage from "@/pages/5-engineer/7-LearningPage";
+import { ChatPage } from "@/pages/5-engineer/others/features/ai/ChatPage";
+import { PaymentsContent } from "@/pages/6-enterprise/others/features/finance/components/PaymentsContent";
+import RankingPage from "@/pages/5-engineer/13-RankingPage";
+import EngineerSettingsPage from "@/pages/5-engineer/11-SettingsPage";
+import { DashboardPage as EnterpriseDashboardPage } from "@/pages/6-enterprise/1-DashboardPage";
+import { TeamProjectsPage } from "@/pages/6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
-  import("@/pages/enterprise/AnalyticsPage").then((m) => ({ default: m.AnalyticsPage }))
+  import("@/pages/6-enterprise/5-AnalyticsPage").then((m) => ({ default: m.AnalyticsPage }))
 );
-import { EmployersPage } from "@/pages/enterprise/EmployersPage";
+import { EmployersPage } from "@/pages/6-enterprise/others/features/employers/EmployersPage";
 const ProcurementPage = React.lazy(() =>
-  import("@/pages/enterprise/ProcurementPage").then((m) => ({ default: m.ProcurementPage }))
+  import("@/pages/6-enterprise/7-ProcurementPage").then((m) => ({ default: m.ProcurementPage }))
 );
-import { PerformancePage } from "@/pages/enterprise/PerformancePage";
-import { VendorsPage } from "@/pages/enterprise/VendorsPage";
+import { PerformancePage } from "@/pages/6-enterprise/others/features/performance/PerformancePage";
+import { VendorsPage } from "@/pages/6-enterprise/others/features/vendors/VendorsPage";
 const FinancePage = React.lazy(() =>
-  import("@/pages/enterprise/FinancePage").then((m) => ({ default: m.FinancePage }))
+  import("@/pages/6-enterprise/6-FinancePage").then((m) => ({ default: m.FinancePage }))
 );
-import { HelpPage as EnterpriseHelpPage } from "@/pages/enterprise/HelpPage";
-import { SettingsPage as EnterpriseSettingsPage } from "@/pages/enterprise/SettingsPage";
-import { ProfilePage as EnterpriseProfilePage } from "@/pages/enterprise/ProfilePage";
-import { MessagesPage as EnterpriseMessagesPage } from "@/pages/enterprise/MessagesPage";
-import { AIAssistantPage } from "@/pages/enterprise/AIAssistantPage";
-import { CalendarPage as EnterpriseCalendarPage } from "@/pages/enterprise/CalendarPage";
-import PostProjectPage from "@/pages/enterprise/PostProjectPage";
-import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
-import RouteFallback from "@/components/RouteFallback";
-import Forbidden from "@/pages/Forbidden";
-import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
+import { HelpPage as EnterpriseHelpPage } from "@/pages/6-enterprise/11-HelpPage";
+import { SettingsPage as EnterpriseSettingsPage } from "@/pages/6-enterprise/12-SettingsPage";
+import { ProfilePage as EnterpriseProfilePage } from "@/pages/6-enterprise/others/features/profile/ProfilePage";
+import { MessagesPage as EnterpriseMessagesPage } from "@/pages/6-enterprise/others/features/messages/MessagesPage";
+import { AIAssistantPage } from "@/pages/6-enterprise/9-AIAssistantPage";
+import { CalendarPage as EnterpriseCalendarPage } from "@/pages/6-enterprise/3-CalendarPage";
+import PostProjectPage from "@/pages/6-enterprise/others/features/projects/PostProjectPage";
+import { RouteErrorBoundary } from "@/pages/1-HomePage/others/app/routing/RouteErrorBoundary";
+import RouteFallback from "@/pages/1-HomePage/others/app/routing/RouteFallback";
+import Forbidden from "@/pages/7-Forbidden";
+import AdminDashboardPage from "@/pages/3-admin/1-AdminDashboardPage";
 
 export function useActiveRole(): UserRole | null {
   const { profile } = useAuthStore();

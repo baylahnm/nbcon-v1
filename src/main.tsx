@@ -2,8 +2,8 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
 import "./index.css";
-import { initializeAuth } from "@/stores/auth";
-import { useThemeStore } from "@/stores/theme";
+import { initializeAuth } from "@/pages/1-HomePage/others/stores/auth";
+import { useThemeStore } from "@/pages/1-HomePage/others/stores/theme";
 
 // Initialize authentication
 initializeAuth();

@@ -4,7 +4,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/components": ["./src/pages/1-HomePage/others/components"],
+      "@/lib": ["./src/pages/1-HomePage/others/lib"],
+      "@/stores": ["./src/pages/1-HomePage/others/stores"],
+      "@/types": ["./src/pages/1-HomePage/others/types"],
+      "@/utils": ["./src/pages/1-HomePage/others/utils"],
+      "@/integrations": ["./src/pages/1-HomePage/others/integrations"]
     },
     "noImplicitAny": false,
     "noUnusedParameters": false,

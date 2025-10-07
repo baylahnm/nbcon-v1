@@ -1,0 +1,84 @@
+{
+  "en": {
+    "title": "Dashboard",
+    "kpi": {
+      "nearbyJobs": "Nearby Jobs",
+      "pendingQuotes": "Pending Quotes",
+      "inProgress": "In Progress",
+      "earningsMtd": "Earnings (MTD)",
+      "activeJobs": "Active Jobs",
+      "awaitingQuotes": "Awaiting Quotes",
+      "inReview": "In Review",
+      "spendMtd": "Spend (MTD)",
+      "gmv": "GMV",
+      "takeRate": "Take Rate",
+      "onTime": "On-time",
+      "utilization": "Utilization",
+      "dau": "DAU",
+      "tenants": "New Tenants",
+      "revenue": "Revenue",
+      "uptime": "Uptime"
+    },
+    "cards": {
+      "jobsNear": "Jobs Near You",
+      "nextMilestones": "Next Milestones Due",
+      "escrowEarnings": "Escrow & Earnings",
+      "activity": "Activity & Alerts",
+      "awaitingQuotes": "Awaiting Quotes",
+      "timeline": "Timeline: Upcoming",
+      "escrowInvoices": "Escrow & Invoices",
+      "recommended": "Recommended Engineers",
+      "portfolio": "Portfolio At-a-Glance",
+      "finance": "Finance: Cashflow",
+      "workforce": "Workforce Utilization",
+      "compliance": "Compliance & Risk",
+      "verification": "Verification"
+    },
+    "empty": {
+      "setArea": "Define your service area to see nearby jobs.",
+      "createFirstJob": "Start by creating your first job.",
+      "noData": "No data yet."
+    }
+  },
+  "ar": {
+    "title": "لوحة التحكم",
+    "kpi": {
+      "nearbyJobs": "وظائف قريبة",
+      "pendingQuotes": "عروض قيد الانتظار",
+      "inProgress": "قيد التنفيذ",
+      "earningsMtd": "الأرباح (منذ بداية الشهر)",
+      "activeJobs": "وظائف نشطة",
+      "awaitingQuotes": "بانتظار العروض",
+      "inReview": "قيد المراجعة",
+      "spendMtd": "الإنفاق (منذ بداية الشهر)",
+      "gmv": "إجمالي قيمة المعاملات",
+      "takeRate": "نسبة العمولة",
+      "onTime": "في الموعد",
+      "utilization": "نسبة الاستغلال",
+      "dau": "المستخدمون النشطون",
+      "tenants": "عملاء جدد",
+      "revenue": "الإيرادات",
+      "uptime": "التوافر"
+    },
+    "cards": {
+      "jobsNear": "وظائف قريبة منك",
+      "nextMilestones": "المراحل المستحقة",
+      "escrowEarnings": "الضمان والأرباح",
+      "activity": "النشاط والتنبيهات",
+      "awaitingQuotes": "بانتظار العروض",
+      "timeline": "الجدول الزمني: القادم",
+      "escrowInvoices": "الضمان والفواتير",
+      "recommended": "مهندسون موصى بهم",
+      "portfolio": "لمحة عن المحفظة",
+      "finance": "المالية: التدفقات",
+      "workforce": "استغلال القوى العاملة",
+      "compliance": "الامتثال والمخاطر",
+      "verification": "التحقق"
+    },
+    "empty": {
+      "setArea": "حدّد نطاق خدمتك لعرض الوظائف القريبة.",
+      "createFirstJob": "ابدأ بإنشاء أول وظيفة.",
+      "noData": "لا توجد بيانات بعد."
+    }
+  }
+}

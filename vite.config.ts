@@ -13,6 +13,14 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@/components": path.resolve(__dirname, "./src/pages/1-HomePage/others/components"),
+      "@/lib": path.resolve(__dirname, "./src/pages/1-HomePage/others/lib"),
+      "@/stores": path.resolve(__dirname, "./src/pages/1-HomePage/others/stores"),
+      "@/types": path.resolve(__dirname, "./src/pages/1-HomePage/others/types"),
+      "@/utils": path.resolve(__dirname, "./src/pages/1-HomePage/others/utils"),
+      "@/integrations": path.resolve(__dirname, "./src/pages/1-HomePage/others/integrations"),
+      // Legacy support for files that haven't been updated yet
+      "@/components/ui": path.resolve(__dirname, "./src/pages/1-HomePage/others/components/ui"),
     },
   },
 }));

@@ -1,15 +1,15 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/pages/1-HomePage/others/components/ui/toaster";
+import { Toaster as Sonner } from "@/pages/1-HomePage/others/components/ui/sonner";
+import { TooltipProvider } from "@/pages/1-HomePage/others/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Index from "@/pages/Index";
-import HomePage from "@/pages/HomePage";
-import AccountTypeSelection from "@/features/auth/pages/AccountTypeSelection";
-import { NewAuthFlow } from "@/features/auth/components/NewAuthFlow";
-import NewRoleRouter from "@/features/auth/components/NewRoleRouter";
-import NotFound from "./pages/NotFound";
-import { AuthCallback } from "@/components/auth/AuthCallback";
+import Index from "@/pages/8-index";
+import HomePage from "@/pages/1-HomePage/HomePage";
+import AccountTypeSelection from "@/pages/2-auth/others/features/auth/pages/AccountTypeSelection";
+import { NewAuthFlow } from "@/pages/2-auth/others/features/auth/components/NewAuthFlow";
+import NewRoleRouter from "@/pages/2-auth/others/features/auth/components/NewRoleRouter";
+import NotFound from "@/pages/9-NotFound";
+import { AuthCallback } from "@/pages/1-HomePage/others/components/auth/AuthCallback";
 
 const queryClient = new QueryClient();
 
