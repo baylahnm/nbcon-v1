@@ -16,7 +16,7 @@ import {
   Languages,
   Briefcase
 } from "lucide-react";
-import { supabase } from "../../integrations/supabase/client";
+import { supabase } from "@/shared/supabase/client";
 import { useToast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -198,36 +198,16 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
       });
 
       if (authError) {
-        // If user doesn't exist, try to create account
+        // Show clear error message for invalid credentials
         if (authError.message.includes('Invalid login credentials')) {
-          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-            email: loginData.email,
-            password: loginData.password,
-          });
-
-          if (signUpError) {
-            throw signUpError;
-          }
-
-          if (signUpData.user) {
-            // User created successfully, proceed to role selection
-            const newUser: Partial<AuthenticatedUser> = {
-              id: signUpData.user.id,
-              email: signUpData.user.email || loginData.email,
-              name: signUpData.user.email?.split('@')[0] || 'User',
-              isVerified: signUpData.user.email_confirmed_at ? true : false,
-              language: language,
-              avatar: 'user-default'
-            };
-
-            onNeedOTPVerification(newUser, 'email');
-            setIsLoading(false);
-            return;
-          }
-        } else {
-          throw authError;
+          throw new Error(language === 'ar' 
+            ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة. ليس لديك حساب؟ قم بالتسجيل أدناه.' 
+            : 'Invalid email or password. Don\'t have an account? Sign up below.');
         }
-      } else if (authData.user) {
+        throw authError;
+      }
+      
+      if (authData.user) {
         // Login successful, check if profile exists
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -453,13 +433,31 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
       return;
     }
 
-    // Simulate API call
+    // Send OTP via Supabase
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Sign up with Supabase
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email: signupData.email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            name: signupData.name,
+            phone: signupData.phone,
+            location: signupData.location,
+            company: signupData.company,
+            sce_number: signupData.sceNumber,
+            language: signupData.language,
+          }
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
       
       // For new users, redirect to OTP verification
       const partialUser: Partial<AuthenticatedUser> = {
-        id: 'a938012d-b35b-40ab-91d4-bcbd5678216a', // Valid UUID format
+        id: 'temp-id', // Will be replaced after verification
         email: signupData.email,
         name: signupData.name,
         phone: signupData.phone,
@@ -470,8 +468,14 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
         isVerified: false
       };
 
-      // Determine OTP method based on available data
-      const otpMethod = signupData.phone ? 'sms' : 'email';
+      // OTP sent via email
+      const otpMethod = 'email';
+      
+      toast({
+        title: language === 'ar' ? 'تم إرسال الرمز' : 'Code Sent',
+        description: language === 'ar' ? 'تم إرسال رمز التحقق إلى بريدك الإلكتروني' : 'Verification code sent to your email',
+      });
+      
       onNeedOTPVerification(partialUser, otpMethod);
     } catch (error) {
       setErrors({ 

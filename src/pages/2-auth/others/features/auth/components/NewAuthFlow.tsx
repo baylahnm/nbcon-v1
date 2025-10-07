@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../../stores/auth';
 import { getLandingPage, getEffectiveRole } from '../lib/role-resolution';
-import { supabase } from '../../../integrations/supabase/client';
+import { supabase } from '@/shared/supabase/client';
 import { AuthContent } from '../../../../../1-HomePage/others/components/auth/AuthContent';
 import VerifyOTPContent from '../../../../../1-HomePage/others/components/auth/VerifyOTPContent';
+import { useToast } from '../../../../../1-HomePage/others/components/ui/use-toast';
 
 interface AuthenticatedUser {
   id: string;
@@ -26,6 +27,7 @@ export function NewAuthFlow() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, user, profile } = useAuthStore();
+  const { toast } = useToast();
   
   const [currentStep, setCurrentStep] = useState<AuthStep>('auth');
   const [currentUser, setCurrentUser] = useState<Partial<AuthenticatedUser> | null>(null);
@@ -166,15 +168,58 @@ export function NewAuthFlow() {
     navigate('/home');
   };
 
+  const handleResendOTP = async () => {
+    if (!currentUser?.email) {
+      toast({
+        title: 'Error',
+        description: 'No email address found. Please start over.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: currentUser.email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            name: currentUser.name,
+            phone: currentUser.phone,
+            location: currentUser.location,
+            company: currentUser.company,
+            sce_number: currentUser.sceNumber,
+            language: currentUser.language,
+          }
+        }
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: 'Code Sent',
+        description: 'A new verification code has been sent to your email'
+      });
+    } catch (error: any) {
+      console.error('Resend OTP error:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to resend code. Please try again.',
+        variant: 'destructive'
+      });
+    }
+  };
+
   // Render appropriate step
   switch (currentStep) {
     case 'verify-otp':
       return (
         <VerifyOTPContent
           user={currentUser}
-          method={otpMethod}
-          onVerified={handleOTPVerified}
+          otpMethod={otpMethod}
+          onOTPVerified={handleOTPVerified}
           onBack={() => setCurrentStep('auth')}
+          onResendOTP={handleResendOTP}
         />
       );
 

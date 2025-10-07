@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/shared/supabase/client';
 import { AuthenticatedUser } from '../../../stores/auth';
 
 export interface ProfileData {

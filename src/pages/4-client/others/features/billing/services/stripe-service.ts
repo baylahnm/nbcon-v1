@@ -1,6 +1,6 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { STRIPE_CONFIG, STRIPE_PRODUCTS, STRIPE_ERROR_MESSAGES } from './stripe-config';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/shared/supabase/client';
 
 // Initialize Stripe
 let stripePromise: Promise<Stripe | null> | null = null;

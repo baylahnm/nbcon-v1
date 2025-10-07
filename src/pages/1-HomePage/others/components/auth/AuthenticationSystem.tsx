@@ -4,7 +4,7 @@ import { AuthContent } from "./AuthContent";
 import VerifyOTPContent from "./VerifyOTPContent";
 import { RoleSelection } from "./RoleSelection";
 import { ProfileSetup } from "./ProfileSetup";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/shared/supabase/client";
 
 interface AuthenticatedUser {
   id: string;

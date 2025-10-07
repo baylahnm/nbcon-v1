@@ -30,7 +30,7 @@ import { Link } from "react-router-dom";
 import { R } from '../../../../../1-HomePage/others/lib/routes';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../../1-HomePage/others/components/ui/tabs';
 import { useAuthStore } from "../../../stores/auth";
-import { supabase } from '../../../../../1-HomePage/others/integrations/supabase/client';
+import { supabase } from '@/shared/supabase/client';
 import { useThemeStore } from "../../../stores/theme";
 import {
   DropdownMenu,

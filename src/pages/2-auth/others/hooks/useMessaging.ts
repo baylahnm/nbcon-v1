@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/shared/supabase/client";
 import { useAuthStore } from "../../stores/auth";
 import { toast } from "sonner";
 

@@ -10,7 +10,7 @@ import {
   RefreshCw,
   Languages
 } from "lucide-react";
-import { supabase } from "../../integrations/supabase/client";
+import { supabase } from "@/shared/supabase/client";
 import { useToast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

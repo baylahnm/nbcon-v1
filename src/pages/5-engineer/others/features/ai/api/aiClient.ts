@@ -1,4 +1,4 @@
-import { supabase } from '../../../../../1-HomePage/others/integrations/supabase/client';
+import { supabase } from '@/shared/supabase/client';
 // AI service config - placeholder for now
 const SERVICE_MODES = ['openai', 'anthropic', 'local'] as const;
 type ServiceMode = typeof SERVICE_MODES[number];

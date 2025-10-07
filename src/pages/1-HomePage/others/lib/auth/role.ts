@@ -1,4 +1,4 @@
-import { supabase } from "../../integrations/supabase/client";
+import { supabase } from "@/shared/supabase/client";
 
 export type UserRole = "engineer" | "client" | "enterprise" | "admin";
 

@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/shared/supabase/client';
 import { DashboardLayout } from '../types/widget';
 
 export class DashboardApi {

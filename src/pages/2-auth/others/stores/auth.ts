@@ -1,5 +1,6 @@
 ﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from '@/shared/supabase/client';
 
 const STORAGE_KEY = 'nbcon_user';
 
@@ -157,6 +158,9 @@ export const useAuthStore = create<AuthState>()(
       },
 
       signOut: async () => {
+        // Sign out from Supabase
+        await supabase.auth.signOut();
+        // Clear local auth state
         get().logout();
       },
 
@@ -287,7 +291,109 @@ export const initializeAuth = () => {
   }
 
   setLoading(true);
-  syncFromStorage();
+  
+  // Check for existing Supabase session first
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session?.user) {
+      // User has active Supabase session - fetch profile
+      supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .single()
+        .then(({ data: profile, error }) => {
+          if (profile && !error) {
+            const user: AuthenticatedUser = {
+              id: session.user.id,
+              email: session.user.email || '',
+              name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'User',
+              role: profile.role,
+              isVerified: !!session.user.email_confirmed_at,
+              location: `${profile.location_city || ''}, ${profile.location_region || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || '',
+              phone: profile.phone || '',
+              language: (profile.preferred_language as 'ar' | 'en') || 'en',
+              avatar: profile.avatar_url || '',
+              source: 'supabase'
+            };
+            
+            setUser(user);
+            setLoading(false);
+            setInitialized(true);
+          } else {
+            // No profile found, fall back to localStorage
+            syncFromStorage();
+          }
+        });
+    } else {
+      // No Supabase session, check localStorage
+      syncFromStorage();
+    }
+  });
+
+  // Listen to Supabase auth state changes
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    async (event, session) => {
+      console.log('Supabase auth state changed:', event);
+      
+      if (event === 'SIGNED_IN' && session?.user) {
+        // User signed in - fetch profile and update store
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (profile && !error) {
+          const user: AuthenticatedUser = {
+            id: session.user.id,
+            email: session.user.email || '',
+            name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'User',
+            role: profile.role,
+            isVerified: !!session.user.email_confirmed_at,
+            location: `${profile.location_city || ''}, ${profile.location_region || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || '',
+            phone: profile.phone || '',
+            language: (profile.preferred_language as 'ar' | 'en') || 'en',
+            avatar: profile.avatar_url || '',
+            source: 'supabase'
+          };
+          
+          setUser(user);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        // User signed out - clear store
+        setUser(null);
+      } else if (event === 'TOKEN_REFRESHED') {
+        // Token refreshed - session still valid
+        console.log('Session token refreshed');
+      } else if (event === 'USER_UPDATED') {
+        // User data updated - refresh profile
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+          
+          if (profile) {
+            const user: AuthenticatedUser = {
+              id: session.user.id,
+              email: session.user.email || '',
+              name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'User',
+              role: profile.role,
+              isVerified: !!session.user.email_confirmed_at,
+              location: `${profile.location_city || ''}, ${profile.location_region || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || '',
+              phone: profile.phone || '',
+              language: (profile.preferred_language as 'ar' | 'en') || 'en',
+              avatar: profile.avatar_url || '',
+              source: 'supabase'
+            };
+            
+            setUser(user);
+          }
+        }
+      }
+    }
+  );
 
   const handleStorage = (event: StorageEvent) => {
     if (event.key === STORAGE_KEY) {
@@ -299,5 +405,6 @@ export const initializeAuth = () => {
 
   return () => {
     window.removeEventListener('storage', handleStorage);
+    subscription.unsubscribe();
   };
 };
