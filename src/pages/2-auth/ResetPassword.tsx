@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNamespace } from "@/pages/1-HomePage/others/lib/i18n/useNamespace";
 import { supabase } from "@/shared/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AuthLayout } from "@/components/auth/AuthLayout";
@@ -12,6 +14,10 @@ export default function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const ready = useNamespace(['auth', 'common']);
+  const { t } = useTranslation(['auth', 'common']);
+
+  if (!ready) return null;
   
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

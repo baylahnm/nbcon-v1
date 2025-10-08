@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import i18n from "../../lib/i18n/i18n";
 import { 
   Eye, 
   EyeOff, 
@@ -119,8 +121,22 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
-  const [language, setLanguage] = useState<'ar' | 'en'>('en');
   const { toast } = useToast();
+  const { t } = useTranslation('common');
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
+  // Listen for language changes
+  useEffect(() => {
+    const handleLanguageChange = (lng: string) => {
+      setCurrentLanguage(lng);
+    };
+    
+    i18n.on('languageChanged', handleLanguageChange);
+    return () => i18n.off('languageChanged', handleLanguageChange);
+  }, []);
+
+  // For backward compatibility with existing hardcoded translations
+  const language = currentLanguage;
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -507,7 +523,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
             >
               <ArrowRight className="w-4 h-4 rotate-180" />
-              {language === 'ar' ? 'رجوع' : 'Back'}
+              {currentLanguage === 'ar' ? 'رجوع' : 'Back'}
             </Button>
           </div>
         )}
@@ -516,17 +532,17 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
         <div className="flex justify-center mb-6">
           <div className="flex items-center gap-2 bg-card border border-sidebar-border rounded-lg p-1">
             <Button
-              variant={language === 'en' ? 'default' : 'ghost'}
+              variant={currentLanguage === 'en' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setLanguage('en')}
+              onClick={() => i18n.changeLanguage('en')}
               className="text-sm"
             >
               English
             </Button>
             <Button
-              variant={language === 'ar' ? 'default' : 'ghost'}
+              variant={currentLanguage === 'ar' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setLanguage('ar')}
+              onClick={() => i18n.changeLanguage('ar')}
               className="text-sm"
             >
               العربية

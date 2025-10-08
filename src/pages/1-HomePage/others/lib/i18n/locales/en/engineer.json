@@ -1,0 +1,109 @@
+{
+  "dashboard": {
+    "title": "Engineer Dashboard",
+    "subtitle": "Manage your jobs and earnings",
+    "welcome": "Welcome back",
+    "quickActions": "Quick Actions",
+    "browseJobs": "Browse Jobs",
+    "uploadDeliverable": "Upload Deliverable",
+    "checkIn": "Check In",
+    "stats": {
+      "activeJobs": "Active Jobs",
+      "totalEarnings": "Total Earnings",
+      "completedProjects": "Completed",
+      "rating": "Rating"
+    }
+  },
+  "jobs": {
+    "title": "Available Jobs",
+    "subtitle": "Find your next engineering project",
+    "search": "Search jobs...",
+    "filters": "Filters",
+    "specialization": "Specialization",
+    "location": "Location",
+    "budget": "Budget",
+    "deadline": "Deadline",
+    "apply": "Apply Now",
+    "details": "View Details"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "subtitle": "Project schedule and deadlines",
+    "today": "Today",
+    "week": "Week",
+    "month": "Month",
+    "milestones": "Milestones"
+  },
+  "deliverables": {
+    "title": "Upload Deliverable",
+    "subtitle": "Submit project work",
+    "project": "Select Project",
+    "milestone": "Milestone",
+    "files": "Upload Files",
+    "notes": "Notes",
+    "submit": "Submit Deliverable"
+  },
+  "checkIn": {
+    "title": "Geofenced Check-In",
+    "subtitle": "Verify your location at project site",
+    "location": "Current Location",
+    "project": "Project",
+    "status": "Status",
+    "checkIn": "Check In",
+    "checkOut": "Check Out"
+  },
+  "network": {
+    "title": "My Network",
+    "subtitle": "Clients and connections",
+    "clients": "Clients",
+    "connections": "Connections"
+  },
+  "learning": {
+    "title": "Learning Center",
+    "subtitle": "Professional development",
+    "courses": "Courses",
+    "certifications": "Certifications"
+  },
+  "ai": {
+    "title": "AI Assistant",
+    "subtitle": "Get engineering support",
+    "askQuestion": "Ask a technical question..."
+  },
+  "messages": {
+    "title": "Messages",
+    "subtitle": "Communicate with clients",
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "compose": "Compose"
+  },
+  "payments": {
+    "title": "Earnings",
+    "subtitle": "Payment history and withdrawals",
+    "totalEarnings": "Total Earnings",
+    "pending": "Pending",
+    "withdrawn": "Withdrawn",
+    "withdraw": "Withdraw"
+  },
+  "help": {
+    "title": "Help Center",
+    "subtitle": "Support and guides",
+    "faq": "FAQ",
+    "contact": "Contact Support"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Account preferences",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "payments": "Payment Settings",
+    "security": "Security"
+  },
+  "ranking": {
+    "title": "Engineer Rankings",
+    "subtitle": "Top performers on the platform",
+    "topEngineers": "Top Engineers",
+    "yourRank": "Your Rank",
+    "leaderboard": "Leaderboard"
+  }
+}
+

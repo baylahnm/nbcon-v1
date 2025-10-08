@@ -1,0 +1,150 @@
+{
+  "dashboard": {
+    "title": "لوحة تحكم المدير",
+    "subtitle": "نظرة عامة وإدارة المنصة",
+    "askAI": "اسأل الذكاء الاصطناعي",
+    "kpis": {
+      "totalUsers": "إجمالي المستخدمين",
+      "activeProjects": "المشاريع النشطة",
+      "revenueMTD": "الإيرادات الشهرية حتى الآن",
+      "overdueInvoices": "الفواتير المتأخرة",
+      "vsLastPeriod": "مقارنة بالفترة السابقة"
+    },
+    "charts": {
+      "revenueTrend": "اتجاه الإيرادات (آخر 12 أسبوعاً)",
+      "revenueLegend": "الإيرادات",
+      "userSessions": "المستخدمون الجدد والجلسات النشطة",
+      "newUsers": "مستخدمون جدد",
+      "activeSessions": "جلسات نشطة",
+      "today": "اليوم: {{count}} مستخدم",
+      "sevenDays": "7 أيام: {{count}} مستخدم"
+    },
+    "recentUsers": {
+      "title": "المستخدمون الجدد",
+      "search": "البحث عن المستخدمين...",
+      "filterStatus": "تصفية حسب الحالة",
+      "allStatuses": "جميع الحالات",
+      "name": "الاسم",
+      "role": "الدور",
+      "status": "الحالة",
+      "joined": "تاريخ الانضمام",
+      "actions": "الإجراءات",
+      "viewProfile": "عرض الملف الشخصي",
+      "disableAccount": "تعطيل الحساب",
+      "enableAccount": "تفعيل الحساب"
+    },
+    "pendingApprovals": {
+      "title": "الموافقات المعلقة",
+      "viewAll": "عرض الكل",
+      "type": "النوع",
+      "details": "التفاصيل",
+      "requester": "مقدم الطلب",
+      "date": "التاريخ",
+      "actions": "الإجراءات",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "amount": "المبلغ"
+    },
+    "finance": {
+      "title": "نظرة عامة على المالية",
+      "paid": "مدفوع",
+      "pending": "معلق",
+      "failed": "فشل",
+      "transactions": "المعاملات",
+      "totalAmount": "المبلغ الإجمالي"
+    },
+    "riskAlerts": {
+      "title": "تنبيهات المخاطر",
+      "viewAll": "عرض الكل",
+      "high": "عالية",
+      "medium": "متوسطة",
+      "low": "منخفضة"
+    },
+    "systemNotices": {
+      "maintenance": "صيانة",
+      "update": "تحديث",
+      "scheduledMaintenance": "صيانة مجدولة",
+      "featureUpdate": "تحديث الميزات"
+    },
+    "statuses": {
+      "active": "نشط",
+      "pending": "معلق",
+      "suspended": "موقوف",
+      "all": "الكل"
+    },
+    "actions": {
+      "actionCompleted": "تم الإجراء",
+      "userActionSuccess": "تم إجراء {{action}} للمستخدم بنجاح.",
+      "approved": "تمت الموافقة",
+      "rejected": "تم الرفض",
+      "itemActionSuccess": "تم {{action}} العنصر بنجاح."
+    }
+  },
+  "users": {
+    "title": "إدارة المستخدمين",
+    "subtitle": "إدارة جميع مستخدمي المنصة",
+    "searchPlaceholder": "البحث بالاسم، البريد الإلكتروني، أو المعرف...",
+    "filters": {
+      "role": "الدور",
+      "status": "الحالة",
+      "dateRange": "النطاق الزمني"
+    },
+    "table": {
+      "user": "المستخدم",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "status": "الحالة",
+      "joined": "تاريخ الانضمام",
+      "lastActive": "آخر نشاط",
+      "actions": "الإجراءات"
+    },
+    "roles": {
+      "admin": "مدير",
+      "client": "عميل",
+      "engineer": "مهندس",
+      "enterprise": "مؤسسة"
+    }
+  },
+  "projects": {
+    "title": "إدارة المشاريع",
+    "subtitle": "الإشراف على جميع مشاريع المنصة",
+    "total": "إجمالي المشاريع",
+    "active": "نشط",
+    "completed": "مكتمل",
+    "cancelled": "ملغى"
+  },
+  "messages": {
+    "title": "الرسائل",
+    "subtitle": "المراسلة على مستوى المنصة",
+    "inbox": "الوارد",
+    "sent": "المرسل",
+    "compose": "إنشاء"
+  },
+  "payments": {
+    "title": "المدفوعات",
+    "subtitle": "نظرة عامة على المعاملات والفواتير",
+    "total": "إجمالي المعاملات",
+    "pending": "معلق",
+    "failed": "فشل"
+  },
+  "analytics": {
+    "title": "التحليلات",
+    "subtitle": "رؤى ومقاييس المنصة",
+    "overview": "نظرة عامة",
+    "trends": "الاتجاهات"
+  },
+  "riskCenter": {
+    "title": "مركز المخاطر",
+    "subtitle": "مراقبة الأمان والامتثال",
+    "alerts": "التنبيهات",
+    "incidents": "الحوادث"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "تكوين المنصة",
+    "general": "عام",
+    "security": "الأمان",
+    "integrations": "التكاملات"
+  }
+}
+

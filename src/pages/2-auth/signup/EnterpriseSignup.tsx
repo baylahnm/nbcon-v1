@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNamespace } from "@/pages/1-HomePage/others/lib/i18n/useNamespace";
 import { Building2, Users, CreditCard, FileText, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/pages/1-HomePage/others/components/ui/button";
 import { Input } from "@/pages/1-HomePage/others/components/ui/input";
@@ -15,6 +17,7 @@ import { BillingAddressForm } from "./components/BillingAddressForm";
 import { PaymentMethodSelector } from "./components/PaymentMethodSelector";
 import { MultiEmailInput } from "./components/MultiEmailInput";
 import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
+import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 
 const COMPANY_SIZES = [
   { value: '50-200', label: '50-200 employees' },
@@ -32,6 +35,8 @@ const INDUSTRIES = [
 
 export default function EnterpriseSignup() {
   const navigate = useNavigate();
+  const ready = useNamespace(['registration', 'common']);
+  const { t } = useTranslation(['registration', 'common']);
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,14 +77,16 @@ export default function EnterpriseSignup() {
   const [acceptNda, setAcceptNda] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
 
+  if (!ready) return null;
+
   const pricing = PLAN_PRICING.enterprise_monthly_120;
   const calculatedAmount = billingCycle === 'annual' ? pricing.amount * 12 * 0.9 : pricing.amount; // 10% annual discount
 
   const steps = [
-    { id: 1, title: "Company Information", icon: Building2 },
-    { id: 2, title: "Team & Contact", icon: Users },
-    { id: 3, title: "Billing & Procurement", icon: FileText },
-    { id: 4, title: "Payment & Terms", icon: CreditCard },
+    { id: 1, title: t('registration:steps.companyInformation'), icon: Building2 },
+    { id: 2, title: t('registration:steps.taxContactDetails'), icon: Users },
+    { id: 3, title: t('registration:steps.businessDetails'), icon: FileText },
+    { id: 4, title: t('registration:steps.paymentTerms'), icon: CreditCard },
   ];
 
   const validateStep1 = () => {
@@ -140,42 +147,42 @@ export default function EnterpriseSignup() {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="company-legal-name">
-          Company Legal Name
+          {t('registration:enterprise.fields.companyLegalName')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
           id="company-legal-name"
           value={companyLegalName}
           onChange={(e) => setCompanyLegalName(e.target.value)}
-          placeholder="Enter official company name"
+          placeholder={t('registration:enterprise.fields.companyLegalNamePlaceholder')}
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="company-domain">
-          Company Domain
+          {t('registration:enterprise.fields.companyDomain')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
           id="company-domain"
           value={companyDomain}
           onChange={(e) => setCompanyDomain(e.target.value)}
-          placeholder="example.com"
+          placeholder={t('registration:enterprise.fields.companyDomainPlaceholder')}
         />
         <p className="text-xs text-muted-foreground">
-          Used for SSO and email verification
+          {t('registration:enterprise.fields.companyDomainHint')}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="company-size">
-            Company Size
+            {t('registration:enterprise.fields.companySize')}
             <span className="text-destructive ml-1">*</span>
           </Label>
           <Select value={companySize} onValueChange={setCompanySize}>
             <SelectTrigger id="company-size">
-              <SelectValue placeholder="Select size" />
+              <SelectValue placeholder={t('registration:enterprise.fields.companySizePlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {COMPANY_SIZES.map((size) => (
@@ -189,12 +196,12 @@ export default function EnterpriseSignup() {
 
         <div className="space-y-2">
           <Label htmlFor="industry">
-            Industry
+            {t('registration:enterprise.fields.industry')}
             <span className="text-destructive ml-1">*</span>
           </Label>
           <Select value={industry} onValueChange={setIndustry}>
             <SelectTrigger id="industry">
-              <SelectValue placeholder="Select industry" />
+              <SelectValue placeholder={t('registration:enterprise.fields.industryPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {INDUSTRIES.map((ind) => (
@@ -209,32 +216,32 @@ export default function EnterpriseSignup() {
 
       <div className="space-y-2">
         <Label htmlFor="cr-number">
-          Commercial Registration (CR) Number
+          {t('registration:enterprise.fields.crNumber')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
           id="cr-number"
           value={crNumber}
           onChange={(e) => setCrNumber(e.target.value)}
-          placeholder="Enter CR number"
+          placeholder={t('registration:enterprise.fields.crNumberPlaceholder')}
           maxLength={10}
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="tax-id">
-          Tax ID (ZATCA)
+          {t('registration:enterprise.fields.taxId')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
           id="tax-id"
           value={taxId}
           onChange={(e) => setTaxId(e.target.value)}
-          placeholder="Enter Tax ID"
+          placeholder={t('registration:enterprise.fields.taxIdPlaceholder')}
           maxLength={15}
         />
         <p className="text-xs text-muted-foreground">
-          Required for enterprise accounts - will be validated
+          {t('registration:enterprise.fields.taxIdHint')}
         </p>
       </div>
     </div>
@@ -244,7 +251,7 @@ export default function EnterpriseSignup() {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="team-seats">
-          Number of Team Seats
+          {t('registration:enterprise.fields.teamSeats')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
@@ -253,47 +260,47 @@ export default function EnterpriseSignup() {
           min="5"
           value={teamSeats}
           onChange={(e) => setTeamSeats(e.target.value)}
-          placeholder="Minimum 5 seats"
+          placeholder={t('registration:enterprise.fields.teamSeatsPlaceholder')}
         />
         <p className="text-xs text-muted-foreground">
-          Additional seats can be added later
+          {t('registration:enterprise.fields.teamSeatsHint')}
         </p>
       </div>
 
       <Separator />
 
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold">Point of Contact</h3>
+        <h3 className="text-sm font-semibold">{t('registration:enterprise.fields.pocTitle')}</h3>
         
         <div className="space-y-2">
           <Label htmlFor="poc-name">
-            Full Name
+            {t('registration:enterprise.fields.pocName')}
             <span className="text-destructive ml-1">*</span>
           </Label>
           <Input
             id="poc-name"
             value={pocName}
             onChange={(e) => setPocName(e.target.value)}
-            placeholder="Enter full name"
+            placeholder={t('registration:enterprise.fields.pocNamePlaceholder')}
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="poc-title">
-            Title
+            {t('registration:enterprise.fields.pocJobTitle')}
             <span className="text-destructive ml-1">*</span>
           </Label>
           <Input
             id="poc-title"
             value={pocTitle}
             onChange={(e) => setPocTitle(e.target.value)}
-            placeholder="e.g., Project Manager, Director"
+            placeholder={t('registration:enterprise.fields.pocJobTitlePlaceholder')}
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="poc-email">
-            Work Email
+            {t('registration:enterprise.fields.pocEmail')}
             <span className="text-destructive ml-1">*</span>
           </Label>
           <Input
@@ -301,12 +308,12 @@ export default function EnterpriseSignup() {
             type="email"
             value={pocEmail}
             onChange={(e) => setPocEmail(e.target.value)}
-            placeholder="email@company.com"
+            placeholder={t('registration:enterprise.fields.pocEmailPlaceholder')}
           />
         </div>
 
         <PhoneInput
-          label="Phone Number"
+          label={t('registration:enterprise.fields.pocPhone')}
           value={pocPhone}
           onChange={setPocPhone}
           countryCode={countryCode}
@@ -320,7 +327,7 @@ export default function EnterpriseSignup() {
   const renderStep3 = () => (
     <div className="space-y-4">
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold">Billing Address</h3>
+        <h3 className="text-sm font-semibold">{t('registration:enterprise.fields.billingAddressTitle')}</h3>
         <BillingAddressForm
           value={billingAddress}
           onChange={setBillingAddress}
@@ -331,42 +338,42 @@ export default function EnterpriseSignup() {
 
       <div className="space-y-2">
         <Label htmlFor="po-number">
-          Procurement: PO Number
-          <span className="text-muted-foreground text-xs ml-2">(Optional)</span>
+          {t('registration:enterprise.fields.poNumber')}
+          <span className="text-muted-foreground text-xs ml-2">({t('common:optional')})</span>
         </Label>
         <Input
           id="po-number"
           value={poNumber}
           onChange={(e) => setPoNumber(e.target.value)}
-          placeholder="Enter purchase order number"
+          placeholder={t('registration:enterprise.fields.poNumberPlaceholder')}
         />
       </div>
 
       <MultiEmailInput
-        label="Invoicing Email(s)"
+        label={t('registration:enterprise.fields.invoiceEmails')}
         value={invoiceEmails}
         onChange={setInvoiceEmails}
         required
-        placeholder="invoice@company.com"
+        placeholder={t('registration:enterprise.fields.invoiceEmailsPlaceholder')}
       />
 
       <div className="space-y-3">
         <Label>
-          Billing Cycle
+          {t('registration:enterprise.fields.billingCycle')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <RadioGroup value={billingCycle} onValueChange={(value) => setBillingCycle(value as 'monthly' | 'annual')}>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="monthly" id="monthly" />
             <Label htmlFor="monthly" className="font-normal cursor-pointer">
-              Monthly - SAR {pricing.amount}/month
+              {t('registration:enterprise.fields.billingMonthly')} - SAR {pricing.amount}/month
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="annual" id="annual" />
             <Label htmlFor="annual" className="font-normal cursor-pointer">
-              Annual - SAR {(pricing.amount * 12 * 0.9).toFixed(0)}/year 
-              <span className="text-green-600 ml-2">(Save 10%)</span>
+              {t('registration:enterprise.fields.billingAnnual')} - SAR {(pricing.amount * 12 * 0.9).toFixed(0)}/year 
+              <span className="text-green-600 ml-2">({t('registration:enterprise.fields.billingSave10')})</span>
             </Label>
           </div>
         </RadioGroup>
@@ -387,30 +394,30 @@ export default function EnterpriseSignup() {
 
       <div className="space-y-2">
         <Label htmlFor="sso-domain">
-          SSO / SAML Domain
-          <span className="text-muted-foreground text-xs ml-2">(Optional)</span>
+          {t('registration:enterprise.fields.ssoDomain')}
+          <span className="text-muted-foreground text-xs ml-2">({t('common:optional')})</span>
         </Label>
         <Input
           id="sso-domain"
           value={ssoSamlDomain}
           onChange={(e) => setSsoSamlDomain(e.target.value)}
-          placeholder="sso.company.com"
+          placeholder={t('registration:enterprise.fields.ssoDomainPlaceholder')}
         />
         <p className="text-xs text-muted-foreground">
-          Enterprise SSO configuration available after signup
+          {t('registration:enterprise.fields.ssoDomainHint')}
         </p>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="custom-requirements">
-          Custom Requirements
-          <span className="text-muted-foreground text-xs ml-2">(Optional)</span>
+          {t('registration:enterprise.fields.customRequirements')}
+          <span className="text-muted-foreground text-xs ml-2">({t('common:optional')})</span>
         </Label>
         <Textarea
           id="custom-requirements"
           value={customRequirements}
           onChange={(e) => setCustomRequirements(e.target.value)}
-          placeholder="Any specific requirements, integrations, or compliance needs..."
+          placeholder={t('registration:enterprise.fields.customRequirementsPlaceholder')}
           className="min-h-[100px] resize-none"
         />
       </div>
@@ -425,9 +432,9 @@ export default function EnterpriseSignup() {
             onCheckedChange={(checked) => setAcceptNda(checked as boolean)}
           />
           <Label htmlFor="nda" className="text-sm font-normal leading-relaxed cursor-pointer">
-            I accept the{" "}
+            {t('registration:enterprise.fields.acceptNda')}{" "}
             <a href="/nda" target="_blank" className="text-primary hover:underline">
-              Data Processing Agreement & NDA
+              {t('registration:enterprise.fields.ndaLink')}
             </a>
             <span className="text-destructive ml-1">*</span>
           </Label>
@@ -440,13 +447,13 @@ export default function EnterpriseSignup() {
             onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
           />
           <Label htmlFor="terms" className="text-sm font-normal leading-relaxed cursor-pointer">
-            I accept the{" "}
+            {t('registration:shared.terms.accept')}{" "}
             <a href="/terms" target="_blank" className="text-primary hover:underline">
-              Terms & Conditions
+              {t('registration:shared.terms.termsConditions')}
             </a>{" "}
-            and{" "}
+            {t('registration:shared.terms.and')}{" "}
             <a href="/privacy" target="_blank" className="text-primary hover:underline">
-              Privacy Policy
+              {t('registration:shared.terms.privacyPolicy')}
             </a>
             <span className="text-destructive ml-1">*</span>
           </Label>
@@ -458,13 +465,16 @@ export default function EnterpriseSignup() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
       <div className="w-full max-w-3xl">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/auth/account-type')}
-          className="mb-4 text-muted-foreground hover:text-foreground"
-        >
-          ← Back to Account Selection
-        </Button>
+        <div className="flex items-center justify-between mb-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/auth/account-type')}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            ← {t('registration:common.backToAccountSelection')}
+          </Button>
+          <LanguageSwitcher />
+        </div>
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center mb-8">
@@ -503,7 +513,12 @@ export default function EnterpriseSignup() {
               {steps[currentStep - 1]?.title}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Enterprise Subscription - {pricing.currency} {billingCycle === 'annual' ? `${calculatedAmount.toFixed(0)}/year` : `${pricing.amount}/month`}
+              {t('registration:common.subscription', { 
+                accountType: t('auth:accountType.enterprise.name'),
+                currency: pricing.currency, 
+                amount: billingCycle === 'annual' ? calculatedAmount.toFixed(0) : pricing.amount, 
+                interval: billingCycle === 'annual' ? 'year' : pricing.interval
+              })}
             </p>
           </CardHeader>
 
@@ -523,7 +538,7 @@ export default function EnterpriseSignup() {
                 className="px-8"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                {t('registration:common.back')}
               </Button>
               
               <Button 
@@ -538,11 +553,11 @@ export default function EnterpriseSignup() {
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    Processing...
+                    {t('registration:common.processing')}
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    {currentStep === 4 ? 'Complete Signup' : 'Next'}
+                    {currentStep === 4 ? t('registration:common.completeSignup') : t('registration:common.next')}
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 )}

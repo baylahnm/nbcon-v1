@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNamespace } from '../1-HomePage/others/lib/i18n/useNamespace';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -116,10 +118,14 @@ const userRoles = ['All', 'Engineer', 'Client', 'Enterprise', 'Admin'];
 const userStatuses = ['All', 'Active', 'Inactive', 'Pending', 'Suspended'];
 
 export default function UsersPage() {
+  const ready = useNamespace(['admin', 'common']);
+  const { t } = useTranslation(['admin', 'common']);
   const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
+
+  if (!ready) return null;
 
   const filteredUsers = mockUsers.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -7,80 +7,9 @@ import { cn } from "../../lib/utils";
 import NumberFlow from "@number-flow/react";
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
+import { useTranslation } from 'react-i18next';
 
-const plans = [
-  {
-    name: "For Clients",
-    description:
-      "Perfect for owners, contractors, and SMBs needing verified engineers fast",
-    price: 45,
-    yearlyPrice: 450,
-    buttonText: "Select Plan",
-    buttonVariant: "outline" as const,
-    includes: [
-      "Key Features:",
-      "Unlimited Job Posting - Quick, advanced, and emergency projects",
-      "Smart Quote Management - Compare & accept with one tap",
-      "Secure Escrow System - Milestone-based payments with full audit trail",
-      "ZATCA Compliance - Automated e-invoices (PDF + XML) & receipts",
-      "Project Tracking - Budget & milestone monitoring with approvals",
-      "Rich Communication - Messages, files (100MB), & voice notes",
-      "Geo-Verified Check-ins - Real-time site attendance tracking",
-      "Bilingual Support - English/Arabic with RTL & Hijri dates",
-      "Performance Analytics - Track spending, vendors & delivery metrics",
-      "24/7 Support - Email & chat assistance",
-    ],
-  },
-  {
-    name: "For Engineers",
-    description:
-      "Perfect for certified engineers and small firms building a steady pipeline",
-    price: 60,
-    yearlyPrice: 600,
-    buttonText: "Select Plan",
-    buttonVariant: "default" as const,
-    popular: true,
-    includes: [
-      "Key Features:",
-      "Smart Job Matching - Find nearby jobs in your specialty",
-      "Quote Management - Templates, reminders & bid tracking",
-      "Geofenced Check-ins - Automated site visit tracking",
-      "Deliverables Hub - Version control & approval workflows",
-      "Instant Payouts - Direct IBAN transfers + monthly statements",
-      "Tax Invoice Generation - PDF/XML downloads when enabled",
-      "Portfolio & Reviews - Public profile with ratings system",
-      "Earnings Dashboard - MTD/YTD tracking & escrow status",
-      "Bilingual Communication - AR↔EN translation support",
-      "24/7 Support - Email & chat assistance",
-      "Mobile App Access - Full platform on iOS & Android",
-    ],
-  },
-  {
-    name: "Enterprise",
-    description:
-      "Perfect for large developers, enterprises, and government entities",
-    price: 120,
-    yearlyPrice: 1200,
-    buttonText: "Contact Sales",
-    buttonVariant: "outline" as const,
-    includes: [
-      "Advanced Features:",
-      "Advanced RFP Management - Multi-stage approvals & custom workflows",
-      "Team Management - Role-based access & seat allocation",
-      "Portfolio Analytics - Utilization, SLA, risk & compliance tracking",
-      "Enterprise Security - SSO/SAML & policy controls",
-      "Custom Integrations - ERP, HR, storage system connections",
-      "Priority Support - Dedicated onboarding & assistance",
-      "Consolidated Billing - Cost centers & chargeback management",
-      "Advanced Reporting - Data export & scheduled reports",
-      "Vendor Management - Scorecards & audit-ready documentation",
-      "White-Label Solutions - Custom branding & domain options",
-      "API Access - Full platform integration capabilities",
-    ],
-  },
-];
-
-const PricingSwitch = ({ onSwitch }: { onSwitch: (value: string) => void }) => {
+const PricingSwitch = ({ onSwitch, t }: { onSwitch: (value: string) => void, t: any }) => {
   const [selected, setSelected] = useState("0");
 
   const handleSwitch = (value: string) => {
@@ -105,7 +34,7 @@ const PricingSwitch = ({ onSwitch }: { onSwitch: (value: string) => void }) => {
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           )}
-          <span className="relative">Monthly</span>
+          <span className="relative">{t('pricing.monthly')}</span>
         </button>
 
         <button
@@ -122,7 +51,7 @@ const PricingSwitch = ({ onSwitch }: { onSwitch: (value: string) => void }) => {
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           )}
-          <span className="relative flex items-center gap-2">Yearly</span>
+          <span className="relative flex items-center gap-2">{t('pricing.yearly')}</span>
         </button>
       </div>
     </div>
@@ -130,8 +59,49 @@ const PricingSwitch = ({ onSwitch }: { onSwitch: (value: string) => void }) => {
 };
 
 export default function PricingSection6() {
+  const { t } = useTranslation('homepage');
   const [isYearly, setIsYearly] = useState(false);
   const pricingRef = useRef<HTMLDivElement>(null);
+
+  const plans = [
+    {
+      name: t('pricing.clients.name'),
+      description: t('pricing.clients.description'),
+      price: 45,
+      yearlyPrice: 450,
+      buttonText: t('pricing.clients.button'),
+      buttonVariant: "outline" as const,
+      includes: [
+        t('pricing.clients.featuresTitle'),
+        ...t('pricing.clients.features', { returnObjects: true }) as string[],
+      ],
+    },
+    {
+      name: t('pricing.engineers.name'),
+      description: t('pricing.engineers.description'),
+      price: 60,
+      yearlyPrice: 600,
+      buttonText: t('pricing.engineers.button'),
+      buttonVariant: "default" as const,
+      popular: true,
+      includes: [
+        t('pricing.engineers.featuresTitle'),
+        ...t('pricing.engineers.features', { returnObjects: true }) as string[],
+      ],
+    },
+    {
+      name: t('pricing.enterprise.name'),
+      description: t('pricing.enterprise.description'),
+      price: 120,
+      yearlyPrice: 1200,
+      buttonText: t('pricing.enterprise.button'),
+      buttonVariant: "outline" as const,
+      includes: [
+        t('pricing.enterprise.featuresTitle'),
+        ...t('pricing.enterprise.features', { returnObjects: true }) as string[],
+      ],
+    },
+  ];
 
   const revealVariants = {
     visible: (i: number) => ({
@@ -175,7 +145,7 @@ export default function PricingSection6() {
               delay: 0, // First element
             }}
           >
-            Plans that work best for your
+            {t('pricing.title')}
           </VerticalCutReveal>
         </h2>
 
@@ -186,7 +156,7 @@ export default function PricingSection6() {
           customVariants={revealVariants}
           className="text-muted-foreground"
         >
-          Get started with nbocn—the Saudi-first engineering marketplace—for fast hiring, secure payments, and compliant operations.
+          {t('pricing.subtitle')}
         </TimelineContent>
 
         <TimelineContent
@@ -195,7 +165,7 @@ export default function PricingSection6() {
           timelineRef={pricingRef}
           customVariants={revealVariants}
         >
-          <PricingSwitch onSwitch={togglePricingPeriod} />
+          <PricingSwitch onSwitch={togglePricingPeriod} t={t} />
         </TimelineContent>
       </article>
 
@@ -233,11 +203,11 @@ export default function PricingSection6() {
                     />
                   </span>
                   <span className="text-muted-foreground ml-1">
-                    /{isYearly ? "year" : "month"}
+                    {isYearly ? t('pricing.perYear') : t('pricing.perMonth')}
                   </span>
                   {isYearly && (
                     <span className="text-sm text-primary ml-2 font-medium">
-                      (2 months free)
+                      {t('pricing.yearlyDiscount')}
                     </span>
                   )}
                 </div>

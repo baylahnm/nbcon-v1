@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Menu, X } from 'lucide-react'
+import i18n from '../../lib/i18n/i18n'
+import { useTranslation } from 'react-i18next'
 import { Button } from './button'
 import { AnimatedGroup } from './animated-group'
 import { ThemeToggle } from './theme-toggle'
@@ -28,6 +30,8 @@ const transitionVariants = {
 }
 
 export function HeroSection() {
+    const { t } = useTranslation('homepage');
+    
     return (
         <>
             <HeroHeader />
@@ -82,7 +86,7 @@ export function HeroSection() {
                                     <Link
                                         to="/auth"
                                         className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
-                                        <span className="text-foreground text-sm">100% Trusted Engineering Platform in Saudi Arabia</span>
+                                        <span className="text-foreground text-sm">{t('trust.subtitle')}</span>
                                         <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
 
                                         <div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
@@ -99,11 +103,11 @@ export function HeroSection() {
                         
                                     <h1
                                         className="mt-8 max-w-4xl mx-auto text-balance text-6xl md:text-7xl lg:mt-16 xl:text-[5.25rem] font-bold leading-tight text-foreground">
-                                        Hire SCE-verified engineers in minutes.
+                                        {t('hero.title')}
                                     </h1>
                                     <p
                                         className="mx-auto mt-8 max-w-2xl text-balance text-lg text-muted-foreground">
-                                        nbcon is Saudi Arabia's engineering marketplace—AI matching, milestone escrow, ZATCA e-invoicing, and bilingual workflows for every project phase.
+                                        {t('hero.subtitle')}
                                     </p>
                                 </AnimatedGroup>
 
@@ -128,7 +132,7 @@ export function HeroSection() {
                                             size="lg"
                                             className="rounded-xl px-5 text-base">
                                             <Link to="/auth">
-                                                <span className="text-nowrap">Get Started</span>
+                                                <span className="text-nowrap">{t('nav.getStarted')}</span>
                                             </Link>
                                         </Button>
                                     </div>
@@ -136,7 +140,7 @@ export function HeroSection() {
                                         key={2}
                                         onClick={() => window.location.href = '/auth'}
                                         className="h-11 px-5">
-                                        <span className="text-nowrap">Browse Engineers</span>
+                                        <span className="text-nowrap">{t('hero.browse')}</span>
                                     </RainbowButton>
                                 </AnimatedGroup>
                             </div>
@@ -206,7 +210,7 @@ export function HeroSection() {
                                             {/* Header */}
                                             <div className="border-b border-sidebar-border p-4">
                                                 <div className="flex items-center justify-between">
-                                                    <h3 className="text-lg font-semibold text-foreground">Dashboard</h3>
+                                                    <h3 className="text-lg font-semibold text-foreground">{t('dashboard.title')}</h3>
                                                     <div className="flex space-x-2">
                                                         <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                                                         <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
@@ -214,9 +218,9 @@ export function HeroSection() {
                                                     </div>
                                                 </div>
                                                 <div className="flex space-x-1 mt-3">
-                                                    <button className="px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium">Engineers</button>
-                                                    <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">Clients</button>
-                                                    <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">Enterprise</button>
+                                                    <button className="px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium">{t('footer.engineers.title')}</button>
+                                                    <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">{t('footer.clients.title')}</button>
+                                                    <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">{t('footer.clients.enterprise')}</button>
                                                 </div>
                                             </div>
 
@@ -225,15 +229,15 @@ export function HeroSection() {
                                                 {/* Stats Grid */}
                                                 <div className="grid grid-cols-3 gap-2">
                                                     <div className="bg-primary/10 rounded-lg p-2">
-                                                        <div className="text-xs text-muted-foreground">Active Jobs</div>
+                                                        <div className="text-xs text-muted-foreground">{t('dashboard.features.realtime')}</div>
                                                         <div className="text-sm font-bold text-primary">8</div>
                                                     </div>
                                                     <div className="bg-primary/10 rounded-lg p-2">
-                                                        <div className="text-xs text-muted-foreground">Earnings</div>
+                                                        <div className="text-xs text-muted-foreground">{t('dashboard.features.milestone')}</div>
                                                         <div className="text-sm font-bold text-primary">SAR 18.5K</div>
                                                     </div>
                                                     <div className="bg-primary/10 rounded-lg p-2">
-                                                        <div className="text-xs text-muted-foreground">Rating</div>
+                                                        <div className="text-xs text-muted-foreground">{t('hero.title').substring(0, 6)}</div>
                                                         <div className="text-sm font-bold text-primary">4.8★</div>
                                                     </div>
                                                 </div>
@@ -251,29 +255,29 @@ export function HeroSection() {
 
                                                 {/* Recent Jobs */}
                                                 <div className="space-y-2">
-                                                    <div className="text-xs text-muted-foreground font-medium">Recent Jobs</div>
+                                                    <div className="text-xs text-muted-foreground font-medium">{t('footer.engineers.browseJobs')}</div>
                                                     <div className="space-y-1 max-h-20 overflow-hidden">
                                                         <div className="flex items-center space-x-2 text-xs p-1 bg-muted/50 rounded">
                                                             <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                                                            <span className="text-foreground truncate">Site Inspection - Riyadh</span>
+                                                            <span className="text-foreground truncate">{i18n.language === 'en' ? 'Site Inspection - Riyadh' : 'تفتيش موقع - الرياض'}</span>
                                                         </div>
                                                         <div className="flex items-center space-x-2 text-xs p-1 bg-muted/50 rounded">
                                                             <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                                                            <span className="text-foreground truncate">Electrical Design - Jeddah</span>
+                                                            <span className="text-foreground truncate">{i18n.language === 'en' ? 'Electrical Design - Jeddah' : 'تصميم كهربائي - جدة'}</span>
                                                         </div>
                                                         <div className="flex items-center space-x-2 text-xs p-1 bg-muted/50 rounded">
                                                             <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
-                                                            <span className="text-foreground truncate">HVAC Review - Dammam</span>
+                                                            <span className="text-foreground truncate">{i18n.language === 'en' ? 'HVAC Review - Dammam' : 'مراجعة تكييف - الدمام'}</span>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 {/* Quick Actions */}
                                                 <div className="space-y-2">
-                                                    <div className="text-xs text-muted-foreground font-medium">Quick Actions</div>
+                                                    <div className="text-xs text-muted-foreground font-medium">{i18n.language === 'en' ? 'Quick Actions' : 'إجراءات سريعة'}</div>
                                                     <div className="flex space-x-2">
-                                                        <button className="flex-1 bg-primary text-primary-foreground text-xs py-1 px-2 rounded text-center">New Quote</button>
-                                                        <button className="flex-1 bg-muted text-muted-foreground text-xs py-1 px-2 rounded text-center border border-sidebar-border">Check-in</button>
+                                                        <button className="flex-1 bg-primary text-primary-foreground text-xs py-1 px-2 rounded text-center">{i18n.language === 'en' ? 'New Quote' : 'عرض سعر جديد'}</button>
+                                                        <button className="flex-1 bg-muted text-muted-foreground text-xs py-1 px-2 rounded text-center border border-sidebar-border">{i18n.language === 'en' ? 'Check-in' : 'تسجيل الدخول'}</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -289,17 +293,17 @@ export function HeroSection() {
     )
 }
 
-const menuItems = [
-    { name: 'Features', href: '#features' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' },
-]
-
 const HeroHeader = () => {
+    const { t } = useTranslation('homepage');
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-    const [language, setLanguage] = useState<'en' | 'ar'>('en')
+
+    const menuItems = [
+        { name: t('nav.features'), href: '#features' },
+        { name: t('nav.pricing'), href: '#pricing' },
+        { name: t('nav.about'), href: '#about' },
+        { name: t('nav.contact'), href: '#contact' },
+    ]
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -365,7 +369,7 @@ const HeroHeader = () => {
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
+                                    onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'ar' : 'en')}
                                     className="h-8 hidden sm:flex"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-1">
@@ -373,7 +377,7 @@ const HeroHeader = () => {
                                         <line className="st0" x1="4" y1="8" x2="12" y2="16"/>
                                         <polygon className="st0" points="15,19 21,19 23,23 18,11 13,23 "/>
                                     </svg>
-                                    {language === 'en' ? 'عربي' : 'EN'}
+                                    {i18n.language === 'en' ? 'عربي' : 'EN'}
                                 </Button>
 
                                 {/* Theme Toggle - Hidden on mobile */}
@@ -384,7 +388,7 @@ const HeroHeader = () => {
                                 {/* Auth Button - Smaller on mobile */}
                                 <Link to="/auth" className="hidden sm:block">
                                     <Button size="sm">
-                                        Sign In
+                                        {i18n.language === 'en' ? 'Sign In' : 'تسجيل الدخول'}
                                     </Button>
                                 </Link>
 
@@ -412,7 +416,7 @@ const Logo = ({ className }: { className?: string }) => {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">nb</span>
             </div>
-            <span className="text-xl font-bold text-foreground">nbocn</span>
+            <span className="text-xl font-bold text-foreground">nbcon</span>
         </div>
     )
 }

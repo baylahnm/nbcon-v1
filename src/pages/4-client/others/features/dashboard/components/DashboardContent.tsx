@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNamespace } from "../../../../../1-HomePage/others/lib/i18n/useNamespace";
 import { 
   Home, Search, Plus, TrendingUp, MoreHorizontal, Calendar, Users, 
   Clock, AlertTriangle, User, ExternalLink, BarChart3, 
@@ -81,6 +83,8 @@ function AIConversationPreview() {
 }
 
 export function DashboardContent() {
+  const ready = useNamespace(['client', 'common']);
+  const { t } = useTranslation(['client', 'common']);
   const [selectedProject, setSelectedProject] = useState(null);
   const [mapCenter, setMapCenter] = useState([24.7136, 46.6753]); // Riyadh
   const [activeTab, setActiveTab] = useState("overview");
@@ -107,6 +111,8 @@ export function DashboardContent() {
   
   // Inline edit mode
   const { isEditMode, toggleEditMode } = useInlineDashboardEditStore();
+
+  if (!ready) return null;
 
   // Function to update arrow visibility based on scroll position
   const updateArrowVisibility = useCallback(() => {

@@ -4,6 +4,7 @@ import * as React from "react";
 import { Card, CardContent } from "./card";
 import { Badge } from "./badge";
 import { motion } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 import {
   Brain,
   DollarSign,
@@ -15,50 +16,52 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-const tasks = [
-  {
-    title: "Smart Engineer Matching",
-    subtitle: "AI finds the perfect engineers for your project",
-    icon: <Brain className="w-4 h-4" />,
-  },
-  {
-    title: "Real-time Cost Estimation",
-    subtitle: "Accurate project pricing with market data",
-    icon: <DollarSign className="w-4 h-4" />,
-  },
-  {
-    title: "Project Management",
-    subtitle: "Track progress and milestones automatically",
-    icon: <Users className="w-4 h-4" />,
-  },
-  {
-    title: "SCE Compliance",
-    subtitle: "Automated regulatory compliance checks",
-    icon: <Shield className="w-4 h-4" />,
-  },
-  {
-    title: "Timeline Optimization",
-    subtitle: "AI suggests optimal project schedules",
-    icon: <Clock className="w-4 h-4" />,
-  },
-  {
-    title: "Quality Assurance",
-    subtitle: "Automated quality checks and verification",
-    icon: <CheckCircle className="w-4 h-4" />,
-  },
-  {
-    title: "Equipment Management",
-    subtitle: "Track and manage engineering equipment",
-    icon: <Wrench className="w-4 h-4" />,
-  },
-  {
-    title: "Performance Analytics",
-    subtitle: "Comprehensive project insights and reports",
-    icon: <FileBarChart className="w-4 h-4" />,
-  },
-];
-
 export default function FeatureSection() {
+  const { t } = useTranslation('homepage');
+  
+  const tasks = [
+    {
+      title: t('aiAssistant.featuresList.items.smartMatching.title'),
+      subtitle: t('aiAssistant.featuresList.items.smartMatching.subtitle'),
+      icon: <Brain className="w-4 h-4" />,
+    },
+    {
+      title: t('aiAssistant.featuresList.items.costEstimation.title'),
+      subtitle: t('aiAssistant.featuresList.items.costEstimation.subtitle'),
+      icon: <DollarSign className="w-4 h-4" />,
+    },
+    {
+      title: t('aiAssistant.featuresList.items.projectManagement.title'),
+      subtitle: t('aiAssistant.featuresList.items.projectManagement.subtitle'),
+      icon: <Users className="w-4 h-4" />,
+    },
+    {
+      title: t('aiAssistant.featuresList.items.sceCompliance.title'),
+      subtitle: t('aiAssistant.featuresList.items.sceCompliance.subtitle'),
+      icon: <Shield className="w-4 h-4" />,
+    },
+    {
+      title: t('aiAssistant.featuresList.items.timeline.title'),
+      subtitle: t('aiAssistant.featuresList.items.timeline.subtitle'),
+      icon: <Clock className="w-4 h-4" />,
+    },
+    {
+      title: t('aiAssistant.featuresList.items.quality.title'),
+      subtitle: t('aiAssistant.featuresList.items.quality.subtitle'),
+      icon: <CheckCircle className="w-4 h-4" />,
+    },
+    {
+      title: t('aiAssistant.featuresList.items.equipment.title'),
+      subtitle: t('aiAssistant.featuresList.items.equipment.subtitle'),
+      icon: <Wrench className="w-4 h-4" />,
+    },
+    {
+      title: t('aiAssistant.featuresList.items.analytics.title'),
+      subtitle: t('aiAssistant.featuresList.items.analytics.subtitle'),
+      icon: <FileBarChart className="w-4 h-4" />,
+    },
+  ];
+
   return (
     <section className="relative w-full py-20 px-4 bg-background text-foreground rounded-[10px]">
       <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-2 items-center gap-12">
@@ -111,17 +114,17 @@ export default function FeatureSection() {
         {/* RIGHT SIDE - Content */}
         <div className="space-y-6">
           <Badge variant="secondary" className="px-3 py-1 text-sm">
-            Engineering Automation
+            {t('aiAssistant.featuresList.badge')}
           </Badge>
           <h3 className="text-lg sm:text-md lg:text-2xl font-normal text-foreground leading-relaxed">
-            Streamline engineering projects {" "}
-            <span className="text-muted-foreground text-sm sm:text-base lg:text-2xl">with AI-powered automation — from smart engineer matching and real-time cost estimation to project management and SCE compliance. Our solutions reduce project delays, ensure quality, and scale effortlessly with your engineering needs in Saudi Arabia.</span>
+            {t('aiAssistant.featuresList.title')} {" "}
+            <span className="text-muted-foreground text-sm sm:text-base lg:text-2xl">{t('aiAssistant.featuresList.description')}</span>
           </h3>
 
           <div className="flex gap-3 flex-wrap">
-            <Badge className="px-4 py-2 text-sm">AI Matching</Badge>
-            <Badge className="px-4 py-2 text-sm">SCE Verified</Badge>
-            <Badge className="px-4 py-2 text-sm">ZATCA Ready</Badge>
+            <Badge className="px-4 py-2 text-sm">{t('aiAssistant.featuresList.badges.aiMatching')}</Badge>
+            <Badge className="px-4 py-2 text-sm">{t('aiAssistant.featuresList.badges.sceVerified')}</Badge>
+            <Badge className="px-4 py-2 text-sm">{t('aiAssistant.featuresList.badges.zatcaReady')}</Badge>
           </div>
         </div>
       </div>

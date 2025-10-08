@@ -1,0 +1,150 @@
+{
+  "dashboard": {
+    "title": "Admin Dashboard",
+    "subtitle": "Platform overview and management",
+    "askAI": "Ask AI",
+    "kpis": {
+      "totalUsers": "Total Users",
+      "activeProjects": "Active Projects",
+      "revenueMTD": "Revenue MTD",
+      "overdueInvoices": "Overdue Invoices",
+      "vsLastPeriod": "vs last period"
+    },
+    "charts": {
+      "revenueTrend": "Revenue Trend (Last 12 Weeks)",
+      "revenueLegend": "Revenue",
+      "userSessions": "New Users & Active Sessions",
+      "newUsers": "New Users",
+      "activeSessions": "Active Sessions",
+      "today": "Today: {{count}} users",
+      "sevenDays": "7d: {{count}} users"
+    },
+    "recentUsers": {
+      "title": "Recent Users",
+      "search": "Search users...",
+      "filterStatus": "Filter by status",
+      "allStatuses": "All Statuses",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "joined": "Joined",
+      "actions": "Actions",
+      "viewProfile": "View Profile",
+      "disableAccount": "Disable Account",
+      "enableAccount": "Enable Account"
+    },
+    "pendingApprovals": {
+      "title": "Pending Approvals",
+      "viewAll": "View All",
+      "type": "Type",
+      "details": "Details",
+      "requester": "Requester",
+      "date": "Date",
+      "actions": "Actions",
+      "approve": "Approve",
+      "reject": "Reject",
+      "amount": "Amount"
+    },
+    "finance": {
+      "title": "Finance Overview",
+      "paid": "Paid",
+      "pending": "Pending",
+      "failed": "Failed",
+      "transactions": "Transactions",
+      "totalAmount": "Total Amount"
+    },
+    "riskAlerts": {
+      "title": "Risk Alerts",
+      "viewAll": "View All",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "systemNotices": {
+      "maintenance": "Maintenance",
+      "update": "Update",
+      "scheduledMaintenance": "Scheduled Maintenance",
+      "featureUpdate": "Feature Update"
+    },
+    "statuses": {
+      "active": "Active",
+      "pending": "Pending",
+      "suspended": "Suspended",
+      "all": "All"
+    },
+    "actions": {
+      "actionCompleted": "Action Completed",
+      "userActionSuccess": "User {{action}} action completed successfully.",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "itemActionSuccess": "Item has been {{action}}d successfully."
+    }
+  },
+  "users": {
+    "title": "User Management",
+    "subtitle": "Manage all platform users",
+    "searchPlaceholder": "Search by name, email, or ID...",
+    "filters": {
+      "role": "Role",
+      "status": "Status",
+      "dateRange": "Date Range"
+    },
+    "table": {
+      "user": "User",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "joined": "Joined",
+      "lastActive": "Last Active",
+      "actions": "Actions"
+    },
+    "roles": {
+      "admin": "Admin",
+      "client": "Client",
+      "engineer": "Engineer",
+      "enterprise": "Enterprise"
+    }
+  },
+  "projects": {
+    "title": "Project Management",
+    "subtitle": "Oversee all platform projects",
+    "total": "Total Projects",
+    "active": "Active",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "messages": {
+    "title": "Messages",
+    "subtitle": "Platform-wide messaging",
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "compose": "Compose"
+  },
+  "payments": {
+    "title": "Payments",
+    "subtitle": "Transaction and billing overview",
+    "total": "Total Transactions",
+    "pending": "Pending",
+    "failed": "Failed"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Platform insights and metrics",
+    "overview": "Overview",
+    "trends": "Trends"
+  },
+  "riskCenter": {
+    "title": "Risk Center",
+    "subtitle": "Security and compliance monitoring",
+    "alerts": "Alerts",
+    "incidents": "Incidents"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Platform configuration",
+    "general": "General",
+    "security": "Security",
+    "integrations": "Integrations"
+  }
+}
+

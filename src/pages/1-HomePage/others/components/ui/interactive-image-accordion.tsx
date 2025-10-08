@@ -1,33 +1,5 @@
 import React, { useState } from 'react';
-
-// --- Data for the image accordion ---
-const accordionItems = [
-  {
-    id: 1,
-    title: 'SCE Compliance',
-    imageUrl: '/dashboardShowcase/SCE Compliance.png',
-  },
-  {
-    id: 2,
-    title: 'Smart Engineer Matching',
-    imageUrl: '/dashboardShowcase/Smart Engineer Matching.png',
-  },
-  {
-    id: 3,
-    title: 'Real-time Cost Estimation',
-    imageUrl: '/dashboardShowcase/Real-time Cost Estimation.png',
-  },
-  {
-    id: 4,
-    title: 'Project Management',
-    imageUrl: '/dashboardShowcase/Project Management.png',
-  },
-  {
-    id: 5,
-    title: 'Quality Assurance',
-    imageUrl: '/dashboardShowcase/Quality Assurance.png',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 // --- Accordion Item Component ---
 const AccordionItem = ({ item, isActive, onMouseEnter }) => {
@@ -71,7 +43,37 @@ const AccordionItem = ({ item, isActive, onMouseEnter }) => {
 
 // --- Main App Component ---
 export function InteractiveImageAccordion() {
+  const { t } = useTranslation('homepage');
   const [activeIndex, setActiveIndex] = useState(4);
+
+  // --- Data for the image accordion ---
+  const accordionItems = [
+    {
+      id: 1,
+      title: t('aiAssistant.featuresList.items.sceCompliance.title'),
+      imageUrl: '/dashboardShowcase/SCE Compliance.png',
+    },
+    {
+      id: 2,
+      title: t('aiAssistant.featuresList.items.smartMatching.title'),
+      imageUrl: '/dashboardShowcase/Smart Engineer Matching.png',
+    },
+    {
+      id: 3,
+      title: t('aiAssistant.featuresList.items.costEstimation.title'),
+      imageUrl: '/dashboardShowcase/Real-time Cost Estimation.png',
+    },
+    {
+      id: 4,
+      title: t('aiAssistant.featuresList.items.projectManagement.title'),
+      imageUrl: '/dashboardShowcase/Project Management.png',
+    },
+    {
+      id: 5,
+      title: t('aiAssistant.featuresList.items.quality.title'),
+      imageUrl: '/dashboardShowcase/Quality Assurance.png',
+    },
+  ];
 
   const handleItemHover = (index) => {
     setActiveIndex(index);
@@ -85,17 +87,17 @@ export function InteractiveImageAccordion() {
           {/* Left Side: Text Content */}
           <div className="w-full md:w-1/2 text-center md:text-left px-4">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight tracking-tighter">
-              Accelerate Engineering Projects with AI
+              {t('imageAccordion.title')}
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto md:mx-0">
-              Connect with verified engineers, estimate costs in real-time, and manage projects seamlessly with our AI-powered engineering marketplace.
+              {t('imageAccordion.description')}
             </p>
             <div className="mt-8">
               <a
                 href="#contact"
                 className="inline-block bg-primary text-primary-foreground font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-primary/90 transition-colors duration-300"
               >
-                Get Started
+                {t('imageAccordion.cta')}
               </a>
             </div>
           </div>

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNamespace } from "../1-HomePage/others/lib/i18n/useNamespace";
 import { Card, CardContent, CardHeader, CardTitle } from "../1-HomePage/others/components/ui/card";
 import { Button } from "../1-HomePage/others/components/ui/button";
 import { Badge } from "../1-HomePage/others/components/ui/badge";
@@ -150,7 +152,7 @@ function KPICard({ title, value, delta, trend, icon: Icon, isLoading }: KPICardP
                 <span className={`text-xs ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
                   {delta > 0 ? '+' : ''}{delta}%
                 </span>
-                <span className="text-xs text-muted-foreground ml-1">vs last period</span>
+                <span className="text-xs text-muted-foreground ml-1">{t('admin:dashboard.kpis.vsLastPeriod')}</span>
               </div>
             )}
           </div>
@@ -166,23 +168,27 @@ function KPICard({ title, value, delta, trend, icon: Icon, isLoading }: KPICardP
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const ready = useNamespace(['admin', 'common']);
+  const { t } = useTranslation(['admin', 'common']);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [dismissedNotices, setDismissedNotices] = useState<number[]>([]);
 
+  if (!ready) return null;
+
   const handleUserAction = (userId: number, action: 'view' | 'disable' | 'enable') => {
     toast({
-      title: "Action Completed",
-      description: `User ${action} action completed successfully.`,
+      title: t('admin:dashboard.actions.actionCompleted'),
+      description: t('admin:dashboard.actions.userActionSuccess', { action }),
     });
   };
 
   const handleApprovalAction = (approvalId: number, action: 'approve' | 'reject') => {
     toast({
-      title: action === 'approve' ? "Approved" : "Rejected",
-      description: `Item has been ${action}d successfully.`,
+      title: action === 'approve' ? t('admin:dashboard.actions.approved') : t('admin:dashboard.actions.rejected'),
+      description: t('admin:dashboard.actions.itemActionSuccess', { action }),
     });
   };
 
@@ -193,11 +199,11 @@ export default function AdminDashboardPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge variant="default" className="bg-green-100 text-green-800">Active</Badge>;
+        return <Badge variant="default" className="bg-green-100 text-green-800">{t('admin:dashboard.statuses.active')}</Badge>;
       case 'pending':
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">{t('admin:dashboard.statuses.pending')}</Badge>;
       case 'suspended':
-        return <Badge variant="destructive">Suspended</Badge>;
+        return <Badge variant="destructive">{t('admin:dashboard.statuses.suspended')}</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -206,11 +212,11 @@ export default function AdminDashboardPage() {
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
       case 'high':
-        return <Badge variant="destructive">High</Badge>;
+        return <Badge variant="destructive">{t('admin:dashboard.riskAlerts.high')}</Badge>;
       case 'medium':
-        return <Badge variant="secondary" className="bg-orange-100 text-orange-800">Medium</Badge>;
+        return <Badge variant="secondary" className="bg-orange-100 text-orange-800">{t('admin:dashboard.riskAlerts.medium')}</Badge>;
       case 'low':
-        return <Badge variant="outline">Low</Badge>;
+        return <Badge variant="outline">{t('admin:dashboard.riskAlerts.low')}</Badge>;
       default:
         return <Badge variant="outline">{severity}</Badge>;
     }
@@ -228,19 +234,19 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Platform overview and management</p>
+          <h1 className="text-3xl font-bold">{t('admin:dashboard.title')}</h1>
+          <p className="text-muted-foreground">{t('admin:dashboard.subtitle')}</p>
         </div>
         <Button variant="outline" size="sm" className="flex items-center gap-2">
           <Bot className="h-4 w-4" />
-          Ask AI
+          {t('admin:dashboard.askAI')}
         </Button>
       </div>
 
       {/* KPI Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard
-          title="Total Users"
+          title={t('admin:dashboard.kpis.totalUsers')}
           value={kpiData.totalUsers.value}
           delta={kpiData.totalUsers.delta}
           trend={kpiData.totalUsers.trend}
@@ -248,7 +254,7 @@ export default function AdminDashboardPage() {
           isLoading={isLoading}
         />
         <KPICard
-          title="Active Projects"
+          title={t('admin:dashboard.kpis.activeProjects')}
           value={kpiData.activeProjects.value}
           delta={kpiData.activeProjects.delta}
           trend={kpiData.activeProjects.trend}
@@ -256,7 +262,7 @@ export default function AdminDashboardPage() {
           isLoading={isLoading}
         />
         <KPICard
-          title="Revenue MTD"
+          title={t('admin:dashboard.kpis.revenueMTD')}
           value={`${(kpiData.revenueMTD.value / 1000000).toFixed(1)}M SAR`}
           delta={kpiData.revenueMTD.delta}
           trend={kpiData.revenueMTD.trend}
@@ -264,7 +270,7 @@ export default function AdminDashboardPage() {
           isLoading={isLoading}
         />
         <KPICard
-          title="Overdue Invoices"
+          title={t('admin:dashboard.kpis.overdueInvoices')}
           value={kpiData.overdueInvoices.value}
           delta={kpiData.overdueInvoices.delta}
           trend={kpiData.overdueInvoices.trend}
@@ -278,7 +284,7 @@ export default function AdminDashboardPage() {
         {/* Revenue Trend */}
         <Card>
           <CardHeader>
-            <CardTitle>Revenue Trend (Last 12 Weeks)</CardTitle>
+            <CardTitle>{t('admin:dashboard.charts.revenueTrend')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -287,7 +293,7 @@ export default function AdminDashboardPage() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="week" />
                   <YAxis />
-                  <Tooltip formatter={(value) => [`${value} SAR`, 'Revenue']} />
+                  <Tooltip formatter={(value) => [`${value} SAR`, t('admin:dashboard.charts.revenueLegend')]} />
                   <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
@@ -298,7 +304,7 @@ export default function AdminDashboardPage() {
         {/* User Sessions */}
         <Card>
           <CardHeader>
-            <CardTitle>New Users & Active Sessions</CardTitle>
+            <CardTitle>{t('admin:dashboard.charts.userSessions')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -308,8 +314,8 @@ export default function AdminDashboardPage() {
                   <XAxis dataKey="day" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="users" fill="#3b82f6" name="New Users" />
-                  <Bar dataKey="sessions" fill="#10b981" name="Active Sessions" />
+                  <Bar dataKey="users" fill="#3b82f6" name={t('admin:dashboard.charts.newUsers')} />
+                  <Bar dataKey="sessions" fill="#10b981" name={t('admin:dashboard.charts.activeSessions')} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

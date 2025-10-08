@@ -22,8 +22,7 @@ export function AppLayout({
   } = useAuthStore();
   const navigate = useNavigate();
   
-  // AI Drawer state
-  const { drawerOpen, setDrawerOpen } = useAiStore();
+  // AI Drawer state - placeholder for now
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
   // Check if current route is a dashboard route

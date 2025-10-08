@@ -1,0 +1,385 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "about": "About",
+    "contact": "Contact",
+    "getStarted": "Get Started",
+    "signIn": "Sign In"
+  },
+  "hero": {
+    "title": "Hire SCE-verified engineers in minutes.",
+    "typingTexts": {
+      "hire": "Hire SCE-verified engineers in minutes.",
+      "find": "Find your next engineering project.",
+      "scale": "Scale your engineering business."
+    },
+    "subtitle": "nbcon is Saudi Arabia's engineering marketplace—AI matching, milestone escrow, ZATCA e-invoicing, and bilingual workflows for every project phase.",
+    "browse": "Browse Engineers",
+    "features": {
+      "sceVerification": "SCE verification",
+      "geofenced": "Geofenced check-ins",
+      "bilingual": "Arabic/English",
+      "pdpl": "PDPL-ready"
+    },
+    "microcopy": "No credit card required. Cancel anytime."
+  },
+  "trust": {
+    "title": "Trusted by Leading Companies",
+    "subtitle": "Join thousands of satisfied clients who trust nbcon for their engineering needs"
+  },
+  "dashboard": {
+    "title": "Complete Project Management",
+    "subtitle": "Everything you need to manage engineering projects from start to finish",
+    "features": {
+      "realtime": "Real-time tracking",
+      "milestone": "Milestone payments",
+      "documents": "Document management",
+      "collaboration": "Team collaboration"
+    },
+    "cta": "Start Your Project"
+  },
+  "imageAccordion": {
+    "title": "Accelerate Engineering Projects with AI",
+    "description": "Connect with verified engineers, estimate costs in real-time, and manage projects seamlessly with our AI-powered engineering marketplace.",
+    "cta": "Get Started"
+  },
+  "aiAssistant": {
+    "title": "nbcon AI Assistant",
+    "subtitle": "Your intelligent engineering project partner powered by advanced AI technology. Automate your tasks and workflows with smart matching, real-time cost estimation, and compliance guidance.",
+    "dashboardSubtitle": "Intelligent engineering project management",
+    "tabs": {
+      "chat": "AI Chat",
+      "projects": "Projects",
+      "analytics": "Analytics"
+    },
+    "chat": {
+      "welcome": "Hello! I'm your nbcon AI assistant. I can help you find the right engineers for your project, estimate costs, suggest timelines, and answer questions about engineering services in Saudi Arabia.",
+      "userMessage": "I need an electrical engineer for a residential project in Riyadh. Budget is around SAR 15,000.",
+      "aiResponse": "Perfect! I found 12 qualified electrical engineers in Riyadh. Here are my top recommendations:",
+      "placeholder": "Ask about engineering projects, costs, or find engineers...",
+      "you": "You",
+      "send": "Send",
+      "justNow": "Just now"
+    },
+    "projectsTab": {
+      "title": "Engineering Projects",
+      "subtitle": "Active projects managed by nbcon AI Assistant"
+    },
+    "analytics": {
+      "successRate": "Project Success Rate",
+      "successRateChange": "+2.1% from last month",
+      "responseTime": "Average Response Time",
+      "responseTimeChange": "-15min from last month",
+      "totalProjects": "Total Projects",
+      "totalProjectsChange": "+89 this month",
+      "satisfaction": "Customer Satisfaction",
+      "satisfactionChange": "Based on 342 reviews"
+    },
+    "featuresList": {
+      "badge": "Engineering Automation",
+      "title": "Streamline engineering projects",
+      "description": "with AI-powered automation — from smart engineer matching and real-time cost estimation to project management and SCE compliance. Our solutions reduce project delays, ensure quality, and scale effortlessly with your engineering needs in Saudi Arabia.",
+      "badges": {
+        "aiMatching": "AI Matching",
+        "sceVerified": "SCE Verified",
+        "zatcaReady": "ZATCA Ready"
+      },
+      "items": {
+        "smartMatching": {
+          "title": "Smart Engineer Matching",
+          "subtitle": "AI finds the perfect engineers for your project"
+        },
+        "costEstimation": {
+          "title": "Real-time Cost Estimation",
+          "subtitle": "Accurate project pricing with market data"
+        },
+        "projectManagement": {
+          "title": "Project Management",
+          "subtitle": "Track progress and milestones automatically"
+        },
+        "sceCompliance": {
+          "title": "SCE Compliance",
+          "subtitle": "Automated regulatory compliance checks"
+        },
+        "timeline": {
+          "title": "Timeline Optimization",
+          "subtitle": "AI suggests optimal project schedules"
+        },
+        "quality": {
+          "title": "Quality Assurance",
+          "subtitle": "Automated quality checks and verification"
+        },
+        "equipment": {
+          "title": "Equipment Management",
+          "subtitle": "Track and manage engineering equipment"
+        },
+        "analytics": {
+          "title": "Performance Analytics",
+          "subtitle": "Comprehensive project insights and reports"
+        }
+      }
+    }
+  },
+  "features": {
+    "title": "Features",
+    "subtitle": "A high-performing marketplace connecting certified engineers, clients, and enterprises—with transparent pricing, milestone payments, and built-in compliance.",
+    "trackProjects": {
+      "title": "Track engineering projects effectively",
+      "description": "Track and manage your engineering projects with ease using our intuitive project management interface."
+    },
+    "analytics": {
+      "title": "Real-time Analytics Dashboard",
+      "description": "Monitor project performance, track milestones, and get insights with our comprehensive analytics dashboard."
+    },
+    "aiVideo": {
+      "title": "Watch our AI in action",
+      "description": "Whether you're an engineer or client, see how our AI-powered matching system works on our YouTube channel"
+    },
+    "coreFeatures": {
+      "title": "Our Core Features",
+      "description": "Discover the key features that make nbcon the premier engineering marketplace in Saudi Arabia."
+    },
+    "dashboardMockup": {
+      "title": "Project Dashboard",
+      "stats": {
+        "active": "Active",
+        "completed": "Completed",
+        "pending": "Pending"
+      },
+      "projects": {
+        "hvac": "HVAC System Design",
+        "electrical": "Electrical Planning",
+        "structural": "Structural Analysis"
+      },
+      "status": {
+        "inProgress": "In Progress",
+        "review": "Review",
+        "pending": "Pending"
+      }
+    },
+    "displayCards": {
+      "smartMatching": {
+        "title": "Smart Matching",
+        "description": "AI-powered engineer matching for your projects",
+        "date": "Just now"
+      },
+      "sceVerified": {
+        "title": "SCE Verified",
+        "description": "All engineers are SCE certified professionals",
+        "date": "2 days ago"
+      },
+      "analytics": {
+        "title": "Real-time Analytics",
+        "description": "Track project progress with live insights",
+        "date": "Today"
+      }
+    }
+  },
+  "testimonials": {
+    "badge": "Testimonials",
+    "title": "Trusted by Thousands of Happy Customers",
+    "subtitle": "A high-performing web-based engineering marketplace for any project size and complexity",
+    "items": [
+      {
+        "text": "This platform revolutionized our engineering operations, streamlining project management and client communication. The AI matching keeps us productive and efficient.",
+        "name": "Abdullah Al-Saeed",
+        "role": "Petroleum Engineer"
+      },
+      {
+        "text": "Implementing nbcon was smooth and quick. The SCE verification and milestone payments made team collaboration effortless and secure.",
+        "name": "Sara Al-Mansouri",
+        "role": "Electrical Engineer"
+      },
+      {
+        "text": "The support team is exceptional, guiding us through compliance requirements and providing ongoing assistance, ensuring our satisfaction.",
+        "name": "Mohammed Al-Zahra",
+        "role": "Structural Engineer"
+      },
+      {
+        "text": "This platform's seamless integration enhanced our engineering operations and efficiency. Highly recommend for its intuitive interface.",
+        "name": "Khalid Al-Mansouri",
+        "role": "CEO, Engineering Firm"
+      },
+      {
+        "text": "Its robust features and quick support have transformed our workflow, making us significantly more efficient in project delivery.",
+        "name": "Mariam Hassan",
+        "role": "HVAC Engineer"
+      },
+      {
+        "text": "The smooth implementation exceeded expectations. It streamlined our engineering processes, improving overall business performance.",
+        "name": "Omar Al-Sheikh",
+        "role": "Civil Engineer"
+      },
+      {
+        "text": "Our engineering functions improved with a user-friendly design and positive client feedback. The bilingual support is excellent.",
+        "name": "Ahmed Al-Dosari",
+        "role": "Mechanical Engineer"
+      },
+      {
+        "text": "They delivered a solution that exceeded expectations, understanding our engineering needs and enhancing our operations significantly.",
+        "name": "Layla Al-Mutairi",
+        "role": "Project Director"
+      },
+      {
+        "text": "Using nbcon, our project management and client satisfaction significantly improved, boosting our engineering business performance.",
+        "name": "Yousef Al-Ghamdi",
+        "role": "Engineering Consultant"
+      }
+    ]
+  },
+  "pricing": {
+    "title": "Plans that work best for your",
+    "subtitle": "Get started with nbcon—the Saudi-first engineering marketplace—for fast hiring, secure payments, and compliant operations.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearlyDiscount": "(2 months free)",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "clients": {
+      "name": "For Clients",
+      "price": "45",
+      "description": "Perfect for owners, contractors, and SMBs needing verified engineers fast",
+      "button": "Select Plan",
+      "featuresTitle": "Key Features:",
+      "features": [
+        "Unlimited Job Posting - Quick, advanced, and emergency projects",
+        "Smart Quote Management - Compare & accept with one tap",
+        "Secure Escrow System - Milestone-based payments with full audit trail",
+        "ZATCA Compliance - Automated e-invoices (PDF + XML) & receipts",
+        "Project Tracking - Budget & milestone monitoring with approvals",
+        "Rich Communication - Messages, files (100MB), & voice notes",
+        "Geo-Verified Check-ins - Real-time site attendance tracking",
+        "Bilingual Support - English/Arabic with RTL & Hijri dates",
+        "Performance Analytics - Track spending, vendors & delivery metrics",
+        "24/7 Support - Email & chat assistance"
+      ]
+    },
+    "engineers": {
+      "name": "For Engineers",
+      "price": "60",
+      "description": "Perfect for certified engineers and small firms building a steady pipeline",
+      "button": "Select Plan",
+      "featuresTitle": "Key Features:",
+      "features": [
+        "Smart Job Matching - Find nearby jobs in your specialty",
+        "Quote Management - Templates, reminders & bid tracking",
+        "Geofenced Check-ins - Automated site visit tracking",
+        "Deliverables Hub - Version control & approval workflows",
+        "Instant Payouts - Direct IBAN transfers + monthly statements",
+        "Tax Invoice Generation - PDF/XML downloads when enabled",
+        "Portfolio & Reviews - Public profile with ratings system",
+        "Earnings Dashboard - MTD/YTD tracking & escrow status",
+        "Bilingual Communication - AR↔EN translation support",
+        "24/7 Support - Email & chat assistance",
+        "Mobile App Access - Full platform on iOS & Android"
+      ]
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "price": "120",
+      "description": "Perfect for large developers, enterprises, and government entities",
+      "button": "Contact Sales",
+      "featuresTitle": "Advanced Features:",
+      "features": [
+        "Advanced RFP Management - Multi-stage approvals & custom workflows",
+        "Team Management - Role-based access & seat allocation",
+        "Portfolio Analytics - Utilization, SLA, risk & compliance tracking",
+        "Enterprise Security - SSO/SAML & policy controls",
+        "Custom Integrations - ERP, HR, storage system connections",
+        "Priority Support - Dedicated onboarding & assistance",
+        "Consolidated Billing - Cost centers & chargeback management",
+        "Advanced Reporting - Data export & scheduled reports",
+        "Vendor Management - Scorecards & audit-ready documentation",
+        "White-Label Solutions - Custom branding & domain options",
+        "API Access - Full platform integration capabilities"
+      ]
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about nbcon and our engineering platform",
+    "questions": {
+      "verification": {
+        "question": "How does nbcon verify engineers?",
+        "answer": "nbcon verifies all engineers through SCE (Saudi Council of Engineers) credential checks, professional insurance validation, and background verification. We also conduct ongoing compliance monitoring to ensure all engineers maintain their professional standards."
+      },
+      "payment": {
+        "question": "What payment methods are accepted?",
+        "answer": "We accept all major payment methods including credit cards, bank transfers, and digital wallets. All payments are processed securely with escrow protection until project milestones are completed and verified."
+      },
+      "milestones": {
+        "question": "How does the milestone tracking work?",
+        "answer": "Projects are broken down into clear milestones with defined deliverables. Engineers upload their work and provide progress updates. Clients review and approve milestones before payments are released from escrow, ensuring quality and transparency."
+      },
+      "mobile": {
+        "question": "Is there a mobile app available?",
+        "answer": "Yes! nbcon is fully responsive and works seamlessly on mobile devices. We also offer progressive web app (PWA) functionality, allowing you to install the app on your phone for quick access to projects, messages, and check-ins."
+      },
+      "getStarted": {
+        "question": "How do I get started as a client?",
+        "answer": "Getting started is easy! Simply create your account, complete your profile, and post your first project. Our AI will help match you with qualified engineers based on your specific requirements and location preferences."
+      },
+      "projectTypes": {
+        "question": "What types of engineering projects are supported?",
+        "answer": "nbcon supports all major engineering disciplines including Civil, Electrical, Mechanical, Structural, HVAC, and Environmental Engineering. We cover projects from residential to large-scale industrial and infrastructure developments."
+      },
+      "aiHelp": {
+        "question": "How does the AI assistant help with projects?",
+        "answer": "Our AI assistant provides real-time cost estimation, timeline optimization, compliance guidance, and smart project matching. It analyzes project requirements and suggests the best engineers based on expertise, location, and availability."
+      },
+      "enterpriseSupport": {
+        "question": "What support is available for enterprise clients?",
+        "answer": "Enterprise clients receive dedicated account management, custom integrations, advanced analytics and reporting, priority support, and tailored compliance solutions. We also offer on-site training and implementation support."
+      }
+    }
+  },
+  "contact": {
+    "title": "Get In Touch",
+    "subtitle": "Ready to start your engineering project? Let's talk.",
+    "form": {
+      "email": "Email",
+      "submit": "Send Message"
+    },
+    "info": {
+      "email": "hello@nbcon.app",
+      "phone": "+966 56 620 2179",
+      "address": "Riyadh, Saudi Arabia"
+    }
+  },
+  "footer": {
+    "description": "Saudi Arabia's premier engineering marketplace connecting verified professionals with clients through AI-powered matching and secure milestone payments.",
+    "product": {
+      "title": "Product",
+      "features": "Features",
+      "pricing": "Pricing",
+      "security": "Security",
+      "updates": "Updates"
+    },
+    "clients": {
+      "title": "For Clients",
+      "findEngineers": "Find Engineers",
+      "postProjects": "Post Projects",
+      "enterprise": "Enterprise",
+      "support": "Support"
+    },
+    "engineers": {
+      "title": "For Engineers",
+      "browseJobs": "Browse Jobs",
+      "profileSetup": "Profile Setup",
+      "verification": "Verification",
+      "resources": "Resources"
+    },
+    "legal": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "cookies": "Cookie Policy"
+    },
+    "social": {
+      "followUs": "Follow us:"
+    },
+    "copyright": "© 2024 nbcon. All rights reserved."
+  }
+}
+

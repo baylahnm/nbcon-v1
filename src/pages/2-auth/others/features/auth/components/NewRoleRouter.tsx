@@ -1,6 +1,6 @@
 import { useEffect, useMemo, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useAuthStore } from "../../../stores/auth";
+import { useAuthStore } from "@/pages/1-HomePage/others/stores/auth";
 import { getLandingPage, getEffectiveRole, hasRolePermission } from "../lib/role-resolution";
 import { UserRole } from "../../../../../1-HomePage/others/lib/auth/role";
 import EngineerLayout from "../../../layouts/EngineerLayout";

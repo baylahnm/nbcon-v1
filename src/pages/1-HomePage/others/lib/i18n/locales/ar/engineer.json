@@ -1,0 +1,109 @@
+{
+  "dashboard": {
+    "title": "لوحة تحكم المهندس",
+    "subtitle": "إدارة وظائفك وأرباحك",
+    "welcome": "مرحباً بعودتك",
+    "quickActions": "إجراءات سريعة",
+    "browseJobs": "تصفح الوظائف",
+    "uploadDeliverable": "رفع المخرجات",
+    "checkIn": "تسجيل الحضور",
+    "stats": {
+      "activeJobs": "الوظائف النشطة",
+      "totalEarnings": "إجمالي الأرباح",
+      "completedProjects": "المكتملة",
+      "rating": "التقييم"
+    }
+  },
+  "jobs": {
+    "title": "الوظائف المتاحة",
+    "subtitle": "ابحث عن مشروعك الهندسي القادم",
+    "search": "البحث عن الوظائف...",
+    "filters": "التصفية",
+    "specialization": "التخصص",
+    "location": "الموقع",
+    "budget": "الميزانية",
+    "deadline": "الموعد النهائي",
+    "apply": "تقديم الآن",
+    "details": "عرض التفاصيل"
+  },
+  "calendar": {
+    "title": "التقويم",
+    "subtitle": "جدول المشروع والمواعيد النهائية",
+    "today": "اليوم",
+    "week": "الأسبوع",
+    "month": "الشهر",
+    "milestones": "المراحل الرئيسية"
+  },
+  "deliverables": {
+    "title": "رفع المخرجات",
+    "subtitle": "تقديم أعمال المشروع",
+    "project": "اختر المشروع",
+    "milestone": "المرحلة",
+    "files": "رفع الملفات",
+    "notes": "ملاحظات",
+    "submit": "إرسال المخرجات"
+  },
+  "checkIn": {
+    "title": "تسجيل الحضور الجغرافي",
+    "subtitle": "تحقق من موقعك في موقع المشروع",
+    "location": "الموقع الحالي",
+    "project": "المشروع",
+    "status": "الحالة",
+    "checkIn": "تسجيل الحضور",
+    "checkOut": "تسجيل الخروج"
+  },
+  "network": {
+    "title": "شبكتي",
+    "subtitle": "العملاء والاتصالات",
+    "clients": "العملاء",
+    "connections": "الاتصالات"
+  },
+  "learning": {
+    "title": "مركز التعلم",
+    "subtitle": "التطوير المهني",
+    "courses": "الدورات",
+    "certifications": "الشهادات"
+  },
+  "ai": {
+    "title": "المساعد الذكي",
+    "subtitle": "احصل على دعم هندسي",
+    "askQuestion": "اطرح سؤالاً تقنياً..."
+  },
+  "messages": {
+    "title": "الرسائل",
+    "subtitle": "التواصل مع العملاء",
+    "inbox": "الوارد",
+    "sent": "المرسل",
+    "compose": "إنشاء"
+  },
+  "payments": {
+    "title": "الأرباح",
+    "subtitle": "سجل الدفعات والسحوبات",
+    "totalEarnings": "إجمالي الأرباح",
+    "pending": "معلق",
+    "withdrawn": "تم السحب",
+    "withdraw": "سحب"
+  },
+  "help": {
+    "title": "مركز المساعدة",
+    "subtitle": "الدعم والأدلة",
+    "faq": "الأسئلة الشائعة",
+    "contact": "اتصل بالدعم"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "تفضيلات الحساب",
+    "profile": "الملف الشخصي",
+    "notifications": "الإشعارات",
+    "payments": "إعدادات الدفع",
+    "security": "الأمان"
+  },
+  "ranking": {
+    "title": "تصنيفات المهندسين",
+    "subtitle": "أفضل الأداءات على المنصة",
+    "topEngineers": "أفضل المهندسين",
+    "yourRank": "تصنيفك",
+    "leaderboard": "لوحة الصدارة"
+  }
+}
+

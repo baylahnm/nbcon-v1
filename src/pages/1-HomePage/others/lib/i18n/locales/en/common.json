@@ -15,7 +15,9 @@
     "download": "Download",
     "upload": "Upload",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "goHome": "Go Home",
+    "goBack": "Go Back"
   },
   "validation": {
     "required": "This field is required",
@@ -77,6 +79,17 @@
     "month_other": "months",
     "year": "year",
     "year_other": "years"
+  },
+  "errors": {
+    "forbidden": {
+      "title": "403 — Forbidden",
+      "message": "You don't have permission to view this page."
+    },
+    "notFound": {
+      "title": "Page Not Found",
+      "code": "404",
+      "message": "The page you're looking for doesn't exist or has been moved."
+    }
   }
 }
 

@@ -1,0 +1,90 @@
+{
+  "dashboard": {
+    "title": "لوحة تحكم المؤسسة",
+    "subtitle": "إدارة مشاريع مؤسستك",
+    "welcome": "مرحباً بعودتك",
+    "quickActions": "إجراءات سريعة",
+    "createRFP": "إنشاء طلب عرض",
+    "manageTeam": "إدارة الفريق",
+    "viewPortfolio": "عرض المحفظة",
+    "stats": {
+      "activeProjects": "المشاريع النشطة",
+      "teamMembers": "أعضاء الفريق",
+      "totalSpent": "إجمالي الإنفاق",
+      "vendors": "الموردون النشطون"
+    }
+  },
+  "calendar": {
+    "title": "التقويم",
+    "subtitle": "الجدول الزمني على مستوى المؤسسة",
+    "today": "اليوم",
+    "week": "الأسبوع",
+    "month": "الشهر",
+    "projects": "المشاريع"
+  },
+  "team": {
+    "title": "إدارة الفريق",
+    "subtitle": "إدارة أعضاء المؤسسة",
+    "addMember": "إضافة عضو",
+    "members": "أعضاء الفريق",
+    "roles": "الأدوار",
+    "permissions": "الصلاحيات"
+  },
+  "analytics": {
+    "title": "التحليلات",
+    "subtitle": "رؤى أداء المؤسسة",
+    "overview": "نظرة عامة",
+    "projectMetrics": "مقاييس المشاريع",
+    "financial": "التحليلات المالية"
+  },
+  "finance": {
+    "title": "الإدارة المالية",
+    "subtitle": "التحكم في الميزانية والتكاليف",
+    "budget": "الميزانية",
+    "expenses": "المصروفات",
+    "quotations": "عروض الأسعار",
+    "invoices": "الفواتير"
+  },
+  "procurement": {
+    "title": "المشتريات",
+    "subtitle": "إدارة طلبات العروض والموردين",
+    "rfps": "طلبات العروض",
+    "vendors": "الموردون",
+    "contracts": "العقود"
+  },
+  "learning": {
+    "title": "مركز التعلم",
+    "subtitle": "موارد تطوير الفريق",
+    "courses": "الدورات",
+    "training": "برامج التدريب"
+  },
+  "ai": {
+    "title": "المساعد الذكي",
+    "subtitle": "دعم على مستوى المؤسسة",
+    "askQuestion": "اطرح سؤالاً..."
+  },
+  "payments": {
+    "title": "المدفوعات",
+    "subtitle": "إدارة المعاملات",
+    "invoices": "الفواتير",
+    "transactions": "المعاملات",
+    "paymentMethods": "طرق الدفع"
+  },
+  "help": {
+    "title": "مركز المساعدة",
+    "subtitle": "دعم المؤسسات",
+    "faq": "الأسئلة الشائعة",
+    "accountManager": "مدير الحساب",
+    "contact": "اتصل بالدعم"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "تكوين المؤسسة",
+    "general": "عام",
+    "team": "إعدادات الفريق",
+    "billing": "الفواتير",
+    "integrations": "التكاملات",
+    "security": "الأمان"
+  }
+}
+

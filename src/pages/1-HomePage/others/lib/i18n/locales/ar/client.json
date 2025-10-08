@@ -1,0 +1,100 @@
+{
+  "dashboard": {
+    "title": "لوحة تحكم العميل",
+    "subtitle": "إدارة مشاريعك ومهندسيك",
+    "welcome": "مرحباً بعودتك",
+    "quickActions": "إجراءات سريعة",
+    "postJob": "نشر وظيفة جديدة",
+    "browseEngineers": "تصفح المهندسين",
+    "viewProjects": "عرض جميع المشاريع",
+    "stats": {
+      "activeProjects": "المشاريع النشطة",
+      "totalSpent": "إجمالي الإنفاق",
+      "engineers": "المهندسون المعينون",
+      "pending": "عروض الأسعار المعلقة"
+    }
+  },
+  "profile": {
+    "title": "ملف الشركة",
+    "subtitle": "إدارة معلومات شركتك",
+    "edit": "تعديل الملف",
+    "save": "حفظ التغييرات"
+  },
+  "browseEngineers": {
+    "title": "تصفح المهندسين",
+    "subtitle": "ابحث عن محترفين معتمدين لمشروعك",
+    "search": "البحث عن المهندسين...",
+    "filters": "التصفية",
+    "specialization": "التخصص",
+    "location": "الموقع",
+    "experience": "الخبرة",
+    "availability": "التوفر"
+  },
+  "postJob": {
+    "title": "نشر وظيفة جديدة",
+    "subtitle": "إنشاء قائمة مشروع جديد",
+    "projectDetails": "تفاصيل المشروع",
+    "requirements": "المتطلبات",
+    "budget": "الميزانية والجدول الزمني"
+  },
+  "calendar": {
+    "title": "التقويم",
+    "subtitle": "جدول المشروع والمراحل الرئيسية",
+    "today": "اليوم",
+    "week": "الأسبوع",
+    "month": "الشهر"
+  },
+  "network": {
+    "title": "شبكتي",
+    "subtitle": "المهندسون والاتصالات",
+    "favorites": "المفضلة",
+    "recent": "الأخيرة"
+  },
+  "learning": {
+    "title": "مركز التعلم",
+    "subtitle": "الموارد والأدلة",
+    "courses": "الدورات",
+    "guides": "الأدلة"
+  },
+  "ai": {
+    "title": "المساعد الذكي",
+    "subtitle": "احصل على مساعدة في مشاريعك",
+    "askQuestion": "اطرح سؤالاً..."
+  },
+  "messages": {
+    "title": "الرسائل",
+    "subtitle": "التواصل مع المهندسين",
+    "inbox": "الوارد",
+    "sent": "المرسل",
+    "compose": "إنشاء"
+  },
+  "payments": {
+    "title": "المدفوعات",
+    "subtitle": "سجل المعاملات والفواتير",
+    "invoices": "الفواتير",
+    "transactions": "المعاملات",
+    "total": "الإجمالي"
+  },
+  "help": {
+    "title": "مركز المساعدة",
+    "subtitle": "الدعم والتوثيق",
+    "faq": "الأسئلة الشائعة",
+    "contact": "اتصل بالدعم"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "تفضيلات الحساب والتكوين",
+    "general": "عام",
+    "notifications": "الإشعارات",
+    "billing": "الفواتير",
+    "security": "الأمان"
+  },
+  "billing": {
+    "title": "الفواتير",
+    "subtitle": "الاشتراك وطرق الدفع",
+    "currentPlan": "الباقة الحالية",
+    "paymentMethods": "طرق الدفع",
+    "invoices": "الفواتير"
+  }
+}
+

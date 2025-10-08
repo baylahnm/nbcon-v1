@@ -209,6 +209,12 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: state.isAuthenticated,
         isInitialized: state.isInitialized,
       }),
+      onRehydrateStorage: () => (state) => {
+        // After rehydration, ensure loading is false if we were already initialized
+        if (state?.isInitialized) {
+          state.isLoading = false;
+        }
+      },
     }
   )
 );
@@ -249,7 +255,16 @@ export const requiresAuth = (path: string): boolean => {
   return !publicPaths.includes(path);
 };
 
+let isInitializing = false;
+
 export const initializeAuth = () => {
+  // Prevent multiple simultaneous initializations
+  if (isInitializing) {
+    console.log('Auth initialization already in progress');
+    return () => {};
+  }
+  
+  isInitializing = true;
   const { setUser, setLoading, setInitialized } = useAuthStore.getState();
 
   const syncFromStorage = () => {
@@ -287,6 +302,16 @@ export const initializeAuth = () => {
   }
 
   setLoading(true);
+  
+  // Safety timeout: if initialization takes longer than 10 seconds, force complete it
+  const safetyTimeout = setTimeout(() => {
+    console.warn('Auth initialization timed out after 10 seconds, forcing completion');
+    const currentState = useAuthStore.getState();
+    if (currentState.isLoading || !currentState.isInitialized) {
+      syncFromStorage();
+    }
+  }, 10000);
+  
   syncFromStorage();
 
   const handleStorage = (event: StorageEvent) => {
@@ -296,8 +321,15 @@ export const initializeAuth = () => {
   };
 
   window.addEventListener('storage', handleStorage);
+  
+  // Mark initialization as complete after a short delay to ensure all async operations have started
+  setTimeout(() => {
+    isInitializing = false;
+  }, 100);
 
   return () => {
+    clearTimeout(safetyTimeout);
     window.removeEventListener('storage', handleStorage);
+    isInitializing = false;
   };
 };

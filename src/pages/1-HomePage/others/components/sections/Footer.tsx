@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Linkedin, Instagram, Globe, MessageSquare, Users } from 'lucide-react';
 import { Button } from '../ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface FooterProps {
   footerData?: {
@@ -21,23 +22,8 @@ interface FooterProps {
   };
 }
 
-const Footer: React.FC<FooterProps> = ({ 
-  footerData = {
-    product: {
-      title: 'Product',
-      links: ['Features', 'Pricing', 'Security', 'Updates']
-    },
-    clients: {
-      title: 'For Clients',
-      links: ['Find Engineers', 'Post Projects', 'Enterprise', 'Support']
-    },
-    engineers: {
-      title: 'For Engineers',
-      links: ['Browse Jobs', 'Profile Setup', 'Verification', 'Resources']
-    },
-    copyright: '© 2024 nbocn. All rights reserved.'
-  }
-}) => {
+const Footer: React.FC<FooterProps> = ({ footerData }) => {
+  const { t } = useTranslation('homepage');
   return (
     <footer className="bg-primary pt-12 pb-12 px-6 rounded-t-[50px]">
       <div className="container mx-auto px-0">
@@ -51,7 +37,7 @@ const Footer: React.FC<FooterProps> = ({
               <span className="font-bold text-xl text-primary-foreground">nbcon</span>
             </div>
             <p className="text-primary-foreground/80 mb-6 max-w-md">
-              Saudi Arabia's premier engineering marketplace connecting verified professionals with clients through AI-powered matching and secure milestone payments.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4 bg-primary p-0 rounded-lg">
               <Button variant="outline" size="sm" className="w-[30px] h-[30px] p-0 border-0 hover:bg-primary-foreground/10 group bg-primary-foreground dark:bg-primary-foreground">
@@ -115,22 +101,22 @@ const Footer: React.FC<FooterProps> = ({
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 mb-4 md:mb-0">
           <p className="text-sm text-primary-foreground/70">
-            {footerData.copyright}
+            {t('footer.copyright')}
           </p>
             <div className="flex space-x-6">
               <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                Privacy Policy
+                {t('footer.legal.privacy')}
               </Link>
               <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                Terms of Service
+                {t('footer.legal.terms')}
               </Link>
               <Link to="#" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                Cookie Policy
+                {t('footer.legal.cookies')}
               </Link>
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-primary-foreground/70">Follow us:</span>
+            <span className="text-sm text-primary-foreground/70">{t('footer.social.followUs')}</span>
             <div className="flex space-x-2">
               <Button variant="ghost" size="sm" className="w-8 h-8 p-0 hover:bg-primary-foreground/10">
                 <Globe className="w-4 h-4 text-primary-foreground/70" />

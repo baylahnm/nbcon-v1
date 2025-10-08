@@ -4,40 +4,39 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Play, Wrench, Users, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import createGlobe from "cobe";
 import DisplayCards from "./display-cards";
 import AnimatedCardChartDemo from "./animated-card-chart-demo";
 
 export function FeaturesSectionWithBentoGrid() {
+  const { t } = useTranslation('homepage');
+  
   const features = [
     {
-      title: "Track engineering projects effectively",
-      description:
-        "Track and manage your engineering projects with ease using our intuitive project management interface.",
+      title: t('features.trackProjects.title'),
+      description: t('features.trackProjects.description'),
       skeleton: <SkeletonOne />,
       className:
         "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r border-border",
     },
     {
-      title: "Real-time Analytics Dashboard",
-      description:
-        "Monitor project performance, track milestones, and get insights with our comprehensive analytics dashboard.",
+      title: t('features.analytics.title'),
+      description: t('features.analytics.description'),
       skeleton: <SkeletonTwo />,
       className:
         "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r border-border",
     },
     {
-      title: "Watch our AI in action",
-      description:
-        "Whether you're an engineer or client, see how our AI-powered matching system works on our YouTube channel",
+      title: t('features.aiVideo.title'),
+      description: t('features.aiVideo.description'),
       skeleton: <SkeletonThree />,
       className:
         "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r border-border",
     },
     {
-      title: "Our Core Features",
-      description:
-        "Discover the key features that make nbcon the premier engineering marketplace in Saudi Arabia.",
+      title: t('features.coreFeatures.title'),
+      description: t('features.coreFeatures.description'),
       skeleton: <SkeletonFive />,
       className: "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-none",
     },
@@ -45,9 +44,9 @@ export function FeaturesSectionWithBentoGrid() {
   return (
     <div className="relative z-20 py-10 lg:py-40 max-w-7xl mx-auto">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Features</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('features.title')}</h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          A high-performing marketplace connecting certified engineers, clients, and enterprises—with transparent pricing, milestone payments, and built-in compliance.
+          {t('features.subtitle')}
         </p>
       </div>
 
@@ -103,6 +102,8 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export const SkeletonOne = () => {
+  const { t } = useTranslation('homepage');
+  
   return (
     <div className="relative flex py-8 px-2 gap-10 h-full">
       <div className="w-full p-5 mx-auto bg-card shadow-2xl group h-full border">
@@ -111,7 +112,7 @@ export const SkeletonOne = () => {
           <div className="w-full h-full bg-muted/30 rounded-lg p-4">
             {/* Dashboard Header */}
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-foreground">Project Dashboard</h3>
+              <h3 className="text-lg font-semibold text-foreground">{t('features.dashboardMockup.title')}</h3>
               <div className="flex space-x-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                 <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
@@ -122,15 +123,15 @@ export const SkeletonOne = () => {
             {/* Dashboard Stats */}
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-primary/10 rounded-lg p-3 text-center">
-                <div className="text-xs text-muted-foreground">Active</div>
+                <div className="text-xs text-muted-foreground">{t('features.dashboardMockup.stats.active')}</div>
                 <div className="text-lg font-bold text-primary">12</div>
               </div>
               <div className="bg-green-500/10 rounded-lg p-3 text-center">
-                <div className="text-xs text-muted-foreground">Completed</div>
+                <div className="text-xs text-muted-foreground">{t('features.dashboardMockup.stats.completed')}</div>
                 <div className="text-lg font-bold text-green-600">48</div>
               </div>
               <div className="bg-orange-500/10 rounded-lg p-3 text-center">
-                <div className="text-xs text-muted-foreground">Pending</div>
+                <div className="text-xs text-muted-foreground">{t('features.dashboardMockup.stats.pending')}</div>
                 <div className="text-lg font-bold text-orange-600">7</div>
               </div>
             </div>
@@ -138,16 +139,16 @@ export const SkeletonOne = () => {
             {/* Project List */}
             <div className="space-y-2">
               <div className="flex items-center justify-between p-2 bg-card rounded border">
-                <span className="text-sm text-foreground">HVAC System Design</span>
-                <span className="text-xs text-green-600">In Progress</span>
+                <span className="text-sm text-foreground">{t('features.dashboardMockup.projects.hvac')}</span>
+                <span className="text-xs text-green-600">{t('features.dashboardMockup.status.inProgress')}</span>
               </div>
               <div className="flex items-center justify-between p-2 bg-card rounded border">
-                <span className="text-sm text-foreground">Electrical Planning</span>
-                <span className="text-xs text-primary">Review</span>
+                <span className="text-sm text-foreground">{t('features.dashboardMockup.projects.electrical')}</span>
+                <span className="text-xs text-primary">{t('features.dashboardMockup.status.review')}</span>
               </div>
               <div className="flex items-center justify-between p-2 bg-card rounded border">
-                <span className="text-sm text-foreground">Structural Analysis</span>
-                <span className="text-xs text-orange-600">Pending</span>
+                <span className="text-sm text-foreground">{t('features.dashboardMockup.projects.structural')}</span>
+                <span className="text-xs text-orange-600">{t('features.dashboardMockup.status.pending')}</span>
               </div>
             </div>
           </div>
@@ -255,12 +256,14 @@ export const SkeletonFour = () => {
 };
 
 export const SkeletonFive = () => {
+  const { t } = useTranslation('homepage');
+  
   const featureCards = [
     {
       icon: <Wrench className="size-4 text-primary-foreground" />,
-      title: "Smart Matching",
-      description: "AI-powered engineer matching for your projects",
-      date: "Just now",
+      title: t('features.displayCards.smartMatching.title'),
+      description: t('features.displayCards.smartMatching.description'),
+      date: t('features.displayCards.smartMatching.date'),
       iconClassName: "text-primary",
       titleClassName: "text-primary",
       className:
@@ -268,9 +271,9 @@ export const SkeletonFive = () => {
     },
     {
       icon: <Users className="size-4 text-primary-foreground" />,
-      title: "SCE Verified",
-      description: "All engineers are SCE certified professionals",
-      date: "2 days ago",
+      title: t('features.displayCards.sceVerified.title'),
+      description: t('features.displayCards.sceVerified.description'),
+      date: t('features.displayCards.sceVerified.date'),
       iconClassName: "text-primary",
       titleClassName: "text-primary",
       className:
@@ -278,9 +281,9 @@ export const SkeletonFive = () => {
     },
     {
       icon: <BarChart3 className="size-4 text-primary-foreground" />,
-      title: "Real-time Analytics",
-      description: "Track project progress with live insights",
-      date: "Today",
+      title: t('features.displayCards.analytics.title'),
+      description: t('features.displayCards.analytics.description'),
+      date: t('features.displayCards.analytics.date'),
       iconClassName: "text-primary",
       titleClassName: "text-primary",
       className:

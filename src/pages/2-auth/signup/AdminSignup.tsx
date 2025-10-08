@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNamespace } from "@/pages/1-HomePage/others/lib/i18n/useNamespace";
 import { Shield, Lock, CheckCircle, ArrowRight, ArrowLeft, AlertCircle } from "lucide-react";
 import { Button } from "@/pages/1-HomePage/others/components/ui/button";
 import { Input } from "@/pages/1-HomePage/others/components/ui/input";
@@ -10,14 +12,25 @@ import { Separator } from "@/pages/1-HomePage/others/components/ui/separator";
 import { Textarea } from "@/pages/1-HomePage/others/components/ui/textarea";
 import { Alert, AlertDescription } from "@/pages/1-HomePage/others/components/ui/alert";
 import { FileUploader } from "./components/FileUploader";
+import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 
 const DEPARTMENTS = [
-  'Engineering', 'Operations', 'IT & Systems', 'Finance', 
-  'HR', 'Legal', 'Executive', 'Customer Support', 'Other'
+  'Engineering',
+  'Operations',
+  'Finance',
+  'Legal',
+  'IT & Security',
+  'Human Resources',
+  'Compliance',
+  'Customer Support',
+  'Executive',
+  'Other'
 ];
 
 export default function AdminSignup() {
   const navigate = useNavigate();
+  const ready = useNamespace(['registration', 'common']);
+  const { t } = useTranslation(['registration', 'common']);
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,6 +47,8 @@ export default function AdminSignup() {
   const [acceptSecurityAgreement, setAcceptSecurityAgreement] = useState(false);
 
   const [tokenError, setTokenError] = useState("");
+
+  if (!ready) return null;
 
   const steps = [
     { id: 1, title: "Verification", icon: Shield },
@@ -102,13 +117,13 @@ export default function AdminSignup() {
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          Admin access requires a valid invitation token from an authorized system administrator.
+          {t('admin.alertMessage')}
         </AlertDescription>
       </Alert>
 
       <div className="space-y-2">
         <Label htmlFor="invitation-token">
-          Admin Invitation Token
+          {t('admin.fields.invitationToken')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
@@ -119,7 +134,7 @@ export default function AdminSignup() {
             setTokenError("");
           }}
           onBlur={() => validateToken(invitationToken)}
-          placeholder="Enter your invitation token"
+          placeholder={t('admin.fields.invitationTokenPlaceholder')}
           className={tokenError ? "border-destructive" : ""}
         />
         {tokenError && (
@@ -129,7 +144,7 @@ export default function AdminSignup() {
 
       <div className="space-y-2">
         <Label htmlFor="work-email">
-          Work Email (must match org domain)
+          {t('admin.fields.workEmail')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
@@ -137,29 +152,29 @@ export default function AdminSignup() {
           type="email"
           value={workEmail}
           onChange={(e) => setWorkEmail(e.target.value)}
-          placeholder="admin@organization.com"
+          placeholder={t('admin.fields.workEmailPlaceholder')}
         />
         <p className="text-xs text-muted-foreground">
-          Email will be verified against organization domain
+          {t('admin.fields.workEmailHint')}
         </p>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="employee-id">
-          Employee ID
+          {t('admin.fields.employeeId')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Input
           id="employee-id"
           value={employeeId}
           onChange={(e) => setEmployeeId(e.target.value)}
-          placeholder="Enter your employee ID"
+          placeholder={t('admin.fields.employeeIdPlaceholder')}
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="department">
-          Department / Team
+          {t('admin.fields.department')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <select
@@ -168,8 +183,8 @@ export default function AdminSignup() {
           onChange={(e) => setDepartment(e.target.value)}
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <option value="">Select department</option>
-          {DEPARTMENTS.map((dept) => (
+          <option value="">{t('admin.fields.departmentPlaceholder')}</option>
+          {t('admin.departments', { returnObjects: true }).map((dept: string) => (
             <option key={dept} value={dept}>{dept}</option>
           ))}
         </select>
@@ -177,18 +192,18 @@ export default function AdminSignup() {
 
       <div className="space-y-2">
         <Label htmlFor="access-reason">
-          Reason for Elevated Access
+          {t('admin.fields.accessReason')}
           <span className="text-destructive ml-1">*</span>
         </Label>
         <Textarea
           id="access-reason"
           value={accessReason}
           onChange={(e) => setAccessReason(e.target.value)}
-          placeholder="Explain why you need admin access and your role responsibilities..."
+          placeholder={t('admin.fields.accessReasonPlaceholder')}
           className="min-h-[120px] resize-none"
         />
         <p className="text-xs text-muted-foreground">
-          This will be reviewed by system administrators
+          {t('admin.fields.accessReasonHint')}
         </p>
       </div>
     </div>
@@ -293,7 +308,7 @@ export default function AdminSignup() {
           onClick={() => navigate('/auth/account-type')}
           className="mb-4 text-muted-foreground hover:text-foreground"
         >
-          ← Back to Account Selection
+          ← {t('admin.backToAccountSelection')}
         </Button>
 
         {/* Progress Steps */}
@@ -330,10 +345,10 @@ export default function AdminSignup() {
               })()}
             </div>
             <CardTitle className="text-2xl">
-              {steps[currentStep - 1]?.title}
+              {currentStep === 1 ? t('admin.title') : steps[currentStep - 1]?.title}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Admin Account - Free (Requires Approval)
+              {t('admin.subtitle')}
             </p>
           </CardHeader>
 

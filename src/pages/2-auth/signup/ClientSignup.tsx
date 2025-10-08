@@ -25,8 +25,6 @@ export default function ClientSignup() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  if (!ready) return null;
-
   // Form data
   const [companyLegalName, setCompanyLegalName] = useState("");
   const [tradeName, setTradeName] = useState("");
@@ -52,6 +50,8 @@ export default function ClientSignup() {
   });
   const [invoiceEmails, setInvoiceEmails] = useState<string[]>([]);
   const [acceptTerms, setAcceptTerms] = useState(false);
+
+  if (!ready) return null;
 
   const pricing = PLAN_PRICING.client_monthly_45;
 

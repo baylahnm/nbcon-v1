@@ -1,0 +1,100 @@
+{
+  "dashboard": {
+    "title": "Client Dashboard",
+    "subtitle": "Manage your projects and engineers",
+    "welcome": "Welcome back",
+    "quickActions": "Quick Actions",
+    "postJob": "Post New Job",
+    "browseEngineers": "Browse Engineers",
+    "viewProjects": "View All Projects",
+    "stats": {
+      "activeProjects": "Active Projects",
+      "totalSpent": "Total Spent",
+      "engineers": "Engineers Hired",
+      "pending": "Pending Quotes"
+    }
+  },
+  "profile": {
+    "title": "Company Profile",
+    "subtitle": "Manage your company information",
+    "edit": "Edit Profile",
+    "save": "Save Changes"
+  },
+  "browseEngineers": {
+    "title": "Browse Engineers",
+    "subtitle": "Find certified professionals for your project",
+    "search": "Search engineers...",
+    "filters": "Filters",
+    "specialization": "Specialization",
+    "location": "Location",
+    "experience": "Experience",
+    "availability": "Availability"
+  },
+  "postJob": {
+    "title": "Post New Job",
+    "subtitle": "Create a new project listing",
+    "projectDetails": "Project Details",
+    "requirements": "Requirements",
+    "budget": "Budget & Timeline"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "subtitle": "Project schedule and milestones",
+    "today": "Today",
+    "week": "Week",
+    "month": "Month"
+  },
+  "network": {
+    "title": "My Network",
+    "subtitle": "Engineers and connections",
+    "favorites": "Favorites",
+    "recent": "Recent"
+  },
+  "learning": {
+    "title": "Learning Center",
+    "subtitle": "Resources and guides",
+    "courses": "Courses",
+    "guides": "Guides"
+  },
+  "ai": {
+    "title": "AI Assistant",
+    "subtitle": "Get help with your projects",
+    "askQuestion": "Ask a question..."
+  },
+  "messages": {
+    "title": "Messages",
+    "subtitle": "Communicate with engineers",
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "compose": "Compose"
+  },
+  "payments": {
+    "title": "Payments",
+    "subtitle": "Transaction history and billing",
+    "invoices": "Invoices",
+    "transactions": "Transactions",
+    "total": "Total"
+  },
+  "help": {
+    "title": "Help Center",
+    "subtitle": "Support and documentation",
+    "faq": "FAQ",
+    "contact": "Contact Support"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Account preferences and configuration",
+    "general": "General",
+    "notifications": "Notifications",
+    "billing": "Billing",
+    "security": "Security"
+  },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Subscription and payment methods",
+    "currentPlan": "Current Plan",
+    "paymentMethods": "Payment Methods",
+    "invoices": "Invoices"
+  }
+}
+

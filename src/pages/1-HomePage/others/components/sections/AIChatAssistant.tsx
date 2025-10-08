@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bot, BarChart3, Clock, Shield, MessageSquare, ArrowRight, Brain } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { CustomersTableCard } from '../ui/customers-table-card';
@@ -8,11 +9,12 @@ import FeatureSection from '../ui/feature-section';
 import { ContainerScroll } from '../ui/container-scroll-animation';
 
 export const AIChatAssistant: React.FC = () => {
+  const { t } = useTranslation('homepage');
   const [activeTab, setActiveTab] = useState<'chat' | 'projects' | 'analytics'>('chat');
   const [typedPlaceholder, setTypedPlaceholder] = useState('');
 
   useEffect(() => {
-    const placeholderText = "Ask about engineering projects, costs, or find engineers...";
+    const placeholderText = t('aiAssistant.chat.placeholder');
     let index = 0;
     
     const typeText = () => {
@@ -31,7 +33,7 @@ export const AIChatAssistant: React.FC = () => {
     };
 
     typeText();
-  }, []);
+  }, [t]);
 
   return (
     <section className="py-[100px] px-6 md:py-[100px] md:px-0 bg-muted/30">
@@ -42,11 +44,10 @@ export const AIChatAssistant: React.FC = () => {
             titleComponent={
               <div className="text-center">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  nbcon AI Assistant
+                  {t('aiAssistant.title')}
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto pb-4">
-                  Your intelligent engineering project partner powered by advanced AI technology. 
-                  Automate your tasks and workflows with smart matching, real-time cost estimation, and compliance guidance.
+                  {t('aiAssistant.subtitle')}
                 </p>
               </div>
             }
@@ -64,8 +65,8 @@ export const AIChatAssistant: React.FC = () => {
                       <Brain className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-foreground">nbcon AI Assistant</h3>
-                      <p className="text-sm text-muted-foreground">Intelligent engineering project management</p>
+                      <h3 className="text-xl font-bold text-foreground">{t('aiAssistant.title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('aiAssistant.dashboardSubtitle')}</p>
                     </div>
                   </div>
                   <div className="flex space-x-2">
@@ -80,15 +81,15 @@ export const AIChatAssistant: React.FC = () => {
                   <ToggleGroup type="single" value={activeTab} onValueChange={(value) => setActiveTab(value as 'chat' | 'projects' | 'analytics')}>
                     <ToggleGroupItem value="chat" className="flex items-center gap-2">
                       <MessageSquare className="w-4 h-4" />
-                      AI Chat
+                      {t('aiAssistant.tabs.chat')}
                     </ToggleGroupItem>
                     <ToggleGroupItem value="projects" className="flex items-center gap-2">
                       <BarChart3 className="w-4 h-4" />
-                      Projects
+                      {t('aiAssistant.tabs.projects')}
                     </ToggleGroupItem>
                     <ToggleGroupItem value="analytics" className="flex items-center gap-2">
                       <Clock className="w-4 h-4" />
-                      Analytics
+                      {t('aiAssistant.tabs.analytics')}
                     </ToggleGroupItem>
                   </ToggleGroup>
                 </div>
@@ -107,9 +108,9 @@ export const AIChatAssistant: React.FC = () => {
                         </div>
                         <div className="bg-muted rounded-lg p-3 max-w-md">
                           <p className="text-sm text-foreground">
-                            Hello! I'm your nbcon AI assistant. I can help you find the right engineers for your project, estimate costs, suggest timelines, and answer questions about engineering services in Saudi Arabia.
+                            {t('aiAssistant.chat.welcome')}
                           </p>
-                          <span className="text-xs text-muted-foreground">Just now</span>
+                          <span className="text-xs text-muted-foreground">{t('aiAssistant.chat.justNow')}</span>
                         </div>
                       </div>
                         
@@ -117,12 +118,12 @@ export const AIChatAssistant: React.FC = () => {
                       <div className="flex items-start space-x-3 justify-end">
                         <div className="bg-primary rounded-lg p-3 max-w-md">
                           <p className="text-sm text-primary-foreground">
-                            I need an electrical engineer for a residential project in Riyadh. Budget is around SAR 15,000.
+                            {t('aiAssistant.chat.userMessage')}
                           </p>
-                          <span className="text-xs text-primary-foreground/70">Just now</span>
+                          <span className="text-xs text-primary-foreground/70">{t('aiAssistant.chat.justNow')}</span>
                         </div>
                         <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-muted-foreground text-xs font-bold">You</span>
+                          <span className="text-muted-foreground text-xs font-bold">{t('aiAssistant.chat.you')}</span>
                         </div>
                       </div>
                         
@@ -133,7 +134,7 @@ export const AIChatAssistant: React.FC = () => {
                         </div>
                         <div className="bg-muted rounded-lg p-3 max-w-md">
                           <p className="text-sm text-foreground">
-                            Perfect! I found 12 qualified electrical engineers in Riyadh. Here are my top recommendations:
+                            {t('aiAssistant.chat.aiResponse')}
                           </p>
                           <div className="mt-2 space-y-1">
                             <div className="flex items-center justify-between text-xs">
@@ -145,7 +146,7 @@ export const AIChatAssistant: React.FC = () => {
                               <span className="text-primary font-medium">SAR 14,000</span>
                             </div>
                           </div>
-                          <span className="text-xs text-muted-foreground">Just now</span>
+                          <span className="text-xs text-muted-foreground">{t('aiAssistant.chat.justNow')}</span>
                         </div>
                       </div>
                     </div>
@@ -164,7 +165,7 @@ export const AIChatAssistant: React.FC = () => {
                           </button>
                         </div>
                         <Button className="px-6">
-                          <span className="hidden sm:inline">Send</span>
+                          <span className="hidden sm:inline">{t('aiAssistant.chat.send')}</span>
                           <ArrowRight className="w-4 h-4 sm:ml-2" />
                         </Button>
                       </div>
@@ -175,8 +176,8 @@ export const AIChatAssistant: React.FC = () => {
                 {activeTab === 'projects' && (
                   <div className="h-full">
                     <CustomersTableCard 
-                      title="Engineering Projects"
-                      subtitle="Active projects managed by nbcon AI Assistant"
+                      title={t('aiAssistant.projectsTab.title')}
+                      subtitle={t('aiAssistant.projectsTab.subtitle')}
                       customers={[
                         {
                           id: 1,
@@ -222,24 +223,24 @@ export const AIChatAssistant: React.FC = () => {
                 {activeTab === 'analytics' && (
                   <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">Project Success Rate</h4>
+                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.successRate')}</h4>
                       <div className="text-3xl font-bold text-primary mb-1">94.2%</div>
-                      <p className="text-sm text-muted-foreground">+2.1% from last month</p>
+                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.successRateChange')}</p>
                     </Card>
                     <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">Average Response Time</h4>
+                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.responseTime')}</h4>
                       <div className="text-3xl font-bold text-primary mb-1">2.3h</div>
-                      <p className="text-sm text-muted-foreground">-15min from last month</p>
+                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.responseTimeChange')}</p>
                     </Card>
                     <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">Total Projects</h4>
+                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.totalProjects')}</h4>
                       <div className="text-3xl font-bold text-primary mb-1">1,247</div>
-                      <p className="text-sm text-muted-foreground">+89 this month</p>
+                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.totalProjectsChange')}</p>
                     </Card>
                     <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">Customer Satisfaction</h4>
+                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.satisfaction')}</h4>
                       <div className="text-3xl font-bold text-primary mb-1">4.8★</div>
-                      <p className="text-sm text-muted-foreground">Based on 342 reviews</p>
+                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.satisfactionChange')}</p>
                     </Card>
                   </div>
                 )}

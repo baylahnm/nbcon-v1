@@ -1,0 +1,90 @@
+{
+  "dashboard": {
+    "title": "Enterprise Dashboard",
+    "subtitle": "Manage your organization's projects",
+    "welcome": "Welcome back",
+    "quickActions": "Quick Actions",
+    "createRFP": "Create RFP",
+    "manageTeam": "Manage Team",
+    "viewPortfolio": "View Portfolio",
+    "stats": {
+      "activeProjects": "Active Projects",
+      "teamMembers": "Team Members",
+      "totalSpent": "Total Spent",
+      "vendors": "Active Vendors"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "subtitle": "Organization-wide schedule",
+    "today": "Today",
+    "week": "Week",
+    "month": "Month",
+    "projects": "Projects"
+  },
+  "team": {
+    "title": "Team Management",
+    "subtitle": "Manage organization members",
+    "addMember": "Add Member",
+    "members": "Team Members",
+    "roles": "Roles",
+    "permissions": "Permissions"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Organization performance insights",
+    "overview": "Overview",
+    "projectMetrics": "Project Metrics",
+    "financial": "Financial Analytics"
+  },
+  "finance": {
+    "title": "Finance Management",
+    "subtitle": "Budget and cost control",
+    "budget": "Budget",
+    "expenses": "Expenses",
+    "quotations": "Quotations",
+    "invoices": "Invoices"
+  },
+  "procurement": {
+    "title": "Procurement",
+    "subtitle": "RFP and vendor management",
+    "rfps": "RFPs",
+    "vendors": "Vendors",
+    "contracts": "Contracts"
+  },
+  "learning": {
+    "title": "Learning Center",
+    "subtitle": "Team development resources",
+    "courses": "Courses",
+    "training": "Training Programs"
+  },
+  "ai": {
+    "title": "AI Assistant",
+    "subtitle": "Enterprise-level support",
+    "askQuestion": "Ask a question..."
+  },
+  "payments": {
+    "title": "Payments",
+    "subtitle": "Transaction management",
+    "invoices": "Invoices",
+    "transactions": "Transactions",
+    "paymentMethods": "Payment Methods"
+  },
+  "help": {
+    "title": "Help Center",
+    "subtitle": "Enterprise support",
+    "faq": "FAQ",
+    "accountManager": "Account Manager",
+    "contact": "Contact Support"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Organization configuration",
+    "general": "General",
+    "team": "Team Settings",
+    "billing": "Billing",
+    "integrations": "Integrations",
+    "security": "Security"
+  }
+}
+
