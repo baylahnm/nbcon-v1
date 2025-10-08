@@ -80,12 +80,6 @@ export default function EngineerSignup() {
     { id: 4, title: "Payment & Terms", icon: CreditCard },
   ];
 
-  const toggleSpecialization = (spec: string) => {
-    setSpecializations(prev => 
-      prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec]
-    );
-  };
-
   const toggleLanguage = (lang: string) => {
     setLanguages(prev => 
       prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]
@@ -159,30 +153,26 @@ export default function EngineerSignup() {
         />
       </div>
 
-      <div className="space-y-3">
-        <Label>
+      <div className="space-y-2">
+        <Label htmlFor="specialization">
           Professional Title / Specialization
           <span className="text-destructive ml-1">*</span>
         </Label>
-        <div className="grid grid-cols-2 gap-2">
-          {SPECIALIZATIONS.map((spec) => (
-            <Button
-              key={spec}
-              type="button"
-              variant={specializations.includes(spec) ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => toggleSpecialization(spec)}
-              className="justify-start text-sm h-auto py-2"
-            >
-              {spec}
-            </Button>
-          ))}
-        </div>
-        {specializations.length > 0 && (
-          <p className="text-xs text-muted-foreground">
-            Selected: {specializations.join(', ')}
-          </p>
-        )}
+        <Select 
+          value={specializations[0] || ''} 
+          onValueChange={(value) => setSpecializations([value])}
+        >
+          <SelectTrigger id="specialization">
+            <SelectValue placeholder="Select your specialization" />
+          </SelectTrigger>
+          <SelectContent>
+            {SPECIALIZATIONS.map((spec) => (
+              <SelectItem key={spec} value={spec}>
+                {spec}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">
@@ -307,6 +297,11 @@ export default function EngineerSignup() {
           type="date"
           value={licenseExpiry}
           onChange={(e) => setLicenseExpiry(e.target.value)}
+          style={{
+            colorScheme: 'light dark',
+            accentColor: 'hsl(var(--primary))',
+          }}
+          className="[&::-webkit-calendar-picker-indicator]:cursor-pointer"
         />
       </div>
 

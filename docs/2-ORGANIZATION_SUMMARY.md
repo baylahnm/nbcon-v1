@@ -9,11 +9,11 @@ The nbcon project has been completely reorganized with a clean, account-specific
 Each account type now has its own dedicated space with all necessary files:
 
 ### **1-HomePage/others** - Core Application Files
-- `components/` - All UI components (auth, calendar, dashboard, enterprise, jobs, learning, messaging, profile, ranking, sections, toolbar, ui, star-border)
+- `components/` - All UI components (auth, calendar, dashboard, enterprise, i18n, jobs, learning, messaging, profile, ranking, sections, toolbar, ui, star-border)
 - `app/` - Routing and error handling
 - `config/` - Navigation and environment configuration
 - `data/` - Mock data and engineer data
-- `lib/` - Utility functions, auth guards, constants, routes
+- `lib/` - Utility functions, auth guards, constants, i18n, routes
 - `stores/` - Core state management (auth, theme, calendar)
 - `types/` - Core type definitions (html2pdf, project)
 - `utils/` - Core utility functions (permissions)
@@ -104,6 +104,13 @@ Each account type now has its own dedicated space with all necessary files:
 - **Root utils directory removed** - complete isolation achieved
 - All imports now point to local `others/utils/` directories
 
+### **i18n Migration**
+- **Internationalization infrastructure** properly organized in `1-HomePage/others/`
+- `lib/i18n/` - i18n configuration, hooks, utilities, and locale files (en, ar)
+- `components/i18n/` - LanguageSwitcher component
+- **No scattered top-level directories** - all i18n files consolidated with shared infrastructure
+- All imports updated to use `@/pages/1-HomePage/others/lib/i18n` and `@/pages/1-HomePage/others/components/i18n`
+
 ## 🚀 **Benefits Achieved**
 
 1. **Complete Account Isolation** - No shared dependencies between account types
@@ -112,6 +119,7 @@ Each account type now has its own dedicated space with all necessary files:
 4. **Scalable Architecture** - Add new features to specific accounts easily
 5. **Reduced Confusion** - No more hunting through shared directories
 6. **Better Development Experience** - Clear boundaries and organization
+7. **Organized Shared Infrastructure** - i18n, auth, and theme properly consolidated in `1-HomePage/others/`
 
 ## 📊 **File Distribution Summary**
 
@@ -154,6 +162,7 @@ The Supabase backend has been completely reorganized for better maintainability:
 ✅ **Perfect Account Isolation** - Each account type is completely self-contained  
 ✅ **Clean Architecture** - Logical organization with numbered pages  
 ✅ **No Root Dependencies** - All stores, types, and utils are account-specific  
+✅ **No Scattered Directories** - i18n properly organized in `1-HomePage/others/`  
 ✅ **Organized Database** - Supabase migrations and fixes properly structured  
 ✅ **Production Ready** - All core functionality implemented and organized  
 ✅ **Maintainable Codebase** - Easy to understand and extend  
@@ -166,6 +175,7 @@ The Supabase backend has been completely reorganized for better maintainability:
 - **State Management**: Account-specific stores with no cross-dependencies
 - **Type Safety**: Account-specific types with proper TypeScript support
 - **Utility Functions**: Account-specific utils with proper isolation
+- **Internationalization**: i18n infrastructure organized in `1-HomePage/others/lib/i18n` with locales for English and Arabic
 
 ### **Backend Organization**
 - **Migration Naming**: Descriptive names instead of UUIDs for easy identification
@@ -178,5 +188,5 @@ This organization makes the **entire codebase much more maintainable and develop
 
 ---
 
-**Last Updated:** January 2025  
-**Status:** Complete Account Isolation Achieved ✅
+**Last Updated:** October 2025  
+**Status:** Complete Account Isolation Achieved + i18n Organized ✅

@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { initializeAuth } from "@/pages/1-HomePage/others/stores/auth";
 import { useThemeStore } from "@/pages/1-HomePage/others/stores/theme";
+import "./pages/1-HomePage/others/lib/i18n/i18n";
 
 // Initialize authentication
 initializeAuth();

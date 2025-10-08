@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNamespace } from "@/pages/1-HomePage/others/lib/i18n/useNamespace";
 import { Building, CreditCard, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/pages/1-HomePage/others/components/ui/button";
 import { Input } from "@/pages/1-HomePage/others/components/ui/input";
@@ -14,30 +16,16 @@ import { BillingAddressForm } from "./components/BillingAddressForm";
 import { PaymentMethodSelector } from "./components/PaymentMethodSelector";
 import { MultiEmailInput } from "./components/MultiEmailInput";
 import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
-
-const COMPANY_SIZES = [
-  { value: '1-10', label: '1-10 employees' },
-  { value: '11-50', label: '11-50 employees' },
-  { value: '51-200', label: '51-200 employees' },
-  { value: '201-500', label: '201-500 employees' },
-  { value: '500+', label: '500+ employees' },
-];
-
-const INDUSTRIES = [
-  'Construction', 'Oil & Gas', 'Renewable Energy', 'Manufacturing',
-  'Infrastructure', 'Real Estate', 'Technology', 'Healthcare',
-  'Education', 'Transportation', 'Water & Utilities', 'Mining', 'Other'
-];
-
-const LANGUAGES = [
-  { value: 'en', label: 'English' },
-  { value: 'ar', label: 'العربية (Arabic)' },
-];
+import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 
 export default function ClientSignup() {
   const navigate = useNavigate();
+  const ready = useNamespace(['registration', 'common']);
+  const { t } = useTranslation(['registration', 'common']);
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
+  if (!ready) return null;
 
   // Form data
   const [companyLegalName, setCompanyLegalName] = useState("");
@@ -68,10 +56,13 @@ export default function ClientSignup() {
   const pricing = PLAN_PRICING.client_monthly_45;
 
   const steps = [
-    { id: 1, title: "Company Information", icon: Building },
-    { id: 2, title: "Tax & Contact Details", icon: Building },
-    { id: 3, title: "Payment & Terms", icon: CreditCard },
+    { id: 1, title: t('registration:steps.companyInformation'), icon: Building },
+    { id: 2, title: t('registration:steps.taxContactDetails'), icon: Building },
+    { id: 3, title: t('registration:steps.paymentTerms'), icon: CreditCard },
   ];
+
+  const companySizes = ['1-10', '11-50', '51-200', '201-500', '500+'];
+  const industries = ['construction', 'oilGas', 'renewable', 'manufacturing', 'infrastructure', 'realEstate', 'technology', 'healthcare', 'education', 'transportation', 'waterUtilities', 'mining', 'other'];
 
   const validateStep1 = () => {
     return companyLegalName && companySize && industry && crNumber;
@@ -127,44 +118,44 @@ export default function ClientSignup() {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="company-legal-name">
-          Company Legal Name
-          <span className="text-destructive ml-1">*</span>
+          {t('registration:client.fields.companyLegalName')}
+          <span className="text-destructive ml-1">{t('registration:common.required')}</span>
         </Label>
         <Input
           id="company-legal-name"
           value={companyLegalName}
           onChange={(e) => setCompanyLegalName(e.target.value)}
-          placeholder="Enter official company name"
+          placeholder={t('registration:client.fields.companyLegalNamePlaceholder')}
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="trade-name">
-          Trade/Brand Name
-          <span className="text-muted-foreground text-xs ml-2">(Optional)</span>
+          {t('registration:client.fields.tradeName')}
+          <span className="text-muted-foreground text-xs ml-2">{t('registration:common.optional')}</span>
         </Label>
         <Input
           id="trade-name"
           value={tradeName}
           onChange={(e) => setTradeName(e.target.value)}
-          placeholder="Enter brand or trading name"
+          placeholder={t('registration:client.fields.tradeNamePlaceholder')}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="company-size">
-            Company Size
-            <span className="text-destructive ml-1">*</span>
+            {t('registration:client.fields.companySize')}
+            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
           </Label>
           <Select value={companySize} onValueChange={setCompanySize}>
             <SelectTrigger id="company-size">
-              <SelectValue placeholder="Select size" />
+              <SelectValue placeholder={t('registration:client.fields.companySizePlaceholder')} />
             </SelectTrigger>
             <SelectContent>
-              {COMPANY_SIZES.map((size) => (
-                <SelectItem key={size.value} value={size.value}>
-                  {size.label}
+              {companySizes.map((size) => (
+                <SelectItem key={size} value={size}>
+                  {t(`registration:client.companySizes.${size}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -173,17 +164,17 @@ export default function ClientSignup() {
 
         <div className="space-y-2">
           <Label htmlFor="industry">
-            Industry / Sector
-            <span className="text-destructive ml-1">*</span>
+            {t('registration:client.fields.industry')}
+            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
           </Label>
           <Select value={industry} onValueChange={setIndustry}>
             <SelectTrigger id="industry">
-              <SelectValue placeholder="Select industry" />
+              <SelectValue placeholder={t('registration:client.fields.industryPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
-              {INDUSTRIES.map((ind) => (
+              {industries.map((ind) => (
                 <SelectItem key={ind} value={ind}>
-                  {ind}
+                  {t(`registration:client.industries.${ind}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -193,14 +184,14 @@ export default function ClientSignup() {
 
       <div className="space-y-2">
         <Label htmlFor="cr-number">
-          Commercial Registration (CR) Number
-          <span className="text-destructive ml-1">*</span>
+          {t('registration:client.fields.crNumber')}
+          <span className="text-destructive ml-1">{t('registration:common.required')}</span>
         </Label>
         <Input
           id="cr-number"
           value={crNumber}
           onChange={(e) => setCrNumber(e.target.value)}
-          placeholder="Enter CR number"
+          placeholder={t('registration:client.fields.crNumberPlaceholder')}
           maxLength={10}
         />
       </div>
@@ -219,37 +210,37 @@ export default function ClientSignup() {
       <Separator />
 
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold">Primary Contact Information</h3>
+        <h3 className="text-sm font-semibold">{t('registration:client.sections.primaryContact')}</h3>
         
         <div className="space-y-2">
           <Label htmlFor="contact-name">
-            Full Name
-            <span className="text-destructive ml-1">*</span>
+            {t('registration:client.fields.contactName')}
+            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
           </Label>
           <Input
             id="contact-name"
             value={contactName}
             onChange={(e) => setContactName(e.target.value)}
-            placeholder="Enter full name"
+            placeholder={t('registration:client.fields.contactNamePlaceholder')}
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="contact-email">
-            Work Email
-            <span className="text-destructive ml-1">*</span>
+            {t('registration:client.fields.contactEmail')}
+            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
           </Label>
           <Input
             id="contact-email"
             type="email"
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
-            placeholder="email@company.com"
+            placeholder={t('registration:client.fields.contactEmailPlaceholder')}
           />
         </div>
 
         <PhoneInput
-          label="Phone Number"
+          label={t('registration:client.fields.phone')}
           value={phone}
           onChange={setPhone}
           countryCode={countryCode}
@@ -261,7 +252,7 @@ export default function ClientSignup() {
       <Separator />
 
       <div className="space-y-4">
-        <h3 className="text-sm font-semibold">Billing Address</h3>
+        <h3 className="text-sm font-semibold">{t('registration:client.fields.billingAddress')}</h3>
         <BillingAddressForm
           value={billingAddress}
           onChange={setBillingAddress}
@@ -270,19 +261,16 @@ export default function ClientSignup() {
 
       <div className="space-y-2">
         <Label htmlFor="language">
-          Preferred Language
-          <span className="text-muted-foreground text-xs ml-2">(Optional)</span>
+          {t('registration:client.fields.preferredLanguage')}
+          <span className="text-muted-foreground text-xs ml-2">{t('registration:common.optional')}</span>
         </Label>
         <Select value={preferredLanguage} onValueChange={setPreferredLanguage}>
           <SelectTrigger id="language">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {LANGUAGES.map((lang) => (
-              <SelectItem key={lang.value} value={lang.value}>
-                {lang.label}
-              </SelectItem>
-            ))}
+            <SelectItem value="en">{t('registration:shared.languages.en')}</SelectItem>
+            <SelectItem value="ar">{t('registration:shared.languages.ar')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -301,10 +289,10 @@ export default function ClientSignup() {
       <Separator />
 
       <MultiEmailInput
-        label="Invoice Email(s)"
+        label={t('registration:client.fields.invoiceEmails')}
         value={invoiceEmails}
         onChange={setInvoiceEmails}
-        placeholder="invoice@company.com"
+        placeholder={t('registration:client.fields.invoiceEmailsPlaceholder')}
       />
 
       <Separator />
@@ -316,15 +304,15 @@ export default function ClientSignup() {
           onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
         />
         <Label htmlFor="terms" className="text-sm font-normal leading-relaxed cursor-pointer">
-          I accept the{" "}
+          {t('registration:shared.terms.accept')}{" "}
           <a href="/terms" target="_blank" className="text-primary hover:underline">
-            Terms & Conditions
+            {t('registration:shared.terms.termsConditions')}
           </a>{" "}
-          and{" "}
+          {t('registration:shared.terms.and')}{" "}
           <a href="/privacy" target="_blank" className="text-primary hover:underline">
-            Privacy Policy
+            {t('registration:shared.terms.privacyPolicy')}
           </a>
-          <span className="text-destructive ml-1">*</span>
+          <span className="text-destructive ml-1">{t('registration:common.required')}</span>
         </Label>
       </div>
     </div>
@@ -333,13 +321,16 @@ export default function ClientSignup() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
       <div className="w-full max-w-3xl">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/auth/account-type')}
-          className="mb-4 text-muted-foreground hover:text-foreground"
-        >
-          ← Back to Account Selection
-        </Button>
+        <div className="flex items-center justify-between mb-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/auth/account-type')}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            ← {t('registration:common.backToAccountSelection')}
+          </Button>
+          <LanguageSwitcher />
+        </div>
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center mb-8">
@@ -378,7 +369,12 @@ export default function ClientSignup() {
               {steps[currentStep - 1]?.title}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Client Subscription - {pricing.currency} {pricing.amount}/{pricing.interval}
+              {t('registration:common.subscription', { 
+                accountType: t('auth:accountType.client.name'),
+                currency: pricing.currency, 
+                amount: pricing.amount, 
+                interval: pricing.interval 
+              })}
             </p>
           </CardHeader>
 
@@ -397,7 +393,7 @@ export default function ClientSignup() {
                 className="px-8"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                {t('registration:common.back')}
               </Button>
               
               <Button 
@@ -408,11 +404,11 @@ export default function ClientSignup() {
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    Processing...
+                    {t('registration:common.processing')}
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    {currentStep === 3 ? 'Complete Signup' : 'Next'}
+                    {currentStep === 3 ? t('registration:common.completeSignup') : t('registration:common.next')}
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 )}

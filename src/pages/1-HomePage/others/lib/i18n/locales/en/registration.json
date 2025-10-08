@@ -1,0 +1,180 @@
+{
+  "common": {
+    "backToAccountSelection": "Back to Account Selection",
+    "required": "*",
+    "optional": "(Optional)",
+    "completeSignup": "Complete Signup",
+    "next": "Next",
+    "back": "Back",
+    "processing": "Processing...",
+    "subscription": "{{accountType}} Subscription - {{currency}} {{amount}}/{{interval}}"
+  },
+  "steps": {
+    "companyInformation": "Company Information",
+    "taxContactDetails": "Tax & Contact Details",
+    "paymentTerms": "Payment & Terms",
+    "professionalDetails": "Professional Details",
+    "businessDetails": "Business Details",
+    "licenseVerification": "License & Verification"
+  },
+  "client": {
+    "fields": {
+      "companyLegalName": "Company Legal Name",
+      "companyLegalNamePlaceholder": "Enter official company name",
+      "tradeName": "Trade/Brand Name",
+      "tradeNamePlaceholder": "Enter brand or trading name",
+      "companySize": "Company Size",
+      "companySizePlaceholder": "Select size",
+      "industry": "Industry / Sector",
+      "industryPlaceholder": "Select industry",
+      "crNumber": "Commercial Registration (CR) Number",
+      "crNumberPlaceholder": "Enter CR number",
+      "contactName": "Full Name",
+      "contactNamePlaceholder": "Enter full name",
+      "contactEmail": "Work Email",
+      "contactEmailPlaceholder": "email@company.com",
+      "phone": "Phone Number",
+      "billingAddress": "Billing Address",
+      "preferredLanguage": "Preferred Language",
+      "paymentMethod": "Payment Method",
+      "invoiceEmails": "Invoice Email(s)",
+      "invoiceEmailsPlaceholder": "invoice@company.com"
+    },
+    "companySizes": {
+      "1-10": "1-10 employees",
+      "11-50": "11-50 employees",
+      "51-200": "51-200 employees",
+      "201-500": "201-500 employees",
+      "500+": "500+ employees"
+    },
+    "industries": {
+      "construction": "Construction",
+      "oilGas": "Oil & Gas",
+      "renewable": "Renewable Energy",
+      "manufacturing": "Manufacturing",
+      "infrastructure": "Infrastructure",
+      "realEstate": "Real Estate",
+      "technology": "Technology",
+      "healthcare": "Healthcare",
+      "education": "Education",
+      "transportation": "Transportation",
+      "waterUtilities": "Water & Utilities",
+      "mining": "Mining",
+      "other": "Other"
+    },
+    "sections": {
+      "primaryContact": "Primary Contact Information"
+    }
+  },
+  "engineer": {
+    "fields": {
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter your full legal name",
+      "specialization": "Professional Title / Specialization",
+      "specializationPlaceholder": "e.g., Structural Engineer, Electrical Consultant",
+      "yearsExperience": "Years of Experience",
+      "yearsExperiencePlaceholder": "Select years",
+      "licenseNumber": "License / Certification Number",
+      "licenseNumberPlaceholder": "Enter license number",
+      "issuingAuthority": "Issuing Authority",
+      "issuingAuthorityPlaceholder": "e.g., SCE, MODON",
+      "licenseExpiry": "License Expiry Date",
+      "phone": "Phone Number",
+      "city": "City",
+      "cityPlaceholder": "Select city",
+      "region": "Region",
+      "regionPlaceholder": "Select region",
+      "serviceRadius": "Service Radius (km)",
+      "serviceRadiusPlaceholder": "Enter radius",
+      "portfolioUrl": "Portfolio URL",
+      "portfolioUrlPlaceholder": "https://yourportfolio.com",
+      "profilePhoto": "Profile Photo",
+      "idVerification": "ID Verification",
+      "paymentMethod": "Payment Method",
+      "languages": "Languages",
+      "languagesPlaceholder": "Select languages"
+    },
+    "yearsOptions": {
+      "0-2": "0-2 years",
+      "3-5": "3-5 years",
+      "6-10": "6-10 years",
+      "11-15": "11-15 years",
+      "15+": "15+ years"
+    }
+  },
+  "enterprise": {
+    "fields": {
+      "organizationName": "Organization Legal Name",
+      "organizationNamePlaceholder": "Enter official organization name",
+      "brandName": "Brand Name",
+      "brandNamePlaceholder": "Enter brand name",
+      "organizationType": "Organization Type",
+      "organizationTypePlaceholder": "Select type",
+      "crNumber": "Commercial Registration (CR) Number",
+      "crNumberPlaceholder": "Enter CR number",
+      "teamSize": "Team Size",
+      "teamSizePlaceholder": "Select size",
+      "primarySector": "Primary Sector",
+      "primarySectorPlaceholder": "Select sector",
+      "contactName": "Primary Contact Name",
+      "contactNamePlaceholder": "Enter full name",
+      "contactEmail": "Corporate Email",
+      "contactEmailPlaceholder": "contact@company.com",
+      "phone": "Phone Number",
+      "headquarters": "Headquarters Address",
+      "billingAddress": "Billing Address",
+      "sameAsHeadquarters": "Same as headquarters",
+      "preferredLanguage": "Preferred Language",
+      "paymentMethod": "Payment Method",
+      "invoiceEmails": "Invoice Email(s)",
+      "invoiceEmailsPlaceholder": "billing@company.com"
+    },
+    "organizationTypes": {
+      "developer": "Real Estate Developer",
+      "contractor": "General Contractor",
+      "consultant": "Engineering Consultant",
+      "government": "Government Entity",
+      "corporation": "Large Corporation",
+      "other": "Other"
+    },
+    "teamSizes": {
+      "50-200": "50-200 employees",
+      "201-500": "201-500 employees",
+      "501-1000": "501-1,000 employees",
+      "1000+": "1,000+ employees"
+    }
+  },
+  "shared": {
+    "vat": {
+      "registered": "Registered for VAT (ZATCA)?",
+      "taxId": "Tax ID (ZATCA)",
+      "taxIdPlaceholder": "Enter 15-digit VAT number"
+    },
+    "billingAddress": {
+      "street": "Street Address",
+      "streetPlaceholder": "Enter street address",
+      "city": "City",
+      "cityPlaceholder": "Enter city",
+      "region": "Region / Province",
+      "regionPlaceholder": "Enter region",
+      "postalCode": "Postal Code",
+      "postalCodePlaceholder": "Enter postal code",
+      "country": "Country"
+    },
+    "phone": {
+      "countryCode": "Code",
+      "number": "Number"
+    },
+    "languages": {
+      "en": "English",
+      "ar": "العربية (Arabic)"
+    },
+    "terms": {
+      "accept": "I accept the",
+      "termsConditions": "Terms & Conditions",
+      "and": "and",
+      "privacyPolicy": "Privacy Policy"
+    }
+  }
+}
+

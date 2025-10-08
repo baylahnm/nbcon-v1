@@ -14,8 +14,12 @@ import ClientSignup from "@/pages/2-auth/signup/ClientSignup";
 import EngineerSignup from "@/pages/2-auth/signup/EngineerSignup";
 import EnterpriseSignup from "@/pages/2-auth/signup/EnterpriseSignup";
 import AdminSignup from "@/pages/2-auth/signup/AdminSignup";
+import { watchDirection } from "@/pages/1-HomePage/others/lib/i18n/dir";
 
 const queryClient = new QueryClient();
+
+// Initialize RTL/LTR direction watcher
+watchDirection();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

@@ -1,0 +1,180 @@
+{
+  "common": {
+    "backToAccountSelection": "العودة لاختيار الحساب",
+    "required": "*",
+    "optional": "(اختياري)",
+    "completeSignup": "إكمال التسجيل",
+    "next": "التالي",
+    "back": "رجوع",
+    "processing": "جاري المعالجة...",
+    "subscription": "اشتراك {{accountType}} - {{currency}} {{amount}}/{{interval}}"
+  },
+  "steps": {
+    "companyInformation": "معلومات الشركة",
+    "taxContactDetails": "الضرائب ومعلومات الاتصال",
+    "paymentTerms": "الدفع والشروط",
+    "professionalDetails": "التفاصيل المهنية",
+    "businessDetails": "تفاصيل العمل",
+    "licenseVerification": "الترخيص والتحقق"
+  },
+  "client": {
+    "fields": {
+      "companyLegalName": "الاسم القانوني للشركة",
+      "companyLegalNamePlaceholder": "أدخل الاسم الرسمي للشركة",
+      "tradeName": "الاسم التجاري / العلامة التجارية",
+      "tradeNamePlaceholder": "أدخل الاسم التجاري أو العلامة التجارية",
+      "companySize": "حجم الشركة",
+      "companySizePlaceholder": "اختر الحجم",
+      "industry": "الصناعة / القطاع",
+      "industryPlaceholder": "اختر الصناعة",
+      "crNumber": "رقم السجل التجاري",
+      "crNumberPlaceholder": "أدخل رقم السجل التجاري",
+      "contactName": "الاسم الكامل",
+      "contactNamePlaceholder": "أدخل الاسم الكامل",
+      "contactEmail": "البريد الإلكتروني للعمل",
+      "contactEmailPlaceholder": "email@company.com",
+      "phone": "رقم الهاتف",
+      "billingAddress": "عنوان الفوترة",
+      "preferredLanguage": "اللغة المفضلة",
+      "paymentMethod": "طريقة الدفع",
+      "invoiceEmails": "بريد الفواتير الإلكتروني",
+      "invoiceEmailsPlaceholder": "invoice@company.com"
+    },
+    "companySizes": {
+      "1-10": "1-10 موظفين",
+      "11-50": "11-50 موظفاً",
+      "51-200": "51-200 موظفاً",
+      "201-500": "201-500 موظفاً",
+      "500+": "أكثر من 500 موظف"
+    },
+    "industries": {
+      "construction": "البناء",
+      "oilGas": "النفط والغاز",
+      "renewable": "الطاقة المتجددة",
+      "manufacturing": "التصنيع",
+      "infrastructure": "البنية التحتية",
+      "realEstate": "العقارات",
+      "technology": "التكنولوجيا",
+      "healthcare": "الرعاية الصحية",
+      "education": "التعليم",
+      "transportation": "النقل",
+      "waterUtilities": "المياه والمرافق",
+      "mining": "التعدين",
+      "other": "أخرى"
+    },
+    "sections": {
+      "primaryContact": "معلومات جهة الاتصال الأساسية"
+    }
+  },
+  "engineer": {
+    "fields": {
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل اسمك القانوني الكامل",
+      "specialization": "المسمى الوظيفي / التخصص",
+      "specializationPlaceholder": "مثال: مهندس إنشائي، استشاري كهرباء",
+      "yearsExperience": "سنوات الخبرة",
+      "yearsExperiencePlaceholder": "اختر السنوات",
+      "licenseNumber": "رقم الترخيص / الشهادة",
+      "licenseNumberPlaceholder": "أدخل رقم الترخيص",
+      "issuingAuthority": "الجهة المصدرة",
+      "issuingAuthorityPlaceholder": "مثال: هيئة المهندسين، مودن",
+      "licenseExpiry": "تاريخ انتهاء الترخيص",
+      "phone": "رقم الهاتف",
+      "city": "المدينة",
+      "cityPlaceholder": "اختر المدينة",
+      "region": "المنطقة",
+      "regionPlaceholder": "اختر المنطقة",
+      "serviceRadius": "نطاق الخدمة (كم)",
+      "serviceRadiusPlaceholder": "أدخل النطاق",
+      "portfolioUrl": "رابط معرض الأعمال",
+      "portfolioUrlPlaceholder": "https://yourportfolio.com",
+      "profilePhoto": "الصورة الشخصية",
+      "idVerification": "التحقق من الهوية",
+      "paymentMethod": "طريقة الدفع",
+      "languages": "اللغات",
+      "languagesPlaceholder": "اختر اللغات"
+    },
+    "yearsOptions": {
+      "0-2": "0-2 سنة",
+      "3-5": "3-5 سنوات",
+      "6-10": "6-10 سنوات",
+      "11-15": "11-15 سنة",
+      "15+": "أكثر من 15 سنة"
+    }
+  },
+  "enterprise": {
+    "fields": {
+      "organizationName": "الاسم القانوني للمؤسسة",
+      "organizationNamePlaceholder": "أدخل الاسم الرسمي للمؤسسة",
+      "brandName": "اسم العلامة التجارية",
+      "brandNamePlaceholder": "أدخل اسم العلامة التجارية",
+      "organizationType": "نوع المؤسسة",
+      "organizationTypePlaceholder": "اختر النوع",
+      "crNumber": "رقم السجل التجاري",
+      "crNumberPlaceholder": "أدخل رقم السجل التجاري",
+      "teamSize": "حجم الفريق",
+      "teamSizePlaceholder": "اختر الحجم",
+      "primarySector": "القطاع الأساسي",
+      "primarySectorPlaceholder": "اختر القطاع",
+      "contactName": "اسم جهة الاتصال الأساسية",
+      "contactNamePlaceholder": "أدخل الاسم الكامل",
+      "contactEmail": "البريد الإلكتروني للشركة",
+      "contactEmailPlaceholder": "contact@company.com",
+      "phone": "رقم الهاتف",
+      "headquarters": "عنوان المقر الرئيسي",
+      "billingAddress": "عنوان الفوترة",
+      "sameAsHeadquarters": "نفس عنوان المقر الرئيسي",
+      "preferredLanguage": "اللغة المفضلة",
+      "paymentMethod": "طريقة الدفع",
+      "invoiceEmails": "بريد الفواتير الإلكتروني",
+      "invoiceEmailsPlaceholder": "billing@company.com"
+    },
+    "organizationTypes": {
+      "developer": "مطور عقاري",
+      "contractor": "مقاول عام",
+      "consultant": "استشاري هندسي",
+      "government": "جهة حكومية",
+      "corporation": "شركة كبرى",
+      "other": "أخرى"
+    },
+    "teamSizes": {
+      "50-200": "50-200 موظف",
+      "201-500": "201-500 موظف",
+      "501-1000": "501-1,000 موظف",
+      "1000+": "أكثر من 1,000 موظف"
+    }
+  },
+  "shared": {
+    "vat": {
+      "registered": "مسجل في ضريبة القيمة المضافة (هيئة الزكاة والضريبة والجمارك)؟",
+      "taxId": "الرقم الضريبي (هيئة الزكاة والضريبة)",
+      "taxIdPlaceholder": "أدخل الرقم الضريبي المكون من 15 رقماً"
+    },
+    "billingAddress": {
+      "street": "عنوان الشارع",
+      "streetPlaceholder": "أدخل عنوان الشارع",
+      "city": "المدينة",
+      "cityPlaceholder": "أدخل المدينة",
+      "region": "المنطقة / المحافظة",
+      "regionPlaceholder": "أدخل المنطقة",
+      "postalCode": "الرمز البريدي",
+      "postalCodePlaceholder": "أدخل الرمز البريدي",
+      "country": "البلد"
+    },
+    "phone": {
+      "countryCode": "الرمز",
+      "number": "الرقم"
+    },
+    "languages": {
+      "en": "English (الإنجليزية)",
+      "ar": "العربية"
+    },
+    "terms": {
+      "accept": "أوافق على",
+      "termsConditions": "الشروط والأحكام",
+      "and": "و",
+      "privacyPolicy": "سياسة الخصوصية"
+    }
+  }
+}
+
