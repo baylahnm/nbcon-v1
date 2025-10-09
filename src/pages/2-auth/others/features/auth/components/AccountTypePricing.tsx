@@ -236,7 +236,7 @@ export function AccountTypePricing() {
               return (
                 <div 
                   key={type.id}
-                  className={`flex flex-col justify-between space-y-4 transition-all rounded-lg p-4 border ${
+                  className={`flex flex-col justify-between space-y-4 transition-all rounded-lg p-4 border bg-background ${
                     selectedType === type.id ? 'ring-2 ring-primary bg-primary/5 border-primary' : 'border-border hover:bg-muted/30'
                   }`}
                 >
