@@ -17,15 +17,26 @@ import { PaymentMethodSelector } from "./components/PaymentMethodSelector";
 import { FileUploader } from "./components/FileUploader";
 import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
+import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
+import { performSignup } from "@/pages/2-auth/others/utils/signup-helper";
+import { useToast } from "@/pages/1-HomePage/others/components/ui/use-toast";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 export default function EngineerSignup() {
   const navigate = useNavigate();
   const ready = useNamespace(['registration', 'common']);
   const { t } = useTranslation(['registration', 'common']);
+  const { login } = useAuthStore();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Step 1: Personal Info
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [specializations, setSpecializations] = useState<string[]>([]);
   const [yearsExperience, setYearsExperience] = useState("");
@@ -72,7 +83,7 @@ export default function EngineerSignup() {
   };
 
   const validateStep1 = () => {
-    return fullName && specializations.length > 0 && yearsExperience && phone && city && region;
+    return email && password && confirmPassword && password === confirmPassword && fullName && specializations.length > 0 && yearsExperience && phone && city && region;
   };
 
   const validateStep2 = () => {
@@ -112,12 +123,53 @@ export default function EngineerSignup() {
 
     setIsLoading(true);
     try {
-      // TODO: Implement Supabase signup logic
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      navigate('/engineer/dashboard');
+      // Split full name into first and last name
+      const nameParts = fullName.trim().split(/\s+/);
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      // Perform signup using shared helper
+      const result = await performSignup({
+        email: email,
+        password: password,
+        role: 'engineer',
+        firstName: firstName,
+        lastName: lastName,
+        phone: countryCode + phone,
+        locationCity: city,
+        locationRegion: region,
+        preferredLanguage: 'en', // You can add a language selector if needed
+      });
+
+      if (!result.success || !result.user) {
+        toast({
+          title: 'Signup Failed',
+          description: result.error || 'Failed to create account. Please try again.',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      // Set user in auth store
+      login(result.user);
+
+      // Show success message
+      toast({
+        title: 'Account Created!',
+        description: 'Welcome to nbcon. Redirecting to your dashboard...',
+      });
+
+      // Small delay to show success message, then navigate
+      setTimeout(() => {
+        navigate('/engineer/dashboard');
+      }, 1000);
     } catch (error) {
       console.error('Signup failed:', error);
+      toast({
+        title: 'Signup Failed',
+        description: 'An unexpected error occurred. Please try again.',
+        variant: 'destructive'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -125,6 +177,85 @@ export default function EngineerSignup() {
 
   const renderStep1 = () => (
     <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="email">
+          Email
+          <span className="text-destructive ml-1">{t('registration:common.required')}</span>
+        </Label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="engineer@example.com"
+            className="pl-10"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="password">
+            Password
+            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
+          </Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Min. 8 characters"
+              className="pl-10 pr-10"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-0 h-auto text-muted-foreground hover:text-foreground"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirm-password">
+            Confirm Password
+            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
+          </Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              id="confirm-password"
+              type={showConfirmPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm password"
+              className="pl-10 pr-10"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-0 h-auto text-muted-foreground hover:text-foreground"
+            >
+              {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
+          </div>
+          {confirmPassword && password !== confirmPassword && (
+            <p className="text-sm text-destructive">Passwords do not match</p>
+          )}
+        </div>
+      </div>
+
+      <Separator className="my-4" />
+
       <div className="space-y-2">
         <Label htmlFor="full-name">
           {t('registration:engineer.fields.fullName')}

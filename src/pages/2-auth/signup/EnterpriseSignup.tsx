@@ -18,6 +18,10 @@ import { PaymentMethodSelector } from "./components/PaymentMethodSelector";
 import { MultiEmailInput } from "./components/MultiEmailInput";
 import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
+import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
+import { performSignup } from "@/pages/2-auth/others/utils/signup-helper";
+import { useToast } from "@/pages/1-HomePage/others/components/ui/use-toast";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const COMPANY_SIZES = [
   { value: '50-200', label: '50-200 employees' },
@@ -37,8 +41,16 @@ export default function EnterpriseSignup() {
   const navigate = useNavigate();
   const ready = useNamespace(['registration', 'common']);
   const { t } = useTranslation(['registration', 'common']);
+  const { login } = useAuthStore();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Auth fields
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Step 1: Company Info
   const [companyLegalName, setCompanyLegalName] = useState("");
@@ -90,7 +102,7 @@ export default function EnterpriseSignup() {
   ];
 
   const validateStep1 = () => {
-    return companyLegalName && companyDomain && companySize && industry && crNumber && taxId;
+    return password && confirmPassword && password === confirmPassword && companyLegalName && companyDomain && companySize && industry && crNumber && taxId;
   };
 
   const validateStep2 = () => {
@@ -132,12 +144,54 @@ export default function EnterpriseSignup() {
 
     setIsLoading(true);
     try {
-      // TODO: Implement Supabase signup logic
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      navigate('/enterprise/dashboard');
+      // Split POC name into first and last name
+      const nameParts = pocName.trim().split(/\s+/);
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      // Perform signup using shared helper
+      const result = await performSignup({
+        email: pocEmail,
+        password: password,
+        role: 'enterprise',
+        firstName: firstName,
+        lastName: lastName,
+        phone: countryCode + pocPhone,
+        locationCity: billingAddress.city,
+        locationRegion: billingAddress.region,
+        preferredLanguage: 'en',
+        company: companyLegalName,
+      });
+
+      if (!result.success || !result.user) {
+        toast({
+          title: 'Signup Failed',
+          description: result.error || 'Failed to create account. Please try again.',
+          variant: 'destructive'
+        });
+        return;
+      }
+
+      // Set user in auth store
+      login(result.user);
+
+      // Show success message
+      toast({
+        title: 'Account Created!',
+        description: 'Welcome to nbcon. Redirecting to your dashboard...',
+      });
+
+      // Small delay to show success message, then navigate
+      setTimeout(() => {
+        navigate('/enterprise/dashboard');
+      }, 1000);
     } catch (error) {
       console.error('Signup failed:', error);
+      toast({
+        title: 'Signup Failed',
+        description: 'An unexpected error occurred. Please try again.',
+        variant: 'destructive'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -145,6 +199,67 @@ export default function EnterpriseSignup() {
 
   const renderStep1 = () => (
     <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="password">
+            Password
+            <span className="text-destructive ml-1">*</span>
+          </Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Min. 8 characters"
+              className="pl-10 pr-10"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-0 h-auto text-muted-foreground hover:text-foreground"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirm-password">
+            Confirm Password
+            <span className="text-destructive ml-1">*</span>
+          </Label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              id="confirm-password"
+              type={showConfirmPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm password"
+              className="pl-10 pr-10"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-0 h-auto text-muted-foreground hover:text-foreground"
+            >
+              {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
+          </div>
+          {confirmPassword && password !== confirmPassword && (
+            <p className="text-sm text-destructive">Passwords do not match</p>
+          )}
+        </div>
+      </div>
+
+      <Separator className="my-4" />
+
       <div className="space-y-2">
         <Label htmlFor="company-legal-name">
           {t('registration:enterprise.fields.companyLegalName')}
