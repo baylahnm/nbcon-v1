@@ -18,7 +18,8 @@ import { FileUploader } from "./components/FileUploader";
 import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
-import { createProfileOnly } from "@/pages/2-auth/others/utils/signup-helper";
+import { createProfileOnly, is406Error, getErrorDetails } from "@/pages/2-auth/others/utils/signup-helper";
+import { errorMonitor } from "@/pages/2-auth/others/utils/error-monitor";
 import { useToast } from "@/pages/1-HomePage/others/components/ui/use-toast";
 import { Mail } from "lucide-react";
 
@@ -87,8 +88,7 @@ export default function EngineerSignup() {
   };
 
   const validateStep3 = () => {
-    // Temporarily allow skipping file upload for testing
-    return true; // idVerification.length > 0;
+    return idVerification.length > 0;
   };
 
   const validateStep4 = () => {
@@ -149,9 +149,23 @@ export default function EngineerSignup() {
       }, user.id);
 
       if (!result.success || !result.user) {
+        // Log error to monitoring system
+        const errorDetails = getErrorDetails(result.error);
+        errorMonitor.logError(
+          { code: errorDetails.code, message: result.error },
+          'Engineer Signup - Profile Creation',
+          user.id,
+          user.email
+        );
+
+        // Show user-friendly error message
+        const displayMessage = is406Error({ message: result.error })
+          ? 'Database configuration issue detected. Our team has been notified. Please try again in a few moments.'
+          : result.error || 'Failed to create profile. Please try again.';
+
         toast({
           title: 'Profile Creation Failed',
-          description: result.error || 'Failed to create profile. Please try again.',
+          description: displayMessage,
           variant: 'destructive'
         });
         return;
@@ -170,11 +184,22 @@ export default function EngineerSignup() {
       setTimeout(() => {
         navigate('/engineer/dashboard');
       }, 1000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Signup failed:', error);
+      
+      // Log to error monitor
+      errorMonitor.logError(
+        error,
+        'Engineer Signup - Unexpected Error',
+        user?.id,
+        user?.email
+      );
+
+      // Show user-friendly error
+      const errorDetails = getErrorDetails(error);
       toast({
         title: 'Signup Failed',
-        description: 'An unexpected error occurred. Please try again.',
+        description: errorDetails.userMessage || 'An unexpected error occurred. Please try again.',
         variant: 'destructive'
       });
     } finally {
