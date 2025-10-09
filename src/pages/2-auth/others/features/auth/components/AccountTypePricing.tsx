@@ -243,7 +243,7 @@ export function AccountTypePricing() {
                   <div className="space-y-4">
                     <div className="relative">
                       {type.popular && (
-                        <Badge className="absolute -top-2 right-0 bg-primary text-primary-foreground text-xs">
+                        <Badge className="absolute -top-2 left-0 bg-primary text-primary-foreground text-xs">
                           <Star className="w-3 h-3 mr-1" />
                           {t('auth:accountType.engineer.popular')}
                         </Badge>
