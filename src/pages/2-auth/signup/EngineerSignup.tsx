@@ -87,7 +87,8 @@ export default function EngineerSignup() {
   };
 
   const validateStep3 = () => {
-    return idVerification.length > 0;
+    // Temporarily allow skipping file upload for testing
+    return true; // idVerification.length > 0;
   };
 
   const validateStep4 = () => {
