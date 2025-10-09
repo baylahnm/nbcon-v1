@@ -14,9 +14,9 @@ import { Alert, AlertDescription } from "@/pages/1-HomePage/others/components/ui
 import { FileUploader } from "./components/FileUploader";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
-import { performSignup } from "@/pages/2-auth/others/utils/signup-helper";
+import { createProfileOnly } from "@/pages/2-auth/others/utils/signup-helper";
 import { useToast } from "@/pages/1-HomePage/others/components/ui/use-toast";
-import { Mail, Eye, EyeOff } from "lucide-react";
+import { Mail } from "lucide-react";
 
 const DEPARTMENTS = [
   'Engineering',
@@ -35,17 +35,14 @@ export default function AdminSignup() {
   const navigate = useNavigate();
   const ready = useNamespace(['registration', 'common']);
   const { t } = useTranslation(['registration', 'common']);
-  const { login } = useAuthStore();
+  const { user, isAuthenticated, login } = useAuthStore();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading] = useState(false);
 
-  // Auth fields
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [fullName, setFullName] = useState("");
+  // Personal Info - Pre-fill from authenticated user
+  const [fullName, setFullName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
 
   // Step 1: Verification
   const [invitationToken, setInvitationToken] = useState("");
@@ -79,7 +76,7 @@ export default function AdminSignup() {
   };
 
   const validateStep1 = () => {
-    return password && confirmPassword && password === confirmPassword && fullName && invitationToken && workEmail && employeeId && department && accessReason && !tokenError;
+    return fullName && invitationToken && workEmail && employeeId && department && accessReason && !tokenError;
   };
 
   const validateStep2 = () => {
@@ -111,6 +108,17 @@ export default function AdminSignup() {
   const handleSubmit = async () => {
     if (!validateStep2()) return;
 
+    // Ensure user is authenticated
+    if (!isAuthenticated || !user?.id) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in first to complete your profile.',
+        variant: 'destructive'
+      });
+      navigate('/auth');
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Split full name into first and last name
@@ -118,23 +126,22 @@ export default function AdminSignup() {
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      // Perform signup using shared helper
-      const result = await performSignup({
-        email: workEmail,
-        password: password,
+      // Create profile only (user already authenticated)
+      const result = await createProfileOnly({
+        email: user.email,
         role: 'admin',
         firstName: firstName,
         lastName: lastName,
-        phone: '', // Admin doesn't collect phone initially
+        phone: user.phone || '', // Admin might not have phone from initial signup
         locationCity: 'Riyadh', // Default
         locationRegion: 'Saudi Arabia',
         preferredLanguage: 'en',
-      });
+      }, user.id);
 
       if (!result.success || !result.user) {
         toast({
-          title: 'Signup Failed',
-          description: result.error || 'Failed to create admin account. Please try again.',
+          title: 'Profile Creation Failed',
+          description: result.error || 'Failed to create admin profile. Please try again.',
           variant: 'destructive'
         });
         return;

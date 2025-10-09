@@ -119,31 +119,12 @@ export function AccountTypePricing() {
 
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasProfile, setHasProfile] = useState(false);
-  const [checkingProfile, setCheckingProfile] = useState(true);
-
-  // Check if authenticated user has a profile
-  useEffect(() => {
-    const checkProfile = async () => {
-      if (isAuthenticated && user?.id) {
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('user_id', user.id)
-            .single();
-          
-          setHasProfile(!!data && !error);
-        } catch (error) {
-          console.error('Error checking profile:', error);
-          setHasProfile(false);
-        }
-      }
-      setCheckingProfile(false);
-    };
-
-    checkProfile();
-  }, [isAuthenticated, user]);
+  
+  // Simplified: Users on this page need to complete signup, so hasProfile is always false
+  // After completing signup, they'll be redirected to dashboard
+  // This avoids 406 errors from querying profiles table
+  const hasProfile = false;
+  const checkingProfile = false;
 
   if (!ready) return null;
 

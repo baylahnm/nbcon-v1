@@ -18,24 +18,18 @@ import { MultiEmailInput } from "./components/MultiEmailInput";
 import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
-import { performSignup } from "@/pages/2-auth/others/utils/signup-helper";
+import { createProfileOnly } from "@/pages/2-auth/others/utils/signup-helper";
 import { useToast } from "@/pages/1-HomePage/others/components/ui/use-toast";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail } from "lucide-react";
 
 export default function ClientSignup() {
   const navigate = useNavigate();
   const ready = useNamespace(['registration', 'common']);
   const { t } = useTranslation(['registration', 'common']);
-  const { login } = useAuthStore();
+  const { user, isAuthenticated, login } = useAuthStore();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Auth fields
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Form data
   const [companyLegalName, setCompanyLegalName] = useState("");
@@ -45,9 +39,10 @@ export default function ClientSignup() {
   const [crNumber, setCrNumber] = useState("");
   const [isVatRegistered, setIsVatRegistered] = useState(false);
   const [taxId, setTaxId] = useState("");
-  const [contactName, setContactName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  // Pre-fill from authenticated user
+  const [contactName, setContactName] = useState(user?.name || "");
+  const [contactEmail, setContactEmail] = useState(user?.email || "");
+  const [phone, setPhone] = useState(user?.phone?.replace(/^\+966/, "") || "");
   const [countryCode, setCountryCode] = useState("+966");
   const [billingAddress, setBillingAddress] = useState({
     street: "",
@@ -57,8 +52,8 @@ export default function ClientSignup() {
     country: "SA"
   });
   const [preferredLanguage, setPreferredLanguage] = useState("en");
-  const [paymentMethod, setPaymentMethod] = useState({
-    type: 'card' as const,
+  const [paymentMethod, setPaymentMethod] = useState<{ type: 'card' | 'bank' | 'applepay' }>({
+    type: 'card',
   });
   const [invoiceEmails, setInvoiceEmails] = useState<string[]>([]);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -77,7 +72,7 @@ export default function ClientSignup() {
   const industries = ['construction', 'oilGas', 'renewable', 'manufacturing', 'infrastructure', 'realEstate', 'technology', 'healthcare', 'education', 'transportation', 'waterUtilities', 'mining', 'other'];
 
   const validateStep1 = () => {
-    return password && confirmPassword && password === confirmPassword && companyLegalName && companySize && industry && crNumber;
+    return companyLegalName && companySize && industry && crNumber;
   };
 
   const validateStep2 = () => {
@@ -112,6 +107,17 @@ export default function ClientSignup() {
   const handleSubmit = async () => {
     if (!validateStep3()) return;
 
+    // Check if user is authenticated
+    if (!isAuthenticated || !user?.id) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in first to complete your profile.',
+        variant: 'destructive'
+      });
+      navigate('/auth');
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Split contact name into first and last name
@@ -119,10 +125,10 @@ export default function ClientSignup() {
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      // Perform signup using shared helper
-      const result = await performSignup({
+      // Create profile only (user is already authenticated)
+      const result = await createProfileOnly({
         email: contactEmail,
-        password: password,
+        password: '', // Not needed for profile creation
         role: 'client',
         firstName: firstName,
         lastName: lastName,
@@ -131,23 +137,23 @@ export default function ClientSignup() {
         locationRegion: billingAddress.region,
         preferredLanguage: preferredLanguage as 'ar' | 'en',
         company: companyLegalName,
-      });
+      }, user.id);
 
       if (!result.success || !result.user) {
         toast({
-          title: 'Signup Failed',
-          description: result.error || 'Failed to create account. Please try again.',
+          title: 'Profile Creation Failed',
+          description: result.error || 'Failed to create profile. Please try again.',
           variant: 'destructive'
         });
         return;
       }
 
-      // Set user in auth store
+      // Update user in auth store with complete profile
       login(result.user);
 
       // Show success message
       toast({
-        title: 'Account Created!',
+        title: 'Profile Completed!',
         description: 'Welcome to nbcon. Redirecting to your dashboard...',
       });
 
@@ -156,9 +162,9 @@ export default function ClientSignup() {
         navigate('/client/dashboard');
       }, 1000);
     } catch (error) {
-      console.error('Signup failed:', error);
+      console.error('Profile creation failed:', error);
       toast({
-        title: 'Signup Failed',
+        title: 'Profile Creation Failed',
         description: 'An unexpected error occurred. Please try again.',
         variant: 'destructive'
       });
@@ -169,67 +175,8 @@ export default function ClientSignup() {
 
   const renderStep1 = () => (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="password">
-            Password
-            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
-          </Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min. 8 characters"
-              className="pl-10 pr-10"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-0 h-auto text-muted-foreground hover:text-foreground"
-            >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </Button>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="confirm-password">
-            Confirm Password
-            <span className="text-destructive ml-1">{t('registration:common.required')}</span>
-          </Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              id="confirm-password"
-              type={showConfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm password"
-              className="pl-10 pr-10"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 p-0 h-auto text-muted-foreground hover:text-foreground"
-            >
-              {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </Button>
-          </div>
-          {confirmPassword && password !== confirmPassword && (
-            <p className="text-sm text-destructive">Passwords do not match</p>
-          )}
-        </div>
-      </div>
-
-      <Separator className="my-4" />
-
+      {/* Password fields removed - user already authenticated */}
+      
       <div className="space-y-2">
         <Label htmlFor="company-legal-name">
           {t('registration:client.fields.companyLegalName')}

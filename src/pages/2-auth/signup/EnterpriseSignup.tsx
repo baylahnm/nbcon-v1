@@ -19,9 +19,9 @@ import { MultiEmailInput } from "./components/MultiEmailInput";
 import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
-import { performSignup } from "@/pages/2-auth/others/utils/signup-helper";
+import { createProfileOnly } from "@/pages/2-auth/others/utils/signup-helper";
 import { useToast } from "@/pages/1-HomePage/others/components/ui/use-toast";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail } from "lucide-react";
 
 const COMPANY_SIZES = [
   { value: '50-200', label: '50-200 employees' },
@@ -41,16 +41,10 @@ export default function EnterpriseSignup() {
   const navigate = useNavigate();
   const ready = useNamespace(['registration', 'common']);
   const { t } = useTranslation(['registration', 'common']);
-  const { login } = useAuthStore();
+  const { user, isAuthenticated, login } = useAuthStore();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Auth fields
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Step 1: Company Info
   const [companyLegalName, setCompanyLegalName] = useState("");
@@ -60,12 +54,12 @@ export default function EnterpriseSignup() {
   const [crNumber, setCrNumber] = useState("");
   const [taxId, setTaxId] = useState("");
 
-  // Step 2: Team & Contact
+  // Step 2: Team & Contact - Pre-fill from authenticated user
   const [teamSeats, setTeamSeats] = useState("");
-  const [pocName, setPocName] = useState("");
+  const [pocName, setPocName] = useState(user?.name || "");
   const [pocTitle, setPocTitle] = useState("");
-  const [pocEmail, setPocEmail] = useState("");
-  const [pocPhone, setPocPhone] = useState("");
+  const [pocEmail, setPocEmail] = useState(user?.email || "");
+  const [pocPhone, setPocPhone] = useState(user?.phone?.replace(/^\+966/, "") || "");
   const [countryCode, setCountryCode] = useState("+966");
 
   // Step 3: Billing & Procurement
@@ -102,7 +96,7 @@ export default function EnterpriseSignup() {
   ];
 
   const validateStep1 = () => {
-    return password && confirmPassword && password === confirmPassword && companyLegalName && companyDomain && companySize && industry && crNumber && taxId;
+    return companyLegalName && companyDomain && companySize && industry && crNumber && taxId;
   };
 
   const validateStep2 = () => {
@@ -142,6 +136,17 @@ export default function EnterpriseSignup() {
   const handleSubmit = async () => {
     if (!validateStep4()) return;
 
+    // Ensure user is authenticated
+    if (!isAuthenticated || !user?.id) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in first to complete your profile.',
+        variant: 'destructive'
+      });
+      navigate('/auth');
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Split POC name into first and last name
@@ -149,10 +154,9 @@ export default function EnterpriseSignup() {
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      // Perform signup using shared helper
-      const result = await performSignup({
-        email: pocEmail,
-        password: password,
+      // Create profile only (user already authenticated)
+      const result = await createProfileOnly({
+        email: user.email,
         role: 'enterprise',
         firstName: firstName,
         lastName: lastName,
@@ -161,18 +165,18 @@ export default function EnterpriseSignup() {
         locationRegion: billingAddress.region,
         preferredLanguage: 'en',
         company: companyLegalName,
-      });
+      }, user.id);
 
       if (!result.success || !result.user) {
         toast({
-          title: 'Signup Failed',
-          description: result.error || 'Failed to create account. Please try again.',
+          title: 'Profile Creation Failed',
+          description: result.error || 'Failed to create profile. Please try again.',
           variant: 'destructive'
         });
         return;
       }
 
-      // Set user in auth store
+      // Update user in auth store with complete profile
       login(result.user);
 
       // Show success message

@@ -254,11 +254,9 @@ export const requiresAuth = (path: string): boolean => {
 };
 
 export const initializeAuth = () => {
-  console.log('[AUTH INIT] Starting auth initialization...');
   const { setUser, setLoading, setInitialized } = useAuthStore.getState();
 
   const syncFromStorage = () => {
-    console.log('[AUTH INIT] Running syncFromStorage...');
     // First try to get user from the new storage key
     let storedUser = getStoredUser();
     
@@ -318,13 +316,11 @@ export const initializeAuth = () => {
           source: 'supabase'
         };
         
-        console.log('[AUTH INIT] Created minimal authenticated user:', minimalUser);
         setUser(minimalUser);
         setLoading(false);
         setInitialized(true);
-      } else {
+    } else {
       // No Supabase session, check localStorage
-      console.log('[AUTH INIT] No Supabase session found, checking localStorage...');
       syncFromStorage();
     }
   })
