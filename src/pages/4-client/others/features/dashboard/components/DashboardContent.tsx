@@ -112,8 +112,6 @@ export function DashboardContent() {
   // Inline edit mode
   const { isEditMode, toggleEditMode } = useInlineDashboardEditStore();
 
-  if (!ready) return null;
-
   // Function to update arrow visibility based on scroll position
   const updateArrowVisibility = useCallback(() => {
     if (!quickActionsContainerRef.current) return;
@@ -207,6 +205,9 @@ export function DashboardContent() {
 
     loadEngineerSpecializations();
   }, [user, profile?.role]);
+
+  // Early return after all hooks are called
+  if (!ready) return null;
 
   // Get display name from profile
   const getDisplayName = () => {
