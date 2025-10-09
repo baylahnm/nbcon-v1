@@ -155,13 +155,26 @@ export const useAuthStore = create<AuthState>()(
           isInitialized: true,
         });
         safeLocalStorageSet(null);
+        // Clear zustand persist storage
+        clearStoredUser();
       },
 
       signOut: async () => {
-        // Sign out from Supabase
-        await supabase.auth.signOut();
-        // Clear local auth state
+        console.log('[SIGN OUT] Starting sign out process...');
+        
+        // Sign out from Supabase with local scope to clear session
+        const { error } = await supabase.auth.signOut({ scope: 'local' });
+        
+        if (error) {
+          console.error('[SIGN OUT] Supabase sign out error:', error);
+        } else {
+          console.log('[SIGN OUT] Supabase session cleared');
+        }
+        
+        // Clear local auth state and all storage
         get().logout();
+        
+        console.log('[SIGN OUT] Sign out complete');
       },
 
       setLoading: (loading) => set({ isLoading: loading }),
@@ -334,7 +347,17 @@ export const initializeAuth = () => {
     async (event, session) => {
       console.log('[AUTH LISTENER] Event:', event, 'Has session:', !!session, 'Has user:', !!session?.user);
       
-      if (event === 'SIGNED_IN' && session?.user) {
+      // Handle INITIAL_SESSION separately - only if we don't already have a user
+      if (event === 'INITIAL_SESSION') {
+        const currentUser = useAuthStore.getState().user;
+        if (currentUser) {
+          console.log('[AUTH LISTENER] INITIAL_SESSION: User already exists, skipping');
+          return;
+        }
+        // Fall through to handle like SIGNED_IN if no current user
+      }
+      
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
         // User signed in - SKIP profile query to avoid RLS hanging issue
         // Create minimal authenticated user from session
         console.log('[AUTH LISTENER] Processing SIGNED_IN event, creating minimal user (skipping profile query)...');
@@ -356,8 +379,11 @@ export const initializeAuth = () => {
         console.log('[AUTH LISTENER] Created minimal user:', minimalUser);
         setUser(minimalUser);
       } else if (event === 'SIGNED_OUT') {
-        // User signed out - clear store
+        // User signed out - clear all storage and state
+        console.log('[AUTH LISTENER] Processing SIGNED_OUT event, clearing all storage...');
         setUser(null);
+        clearStoredUser();
+        console.log('[AUTH LISTENER] SIGNED_OUT complete');
       } else if (event === 'TOKEN_REFRESHED') {
         // Token refreshed - session still valid
         console.log('Session token refreshed');
