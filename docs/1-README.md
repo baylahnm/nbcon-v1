@@ -1,6 +1,20 @@
-# 📚 1-nbocn Documentation
+# 📚 nbcon Documentation
 
-Welcome to the nbocn project documentation! This document provides an overview of the current project structure and organization.
+Welcome to the nbcon project documentation! This document provides an overview of the current project structure, organization, and authentication system.
+
+## 📖 **Documentation Index**
+
+### Core Documentation
+1. **`1-README.md`** (This file) - Project overview and structure
+2. **`2-ORGANIZATION_SUMMARY.md`** - Detailed architecture and organization
+3. **`3-PRODUCT_REQUIREMENTS.md`** - Product specifications
+4. **`4-AUTH_REBUILD_PLAN.md`** - Initial auth system planning
+
+### Authentication System Documentation ⭐
+5. **`5-AUTH_SYSTEM_GUIDE.md`** - **START HERE** - Complete auth system overview
+6. **`6-AUTH_MIGRATION_GUIDE.md`** - For developers making changes
+7. **`7-AUTH_TESTING_GUIDE.md`** - Manual testing instructions
+8. **`8-AUTH_IMPLEMENTATION_SUMMARY.md`** - Quick reference summary
 
 ## 🎯 **Project Overview**
 

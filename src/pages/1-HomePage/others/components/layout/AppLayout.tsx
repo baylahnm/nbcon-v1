@@ -1,12 +1,17 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, lazy, Suspense } from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '../ui/sidebar';
 import { AppSidebar } from '../layout/AppSidebar';
-import { useAuthStore, initializeAuth } from '../../stores/auth';
+import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
 import { Loader2, Bot } from 'lucide-react';
 import { Button } from '../ui/button';
-// AI features not available in HomePage
 import { R } from '../../lib/routes';
+
+// Dynamically import AI Drawer based on user role
+const ClientAiDrawer = lazy(() => import('@/pages/4-client/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
+const EngineerAiDrawer = lazy(() => import('@/pages/5-engineer/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
+const EnterpriseAiDrawer = lazy(() => import('@/pages/6-enterprise/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
+const AdminAiDrawer = lazy(() => import('@/pages/3-admin/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
 interface AppLayoutProps {
   children?: ReactNode;
 }
@@ -109,12 +114,37 @@ export function AppLayout({
           </main>
           
           {/* AI Drawer - Only show on dashboard routes */}
-          {isDashboardRoute && (
-            <AiDrawer
-              isOpen={isAiDrawerOpen}
-              onClose={() => setIsAiDrawerOpen(false)}
-              onOpenFull={() => navigate(getAIRoute())}
-            />
+          {isDashboardRoute && isAiDrawerOpen && (
+            <Suspense fallback={<div className="hidden" />}>
+              {user?.role === 'client' && (
+                <ClientAiDrawer
+                  isOpen={isAiDrawerOpen}
+                  onClose={() => setIsAiDrawerOpen(false)}
+                  onOpenFull={() => navigate(getAIRoute())}
+                />
+              )}
+              {user?.role === 'engineer' && (
+                <EngineerAiDrawer
+                  isOpen={isAiDrawerOpen}
+                  onClose={() => setIsAiDrawerOpen(false)}
+                  onOpenFull={() => navigate(getAIRoute())}
+                />
+              )}
+              {user?.role === 'enterprise' && (
+                <EnterpriseAiDrawer
+                  isOpen={isAiDrawerOpen}
+                  onClose={() => setIsAiDrawerOpen(false)}
+                  onOpenFull={() => navigate(getAIRoute())}
+                />
+              )}
+              {user?.role === 'admin' && (
+                <AdminAiDrawer
+                  isOpen={isAiDrawerOpen}
+                  onClose={() => setIsAiDrawerOpen(false)}
+                  onOpenFull={() => navigate(getAIRoute())}
+                />
+              )}
+            </Suspense>
           )}
         </SidebarInset>
       </div>
