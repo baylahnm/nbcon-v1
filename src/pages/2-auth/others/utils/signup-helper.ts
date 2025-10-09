@@ -123,6 +123,102 @@ export async function performSignup(data: SignupData): Promise<SignupResult> {
 }
 
 /**
+ * Create or update profile only (for users who already have auth account)
+ * Used in role-specific signup forms after initial auth signup
+ */
+export async function createProfileOnly(data: SignupData, userId: string): Promise<SignupResult> {
+  try {
+    // Check if profile already exists
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', userId)
+      .single();
+
+    if (existingProfile) {
+      // Update existing profile
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          role: data.role,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          phone: data.phone,
+          location_city: data.locationCity,
+          location_region: data.locationRegion || null,
+          preferred_language: data.preferredLanguage,
+          rtl_enabled: data.preferredLanguage === 'ar',
+          avatar_url: data.avatarUrl || null,
+          bio: data.bio || null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId);
+
+      if (updateError) {
+        return {
+          success: false,
+          error: updateError.message || 'Failed to update profile.'
+        };
+      }
+    } else {
+      // Create new profile
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          role: data.role,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          location_city: data.locationCity,
+          location_region: data.locationRegion || null,
+          preferred_language: data.preferredLanguage,
+          theme_preference: 'light',
+          rtl_enabled: data.preferredLanguage === 'ar',
+          avatar_url: data.avatarUrl || null,
+          bio: data.bio || null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+
+      if (insertError) {
+        return {
+          success: false,
+          error: insertError.message || 'Failed to create profile.'
+        };
+      }
+    }
+
+    // Create AuthenticatedUser object
+    const authenticatedUser: AuthenticatedUser = {
+      id: userId,
+      email: data.email,
+      name: `${data.firstName} ${data.lastName}`.trim(),
+      role: data.role,
+      isVerified: true, // Assume verified since they completed initial signup
+      location: `${data.locationCity}${data.locationRegion ? ', ' + data.locationRegion : ''}`,
+      phone: data.phone,
+      language: data.preferredLanguage,
+      avatar: data.avatarUrl,
+      company: data.company,
+      source: 'supabase'
+    };
+
+    return {
+      success: true,
+      user: authenticatedUser
+    };
+  } catch (error: any) {
+    console.error('Profile creation error:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to create profile. Please try again.'
+    };
+  }
+}
+
+/**
  * Helper to handle signup errors and return user-friendly messages
  */
 export function getSignupErrorMessage(error: string, language: 'ar' | 'en' = 'en'): string {

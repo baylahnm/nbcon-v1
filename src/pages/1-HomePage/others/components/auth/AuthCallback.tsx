@@ -29,56 +29,61 @@ export function AuthCallback() {
         if (data.session?.user) {
           const user = data.session.user;
           
-          // Extract user data from Google OAuth
+          // Extract user data from OAuth provider
           const userMetadata = user.user_metadata;
           const fullName = userMetadata?.full_name || userMetadata?.name || user.email?.split('@')[0] || 'User';
           const avatarUrl = userMetadata?.avatar_url || userMetadata?.picture;
           
-          // Create user profile if it doesn't exist
-          try {
-            await ensureUserProfileExists({
+          // Check if user already has a profile with a role
+          const { data: existingProfile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('user_id', user.id)
+            .single();
+
+          if (existingProfile?.role) {
+            // User has a profile - log them in and redirect to dashboard
+            const authenticatedUser = {
               id: user.id,
               email: user.email || '',
               name: fullName,
-              role: 'engineer' as const, // Default role, can be changed later
+              role: existingProfile.role,
               isVerified: user.email_confirmed_at ? true : false,
-              location: userMetadata?.location || 'Riyadh, Saudi Arabia', // Default location
+              location: userMetadata?.location || 'Riyadh, Saudi Arabia',
               phone: userMetadata?.phone || '',
-              language: 'en' as const, // Default language
+              language: 'en' as const,
               avatar: avatarUrl,
               company: userMetadata?.company || '',
               source: 'supabase' as const
-            });
-          } catch (profileError) {
-            console.error('Error creating user profile:', profileError);
-            // Continue with login even if profile creation fails
+            };
+
+            login(authenticatedUser);
+            setStatus('success');
+            
+            setTimeout(() => {
+              const roleRoute = R[existingProfile.role]?.dashboard || '/home';
+              navigate(roleRoute, { replace: true });
+            }, 1500);
+          } else {
+            // New OAuth user without profile - redirect to account type selection
+            // Store OAuth user data in session for account type selection
+            sessionStorage.setItem('oauth_user_data', JSON.stringify({
+              id: user.id,
+              email: user.email,
+              name: fullName,
+              avatar: avatarUrl,
+              phone: userMetadata?.phone || '',
+              language: 'en',
+              isVerified: true,
+              source: 'supabase'
+            }));
+            
+            setStatus('success');
+            
+            setTimeout(() => {
+              navigate('/auth/account-type', { replace: true });
+            }, 1000);
           }
-
-          // Transform to AuthenticatedUser format
-          const authenticatedUser = {
-            id: user.id,
-            email: user.email || '',
-            name: fullName,
-            role: 'engineer' as const,
-            isVerified: user.email_confirmed_at ? true : false,
-            location: userMetadata?.location || 'Riyadh, Saudi Arabia',
-            phone: userMetadata?.phone || '',
-            language: 'en' as const,
-            avatar: avatarUrl,
-            company: userMetadata?.company || '',
-            source: 'supabase' as const
-          };
-
-          // Set user in auth store
-          login(authenticatedUser);
-          
-          setStatus('success');
-          
-          // Wait a moment to show success state, then redirect based on role
-          setTimeout(() => {
-            const roleRoute = R[authenticatedUser.role]?.dashboard || '/home';
-            navigate(roleRoute, { replace: true });
-          }, 1500);
         } else {
           // Check if we're in the middle of an OAuth flow
           const urlParams = new URLSearchParams(window.location.search);

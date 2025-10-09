@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNamespace } from '@/pages/1-HomePage/others/lib/i18n/useNamespace';
@@ -23,6 +23,8 @@ import {
 } from '@/pages/1-HomePage/others/components/ui/chart';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/pages/4-client/others/features/billing/lib/plans';
+import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
+import { supabase } from '@/shared/supabase/client';
 
 const ACCOUNT_TYPES = {
   admin: {
@@ -113,8 +115,35 @@ export function AccountTypePricing() {
   const navigate = useNavigate();
   const ready = useNamespace(['auth', 'common']);
   const { t } = useTranslation(['auth', 'common']);
+  const { user, isAuthenticated } = useAuthStore();
+
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasProfile, setHasProfile] = useState(false);
+  const [checkingProfile, setCheckingProfile] = useState(true);
+
+  // Check if authenticated user has a profile
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (isAuthenticated && user?.id) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('user_id', user.id)
+            .single();
+          
+          setHasProfile(!!data && !error);
+        } catch (error) {
+          console.error('Error checking profile:', error);
+          setHasProfile(false);
+        }
+      }
+      setCheckingProfile(false);
+    };
+
+    checkProfile();
+  }, [isAuthenticated, user]);
 
   if (!ready) return null;
 
@@ -128,12 +157,41 @@ export function AccountTypePricing() {
     setIsLoading(true);
     
     try {
-      navigate(`/signup/${selectedType}`);
+      // Debug logging
+      console.log('Smart button clicked:', {
+        isAuthenticated,
+        hasProfile,
+        user,
+        selectedType
+      });
+      
+      // Smart routing based on authentication and profile status
+      if (!isAuthenticated) {
+        // Not logged in → Go to signup
+        console.log('Routing to /auth (not authenticated)');
+        navigate('/auth');
+      } else if (!hasProfile) {
+        // Logged in but no profile → Complete profile
+        console.log(`Routing to /signup/${selectedType} (authenticated but no profile)`);
+        navigate(`/signup/${selectedType}`);
+      } else {
+        // Logged in with profile → Go to dashboard
+        console.log(`Routing to /${selectedType}/dashboard (authenticated with profile)`);
+        navigate(`/${selectedType}/dashboard`);
+      }
     } catch (error) {
       console.error('Error selecting account type:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Smart button text based on user state
+  const getButtonText = () => {
+    if (checkingProfile) return t('auth:accountType.loading') || 'Loading...';
+    if (!isAuthenticated) return t('auth:accountType.getStarted') || 'Get Started';
+    if (!hasProfile) return t('auth:accountType.completeProfile') || 'Complete Profile';
+    return t('auth:accountType.goToDashboard') || 'Go to Dashboard';
   };
 
   const handleBackToHome = () => {
@@ -304,12 +362,12 @@ export function AccountTypePricing() {
           </div>
         </div>
 
-        {/* Continue Button */}
+        {/* Continue Button - Smart Logic */}
         <div className="mt-8 text-center">
           <Button
             size="lg"
             onClick={handleContinue}
-            disabled={!selectedType || isLoading}
+            disabled={!selectedType || isLoading || checkingProfile}
             className="px-12 py-6 text-lg"
           >
             {isLoading ? (
@@ -319,7 +377,7 @@ export function AccountTypePricing() {
               </>
             ) : (
               <>
-                {t('auth:accountType.continue')}
+                {getButtonText()}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </>
             )}

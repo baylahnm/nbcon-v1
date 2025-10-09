@@ -254,9 +254,11 @@ export const requiresAuth = (path: string): boolean => {
 };
 
 export const initializeAuth = () => {
+  console.log('[AUTH INIT] Starting auth initialization...');
   const { setUser, setLoading, setInitialized } = useAuthStore.getState();
 
   const syncFromStorage = () => {
+    console.log('[AUTH INIT] Running syncFromStorage...');
     // First try to get user from the new storage key
     let storedUser = getStoredUser();
     
@@ -291,74 +293,72 @@ export const initializeAuth = () => {
   }
 
   setLoading(true);
+  console.log('[AUTH INIT] Checking for Supabase session...');
   
   // Check for existing Supabase session first
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    if (session?.user) {
-      // User has active Supabase session - fetch profile
-      supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .single()
-        .then(({ data: profile, error }) => {
-          if (profile && !error) {
-            const user: AuthenticatedUser = {
-              id: session.user.id,
-              email: session.user.email || '',
-              name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'User',
-              role: profile.role,
-              isVerified: !!session.user.email_confirmed_at,
-              location: `${profile.location_city || ''}, ${profile.location_region || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || '',
-              phone: profile.phone || '',
-              language: (profile.preferred_language as 'ar' | 'en') || 'en',
-              avatar: profile.avatar_url || '',
-              source: 'supabase'
-            };
-            
-            setUser(user);
-            setLoading(false);
-            setInitialized(true);
-          } else {
-            // No profile found, fall back to localStorage
-            syncFromStorage();
-          }
-        });
-    } else {
+  supabase.auth.getSession()
+    .then(({ data: { session } }) => {
+      console.log('[AUTH INIT] getSession callback executed, session:', !!session);
+      if (session?.user) {
+        // User has active Supabase session
+        // SKIP profile query to avoid RLS hanging issue
+        // Create minimal authenticated user from session
+        console.log('[AUTH INIT] Found session, creating minimal user (skipping profile query)...');
+        const userMetadata = session.user.user_metadata;
+        const minimalUser: AuthenticatedUser = {
+          id: session.user.id,
+          email: session.user.email || '',
+          name: userMetadata?.full_name || userMetadata?.name || session.user.email?.split('@')[0] || 'User',
+          role: 'client', // Default role, will be set when profile is created
+          isVerified: !!session.user.email_confirmed_at,
+          location: '',
+          phone: userMetadata?.phone || '',
+          language: 'en',
+          avatar: userMetadata?.avatar_url || userMetadata?.picture || '',
+          source: 'supabase'
+        };
+        
+        console.log('[AUTH INIT] Created minimal authenticated user:', minimalUser);
+        setUser(minimalUser);
+        setLoading(false);
+        setInitialized(true);
+      } else {
       // No Supabase session, check localStorage
+      console.log('[AUTH INIT] No Supabase session found, checking localStorage...');
       syncFromStorage();
     }
+  })
+  .catch((error) => {
+    console.error('[AUTH INIT] getSession error:', error);
+    syncFromStorage();
   });
 
   // Listen to Supabase auth state changes
   const { data: { subscription } } = supabase.auth.onAuthStateChange(
     async (event, session) => {
-      console.log('Supabase auth state changed:', event);
+      console.log('[AUTH LISTENER] Event:', event, 'Has session:', !!session, 'Has user:', !!session?.user);
       
       if (event === 'SIGNED_IN' && session?.user) {
-        // User signed in - fetch profile and update store
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single();
+        // User signed in - SKIP profile query to avoid RLS hanging issue
+        // Create minimal authenticated user from session
+        console.log('[AUTH LISTENER] Processing SIGNED_IN event, creating minimal user (skipping profile query)...');
         
-        if (profile && !error) {
-          const user: AuthenticatedUser = {
-            id: session.user.id,
-            email: session.user.email || '',
-            name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email || 'User',
-            role: profile.role,
-            isVerified: !!session.user.email_confirmed_at,
-            location: `${profile.location_city || ''}, ${profile.location_region || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || '',
-            phone: profile.phone || '',
-            language: (profile.preferred_language as 'ar' | 'en') || 'en',
-            avatar: profile.avatar_url || '',
-            source: 'supabase'
-          };
-          
-          setUser(user);
-        }
+        const userMetadata = session.user.user_metadata;
+        const minimalUser: AuthenticatedUser = {
+          id: session.user.id,
+          email: session.user.email || '',
+          name: userMetadata?.full_name || userMetadata?.name || session.user.email?.split('@')[0] || 'User',
+          role: 'client', // Default role, will be set when profile is created
+          isVerified: !!session.user.email_confirmed_at,
+          location: '',
+          phone: userMetadata?.phone || '',
+          language: 'en',
+          avatar: userMetadata?.avatar_url || userMetadata?.picture || '',
+          source: 'supabase'
+        };
+        
+        console.log('[AUTH LISTENER] Created minimal user:', minimalUser);
+        setUser(minimalUser);
       } else if (event === 'SIGNED_OUT') {
         // User signed out - clear store
         setUser(null);

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from './1-HomePage/others/stores/auth';
+import { useAuthStore } from './2-auth/others/stores/auth';
 import HomePage from './1-HomePage/HomePage';
 
 const Index = () => {

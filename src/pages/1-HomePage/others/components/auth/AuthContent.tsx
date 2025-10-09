@@ -451,9 +451,10 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
 
     // Send OTP via Supabase
     try {
-      // Sign up with Supabase
-      const { data, error } = await supabase.auth.signInWithOtp({
+      // Sign up with Supabase - now storing password properly
+      const { data, error } = await supabase.auth.signUp({
         email: signupData.email,
+        password: signupData.password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {

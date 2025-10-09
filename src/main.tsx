@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
 import "./index.css";
-import { initializeAuth } from "@/pages/1-HomePage/others/stores/auth";
+import { initializeAuth } from "@/pages/2-auth/others/stores/auth";
 import { useThemeStore } from "@/pages/1-HomePage/others/stores/theme";
 import "./pages/1-HomePage/others/lib/i18n/i18n";
 

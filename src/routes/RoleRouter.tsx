@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useAuthStore } from "@/pages/1-HomePage/others/stores/auth";
+import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
 import { ROLE_BASE, UserRole } from "@/pages/1-HomePage/others/lib/auth/role";
 import EngineerLayout from "@/pages/2-auth/others/layouts/EngineerLayout";
 import ClientLayout from "@/pages/2-auth/others/layouts/ClientLayout";
