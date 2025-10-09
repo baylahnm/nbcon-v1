@@ -213,11 +213,13 @@ export default function EnterpriseSignup() {
             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               id="password"
+              name="new-password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 characters"
               className="pl-10 pr-10"
+              autoComplete="new-password"
             />
             <Button
               type="button"
@@ -240,11 +242,13 @@ export default function EnterpriseSignup() {
             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               id="confirm-password"
+              name="confirm-password"
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm password"
               className="pl-10 pr-10"
+              autoComplete="new-password"
             />
             <Button
               type="button"
@@ -271,9 +275,11 @@ export default function EnterpriseSignup() {
         </Label>
         <Input
           id="company-legal-name"
+          name="organization"
           value={companyLegalName}
           onChange={(e) => setCompanyLegalName(e.target.value)}
           placeholder={t('registration:enterprise.fields.companyLegalNamePlaceholder')}
+          autoComplete="organization"
         />
       </div>
 
@@ -284,9 +290,11 @@ export default function EnterpriseSignup() {
         </Label>
         <Input
           id="company-domain"
+          name="company-domain"
           value={companyDomain}
           onChange={(e) => setCompanyDomain(e.target.value)}
           placeholder={t('registration:enterprise.fields.companyDomainPlaceholder')}
+          autoComplete="url"
         />
         <p className="text-xs text-muted-foreground">
           {t('registration:enterprise.fields.companyDomainHint')}
@@ -340,6 +348,7 @@ export default function EnterpriseSignup() {
         </Label>
         <Input
           id="cr-number"
+          name="cr-number"
           value={crNumber}
           onChange={(e) => setCrNumber(e.target.value)}
           placeholder={t('registration:enterprise.fields.crNumberPlaceholder')}
@@ -354,6 +363,7 @@ export default function EnterpriseSignup() {
         </Label>
         <Input
           id="tax-id"
+          name="tax-id"
           value={taxId}
           onChange={(e) => setTaxId(e.target.value)}
           placeholder={t('registration:enterprise.fields.taxIdPlaceholder')}
@@ -375,6 +385,7 @@ export default function EnterpriseSignup() {
         </Label>
         <Input
           id="team-seats"
+          name="team-seats"
           type="number"
           min="5"
           value={teamSeats}
@@ -398,9 +409,11 @@ export default function EnterpriseSignup() {
           </Label>
           <Input
             id="poc-name"
+            name="name"
             value={pocName}
             onChange={(e) => setPocName(e.target.value)}
             placeholder={t('registration:enterprise.fields.pocNamePlaceholder')}
+            autoComplete="name"
           />
         </div>
 
@@ -411,9 +424,11 @@ export default function EnterpriseSignup() {
           </Label>
           <Input
             id="poc-title"
+            name="organization-title"
             value={pocTitle}
             onChange={(e) => setPocTitle(e.target.value)}
             placeholder={t('registration:enterprise.fields.pocJobTitlePlaceholder')}
+            autoComplete="organization-title"
           />
         </div>
 
@@ -424,10 +439,12 @@ export default function EnterpriseSignup() {
           </Label>
           <Input
             id="poc-email"
+            name="email"
             type="email"
             value={pocEmail}
             onChange={(e) => setPocEmail(e.target.value)}
             placeholder={t('registration:enterprise.fields.pocEmailPlaceholder')}
+            autoComplete="email"
           />
         </div>
 
@@ -462,6 +479,7 @@ export default function EnterpriseSignup() {
         </Label>
         <Input
           id="po-number"
+          name="po-number"
           value={poNumber}
           onChange={(e) => setPoNumber(e.target.value)}
           placeholder={t('registration:enterprise.fields.poNumberPlaceholder')}
@@ -518,6 +536,7 @@ export default function EnterpriseSignup() {
         </Label>
         <Input
           id="sso-domain"
+          name="sso-domain"
           value={ssoSamlDomain}
           onChange={(e) => setSsoSamlDomain(e.target.value)}
           placeholder={t('registration:enterprise.fields.ssoDomainPlaceholder')}
@@ -534,6 +553,7 @@ export default function EnterpriseSignup() {
         </Label>
         <Textarea
           id="custom-requirements"
+          name="custom-requirements"
           value={customRequirements}
           onChange={(e) => setCustomRequirements(e.target.value)}
           placeholder={t('registration:enterprise.fields.customRequirementsPlaceholder')}

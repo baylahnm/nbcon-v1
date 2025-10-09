@@ -6,7 +6,23 @@
 
 ---
 
+## ⚡ **URGENT - Database Fix Required**
+
+🔴 **Apply database fix immediately:** See `10-CRITICAL_FIXES_SUMMARY.md`
+
+---
+
+## 📖 **DOCUMENTATION INDEX**
+
+→ **`00-DOCS_INDEX.md`** - Quick reference guide with all doc links
+
+---
+
 ## 🎯 **Quick Navigation**
+
+### **Critical Issues** 🔴
+- Database fix needed? → `10-CRITICAL_FIXES_SUMMARY.md`
+- Schema mismatches? → `9-DATABASE_SCHEMA_AUDIT.md`
 
 ### **Start Here** 👇
 - New to the project? → `1-README.md`
@@ -97,7 +113,31 @@
 
 ## 🗄️ **Database Documentation**
 
-Located in `database/docs/`:
+### Primary Database Docs (in `docs/`)
+
+**9. Database Schema Audit**  
+**File:** `9-DATABASE_SCHEMA_AUDIT.md`  
+**Purpose:** Technical schema analysis and comparison
+
+**Contents:**
+- Complete table inventory (48 tables)
+- Code vs Database comparison
+- RLS policy analysis
+- Detailed mismatch breakdown
+
+**10. Critical Fixes Summary** ⭐ **START HERE FOR FIXES**  
+**File:** `10-CRITICAL_FIXES_SUMMARY.md`  
+**Purpose:** **Action guide for applying database fixes**
+
+**Contents:**
+- Executive summary of critical issues
+- Root cause of redirect loop explained
+- Step-by-step fix application guide
+- Verification checklist
+- Expected outcomes before/after
+- Troubleshooting support
+
+### Legacy Database Docs (in `database/docs/`)
 1. `1-RESTORE_GUIDE.md` - Database restoration instructions
 2. `2-SUPABASE_REORGANIZATION_PLAN.md` - Database reorganization plan
 3. `3-SUPABASE_IMPLEMENTATION_SUMMARY.md` - Database implementation summary
@@ -106,16 +146,26 @@ Located in `database/docs/`:
 
 ## 📊 **Recent Updates**
 
-### October 9, 2025 - Authentication System Overhaul ✅
+### October 9, 2025 - Authentication & Database Audit ✅
+
+**Authentication System Overhaul:**
 - ✅ Fixed duplicate signup flow
 - ✅ Implemented smart button routing
 - ✅ Updated all 4 signup forms (Client, Engineer, Enterprise, Admin)
 - ✅ Fixed RLS infinite recursion
 - ✅ Added pre-fill functionality
 - ✅ Fixed AiDrawer dynamic loading
-- ✅ Consolidated documentation (11 files → 4 clean files)
+- ✅ Fixed Dashboard hooks error (conditional return placement)
 
-**Status:** Production ready, Client flow tested and verified
+**Database Schema Audit:**  
+- ✅ Scanned 48 tables across 10 migrations
+- ✅ Identified 79 Supabase queries in code
+- ⚠️ Found **CRITICAL**: Missing INSERT policy on profiles (causes redirect loop)
+- ⚠️ Found 1 missing table: `engineer_profiles`
+- ⚠️ Found 2 table name mismatches: `jobs`, `ai_threads`
+- ✅ Created comprehensive fix script: `010-comprehensive-fix-all-issues.sql`
+
+**Status:** Auth code ready, Database fixes prepared, awaiting SQL execution
 
 ---
 

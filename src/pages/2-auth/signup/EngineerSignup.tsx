@@ -192,10 +192,12 @@ export default function EngineerSignup() {
           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             id="email"
+            name="email"
             type="email"
             value={email}
             disabled
             className="pl-10 bg-muted"
+            autoComplete="email"
           />
         </div>
       </div>
@@ -208,9 +210,11 @@ export default function EngineerSignup() {
         </Label>
         <Input
           id="full-name"
+          name="name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           placeholder={t('registration:engineer.fields.fullNamePlaceholder')}
+          autoComplete="name"
         />
       </div>
 
@@ -336,6 +340,7 @@ export default function EngineerSignup() {
         </Label>
         <Input
           id="license-number"
+          name="license-number"
           value={licenseNumber}
           onChange={(e) => setLicenseNumber(e.target.value)}
           placeholder={t('registration:engineer.fields.licenseNumberPlaceholder')}
@@ -349,6 +354,7 @@ export default function EngineerSignup() {
         </Label>
         <Input
           id="issuing-authority"
+          name="issuing-authority"
           value={issuingAuthority}
           onChange={(e) => setIssuingAuthority(e.target.value)}
           placeholder={t('registration:engineer.fields.issuingAuthorityPlaceholder')}
@@ -362,6 +368,7 @@ export default function EngineerSignup() {
         </Label>
         <Input
           id="license-expiry"
+          name="license-expiry"
           type="date"
           value={licenseExpiry}
           onChange={(e) => setLicenseExpiry(e.target.value)}
@@ -380,10 +387,12 @@ export default function EngineerSignup() {
         </Label>
         <Input
           id="portfolio-url"
+          name="url"
           type="url"
           value={portfolioUrl}
           onChange={(e) => setPortfolioUrl(e.target.value)}
           placeholder={t('registration:engineer.fields.portfolioUrlPlaceholder')}
+          autoComplete="url"
         />
       </div>
 

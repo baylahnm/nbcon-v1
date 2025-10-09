@@ -93,9 +93,11 @@ export function PaymentMethodSelector({
             <Label htmlFor="card-name">Cardholder Name</Label>
             <Input
               id="card-name"
+              name="cc-name"
               value={value.cardName || ''}
               onChange={(e) => updateField('cardName', e.target.value)}
               placeholder="Name on card"
+              autoComplete="cc-name"
             />
           </div>
 
@@ -103,6 +105,7 @@ export function PaymentMethodSelector({
             <Label htmlFor="card-number">Card Number</Label>
             <Input
               id="card-number"
+              name="cc-number"
               value={value.cardNumber || ''}
               onChange={(e) => {
                 const formatted = e.target.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
@@ -110,6 +113,7 @@ export function PaymentMethodSelector({
               }}
               placeholder="1234 5678 9012 3456"
               maxLength={19}
+              autoComplete="cc-number"
             />
           </div>
 
@@ -118,6 +122,7 @@ export function PaymentMethodSelector({
               <Label htmlFor="card-expiry">Expiry Date</Label>
               <Input
                 id="card-expiry"
+                name="cc-exp"
                 value={value.cardExpiry || ''}
                 onChange={(e) => {
                   const formatted = e.target.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
@@ -125,17 +130,20 @@ export function PaymentMethodSelector({
                 }}
                 placeholder="MM/YY"
                 maxLength={5}
+                autoComplete="cc-exp"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="card-cvv">CVV</Label>
               <Input
                 id="card-cvv"
+                name="cc-csc"
                 type="password"
                 value={value.cardCvv || ''}
                 onChange={(e) => updateField('cardCvv', e.target.value.replace(/\D/g, ''))}
                 placeholder="123"
                 maxLength={3}
+                autoComplete="cc-csc"
               />
             </div>
           </div>
@@ -148,6 +156,7 @@ export function PaymentMethodSelector({
             <Label htmlFor="bank-name">Bank Name</Label>
             <Input
               id="bank-name"
+              name="bank-name"
               value={value.bankName || ''}
               onChange={(e) => updateField('bankName', e.target.value)}
               placeholder="e.g., Al Rajhi Bank"
@@ -158,6 +167,7 @@ export function PaymentMethodSelector({
             <Label htmlFor="iban">IBAN</Label>
             <Input
               id="iban"
+              name="iban"
               value={value.iban || ''}
               onChange={(e) => updateField('iban', e.target.value.toUpperCase())}
               placeholder="SA00 0000 0000 0000 0000 0000"
@@ -168,6 +178,7 @@ export function PaymentMethodSelector({
             <Label htmlFor="account-number">Account Number</Label>
             <Input
               id="account-number"
+              name="account-number"
               value={value.accountNumber || ''}
               onChange={(e) => updateField('accountNumber', e.target.value)}
               placeholder="Enter account number"

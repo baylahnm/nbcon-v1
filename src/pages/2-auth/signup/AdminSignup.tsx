@@ -188,9 +188,11 @@ export default function AdminSignup() {
         </Label>
         <Input
           id="full-name"
+          name="name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           placeholder="Enter your full name"
+          autoComplete="name"
         />
       </div>
 
@@ -204,11 +206,13 @@ export default function AdminSignup() {
             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               id="password"
+              name="new-password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 characters"
               className="pl-10 pr-10"
+              autoComplete="new-password"
             />
             <Button
               type="button"
@@ -231,11 +235,13 @@ export default function AdminSignup() {
             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               id="confirm-password"
+              name="confirm-password"
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm password"
               className="pl-10 pr-10"
+              autoComplete="new-password"
             />
             <Button
               type="button"
@@ -262,6 +268,7 @@ export default function AdminSignup() {
         </Label>
         <Input
           id="invitation-token"
+          name="invitation-token"
           value={invitationToken}
           onChange={(e) => {
             setInvitationToken(e.target.value);
@@ -283,10 +290,12 @@ export default function AdminSignup() {
         </Label>
         <Input
           id="work-email"
+          name="email"
           type="email"
           value={workEmail}
           onChange={(e) => setWorkEmail(e.target.value)}
           placeholder={t('admin.fields.workEmailPlaceholder')}
+          autoComplete="email"
         />
         <p className="text-xs text-muted-foreground">
           {t('admin.fields.workEmailHint')}
@@ -300,6 +309,7 @@ export default function AdminSignup() {
         </Label>
         <Input
           id="employee-id"
+          name="employee-id"
           value={employeeId}
           onChange={(e) => setEmployeeId(e.target.value)}
           placeholder={t('admin.fields.employeeIdPlaceholder')}
@@ -313,6 +323,7 @@ export default function AdminSignup() {
         </Label>
         <select
           id="department"
+          name="department"
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -331,6 +342,7 @@ export default function AdminSignup() {
         </Label>
         <Textarea
           id="access-reason"
+          name="access-reason"
           value={accessReason}
           onChange={(e) => setAccessReason(e.target.value)}
           placeholder={t('admin.fields.accessReasonPlaceholder')}

@@ -649,6 +649,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="login-email"
+                        name="email"
                         type="email"
                         placeholder={language === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
                         value={loginData.email}
@@ -669,6 +670,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="login-password"
+                        name="password"
                         type={showPassword ? "text" : "password"}
                         placeholder={language === 'ar' ? 'أدخل كلمة المرور' : 'Enter your password'}
                         value={loginData.password}
@@ -802,11 +804,13 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="signup-name"
+                        name="name"
                         type="text"
                         placeholder={language === 'ar' ? 'أدخل اسمك الكامل' : 'Enter your full name'}
                         value={signupData.name}
                         onChange={(e) => setSignupData({...signupData, name: e.target.value})}
                         className="pl-10 bg-input-background border-border"
+                        autoComplete="name"
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                       />
                     </div>
@@ -821,6 +825,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="signup-email"
+                        name="email"
                         type="email"
                         placeholder={language === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
                         value={signupData.email}
@@ -842,6 +847,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                         <Input
                           id="signup-password"
+                          name="new-password"
                           type={showPassword ? "text" : "password"}
                           placeholder={language === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'}
                           value={signupData.password}
@@ -871,6 +877,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                         <Input
                           id="signup-confirm-password"
+                          name="confirm-password"
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder={language === 'ar' ? 'أكد كلمة المرور' : 'Confirm password'}
                           value={signupData.confirmPassword}
@@ -901,11 +908,13 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="signup-phone"
+                        name="tel"
                         type="tel"
                         placeholder={language === 'ar' ? '+966501234567' : '+966501234567'}
                         value={signupData.phone}
                         onChange={(e) => setSignupData({...signupData, phone: e.target.value})}
                         className="pl-10 bg-input-background border-border"
+                        autoComplete="tel"
                         dir="ltr"
                       />
                     </div>
@@ -945,11 +954,13 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="signup-company"
+                        name="organization"
                         type="text"
                         placeholder={language === 'ar' ? 'اسم الشركة' : 'Company name'}
                         value={signupData.company}
                         onChange={(e) => setSignupData({...signupData, company: e.target.value})}
                         className="pl-10 bg-input-background border-border"
+                        autoComplete="organization"
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                       />
                     </div>
@@ -963,6 +974,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                       <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                       <Input
                         id="signup-sce"
+                        name="sce-number"
                         type="text"
                         placeholder="SCE-12345"
                         value={signupData.sceNumber}

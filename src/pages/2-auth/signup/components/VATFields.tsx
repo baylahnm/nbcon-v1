@@ -62,6 +62,7 @@ export function VATFields({
           </Label>
           <Input
             id="tax-id"
+            name="tax-id"
             value={taxId}
             onChange={(e) => onTaxIdChange(e.target.value)}
             placeholder="Enter your Tax ID"

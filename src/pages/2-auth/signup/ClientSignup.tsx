@@ -184,9 +184,11 @@ export default function ClientSignup() {
         </Label>
         <Input
           id="company-legal-name"
+          name="company-legal-name"
           value={companyLegalName}
           onChange={(e) => setCompanyLegalName(e.target.value)}
           placeholder={t('registration:client.fields.companyLegalNamePlaceholder')}
+          autoComplete="organization"
         />
       </div>
 
@@ -197,6 +199,7 @@ export default function ClientSignup() {
         </Label>
         <Input
           id="trade-name"
+          name="trade-name"
           value={tradeName}
           onChange={(e) => setTradeName(e.target.value)}
           placeholder={t('registration:client.fields.tradeNamePlaceholder')}
@@ -250,6 +253,7 @@ export default function ClientSignup() {
         </Label>
         <Input
           id="cr-number"
+          name="cr-number"
           value={crNumber}
           onChange={(e) => setCrNumber(e.target.value)}
           placeholder={t('registration:client.fields.crNumberPlaceholder')}
@@ -280,9 +284,11 @@ export default function ClientSignup() {
           </Label>
           <Input
             id="contact-name"
+            name="contact-name"
             value={contactName}
             onChange={(e) => setContactName(e.target.value)}
             placeholder={t('registration:client.fields.contactNamePlaceholder')}
+            autoComplete="name"
           />
         </div>
 
@@ -293,10 +299,12 @@ export default function ClientSignup() {
           </Label>
           <Input
             id="contact-email"
+            name="email"
             type="email"
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
             placeholder={t('registration:client.fields.contactEmailPlaceholder')}
+            autoComplete="email"
           />
         </div>
 

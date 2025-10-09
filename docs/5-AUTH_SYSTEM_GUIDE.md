@@ -336,23 +336,54 @@ const validateStep2 = () => {
 
 ---
 
-## ⚠️ **Known Issues**
+## ⚠️ **Known Issues & Database Mismatches**
+
+### **CRITICAL - Causes Redirect Loop** ⛔
+
+1. **Missing INSERT Policy on Profiles Table**
+   - **Impact:** ❌ Users CANNOT create profiles during signup → Silent failures → Redirect loop
+   - **Root Cause:** Base schema missing INSERT RLS policy
+   - **Evidence:** User authenticated but no profile created → Router redirects to /auth
+   - **Fix:** `supabase/fixes/009-add-missing-insert-policy.sql` ✅
+   - **Blocker:** YES - Must apply to production ⛔
+
+### **High Priority - Missing Tables**
+
+2. **Missing `engineer_profiles` Table**
+   - **Impact:** Dashboard queries fail for engineer specializations
+   - **Code Location:** `DashboardContent.tsx:188`
+   - **Fix:** Created in `010-comprehensive-fix-all-issues.sql`
+   - **Blocker:** No (query has error handling)
+
+3. **Table Name Mismatch: `job_postings` vs `jobs`**
+   - **Impact:** Messaging enrichment fails to fetch job details
+   - **Database has:** `job_postings`
+   - **Code expects:** `jobs`
+   - **Fix:** Rename in comprehensive fix script
+   - **Blocker:** No (conversation still loads)
+
+4. **Table Name Mismatch: `ai_conversations` vs `ai_threads`**
+   - **Impact:** AI chat features may fail
+   - **Database has:** `ai_conversations`
+   - **Code expects:** `ai_threads`
+   - **Fix:** Rename in comprehensive fix script
+   - **Blocker:** No (AI features optional)
 
 ### **Non-Critical (Production Ready)**
 
-1. **Dashboard Layout Trigger Disabled**
+5. **Dashboard Layout Trigger Disabled**
    - **Impact:** Dashboards not auto-created for new users
    - **Workaround:** Users can create dashboards manually
    - **Fix Required:** DBA review of SQL function
    - **Blocker:** No ✅
 
-2. **Debug Logs Present**
+6. **Debug Logs Present**
    - **Impact:** Extra console output in development
    - **Workaround:** Filter console in production
    - **Fix Required:** Remove console.log statements
    - **Blocker:** No ✅
 
-3. **Account Numbers Tracking Table Not Populated**
+7. **Account Numbers Tracking Table Not Populated**
    - **Impact:** `account_numbers` table empty (but `profiles.account_number` works)
    - **Workaround:** Using profiles table directly
    - **Fix Required:** Determine if tracking table needed

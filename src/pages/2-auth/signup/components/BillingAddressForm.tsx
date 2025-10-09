@@ -45,9 +45,11 @@ export function BillingAddressForm({ value, onChange, errors }: BillingAddressFo
         </Label>
         <Input
           id="street"
+          name="street-address"
           value={value.street}
           onChange={(e) => updateField('street', e.target.value)}
           placeholder="Building number, street name"
+          autoComplete="street-address"
         />
         {errors?.street && <p className="text-sm text-destructive">{errors.street}</p>}
       </div>
@@ -60,9 +62,11 @@ export function BillingAddressForm({ value, onChange, errors }: BillingAddressFo
           </Label>
           <Input
             id="city"
+            name="address-level2"
             value={value.city}
             onChange={(e) => updateField('city', e.target.value)}
             placeholder="Enter city"
+            autoComplete="address-level2"
           />
           {errors?.city && <p className="text-sm text-destructive">{errors.city}</p>}
         </div>
@@ -96,10 +100,12 @@ export function BillingAddressForm({ value, onChange, errors }: BillingAddressFo
           </Label>
           <Input
             id="postal-code"
+            name="postal-code"
             value={value.postalCode}
             onChange={(e) => updateField('postalCode', e.target.value)}
             placeholder="12345"
             maxLength={5}
+            autoComplete="postal-code"
           />
           {errors?.postalCode && <p className="text-sm text-destructive">{errors.postalCode}</p>}
         </div>

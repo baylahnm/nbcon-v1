@@ -58,11 +58,14 @@ export function PhoneInput({
           </SelectContent>
         </Select>
         <Input
+          id="phone-number"
+          name="tel"
           type="tel"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="501234567"
           className="flex-1"
+          autoComplete="tel"
         />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}

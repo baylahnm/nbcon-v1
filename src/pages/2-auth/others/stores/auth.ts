@@ -308,19 +308,47 @@ export const initializeAuth = () => {
   
   // Check for existing Supabase session first
   supabase.auth.getSession()
-    .then(({ data: { session } }) => {
+    .then(async ({ data: { session } }) => {
       console.log('[AUTH INIT] getSession callback executed, session:', !!session);
       if (session?.user) {
         // User has active Supabase session
-        // SKIP profile query to avoid RLS hanging issue
-        // Create minimal authenticated user from session
-        console.log('[AUTH INIT] Found session, creating minimal user (skipping profile query)...');
+        console.log('[AUTH INIT] Found session, fetching role from profile...');
         const userMetadata = session.user.user_metadata;
+        
+        // Try to get role from user metadata first (set during signup)
+        let userRole = userMetadata?.role as 'engineer' | 'client' | 'enterprise' | 'admin' | undefined;
+        
+        // If no role in metadata, query profile table with timeout
+        if (!userRole) {
+          try {
+            const { data: profile, error } = await Promise.race([
+              supabase
+                .from('profiles')
+                .select('role')
+                .eq('user_id', session.user.id)
+                .single(),
+              new Promise<{ data: null; error: Error }>((_, reject) => 
+                setTimeout(() => reject(new Error('Profile query timeout')), 3000)
+              )
+            ]);
+            
+            if (!error && profile?.role) {
+              userRole = profile.role as 'engineer' | 'client' | 'enterprise' | 'admin';
+              console.log('[AUTH INIT] Role fetched from profile:', userRole);
+            }
+          } catch (error) {
+            console.warn('[AUTH INIT] Failed to fetch role from profile, using default:', error);
+          }
+        }
+        
+        // Default to 'client' if still no role
+        const finalRole = userRole || 'client';
+        
         const minimalUser: AuthenticatedUser = {
           id: session.user.id,
           email: session.user.email || '',
           name: userMetadata?.full_name || userMetadata?.name || session.user.email?.split('@')[0] || 'User',
-          role: 'client', // Default role, will be set when profile is created
+          role: finalRole,
           isVerified: !!session.user.email_confirmed_at,
           location: '',
           phone: userMetadata?.phone || '',
@@ -329,6 +357,7 @@ export const initializeAuth = () => {
           source: 'supabase'
         };
         
+        console.log('[AUTH INIT] Created minimal user with role:', finalRole);
         setUser(minimalUser);
         setLoading(false);
         setInitialized(true);
@@ -358,16 +387,45 @@ export const initializeAuth = () => {
       }
       
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-        // User signed in - SKIP profile query to avoid RLS hanging issue
-        // Create minimal authenticated user from session
-        console.log('[AUTH LISTENER] Processing SIGNED_IN event, creating minimal user (skipping profile query)...');
+        // User signed in - fetch role from profile
+        console.log('[AUTH LISTENER] Processing SIGNED_IN event, fetching role...');
         
         const userMetadata = session.user.user_metadata;
+        
+        // Try to get role from user metadata first (set during signup)
+        let userRole = userMetadata?.role as 'engineer' | 'client' | 'enterprise' | 'admin' | undefined;
+        
+        // If no role in metadata, query profile table with timeout
+        if (!userRole) {
+          try {
+            const { data: profile, error } = await Promise.race([
+              supabase
+                .from('profiles')
+                .select('role')
+                .eq('user_id', session.user.id)
+                .single(),
+              new Promise<{ data: null; error: Error }>((_, reject) => 
+                setTimeout(() => reject(new Error('Profile query timeout')), 3000)
+              )
+            ]);
+            
+            if (!error && profile?.role) {
+              userRole = profile.role as 'engineer' | 'client' | 'enterprise' | 'admin';
+              console.log('[AUTH LISTENER] Role fetched from profile:', userRole);
+            }
+          } catch (error) {
+            console.warn('[AUTH LISTENER] Failed to fetch role from profile, using default:', error);
+          }
+        }
+        
+        // Default to 'client' if still no role
+        const finalRole = userRole || 'client';
+        
         const minimalUser: AuthenticatedUser = {
           id: session.user.id,
           email: session.user.email || '',
           name: userMetadata?.full_name || userMetadata?.name || session.user.email?.split('@')[0] || 'User',
-          role: 'client', // Default role, will be set when profile is created
+          role: finalRole,
           isVerified: !!session.user.email_confirmed_at,
           location: '',
           phone: userMetadata?.phone || '',
@@ -376,7 +434,7 @@ export const initializeAuth = () => {
           source: 'supabase'
         };
         
-        console.log('[AUTH LISTENER] Created minimal user:', minimalUser);
+        console.log('[AUTH LISTENER] Created minimal user with role:', finalRole, minimalUser);
         setUser(minimalUser);
       } else if (event === 'SIGNED_OUT') {
         // User signed out - clear all storage and state
