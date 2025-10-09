@@ -50,10 +50,6 @@ export function AppLayout({
   };
 
   useEffect(() => {
-    const unsubscribe = initializeAuth();
-    return unsubscribe;
-  }, []);
-  useEffect(() => {
     if (isInitialized && !isLoading) {
       if (!user) {
         navigate('/auth');
