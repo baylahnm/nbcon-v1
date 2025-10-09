@@ -6,7 +6,7 @@ import {
   MapPin, Briefcase, FileText, DollarSign, Activity, ArrowUpRight, 
   ArrowDownRight, Shield, Bell, Upload, UserCheck, Navigation,
   CreditCard, Building2, Smartphone, Settings, Eye, MessageSquare,
-  X, ChevronDown, CheckSquare, Columns, Rows, Wrench, Brush, Palette,
+  X, ChevronDown, CheckSquare, Wrench, Palette,
   Moon, Sun, Sunset, Paintbrush, CircleDot, Waves, TreePine, Layers, Sparkles,
   Target, Building, ShoppingCart, PieChart as PieChartIcon, FolderOpen,
   UserPlus, FileSpreadsheet, Handshake, Truck, ClipboardList
@@ -22,7 +22,6 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
 import { Progress } from '../../../../../1-HomePage/others/components/ui/progress';
 import { Input } from '../../../../../1-HomePage/others/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../1-HomePage/others/components/ui/popover';
 import { ChatComposer } from "../../ai/components/ChatComposer";
 import { useAiStore } from "../../ai/store/useAiStore";
 import { MessageBubble } from "../../ai/components/MessageBubble";
@@ -630,17 +629,6 @@ export function DashboardContent() {
                       </p>
                     </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="default"
-            size="sm"
-            onClick={toggleEditMode}
-            className="flex items-center gap-2 transition-all duration-200 bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
-          >
-            <Brush className="w-4 h-4 transition-colors duration-200 text-primary-foreground" />
-            {isEditMode ? 'Exit Edit' : 'Customize'}
-          </Button>
-        </div>
                 </div>
       {/* Inline AI Assistant */}
       <div className="mt-4">
@@ -783,7 +771,7 @@ export function DashboardContent() {
                         {/* Browse Jobs */}
                         <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
                           <Link to="/engineer/jobs">
-                            <Briefcase className="w-6 h-6 text-info" />
+                            <Briefcase className="w-8 h-8 text-info" />
                             <span className="text-sm font-medium">Browse Jobs</span>
                           </Link>
                         </Button>
@@ -791,7 +779,7 @@ export function DashboardContent() {
                         {/* Check-In */}
                         <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
                           <Link to="/engineer/checkin">
-                            <MapPin className="w-6 h-6 text-success" />
+                            <MapPin className="w-8 h-8 text-success" />
                             <span className="text-sm font-medium">Check-In</span>
                           </Link>
                         </Button>
@@ -799,7 +787,7 @@ export function DashboardContent() {
                         {/* Upload Deliverable */}
                         <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
                           <Link to="/engineer/job/upload">
-                            <Upload className="w-6 h-6 text-primary" />
+                            <Upload className="w-8 h-8 text-primary" />
                             <span className="text-sm font-medium">Upload</span>
                           </Link>
                         </Button>
@@ -807,7 +795,7 @@ export function DashboardContent() {
                         {/* Messages */}
                         <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
                           <Link to="/engineer/messages">
-                            <MessageSquare className="w-6 h-6 text-blue-600" />
+                            <MessageSquare className="w-8 h-8 text-blue-600" />
                             <span className="text-sm font-medium">Messages</span>
                           </Link>
                         </Button>
@@ -815,7 +803,7 @@ export function DashboardContent() {
                         {/* Calendar */}
                         <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
                           <Link to="/engineer/calendar">
-                            <Calendar className="w-6 h-6 text-purple-600" />
+                            <Calendar className="w-8 h-8 text-purple-600" />
                             <span className="text-sm font-medium">Calendar</span>
                           </Link>
                         </Button>
@@ -823,7 +811,7 @@ export function DashboardContent() {
                         {/* Profile */}
                         <Button asChild variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
                           <Link to="/engineer/profile">
-                            <User className="w-6 h-6 text-orange-600" />
+                            <User className="w-8 h-8 text-orange-600" />
                             <span className="text-sm font-medium">Profile</span>
                           </Link>
                         </Button>
@@ -834,7 +822,7 @@ export function DashboardContent() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="h-16 flex flex-col items-center justify-center gap-2 p-4 flex-1">
-                          <Palette className="w-6 h-6 text-purple-600" />
+                          <Palette className="w-8 h-8 text-purple-600" />
                           <span className="text-sm font-medium">Theme</span>
                         </Button>
                       </DropdownMenuTrigger>
@@ -886,196 +874,6 @@ export function DashboardContent() {
                   </div>
                 </CardContent>
               </Card>
-              </EditableWrapper>
-            </div>
-          </div>
-
-          {/* Row 3: Add New Component Empty State */}
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="w-full">
-              <EditableWrapper 
-                componentId="add-new-component"
-                componentType="Add New Component"
-                data-editable-component
-              >
-                <Popover open={isAddComponentOpen} onOpenChange={setIsAddComponentOpen}>
-                  <PopoverTrigger asChild>
-                    <div className="min-h-[200px]">
-                      {dashboardComponents.length > 0 ? (
-                        <div 
-                          className="grid gap-4 h-full"
-                          style={{
-                            gridTemplateColumns: `repeat(${containerLayout.columns}, 1fr)`,
-                            gridTemplateRows: `repeat(${containerLayout.rows}, 1fr)`
-                          }}
-                        >
-                          {dashboardComponents.map((component) => (
-                            <Card 
-                              key={component.id} 
-                              className={`p-4 ${selectedComponentId === component.id ? 'ring-2 ring-primary' : ''}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedComponentId(component.id);
-                              }}
-                            >
-                              <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium">{component.title}</CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="space-y-2 text-xs text-muted-foreground">
-                                  <div>Type: {component.type}</div>
-                                  {component.chartType && <div>Chart Type: {component.chartType}</div>}
-                                  {component.dataSource && <div>Data Source: {component.dataSource}</div>}
-                                  <div>Added: {new Date(component.createdAt).toLocaleDateString()}</div>
-                                </div>
-                                <div className="mt-3 flex gap-2">
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    Configure
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline" 
-                                    className="text-xs text-destructive"
-                                    onClick={() => {
-                                      setDashboardComponents(prev => 
-                                        prev.filter(comp => comp.id !== component.id)
-                                      );
-                                    }}
-                                  >
-                                    Remove
-                                  </Button>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          ))}
-                          
-                          {/* Empty grid cells for layout visualization */}
-                          {Array.from({ length: (containerLayout.rows * containerLayout.columns) - dashboardComponents.length }).map((_, index) => (
-                            <div 
-                              key={`empty-${index}`} 
-                              className="border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center min-h-[100px]"
-                            >
-                              <span className="text-muted-foreground/50 text-sm">Empty Cell</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="relative text-center py-8 text-muted-foreground border-2 border-dashed border-sidebar-border rounded-lg cursor-pointer hover:border-primary/50 hover:text-primary transition-colors">
-                          {/* Left Border - Add Column */}
-                          <div 
-                            className="absolute left-0 top-0 w-6 h-full hover:bg-primary/20 transition-colors cursor-pointer group z-10"
-                            onMouseEnter={() => setHoveredBorder('left')}
-                            onMouseLeave={() => setHoveredBorder(null)}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleBorderAction('add-column-left');
-                            }}
-                          >
-                            {hoveredBorder === 'left' && (
-                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
-                                <Columns className="w-4 h-4" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Right Border - Add Column */}
-                          <div 
-                            className="absolute right-0 top-0 w-6 h-full hover:bg-primary/20 transition-colors cursor-pointer group z-10"
-                            onMouseEnter={() => setHoveredBorder('right')}
-                            onMouseLeave={() => setHoveredBorder(null)}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleBorderAction('add-column-right');
-                            }}
-                          >
-                            {hoveredBorder === 'right' && (
-                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
-                                <Columns className="w-4 h-4" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Top Border - Add Row */}
-                          <div 
-                            className="absolute top-0 left-0 w-full h-6 hover:bg-primary/20 transition-colors cursor-pointer group z-10"
-                            onMouseEnter={() => setHoveredBorder('top')}
-                            onMouseLeave={() => setHoveredBorder(null)}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleBorderAction('add-row-top');
-                            }}
-                          >
-                            {hoveredBorder === 'top' && (
-                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
-                                <Rows className="w-4 h-4" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Bottom Border - Add Row */}
-                          <div 
-                            className="absolute bottom-0 left-0 w-full h-6 hover:bg-primary/20 transition-colors cursor-pointer group z-10"
-                            onMouseEnter={() => setHoveredBorder('bottom')}
-                            onMouseLeave={() => setHoveredBorder(null)}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleBorderAction('add-row-bottom');
-                            }}
-                          >
-                            {hoveredBorder === 'bottom' && (
-                              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
-                                <Rows className="w-4 h-4" />
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex flex-col items-center gap-2 relative z-0">
-                            <Plus className="w-6 h-6" />
-                            <p className="text-sm font-medium">Add new component here</p>
-                            <p className="text-xs opacity-75">Click to choose from available components</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-64 p-0 bg-card border-card" align="center">
-                    <div className="p-3">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-semibold text-card-foreground">Add Component</h3>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setIsAddComponentOpen(false)}
-                          className="hover:bg-muted/50 h-6 w-6 p-0"
-                        >
-                          <X className="w-3 h-3" />
-                        </Button>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        {componentOptions.map((option) => {
-                          const IconComponent = option.icon;
-                          return (
-                            <Button
-                              key={option.id}
-                              variant="outline"
-                              className="h-auto p-2 flex flex-col items-center gap-1 hover:bg-primary/5 hover:border-primary/20 transition-all duration-200 group"
-                              onClick={() => handleAddComponent(option.id)}
-                            >
-                              <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                                <IconComponent className="w-3 h-3 text-primary" />
-                              </div>
-                              <div className="text-center">
-                                <div className="text-xs font-medium text-card-foreground leading-tight">
-                                  {option.name}
-                                </div>
-                              </div>
-                            </Button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
               </EditableWrapper>
             </div>
           </div>

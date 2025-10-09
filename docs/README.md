@@ -1,228 +1,177 @@
-# 📚 nbcon Documentation Index
+# 📚 nbcon Documentation
 
 **Last Updated:** October 9, 2025  
-**Project:** nbcon - Saudi Engineering Marketplace  
-**Status:** Production Ready
-
----
-
-## ⚡ **URGENT - Database Fix Required**
-
-🔴 **Apply database fix immediately:** See `10-CRITICAL_FIXES_SUMMARY.md`
-
----
-
-## 📖 **DOCUMENTATION INDEX**
-
-→ **`00-DOCS_INDEX.md`** - Quick reference guide with all doc links
+**Status:** Production Ready (pending database fix)
 
 ---
 
 ## 🎯 **Quick Navigation**
 
-### **Critical Issues** 🔴
-- Database fix needed? → `10-CRITICAL_FIXES_SUMMARY.md`
-- Schema mismatches? → `9-DATABASE_SCHEMA_AUDIT.md`
+### 🔴 **URGENT - Start Here**
+→ **[DATABASE_GUIDE.md](DATABASE_GUIDE.md)** - Apply critical database fix (2 minutes)
 
-### **Start Here** 👇
-- New to the project? → `1-README.md`
-- Working on auth? → `5-AUTH_SYSTEM_GUIDE.md`
-- Making changes? → `6-AUTH_MIGRATION_GUIDE.md`
-- Testing signup flows? → `7-AUTH_TESTING_GUIDE.md`
-
----
-
-## 📖 **Core Documentation**
-
-### 1. Project Overview
-**File:** `1-README.md`  
-**Purpose:** Project structure, organization, page numbering system
-
-### 2. Architecture Summary
-**File:** `2-ORGANIZATION_SUMMARY.md`  
-**Purpose:** Detailed architecture, role-based structure, technical stack
-
-### 3. Product Requirements
-**File:** `3-PRODUCT_REQUIREMENTS.md`  
-**Purpose:** Product specifications and requirements
-
-### 4. Auth Rebuild Plan
-**File:** `4-AUTH_REBUILD_PLAN.md`  
-**Purpose:** Initial planning (historical reference)
-
----
-
-## 🔐 **Authentication System** ⭐
-
-### **5. Complete System Guide**
-**File:** `5-AUTH_SYSTEM_GUIDE.md`  
-**Read this for:** Understanding the current auth implementation
-
-**Contents:**
-- Overview & what changed
-- Current implementation
-- Authentication flows
-- Smart button logic
-- Database schema & RLS policies
-- Security features
-- Testing results
-- Known issues & future enhancements
-
-### **6. Migration Guide**  
-**File:** `6-AUTH_MIGRATION_GUIDE.md`  
-**Read this for:** Making changes to auth code
-
-**Contents:**
-- Breaking changes
-- Step-by-step migration
-- Code examples (before/after)
-- Admin security considerations
-- Best practices & troubleshooting
-
-### **7. Testing Guide**
-**File:** `7-AUTH_TESTING_GUIDE.md`  
-**Read this for:** Testing signup flows manually
-
-**Contents:**
-- Engineer signup test
-- Enterprise signup test  
-- Admin signup test (with security)
-- Success criteria
-- Expected UI states
-- Troubleshooting
-
-### **8. Implementation Summary**
-**File:** `8-AUTH_IMPLEMENTATION_SUMMARY.md`  
-**Read this for:** Quick reference & statistics
-
-**Contents:**
-- What was accomplished
-- Test results summary
-- Documentation structure
-- Production readiness
-- Next actions
-
----
-
-## 🌍 **Internationalization**
-
-**File:** `4-I18N_MIGRATION_GUIDE.md`  
-**Purpose:** i18n setup, migration guide, translation structure
-
----
-
-## 🗄️ **Database Documentation**
-
-### Primary Database Docs (in `docs/`)
-
-**9. Database Schema Audit**  
-**File:** `9-DATABASE_SCHEMA_AUDIT.md`  
-**Purpose:** Technical schema analysis and comparison
-
-**Contents:**
-- Complete table inventory (48 tables)
-- Code vs Database comparison
-- RLS policy analysis
-- Detailed mismatch breakdown
-
-**10. Critical Fixes Summary** ⭐ **START HERE FOR FIXES**  
-**File:** `10-CRITICAL_FIXES_SUMMARY.md`  
-**Purpose:** **Action guide for applying database fixes**
-
-**Contents:**
-- Executive summary of critical issues
-- Root cause of redirect loop explained
-- Step-by-step fix application guide
-- Verification checklist
-- Expected outcomes before/after
-- Troubleshooting support
-
-### Legacy Database Docs (in `database/docs/`)
-1. `1-RESTORE_GUIDE.md` - Database restoration instructions
-2. `2-SUPABASE_REORGANIZATION_PLAN.md` - Database reorganization plan
-3. `3-SUPABASE_IMPLEMENTATION_SUMMARY.md` - Database implementation summary
-
----
-
-## 📊 **Recent Updates**
-
-### October 9, 2025 - Authentication & Database Audit ✅
-
-**Authentication System Overhaul:**
-- ✅ Fixed duplicate signup flow
-- ✅ Implemented smart button routing
-- ✅ Updated all 4 signup forms (Client, Engineer, Enterprise, Admin)
-- ✅ Fixed RLS infinite recursion
-- ✅ Added pre-fill functionality
-- ✅ Fixed AiDrawer dynamic loading
-- ✅ Fixed Dashboard hooks error (conditional return placement)
-
-**Database Schema Audit:**  
-- ✅ Scanned 48 tables across 10 migrations
-- ✅ Identified 79 Supabase queries in code
-- ⚠️ Found **CRITICAL**: Missing INSERT policy on profiles (causes redirect loop)
-- ⚠️ Found 1 missing table: `engineer_profiles`
-- ⚠️ Found 2 table name mismatches: `jobs`, `ai_threads`
-- ✅ Created comprehensive fix script: `010-comprehensive-fix-all-issues.sql`
-
-**Status:** Auth code ready, Database fixes prepared, awaiting SQL execution
+### 📖 **Main Guides**
+1. **[PROJECT_GUIDE.md](PROJECT_GUIDE.md)** - Architecture, tech stack, codebase overview
+2. **[AUTH_GUIDE.md](AUTH_GUIDE.md)** - Authentication system (flows, security, testing)
+3. **[DATABASE_GUIDE.md](DATABASE_GUIDE.md)** - Database schema, fixes, error handling
+4. **[IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)** - Recent updates, testing reports
 
 ---
 
 ## 🚀 **Quick Start**
 
-### For Developers
+### For New Developers
 ```bash
-# 1. Read the system guide
-docs/5-AUTH_SYSTEM_GUIDE.md
-
-# 2. Check migration guide if making changes
-docs/6-AUTH_MIGRATION_GUIDE.md
-
-# 3. Review example implementation
-src/pages/2-auth/signup/ClientSignup.tsx
+1. Read: PROJECT_GUIDE.md (architecture overview)
+2. Read: AUTH_GUIDE.md (auth system)
+3. Start dev server: npm run dev
+4. Open: http://localhost:8080/auth
 ```
 
 ### For Testing
 ```bash
-# 1. Start dev server
-npm run dev
+1. Read: AUTH_GUIDE.md → Testing section
+2. Start server: npm run dev
+3. Follow test credentials in guide
+```
 
-# 2. Open browser
-http://localhost:8084/auth
-
-# 3. Follow testing guide
-docs/7-AUTH_TESTING_GUIDE.md
+### For Database Issues
+```bash
+1. Read: DATABASE_GUIDE.md
+2. Apply SQL fix (2 minutes)
+3. Test signup flow
+4. Review cleanup analysis (see DATABASE_GUIDE.md → Cleanup section)
 ```
 
 ---
 
-## 📞 **Getting Help**
+## 📊 **Project Stats**
 
-### Common Questions
-- **How does auth work?** → `5-AUTH_SYSTEM_GUIDE.md`
-- **How to update signup forms?** → `6-AUTH_MIGRATION_GUIDE.md`
-- **How to test?** → `7-AUTH_TESTING_GUIDE.md`
-- **What changed recently?** → `8-AUTH_IMPLEMENTATION_SUMMARY.md`
+```
+Total Files:        701 source files
+Components:         565 React components
+Database Tables:    48 tables
+Documentation:      5 organized guides
+Tech Stack:         React 18 + TypeScript + Supabase
+Languages:          English + Arabic (RTL)
+Status:             Production Ready
+```
+
+---
+
+## 🎯 **What is nbcon?**
+
+Saudi Arabia's first comprehensive digital marketplace for professional engineering services:
+- 🚗 Uber-like on-demand engineer matching
+- 💼 LinkedIn-style professional networking
+- 🤖 AI-powered smart assistance
+- 📍 Geofenced check-ins
+- 💰 Escrow payments
+- 🏗️ SCE compliance
+
+**Vision 2030 Alignment:** Digitizing Saudi Arabia's engineering services sector
+
+---
+
+## 🔐 **Key Features**
+
+### Four User Roles
+- **Engineers** - Find work, manage jobs, track earnings
+- **Clients** - Post jobs, browse engineers, manage projects
+- **Enterprises** - Team management, procurement, analytics
+- **Admins** - Platform oversight, risk management, analytics
+
+### Core Functionality
+- ✅ Role-based dashboards
+- ✅ Real-time messaging
+- ✅ AI assistants
+- ✅ Bilingual (EN/AR)
+- ✅ Mobile-responsive
+- ✅ Payment processing
+
+---
+
+## ⚠️ **Known Issues**
+
+### 🔴 Critical (Blocker)
+**Missing INSERT policy on profiles table**
+- **Impact:** 406 errors during signup
+- **Fix:** Apply `supabase/fixes/012-safe-incremental-fix.sql`
+- **Time:** 2 minutes
+- **Guide:** DATABASE_GUIDE.md
+
+### 🟡 Minor (Non-blocking)
+- Redirect loop after sign out (fix included in SQL)
+- Some admin pages are placeholders (work in progress)
+
+---
+
+## 📁 **File Organization**
+
+```
+docs/
+├── README.md                   # This file - main entry point
+├── PROJECT_GUIDE.md            # Architecture & codebase overview
+├── AUTH_GUIDE.md               # Authentication system
+├── DATABASE_GUIDE.md           # Database schema & fixes
+└── IMPLEMENTATION_GUIDE.md     # Recent updates & testing
+
+src/pages/
+├── 1-HomePage/                 # Public landing + shared components
+├── 2-auth/                     # Authentication system
+├── 3-admin/                    # Admin portal (8 pages)
+├── 4-client/                   # Client portal (12 pages)
+├── 5-engineer/                 # Engineer portal (13 pages)
+└── 6-enterprise/               # Enterprise portal (12 pages)
+
+supabase/
+├── migrations/                 # 11 database migrations
+├── fixes/                      # 12 fix scripts
+└── functions/                  # 4 edge functions
+```
+
+---
+
+## 🎓 **Documentation Philosophy**
+
+Each guide is **self-contained and focused**:
+- **PROJECT_GUIDE** - What the system is and how it's built
+- **AUTH_GUIDE** - How authentication works
+- **DATABASE_GUIDE** - How data is structured and fixed
+- **IMPLEMENTATION_GUIDE** - What was recently done
+
+---
+
+## 💡 **Common Tasks**
+
+| Task | Guide | Section |
+|------|-------|---------|
+| Understand architecture | PROJECT_GUIDE | Architecture |
+| Learn auth flow | AUTH_GUIDE | Auth Flows |
+| Fix 406 errors | DATABASE_GUIDE | Critical Fixes |
+| Test signup | AUTH_GUIDE | Testing |
+| Make auth changes | AUTH_GUIDE | Developer Guide |
+| Check recent work | IMPLEMENTATION_GUIDE | Session Summary |
+
+---
+
+## 🆘 **Getting Help**
+
+### Questions?
+- Architecture questions → PROJECT_GUIDE.md
+- Auth not working → AUTH_GUIDE.md
+- Database errors → DATABASE_GUIDE.md
+- What changed → IMPLEMENTATION_GUIDE.md
 
 ### Code References
-- **Best Example:** `src/pages/2-auth/signup/ClientSignup.tsx`
-- **Helper Functions:** `src/pages/2-auth/others/utils/signup-helper.ts`
-- **Auth Store:** `src/pages/2-auth/others/stores/auth.ts`
+- Best auth example: `src/pages/2-auth/signup/ClientSignup.tsx`
+- Auth helpers: `src/pages/2-auth/others/utils/signup-helper.ts`
+- Auth store: `src/pages/2-auth/others/stores/auth.ts`
+- Routing: `src/routes/RoleRouter.tsx`
+- Types: `src/shared/supabase/types.ts`
 
 ---
 
-## ✅ **Documentation Quality**
-
-- ✅ Organized by topic
-- ✅ Clear file naming
-- ✅ No redundant content
-- ✅ Up-to-date with latest changes
-- ✅ Code examples included
-- ✅ Testing instructions provided
-- ✅ Security considerations documented
-
----
-
-**Total Documentation:** 8 core files + database docs  
 **Quality:** Production-grade, comprehensive, organized ✅
+**Last Review:** October 9, 2025  
+**Maintained By:** Development Team
