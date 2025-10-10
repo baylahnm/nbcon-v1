@@ -5,7 +5,7 @@ import {
   SERVICE_MODES,
   ServiceMode,
   ServiceModeConfig,
-} from '@/features/ai/services/config';
+} from '../services/config';
 
 type CoreMode = 'chat' | 'research' | 'image' | 'agent' | 'connectors';
 export type AiMode = CoreMode | ServiceMode;

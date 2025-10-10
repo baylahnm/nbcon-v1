@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/supabase/client';
-import { SERVICE_MODE_CONFIG, ServiceMode, ServiceModeConfig } from '@/features/ai/services/config';
+import { SERVICE_MODE_CONFIG, ServiceMode, ServiceModeConfig } from '../services/config';
 import type { AiMode } from '../store/useAiStore';
 import { useAuthStore, getStoredUser } from "../../../stores/auth";
 import { Message, Attachment, Citation, GeneratedImage } from '../store/useAiStore';
