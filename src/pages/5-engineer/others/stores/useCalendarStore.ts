@@ -523,7 +523,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => {
 
   return {
     currentDate: new Date(),
-    view: 'week',
+    view: 'month',
     userRole: 'engineer',
     isHijri: false,
     filters: initialFilters,

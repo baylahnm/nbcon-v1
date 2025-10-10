@@ -22,7 +22,7 @@ import {
   Globe,
   Plus
 } from 'lucide-react';
-import CalendarContent from '../1-HomePage/others/components/calendar/CreateEventDialog';
+import CalendarContent from '../1-HomePage/others/components/calendar/CalendarContent';
 import CalendarMini from '../1-HomePage/others/components/calendar/CalendarMini';
 import CalendarFilters from '../1-HomePage/others/components/calendar/CalendarFilters';
 import CreateEventDialog from '../1-HomePage/others/components/calendar/CreateEventDialog';
@@ -260,12 +260,14 @@ export default function CalendarPage() {
         }}
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b">
-          <div>
-            <h1 className="text-xl font-bold flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
               <Calendar className="h-5 w-5 text-primary" />
-              Calendar
-            </h1>
-            <p className="text-muted-foreground">Manage your engineering projects and milestones</p>
+            </div>
+            <div>
+              <h1 className="text-base font-bold tracking-tight">Calendar</h1>
+              <p className="text-muted-foreground text-xs mt-0.5">Manage your engineering projects and milestones</p>
+            </div>
           </div>
         </div>
         
@@ -283,17 +285,17 @@ export default function CalendarPage() {
 
           <div ref={toolbarRef} className="flex items-center overflow-x-auto snap-x snap-mandatory flex-nowrap gap-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-1">
           <div className="flex items-center gap-4 shrink-0 snap-start">
-            <div className="text-lg font-medium">
+            <div className="text-base font-semibold">
               {formatDate(currentDate)}
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigateDate('prev')} aria-label={`Previous ${view}`}>
+              <Button variant="outline" size="sm" onClick={() => navigateDate('prev')} aria-label={`Previous ${view}`} className="h-8 text-xs">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" onClick={goToToday} aria-label="Go to today">
+              <Button variant="outline" size="sm" onClick={goToToday} aria-label="Go to today" className="h-8 text-xs">
                 Today
               </Button>
-              <Button variant="outline" size="sm" onClick={() => navigateDate('next')} aria-label={`Next ${view}`}>
+              <Button variant="outline" size="sm" onClick={() => navigateDate('next')} aria-label={`Next ${view}`} className="h-8 text-xs">
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -301,7 +303,7 @@ export default function CalendarPage() {
           <div className="flex items-center gap-2 shrink-0 snap-start">
             <div className="flex items-center gap-2">
               <Switch id="hijri-switch" checked={isHijri} onCheckedChange={setIsHijri} />
-              <Label htmlFor="hijri-switch" className="text-sm">Hijri</Label>
+              <Label htmlFor="hijri-switch" className="text-xs">Hijri</Label>
             </div>
             <Select value={userRole} onValueChange={(value) => setUserRole(value as UserRole)}>
               <SelectTrigger className="w-[120px]">
@@ -325,7 +327,7 @@ export default function CalendarPage() {
                 <SelectItem value="agenda">Agenda</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm" aria-label="Export calendar" onClick={exportICS}>
+            <Button variant="outline" size="sm" aria-label="Export calendar" onClick={exportICS} className="h-8 text-xs">
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
@@ -334,13 +336,14 @@ export default function CalendarPage() {
               size="sm"
               aria-label="Sync calendar"
               onClick={() => toast({ title: 'Connect Calendar', description: 'Calendar sync requires connecting Google or Microsoft. Coming soon.' })}
+              className="h-8 text-xs"
             >
               <Globe className="h-4 w-4 mr-2" />
               Sync
             </Button>
             <Button 
               size="sm" 
-              className="bg-gradient-primary"
+              className="bg-gradient-primary h-8 text-xs"
               onClick={() => setShowCreateDialog(true)}
               aria-label="Create event"
             >
@@ -432,7 +435,7 @@ export default function CalendarPage() {
               </SelectContent>
             </Select>
             
-            <Button variant="outline" size="sm" onClick={() => setShowFilters(true)}>
+            <Button variant="outline" size="sm" onClick={() => setShowFilters(true)} className="h-8 text-xs">
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </Button>

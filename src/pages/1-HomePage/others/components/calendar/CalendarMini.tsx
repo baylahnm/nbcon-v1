@@ -241,62 +241,32 @@ export default function CalendarMini({
 
       {/* Quick Stats Section */}
       <div 
-        className="pt-4 mt-4 space-y-3 border-t"
+        className="pt-4 mt-4 space-y-2 border-t"
         style={{
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <div className="flex items-center justify-between">
-          <span 
-            className="text-sm"
-            style={{
-              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
-            }}
-          >
+        <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/30 transition-colors">
+          <span className="text-xs text-muted-foreground">
             Active Jobs:
           </span>
-          <span 
-            className="text-sm font-medium"
-            style={{
-              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
-            }}
-          >
+          <span className="text-base font-bold text-foreground">
             {getActiveJobsCount()}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span 
-            className="text-sm"
-            style={{
-              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
-            }}
-          >
+        <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/30 transition-colors">
+          <span className="text-xs text-muted-foreground">
             Pending Invoices:
           </span>
-          <span 
-            className="text-sm font-medium"
-            style={{
-              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
-            }}
-          >
+          <span className="text-base font-bold text-foreground">
             {getPendingInvoicesCount()}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span 
-            className="text-sm"
-            style={{
-              color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})`
-            }}
-          >
+        <div className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/30 transition-colors">
+          <span className="text-xs text-muted-foreground">
             This Month:
           </span>
-          <span 
-            className="text-sm font-medium"
-            style={{
-              color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
-            }}
-          >
+          <span className="text-base font-bold text-foreground">
             {getThisMonthCount()}
           </span>
         </div>
@@ -306,7 +276,7 @@ export default function CalendarMini({
       {allDayEvents.length > 0 && (
         <div className="mt-4">
           <h3 
-            className="text-sm font-medium mb-3"
+            className="text-base font-bold mb-3 tracking-tight"
             style={{
               color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
             }}
@@ -357,7 +327,7 @@ export default function CalendarMini({
         </Avatar>
         <div>
           <div 
-            className="font-medium text-sm"
+            className="font-semibold text-xs"
             style={{
               color: `hsl(${themeTokens['--foreground'] || '0 0% 9%'})`
             }}

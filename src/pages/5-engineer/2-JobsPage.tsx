@@ -231,43 +231,50 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Briefcase className="h-6 w-6 text-primary" />
-            Engineering Jobs
-          </h1>
-          <p className="text-muted-foreground">Find your next engineering opportunity</p>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+      <div className="container mx-auto px-6 py-8 space-y-8">
+        {/* Header - Enhanced */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-6 border-b border-border/40">
+          <div className="space-y-1.5">
+            <h1 className="text-4xl font-bold flex items-center gap-3">
+              <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
+                <Briefcase className="h-7 w-7 text-primary" />
+              </div>
+              <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Engineering Jobs
+              </span>
+            </h1>
+            <p className="text-muted-foreground text-base ml-14">Find your next engineering opportunity in Saudi Arabia</p>
+          </div>
+          <div className="flex flex-wrap gap-2.5">
+            <Button 
+              variant={viewMode === 'list' ? 'default' : 'outline'} 
+              size="default"
+              onClick={() => setViewMode('list')}
+              className="shadow-sm hover:shadow-md transition-all"
+            >
+              <List className="h-4 w-4 mr-2" />
+              List
+            </Button>
+            <Button 
+              variant={viewMode === 'map' ? 'default' : 'outline'} 
+              size="default"
+              onClick={() => setViewMode('map')}
+              className="shadow-sm hover:shadow-md transition-all"
+            >
+              <MapIcon className="h-4 w-4 mr-2" />
+              Map
+            </Button>
+            <Button variant="outline" size="default" className="shadow-sm hover:shadow-md transition-all">
+              <Filter className="h-4 w-4 mr-2" />
+              Advanced Filters
+            </Button>
+            <Button size="default" className="bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all">
+              <Briefcase className="h-4 w-4 mr-2" />
+              Job Alerts
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            variant={viewMode === 'list' ? 'default' : 'outline'} 
-            size="sm"
-            onClick={() => setViewMode('list')}
-          >
-            <List className="h-4 w-4 mr-2" />
-            List
-          </Button>
-          <Button 
-            variant={viewMode === 'map' ? 'default' : 'outline'} 
-            size="sm"
-            onClick={() => setViewMode('map')}
-          >
-            <MapIcon className="h-4 w-4 mr-2" />
-            Map
-          </Button>
-          <Button variant="outline" size="sm">
-            <Filter className="h-4 w-4 mr-2" />
-            Advanced Filters
-          </Button>
-          <Button size="sm">
-            <Briefcase className="h-4 w-4 mr-2" />
-            Job Alerts
-          </Button>
-        </div>
-      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -298,12 +305,14 @@ export default function JobsPage() {
               e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.08)';
             }}
           >
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                <div>
-                  <p className="text-sm font-medium">{stat.count}</p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+            <CardContent className="p-5">
+              <div className="flex items-center gap-4">
+                <div className="bg-primary/10 p-3 rounded-xl ring-1 ring-primary/20">
+                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-3xl font-bold tracking-tight">{stat.count}</p>
+                  <p className="text-sm font-medium text-muted-foreground mt-0.5">{stat.label}</p>
                 </div>
               </div>
             </CardContent>
@@ -393,26 +402,32 @@ export default function JobsPage() {
                       boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
                     }}
                   >
-                    <CardContent className="p-6">
-                      {/* Job Details - Full Width */}
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <Briefcase className="h-5 w-5 text-muted-foreground" />
-                            <h3 className="font-semibold text-lg">{job.title}</h3>
-                            <Badge variant="outline">{job.type.replace('-', ' ')}</Badge>
+                    <CardContent className="p-7">
+                      {/* Job Details - Enhanced Layout */}
+                      <div className="space-y-4">
+                        {/* Title Row */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-2.5">
+                              <Briefcase className="h-5 w-5 text-primary" />
+                              <h3 className="font-bold text-xl tracking-tight">{job.title}</h3>
+                              <Badge variant="outline" className="ml-1 font-medium">{job.type.replace('-', ' ')}</Badge>
+                            </div>
+                            <button
+                              className="text-sm font-medium text-primary hover:underline flex items-center gap-1.5 transition-colors"
+                              onClick={() => {
+                                setSelectedCompany(job.company);
+                                setShowCompanyProfile(true);
+                              }}
+                            >
+                              <Building className="h-4 w-4" />
+                              {job.company}
+                            </button>
                           </div>
-                          <button
-                            className="text-sm text-primary hover:underline mb-2"
-                            onClick={() => {
-                              setSelectedCompany(job.company);
-                              setShowCompanyProfile(true);
-                            }}
-                          >
-                            <Building className="h-3 w-3 inline mr-1" />
-                            {job.company}
-                          </button>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                        </div>
+
+                        {/* Metadata Row - Better Spacing */}
+                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground py-3 border-y border-border/30">
                             <div className="flex items-center gap-1">
                               <MapPin className="h-3 w-3" />
                               {job.location}
@@ -440,90 +455,128 @@ export default function JobsPage() {
                               </div>
                             )}
                           </div>
-                          <p className="text-sm mb-3 line-clamp-2">{job.description}</p>
-                          <div className="flex flex-wrap gap-1 mb-3">
-                            {job.skills.slice(0, 4).map((skill) => (
-                              <Badge key={skill} variant="secondary" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                            {job.skills.length > 4 && (
-                              <Badge variant="secondary" className="text-xs">
-                                +{job.skills.length - 4} more
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-                            <Calendar className="h-3 w-3" />
+
+                        {/* Description - Better Typography */}
+                        <p className="text-sm leading-relaxed text-foreground/80 line-clamp-2">
+                          {job.description}
+                        </p>
+
+                        {/* Skills - Enhanced */}
+                        <div className="flex flex-wrap gap-2">
+                          {job.skills.slice(0, 4).map((skill) => (
+                            <Badge key={skill} variant="secondary" className="text-xs font-medium px-3 py-1.5 rounded-md">
+                              {skill}
+                            </Badge>
+                          ))}
+                          {job.skills.length > 4 && (
+                            <Badge variant="secondary" className="text-xs font-medium px-3 py-1.5 rounded-md bg-primary/10 text-primary border-primary/20">
+                              +{job.skills.length - 4} more
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Dates - Enhanced */}
+                        <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5" />
                             <span>Posted {job.postedDate}</span>
-                            <span>•</span>
+                          </div>
+                          <span className="text-border">•</span>
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="h-3.5 w-3.5 text-amber-500" />
                             <span>Deadline {job.deadline}</span>
                           </div>
+                        </div>
 
-                          {/* Enhanced Actions */}
-                          <div className="flex gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => setSelectedJob(job)}
-                            >
-                              View Details
-                            </Button>
-                            <Button 
-                              size="sm"
-                              onClick={() => {
-                                setSelectedJob(job);
-                                setShowQuickApply(true);
-                              }}
-                              className="gap-2"
-                            >
-                              <Zap className="h-4 w-4" />
-                              Quick Apply
-                            </Button>
-                            <Button size="sm" variant="outline">
-                              <Bookmark className={`h-3 w-3 ${job.isBookmarked ? 'fill-current' : ''}`} />
-                            </Button>
-                          </div>
+                        {/* Actions - Enhanced */}
+                        <div className="flex gap-3 pt-2">
+                          <Button 
+                            size="default"
+                            variant="outline"
+                            onClick={() => setSelectedJob(job)}
+                            className="flex-1 sm:flex-none shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Details
+                          </Button>
+                          <Button 
+                            size="default"
+                            onClick={() => {
+                              setSelectedJob(job);
+                              setShowQuickApply(true);
+                            }}
+                            className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                          >
+                            <Zap className="h-4 w-4 mr-2" />
+                            Quick Apply
+                          </Button>
+                          <Button
+                            size="default"
+                            variant="ghost"
+                            onClick={() => {/* toggle bookmark */}}
+                            className="hover:bg-primary/10 transition-colors"
+                          >
+                            <Bookmark className={`h-5 w-5 ${job.isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
-                  {/* AI Tools - Horizontal Scrollable with Arrows */}
-                  <div className="relative">
-                    {/* Left Arrow */}
-                    {showLeftArrow && (
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur-sm shadow-lg border-2"
-                        onClick={() => scrollToCard('left')}
-                      >
-                        <ChevronLeft className="h-5 w-5" />
-                      </Button>
-                    )}
+                  {/* AI Tools Section - Enhanced Layout */}
+                  <div className="mt-6 p-6 rounded-xl bg-gradient-to-br from-muted/30 via-muted/20 to-background border border-border/40 shadow-sm">
+                    {/* Section Header */}
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20">
+                          <Zap className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg">AI-Powered Job Insights</h3>
+                          <p className="text-xs text-muted-foreground">Swipe to explore intelligent analysis</p>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="font-medium">
+                        4 Tools Available
+                      </Badge>
+                    </div>
 
-                    {/* Right Arrow */}
-                    {showRightArrow && (
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur-sm shadow-lg border-2"
-                        onClick={() => scrollToCard('right')}
-                      >
-                        <ChevronRight className="h-5 w-5" />
-                      </Button>
-                    )}
+                    {/* Scrollable Container with Arrows */}
+                    <div className="relative">
+                      {/* Left Arrow - Enhanced */}
+                      {showLeftArrow && (
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-background/98 backdrop-blur-md shadow-xl border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                          onClick={() => scrollToCard('left')}
+                        >
+                          <ChevronLeft className="h-6 w-6 text-primary" />
+                        </Button>
+                      )}
 
+                      {/* Right Arrow - Enhanced */}
+                      {showRightArrow && (
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-background/98 backdrop-blur-md shadow-xl border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                          onClick={() => scrollToCard('right')}
+                        >
+                          <ChevronRight className="h-6 w-6 text-primary" />
+                        </Button>
+                      )}
+
+                      {/* Cards Container */}
                       <XScroll>
-                      <div 
-                        ref={scrollContainerRef}
-                        className="flex gap-4 px-1 py-4 ai-tools-scroll"
-                        style={{
-                          scrollSnapType: 'x mandatory',
-                          scrollBehavior: 'smooth',
-                        }}
-                      >
+                        <div 
+                          ref={scrollContainerRef}
+                          className="flex gap-5 px-2 py-6 ai-tools-scroll"
+                          style={{
+                            scrollSnapType: 'x mandatory',
+                            scrollBehavior: 'smooth',
+                          }}
+                        >
                         <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
                           <AIJobMatchScore 
                             jobId={job.id}
@@ -554,7 +607,8 @@ export default function JobsPage() {
                           />
                         </div>
                       </div>
-                    </XScroll>
+                      </XScroll>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -702,6 +756,7 @@ export default function JobsPage() {
         </TabsContent>
           </Tabs>
       </div>
+      </div>
 
       {/* Dialogs */}
       {selectedJob && (
@@ -717,7 +772,7 @@ export default function JobsPage() {
           <CompanyProfilePreview
             open={showCompanyProfile}
             onOpenChange={setShowCompanyProfile}
-            companyName={selectedCompany || selectedJob.company}
+            companyName={selectedCompany || selectedJob?.company || ''}
           />
         </>
       )}
