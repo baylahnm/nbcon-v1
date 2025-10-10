@@ -342,21 +342,23 @@ export function UploadDeliverableContent() {
       {/* Header */}
       <div className="border-b pb-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
               <Upload className="h-5 w-5 text-primary" />
-              Upload Deliverable
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Submit milestone deliverables for Saudi engineering projects
-            </p>
+            </div>
+            <div>
+              <h1 className="text-base font-bold tracking-tight">Upload Deliverable</h1>
+              <p className="text-muted-foreground text-xs mt-0.5">
+                Submit milestone deliverables for Saudi engineering projects
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="flex items-center gap-1">
+            <Badge variant="secondary" className="flex items-center gap-1 text-xs">
               <Shield className="w-3 h-3" />
               SCE Compliant
             </Badge>
-            <Badge variant="secondary" className="flex items-center gap-1">
+            <Badge variant="secondary" className="flex items-center gap-1 text-xs">
               <FileCheck className="w-3 h-3" />
               Quality Assured
             </Badge>
@@ -367,7 +369,7 @@ export function UploadDeliverableContent() {
       {/* Project Selection */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base">
             <Building className="w-5 h-5" />
             Select Project & Milestone
           </CardTitle>
@@ -501,10 +503,10 @@ export function UploadDeliverableContent() {
             {/* File Upload Area */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-base">
                   <CloudUpload className="w-5 h-5" />
                   Upload Files
-                  <Badge variant="secondary">{uploadedFiles.length} Files</Badge>
+                  <Badge variant="secondary" className="text-xs">{uploadedFiles.length} Files</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -527,6 +529,7 @@ export function UploadDeliverableContent() {
                   <Button 
                     variant="outline" 
                     onClick={() => fileInputRef.current?.click()}
+                    className="text-xs h-8"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Select Files
@@ -612,12 +615,12 @@ export function UploadDeliverableContent() {
             {/* Quality Checklist */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-base">
                   <Shield className="w-5 h-5" />
                   Quality Assurance Checklist
                   <Badge 
                     variant={allQualityItemsChecked ? "default" : "secondary"}
-                    className={allQualityItemsChecked ? "bg-green-600" : ""}
+                    className={`text-xs ${allQualityItemsChecked ? "bg-green-600" : ""}`}
                   >
                     {Object.values(qualityChecklist).filter(Boolean).length}/4 Complete
                   </Badge>
@@ -673,7 +676,7 @@ export function UploadDeliverableContent() {
             {/* Notes Section */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-base">
                   <MessageSquare className="w-5 h-5" />
                   Deliverable Notes
                 </CardTitle>
@@ -693,7 +696,7 @@ export function UploadDeliverableContent() {
             {/* Submission Summary */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-base">
                   <FileCheck className="w-5 h-5" />
                   Submission Summary
                 </CardTitle>
@@ -793,8 +796,7 @@ export function UploadDeliverableContent() {
                     </Alert>
                     
                     <Button 
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                      size="lg"
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-10"
                       disabled={isSubmitting}
                       onClick={handleSubmitDeliverable}
                     >
@@ -822,7 +824,7 @@ export function UploadDeliverableContent() {
       {!selectedMilestone && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <Clock className="w-5 h-5" />
               Recent Submissions
             </CardTitle>
@@ -858,8 +860,8 @@ export function UploadDeliverableContent() {
                     <div className="text-sm text-muted-foreground">{record.project} • {record.date}</div>
                   </div>
                   <div className="text-right flex items-center gap-3">
-                    <div className="text-sm font-medium">{record.value}</div>
-                    <Badge className={getStatusColor(record.status)}>
+                    <div className="text-base font-bold">{record.value}</div>
+                    <Badge className={`${getStatusColor(record.status)} text-xs`}>
                       {record.status}
                     </Badge>
                   </div>
