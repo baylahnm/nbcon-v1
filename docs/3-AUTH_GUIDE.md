@@ -359,7 +359,7 @@ const result = await createProfileOnly({ email, role: 'client' }, userId);
 #### 406 RLS Policy Violation
 
 **Cause:** Missing INSERT policy on profiles table  
-**Fix:** Apply database fix (see [DATABASE_GUIDE.md](DATABASE_GUIDE.md))
+**Fix:** Apply database fix (see [4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md))
 
 **Symptoms:**
 - Console shows `PGRST116` error
@@ -567,7 +567,7 @@ Centralized tracking of all errors:
 
 ---
 
-**For database issues:** See [DATABASE_GUIDE.md](DATABASE_GUIDE.md)  
-**For recent changes:** See [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)  
-**For architecture:** See [PROJECT_GUIDE.md](PROJECT_GUIDE.md)
+**For database issues:** See [4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md)  
+**For recent changes:** See [5-IMPLEMENTATION_GUIDE.md](5-IMPLEMENTATION_GUIDE.md)  
+**For architecture:** See [2-PROJECT_GUIDE.md](2-PROJECT_GUIDE.md)
 

@@ -130,10 +130,11 @@ export default function RoleRouter() {
           <Route path="network" element={<MyNetwork />} />
           <Route path="network/:userId" element={<MyNetwork />} />
           <Route path="learning" element={<LearningPage />} />
-          <Route path="learning/:courseId" element={<LearningPage />} />
+<Route path="learning/:courseId" element={<LearningPage />} />
           <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
           <Route path="payments" element={<PaymentsContent />} />
           <Route path="payments/:paymentId" element={<PaymentsContent />} />
+          <Route path="finance" element={<PaymentsContent />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<EngineerSettingsPage />} />
         </Route>

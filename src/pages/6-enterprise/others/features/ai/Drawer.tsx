@@ -15,11 +15,11 @@ import {
   Cog,
   Link as LinkIcon
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '../../../../1-HomePage/others/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../../1-HomePage/others/components/ui/card';
+import { Badge } from '../../../../1-HomePage/others/components/ui/badge';
+import { ScrollArea } from '../../../../1-HomePage/others/components/ui/scroll-area';
+import { Separator } from '../../../../1-HomePage/others/components/ui/separator';
 import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
 import { MessageBubble } from './components/MessageBubble';

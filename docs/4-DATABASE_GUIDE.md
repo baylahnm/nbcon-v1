@@ -519,9 +519,9 @@ $$;
 
 ## 🔗 Related Documentation
 
-- **Authentication Issues** → [AUTH_GUIDE.md](AUTH_GUIDE.md)
-- **Architecture** → [PROJECT_GUIDE.md](PROJECT_GUIDE.md)
-- **Recent Changes** → [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)
+- **Authentication Issues** → [3-AUTH_GUIDE.md](3-AUTH_GUIDE.md)
+- **Architecture** → [2-PROJECT_GUIDE.md](2-PROJECT_GUIDE.md)
+- **Recent Changes** → [5-IMPLEMENTATION_GUIDE.md](5-IMPLEMENTATION_GUIDE.md)
 
 ---
 

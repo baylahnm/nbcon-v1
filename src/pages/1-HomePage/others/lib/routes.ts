@@ -12,6 +12,7 @@ export const R = {
     network: "/engineer/network",
     learning: "/engineer/learning",
     payments: "/engineer/payments",
+    finance: "/engineer/finance",
     help: "/engineer/help",
     settings: "/engineer/settings",
   },

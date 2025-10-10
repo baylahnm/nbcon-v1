@@ -163,6 +163,7 @@ export default function NewRoleRouter() {
             <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
             <Route path="payments" element={<PaymentsContent />} />
             <Route path="payments/:paymentId" element={<PaymentsContent />} />
+            <Route path="finance" element={<PaymentsContent />} />
             <Route path="help" element={<HelpPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>

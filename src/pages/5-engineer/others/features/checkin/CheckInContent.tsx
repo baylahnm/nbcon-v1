@@ -25,7 +25,9 @@ import {
   Thermometer,
   Wind,
   Droplets,
-  FileText
+  FileText,
+  TrendingUp,
+  BarChart3
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../1-HomePage/others/components/ui/card";
 import { Button } from "../../../../1-HomePage/others/components/ui/button";
@@ -37,6 +39,18 @@ import { Textarea } from "../../../../1-HomePage/others/components/ui/textarea";
 import { Label } from "../../../../1-HomePage/others/components/ui/label";
 import { Separator } from "../../../../1-HomePage/others/components/ui/separator";
 import { Alert, AlertDescription } from "../../../../1-HomePage/others/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../1-HomePage/others/components/ui/tabs";
+
+// Import new enhancement components
+import { WeeklySummary } from "./components/WeeklySummary";
+import { ExportReportDialog } from "./components/ExportReportDialog";
+import { WeatherWidget } from "./components/WeatherWidget";
+import { TravelTimeTracker } from "./components/TravelTimeTracker";
+import { GeofenceMap } from "./components/GeofenceMap";
+import { OvertimeCalculator } from "./components/OvertimeCalculator";
+import { EnhancedPhotoGallery } from "./components/EnhancedPhotoGallery";
+import { MissedCheckInAlerts } from "./components/MissedCheckInAlerts";
+import { CheckInAnalytics } from "./components/CheckInAnalytics";
 
 interface Project {
   id: string;
@@ -148,6 +162,8 @@ export function CheckInContent() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState("checkin");
 
   // Update time every second
   useEffect(() => {
@@ -281,12 +297,46 @@ export function CheckInContent() {
               Geofenced check-in system for Saudi engineering projects
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-lg font-semibold">{currentTime}</div>
-            <div className="text-sm text-muted-foreground">{getCurrentDate()}</div>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowExportDialog(true)}
+              className="gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Export Report
+            </Button>
+            <div className="text-right">
+              <div className="text-lg font-semibold">{currentTime}</div>
+              <div className="text-sm text-muted-foreground">{getCurrentDate()}</div>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Tabs for organizing different views */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="checkin" className="gap-2">
+            <MapPin className="w-4 h-4" />
+            Check In
+          </TabsTrigger>
+          <TabsTrigger value="summary" className="gap-2">
+            <TrendingUp className="w-4 h-4" />
+            Summary
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="overtime" className="gap-2">
+            <Clock className="w-4 h-4" />
+            Overtime
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Check In Tab */}
+        <TabsContent value="checkin" className="space-y-6 mt-6">
 
       {/* Current Status Dashboard */}
       <Card>
@@ -516,43 +566,19 @@ export function CheckInContent() {
         </Card>
       )}
 
-      {/* Photo Documentation */}
+      {/* Enhanced Photo Gallery */}
       {selectedProject && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Camera className="w-5 h-5" />
-              Photo Documentation
-              <Badge variant="secondary">{capturedPhotos.length} Photos</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Array.from({ length: 8 }, (_, index) => (
-                <div key={index} className="aspect-square bg-muted rounded-lg flex items-center justify-center">
-                  {capturedPhotos[index] ? (
-                    <div className="w-full h-full bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Camera className="w-8 h-8 text-primary" />
-                    </div>
-                  ) : (
-                    <Camera className="w-8 h-8 text-muted-foreground" />
-                  )}
-                </div>
-              ))}
-            </div>
-            
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={handlePhotoCapture} className="flex-1">
-                <Camera className="w-4 h-4 mr-2" />
-                Capture Site Photo
-              </Button>
-              <Button variant="outline">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Photos
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <EnhancedPhotoGallery
+          photos={capturedPhotos.map((photo, index) => ({
+            id: photo,
+            url: photo,
+            timestamp: new Date().toLocaleString("en-SA", { timeZone: "Asia/Riyadh" }),
+            caption: `Site photo ${index + 1}`,
+            category: "during"
+          }))}
+          onAddPhoto={(photo) => setCapturedPhotos(prev => [...prev, photo.id])}
+          onDeletePhoto={(photoId) => setCapturedPhotos(prev => prev.filter(p => p !== photoId))}
+        />
       )}
 
       {/* Check-in Notes */}
@@ -642,6 +668,30 @@ export function CheckInContent() {
         </CardContent>
       </Card>
 
+      {/* Weather Widget */}
+      <WeatherWidget 
+        projectLocation={selectedProject?.location}
+        coordinates={selectedProject?.coordinates}
+      />
+
+      {/* Geofence Map */}
+      <GeofenceMap
+        projectName={selectedProject?.name}
+        projectCoordinates={selectedProject?.coordinates}
+        geofenceRadius={selectedProject?.radius}
+        currentLocation={currentLocation}
+        isWithinGeofence={isWithinGeofence}
+      />
+
+      {/* Travel Time Tracker */}
+      <TravelTimeTracker
+        projectLocation={selectedProject?.location}
+        projectCoordinates={selectedProject?.coordinates}
+      />
+
+      {/* Missed Check-ins Alert */}
+      <MissedCheckInAlerts />
+
       {/* Recent Check-ins */}
       <Card>
         <CardHeader>
@@ -671,6 +721,34 @@ export function CheckInContent() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        {/* Summary Tab */}
+        <TabsContent value="summary" className="space-y-6 mt-6">
+          <WeeklySummary />
+        </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics" className="space-y-6 mt-6">
+          <CheckInAnalytics showStreaks={true} />
+        </TabsContent>
+
+        {/* Overtime Tab */}
+        <TabsContent value="overtime" className="space-y-6 mt-6">
+          <OvertimeCalculator
+            checkInTime={checkInTime || undefined}
+            checkOutTime={isCheckedIn ? undefined : "15:30"}
+            shiftStart={selectedProject?.shiftStart}
+            shiftEnd={selectedProject?.shiftEnd}
+          />
+        </TabsContent>
+      </Tabs>
+
+      {/* Export Report Dialog */}
+      <ExportReportDialog 
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+      />
     </div>
   );
 }

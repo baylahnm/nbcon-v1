@@ -8,13 +8,16 @@
 ## 🎯 **Quick Navigation**
 
 ### 🔴 **URGENT - Start Here**
-→ **[DATABASE_GUIDE.md](DATABASE_GUIDE.md)** - Apply critical database fix (2 minutes)
+→ **[4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md)** - Apply critical database fix (2 minutes)
 
 ### 📖 **Main Guides**
-1. **[PROJECT_GUIDE.md](PROJECT_GUIDE.md)** - Architecture, tech stack, codebase overview
-2. **[AUTH_GUIDE.md](AUTH_GUIDE.md)** - Authentication system (flows, security, testing)
-3. **[DATABASE_GUIDE.md](DATABASE_GUIDE.md)** - Database schema, fixes, error handling
-4. **[IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)** - Recent updates, testing reports
+1. **[2-PROJECT_GUIDE.md](2-PROJECT_GUIDE.md)** - Architecture, tech stack, codebase overview
+2. **[3-AUTH_GUIDE.md](3-AUTH_GUIDE.md)** - Authentication system (flows, security, testing)
+3. **[4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md)** - Database schema, fixes, error handling
+4. **[5-IMPLEMENTATION_GUIDE.md](5-IMPLEMENTATION_GUIDE.md)** - Recent updates, testing reports
+5. **[6-SESSION_SUMMARY_OCT9_EVENING.md](6-SESSION_SUMMARY_OCT9_EVENING.md)** - Evening session updates
+6. **[7-FINANCE_IMPLEMENTATION_SUMMARY.md](7-FINANCE_IMPLEMENTATION_SUMMARY.md)** - Financial Hub implementation
+7. **[8-ENGINEER_PORTAL_AUDIT_REPORT.md](8-ENGINEER_PORTAL_AUDIT_REPORT.md)** - Comprehensive portal audit
 
 ---
 
@@ -22,25 +25,25 @@
 
 ### For New Developers
 ```bash
-1. Read: PROJECT_GUIDE.md (architecture overview)
-2. Read: AUTH_GUIDE.md (auth system)
+1. Read: 2-PROJECT_GUIDE.md (architecture overview)
+2. Read: 3-AUTH_GUIDE.md (auth system)
 3. Start dev server: npm run dev
 4. Open: http://localhost:8080/auth
 ```
 
 ### For Testing
 ```bash
-1. Read: AUTH_GUIDE.md → Testing section
+1. Read: 3-AUTH_GUIDE.md → Testing section
 2. Start server: npm run dev
 3. Follow test credentials in guide
 ```
 
 ### For Database Issues
 ```bash
-1. Read: DATABASE_GUIDE.md
+1. Read: 4-DATABASE_GUIDE.md
 2. Apply SQL fix (2 minutes)
 3. Test signup flow
-4. Review cleanup analysis (see DATABASE_GUIDE.md → Cleanup section)
+4. Review cleanup analysis (see 4-DATABASE_GUIDE.md → Cleanup section)
 ```
 
 ---
@@ -51,7 +54,7 @@
 Total Files:        701 source files
 Components:         565 React components
 Database Tables:    48 tables
-Documentation:      5 organized guides
+Documentation:      8 organized guides (chronologically numbered)
 Tech Stack:         React 18 + TypeScript + Supabase
 Languages:          English + Arabic (RTL)
 Status:             Production Ready
@@ -110,11 +113,14 @@ Saudi Arabia's first comprehensive digital marketplace for professional engineer
 
 ```
 docs/
-├── README.md                   # This file - main entry point
-├── PROJECT_GUIDE.md            # Architecture & codebase overview
-├── AUTH_GUIDE.md               # Authentication system
-├── DATABASE_GUIDE.md           # Database schema & fixes
-└── IMPLEMENTATION_GUIDE.md     # Recent updates & testing
+├── 1-README.md                              # This file - main entry point
+├── 2-PROJECT_GUIDE.md                       # Architecture & codebase overview
+├── 3-AUTH_GUIDE.md                          # Authentication system
+├── 4-DATABASE_GUIDE.md                      # Database schema & fixes
+├── 5-IMPLEMENTATION_GUIDE.md                # Recent updates & testing
+├── 6-SESSION_SUMMARY_OCT9_EVENING.md        # Oct 9 evening session
+├── 7-FINANCE_IMPLEMENTATION_SUMMARY.md      # Financial Hub implementation
+└── 8-ENGINEER_PORTAL_AUDIT_REPORT.md        # Engineer Portal audit
 
 src/pages/
 ├── 1-HomePage/                 # Public landing + shared components
@@ -135,10 +141,13 @@ supabase/
 ## 🎓 **Documentation Philosophy**
 
 Each guide is **self-contained and focused**:
-- **PROJECT_GUIDE** - What the system is and how it's built
-- **AUTH_GUIDE** - How authentication works
-- **DATABASE_GUIDE** - How data is structured and fixed
-- **IMPLEMENTATION_GUIDE** - What was recently done
+- **2-PROJECT_GUIDE** - What the system is and how it's built
+- **3-AUTH_GUIDE** - How authentication works
+- **4-DATABASE_GUIDE** - How data is structured and fixed
+- **5-IMPLEMENTATION_GUIDE** - What was recently done
+- **6-SESSION_SUMMARY** - Oct 9 evening updates
+- **7-FINANCE_IMPLEMENTATION** - Financial Hub details
+- **8-ENGINEER_PORTAL_AUDIT** - Portal testing report
 
 ---
 
@@ -146,22 +155,24 @@ Each guide is **self-contained and focused**:
 
 | Task | Guide | Section |
 |------|-------|---------|
-| Understand architecture | PROJECT_GUIDE | Architecture |
-| Learn auth flow | AUTH_GUIDE | Auth Flows |
-| Fix 406 errors | DATABASE_GUIDE | Critical Fixes |
-| Test signup | AUTH_GUIDE | Testing |
-| Make auth changes | AUTH_GUIDE | Developer Guide |
-| Check recent work | IMPLEMENTATION_GUIDE | Session Summary |
+| Understand architecture | 2-PROJECT_GUIDE | Architecture |
+| Learn auth flow | 3-AUTH_GUIDE | Auth Flows |
+| Fix 406 errors | 4-DATABASE_GUIDE | Critical Fixes |
+| Test signup | 3-AUTH_GUIDE | Testing |
+| Make auth changes | 3-AUTH_GUIDE | Developer Guide |
+| Check recent work | 5-IMPLEMENTATION_GUIDE | Session Summary |
+| View portal audit | 8-ENGINEER_PORTAL_AUDIT | Full Report |
 
 ---
 
 ## 🆘 **Getting Help**
 
 ### Questions?
-- Architecture questions → PROJECT_GUIDE.md
-- Auth not working → AUTH_GUIDE.md
-- Database errors → DATABASE_GUIDE.md
-- What changed → IMPLEMENTATION_GUIDE.md
+- Architecture questions → 2-PROJECT_GUIDE.md
+- Auth not working → 3-AUTH_GUIDE.md
+- Database errors → 4-DATABASE_GUIDE.md
+- What changed → 5-IMPLEMENTATION_GUIDE.md
+- Portal features → 8-ENGINEER_PORTAL_AUDIT_REPORT.md
 
 ### Code References
 - Best auth example: `src/pages/2-auth/signup/ClientSignup.tsx`

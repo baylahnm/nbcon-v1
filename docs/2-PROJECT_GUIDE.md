@@ -491,7 +491,7 @@ Translation Files:  16 locale files (EN/AR)
 
 **For New Developers:**
 1. Read this guide to understand architecture
-2. Read [AUTH_GUIDE.md](AUTH_GUIDE.md) to understand authentication
+2. Read [3-AUTH_GUIDE.md](3-AUTH_GUIDE.md) to understand authentication
 3. Explore example components in each role directory
 4. Start with simple tasks in one account type
 
@@ -503,7 +503,7 @@ Translation Files:  16 locale files (EN/AR)
 5. Test in isolation
 
 **For Database Changes:**
-1. Read [DATABASE_GUIDE.md](DATABASE_GUIDE.md)
+1. Read [4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md)
 2. Create migration in `supabase/migrations/`
 3. Add RLS policies
 4. Update TypeScript types
@@ -520,7 +520,8 @@ Translation Files:  16 locale files (EN/AR)
 ---
 
 **For more details:**
-- Authentication → [AUTH_GUIDE.md](AUTH_GUIDE.md)
-- Database → [DATABASE_GUIDE.md](DATABASE_GUIDE.md)
-- Recent work → [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)
+- Authentication → [3-AUTH_GUIDE.md](3-AUTH_GUIDE.md)
+- Database → [4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md)
+- Recent work → [5-IMPLEMENTATION_GUIDE.md](5-IMPLEMENTATION_GUIDE.md)
+- Portal audit → [8-ENGINEER_PORTAL_AUDIT_REPORT.md](8-ENGINEER_PORTAL_AUDIT_REPORT.md)
 

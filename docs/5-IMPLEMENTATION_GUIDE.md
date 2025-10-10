@@ -413,7 +413,7 @@ Overall:           100% success
 
 **1. Apply Database Fix** (2 minutes)
 - File: `supabase/fixes/012-safe-incremental-fix.sql`
-- Guide: [DATABASE_GUIDE.md](DATABASE_GUIDE.md) → Apply Fixes section
+- Guide: [4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md) → Apply Fixes section
 - Impact: Fixes ALL 406 errors, enables correct role assignment
 
 ### 🟡 Optional (Nice to Have)
@@ -501,10 +501,10 @@ Overall:           100% success
 
 ## 📚 Related Documentation
 
-- **Architecture** → [PROJECT_GUIDE.md](PROJECT_GUIDE.md)
-- **Authentication** → [AUTH_GUIDE.md](AUTH_GUIDE.md)
-- **Database** → [DATABASE_GUIDE.md](DATABASE_GUIDE.md)
-- **Quick Start** → [README.md](README.md)
+- **Architecture** → [2-PROJECT_GUIDE.md](2-PROJECT_GUIDE.md)
+- **Authentication** → [3-AUTH_GUIDE.md](3-AUTH_GUIDE.md)
+- **Database** → [4-DATABASE_GUIDE.md](4-DATABASE_GUIDE.md)
+- **Quick Start** → [1-README.md](1-README.md)
 
 ---
 
