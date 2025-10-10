@@ -396,17 +396,9 @@ export default function JobsPage() {
                     <CardContent className="p-6">
                       {/* Job Details - Full Width */}
                       <div className="flex items-start gap-3 mb-4">
-                        <div 
-                          className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors"
-                          onClick={() => {
-                            setSelectedCompany(job.company);
-                            setShowCompanyProfile(true);
-                          }}
-                        >
-                          <Briefcase className="h-6 w-6 text-muted-foreground" />
-                        </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
+                            <Briefcase className="h-5 w-5 text-muted-foreground" />
                             <h3 className="font-semibold text-lg">{job.title}</h3>
                             <Badge variant="outline">{job.type.replace('-', ' ')}</Badge>
                           </div>
@@ -523,16 +515,16 @@ export default function JobsPage() {
                       </Button>
                     )}
 
-                    <XScroll>
+                      <XScroll>
                       <div 
                         ref={scrollContainerRef}
-                        className="flex gap-4 p-1 ai-tools-scroll"
+                        className="flex gap-4 px-1 py-4 ai-tools-scroll"
                         style={{
                           scrollSnapType: 'x mandatory',
                           scrollBehavior: 'smooth',
                         }}
                       >
-                        <div className="min-w-[400px] shrink-0 snap-start">
+                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
                           <AIJobMatchScore 
                             jobId={job.id}
                             jobSkills={job.skills}
@@ -540,7 +532,7 @@ export default function JobsPage() {
                           />
                         </div>
                         
-                        <div className="min-w-[400px] shrink-0 snap-start">
+                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
                           <EarningsCalculator
                             jobSalary={job.salary}
                             jobBudget={job.budget}
@@ -548,13 +540,13 @@ export default function JobsPage() {
                           />
                         </div>
 
-                        <div className="min-w-[400px] shrink-0 snap-start">
+                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
                           <SkillsGapAnalysis 
                             jobSkills={job.skills}
                           />
                         </div>
 
-                        <div className="min-w-[400px] shrink-0 snap-start">
+                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
                           <SimilarJobsRecommendations
                             currentJobId={job.id}
                             currentJobSkills={job.skills}

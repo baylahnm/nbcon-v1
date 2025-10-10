@@ -97,7 +97,7 @@ export function SimilarJobsRecommendations({
   return (
     <Card
       ref={cardRef}
-      className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+      className="relative overflow-hidden transition-all duration-300 cursor-pointer h-full flex flex-col justify-between"
       style={{
         '--rotation': '4.2rad',
         border: '2px solid transparent',
