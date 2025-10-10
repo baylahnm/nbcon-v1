@@ -190,3 +190,4 @@ export const InlineDashboardToolbar: React.FC<InlineDashboardToolbarProps> = ({
 };
 
 export default InlineDashboardToolbar;
+

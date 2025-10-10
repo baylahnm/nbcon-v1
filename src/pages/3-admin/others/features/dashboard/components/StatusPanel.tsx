@@ -7,3 +7,4 @@ export function StatusPanel({ state, message }:{ state:"ok"|"degraded"|"incident
     </div>
   );
 }
+

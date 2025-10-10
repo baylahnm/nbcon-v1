@@ -73,3 +73,4 @@ export function HijriBadge({ date, showIcon = true, isCompact = false }: HijriBa
     </Badge>
   );
 }
+

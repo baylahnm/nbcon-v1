@@ -14,3 +14,4 @@ export function QuickActions({ buttons }:{
     </div>
   );
 }
+

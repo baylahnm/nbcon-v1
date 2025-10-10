@@ -12,8 +12,8 @@ import {
   DollarSign,
   Target
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Widget } from '../types/widget';
 import BaseWidget from './BaseWidget';
 
@@ -115,3 +115,4 @@ export const QuickActionsWidget: React.FC<QuickActionsWidgetProps> = ({
 };
 
 export default QuickActionsWidget;
+

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { 
   GripVertical, 
   Maximize2, 
@@ -245,3 +245,4 @@ export const EditableWrapper: React.FC<EditableWrapperProps> = ({
 };
 
 export default EditableWrapper;
+

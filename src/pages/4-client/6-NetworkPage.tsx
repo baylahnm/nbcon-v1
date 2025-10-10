@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { useAuthStore } from './others/stores/auth';
 import { getUserDisplayName, getUserInitials } from '@/lib/userUtils';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Input } from '@/pages/1-HomePage/others/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
+import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar';
+import { Separator } from '@/pages/1-HomePage/others/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select';
 import { MessagingPage } from '@/pages/messaging/MessagingPage';
 import { 
   Users, 
@@ -618,3 +618,4 @@ export default function NetworkPage() {
     </div>
   );
 }
+

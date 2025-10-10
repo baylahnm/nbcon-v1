@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Card } from '@/pages/1-HomePage/others/components/ui/card';
 import { 
   Plus, 
   Edit, 
@@ -20,7 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/pages/1-HomePage/others/components/ui/dropdown-menu';
 import { useInlineDashboardEditStore } from '../../../stores/inlineDashboardEdit';
 import { Toolbar } from '@/components/toolbar/Toolbar';
 
@@ -190,3 +190,4 @@ export const InlineDashboardToolbar: React.FC<InlineDashboardToolbarProps> = ({
 };
 
 export default InlineDashboardToolbar;
+

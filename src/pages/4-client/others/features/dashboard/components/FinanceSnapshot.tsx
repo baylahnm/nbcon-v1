@@ -7,3 +7,4 @@ export function FinanceSnapshot({ data }:{ data:{ invoicesDue:number; overdue:nu
     </div>
   );
 }
+

@@ -1,6 +1,6 @@
 import { Languages, RotateCcw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { useAiStore } from '../store/useAiStore';
 
 interface RTLDirectionToggleProps {
@@ -71,3 +71,4 @@ export function RTLDirectionToggle({ isCompact = false, showLabel = true }: RTLD
     </div>
   );
 }
+

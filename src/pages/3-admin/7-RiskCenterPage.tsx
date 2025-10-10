@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
+import { Alert, AlertDescription } from '@/pages/1-HomePage/others/components/ui/alert';
 import { Shield, AlertTriangle, CheckCircle, XCircle, TrendingUp, Users, DollarSign, Clock } from 'lucide-react';
 
 export default function AdminRiskCenterPage() {
@@ -272,3 +272,4 @@ export default function AdminRiskCenterPage() {
     </div>
   );
 }
+

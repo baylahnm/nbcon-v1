@@ -7,9 +7,9 @@ import {
   X,
   Check
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 
 interface ToolMenuProps {
   currentMode: 'chat' | 'research' | 'image' | 'agent' | 'connectors';
@@ -151,3 +151,4 @@ export function ToolMenu({ currentMode, onModeChange, onClose, isRTL = false }: 
     </Card>
   );
 }
+

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { usePostProjectRouting } from '@/hooks/usePostProjectRouting';
 import { ProjectTemplate, MarketplaceTemplate } from '../../types/project';
 import { 
@@ -207,3 +207,4 @@ export const ClearFiltersButton: React.FC<{ show?: boolean }> = ({ show = true }
     </PostProjectButtonHandler>
   );
 };
+

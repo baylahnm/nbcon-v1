@@ -24,3 +24,4 @@ export function DataTable({ columns, rows, onRowClick }:{
   );
 }
 
+

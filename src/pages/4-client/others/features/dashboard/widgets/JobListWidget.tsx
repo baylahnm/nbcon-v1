@@ -1,9 +1,9 @@
 import React from 'react';
 import { Briefcase, MapPin, Clock, DollarSign, ExternalLink } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Card, CardContent } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { Widget } from '../types/widget';
 import BaseWidget from './BaseWidget';
 
@@ -197,3 +197,4 @@ export const JobListWidget: React.FC<JobListWidgetProps> = ({
 };
 
 export default JobListWidget;
+

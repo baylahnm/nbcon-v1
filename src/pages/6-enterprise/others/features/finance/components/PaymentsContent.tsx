@@ -166,3 +166,4 @@ export function PaymentsContent() {
     </div>
   );
 }
+

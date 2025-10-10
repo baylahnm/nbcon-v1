@@ -310,3 +310,4 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
     </div>
   );
 }
+

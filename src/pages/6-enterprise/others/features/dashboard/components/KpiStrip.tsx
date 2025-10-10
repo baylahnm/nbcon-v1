@@ -16,3 +16,4 @@ export function KpiStrip({ items, onClick }:{ items:Kpi[]; onClick?:(k:Kpi)=>voi
     </div>
   );
 }
+

@@ -13,3 +13,4 @@ export function JobsNearYou({ jobs, onOpen }:{
     </ul>
   );
 }
+

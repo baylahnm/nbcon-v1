@@ -1,8 +1,8 @@
 import React from 'react';
 import { BarChart3, TrendingUp, TrendingDown, Activity } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { Widget } from '../types/widget';
 import BaseWidget from './BaseWidget';
 
@@ -250,3 +250,4 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
 };
 
 export default ChartWidget;
+

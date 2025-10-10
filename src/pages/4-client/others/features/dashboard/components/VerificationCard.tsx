@@ -9,3 +9,4 @@ export function VerificationCard({ steps, onStart }:{ steps:string[]; onStart:()
     </div>
   );
 }
+

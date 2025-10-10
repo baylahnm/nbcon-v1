@@ -31,3 +31,4 @@ export function MessageBubble({ msg, translationEnabled }:{ msg:Message; transla
   );
 }
 
+

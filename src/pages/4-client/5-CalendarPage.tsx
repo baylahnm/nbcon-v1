@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/pages/1-HomePage/others/components/ui/dialog';
 import { useSearchParams } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Input } from '@/pages/1-HomePage/others/components/ui/input';
+import { Switch } from '@/pages/1-HomePage/others/components/ui/switch';
+import { Label } from '@/pages/1-HomePage/others/components/ui/label';
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from '@/components/ui/select';
+} from '@/pages/1-HomePage/others/components/ui/select';
 import { 
   Calendar, 
   ChevronLeft, 
@@ -30,7 +30,7 @@ import { useCalendarStore, CalendarView, UserRole } from "./others/stores/useCal
 import type { CalendarEvent } from "./others/stores/useCalendarStore";
 import { useTeamStore } from '@/hooks/useTeamStore';
 import { useThemeStore } from "./others/stores/theme";
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/pages/1-HomePage/others/components/ui/use-toast';
 
 export default function CalendarPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -504,3 +504,4 @@ export default function CalendarPage() {
     </div>
   );
 }
+

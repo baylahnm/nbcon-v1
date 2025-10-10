@@ -28,3 +28,4 @@ export function InvoiceRow({ row, onPay, onPdf, onXml, onDetails }:{
   );
 }
 
+

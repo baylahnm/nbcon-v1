@@ -42,3 +42,4 @@ const StarBorder: React.FC<StarBorderProps> = ({
 };
 
 export default StarBorder;
+

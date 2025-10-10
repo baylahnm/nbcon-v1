@@ -9,3 +9,4 @@ export function KpiCard({ title, value, note }:{ title:string; value:string; not
   );
 }
 
+

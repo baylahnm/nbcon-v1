@@ -9,3 +9,4 @@ export function ComplianceCard({ sceStatus, zatcaStatus, kycStatus }:{
     </div>
   );
 }
+

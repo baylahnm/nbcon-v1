@@ -1404,3 +1404,4 @@ const ActivityFeedPopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (co
     </div>
   </div>
 );
+

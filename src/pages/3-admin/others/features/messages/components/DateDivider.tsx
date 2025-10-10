@@ -8,3 +8,4 @@ export function DateDivider({ date, hijri }:{ date:string; hijri?:boolean }) {
   );
 }
 
+

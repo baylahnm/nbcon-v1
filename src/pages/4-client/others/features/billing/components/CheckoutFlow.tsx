@@ -10,10 +10,10 @@ import {
   AlertCircle,
   Loader2
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { useAuthStore } from '../../../../stores/auth';
 import { 
   redirectToCheckout, 
@@ -344,3 +344,4 @@ export function CheckoutFlow({ selectedPlan, onBack }: CheckoutFlowProps) {
     </div>
   );
 }
+

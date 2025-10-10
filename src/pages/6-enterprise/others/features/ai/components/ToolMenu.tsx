@@ -151,3 +151,4 @@ export function ToolMenu({ currentMode, onModeChange, onClose, isRTL = false }: 
     </Card>
   );
 }
+

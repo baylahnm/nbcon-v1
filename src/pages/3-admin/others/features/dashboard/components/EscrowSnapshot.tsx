@@ -21,3 +21,4 @@ export function EscrowSnapshot({ data, onDrill }:{
     </div>
   );
 }
+

@@ -18,10 +18,10 @@ import {
   Cog,
   Link as LinkIcon
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Card } from '@/pages/1-HomePage/others/components/ui/card';
+import { Avatar, AvatarFallback } from '@/pages/1-HomePage/others/components/ui/avatar';
 import { Message, Citation, GeneratedImage } from '../store/useAiStore';
 import { HijriBadge } from './HijriBadge';
 
@@ -365,3 +365,4 @@ export function MessageBubble({
     </div>
   );
 }
+

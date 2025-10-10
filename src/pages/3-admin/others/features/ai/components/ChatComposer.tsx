@@ -12,11 +12,11 @@ import {
   File,
   AlertCircle
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea';
+import { Card } from '@/pages/1-HomePage/others/components/ui/card';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { useAiStore } from '../store/useAiStore';
 import { aiClient } from '../api/aiClient';
 import { AttachmentStrip } from './AttachmentStrip';
@@ -316,3 +316,4 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
     </div>
   );
 }
+

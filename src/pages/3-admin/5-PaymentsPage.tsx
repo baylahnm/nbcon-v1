@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Input } from '@/pages/1-HomePage/others/components/ui/input';
+import { Label } from '@/pages/1-HomePage/others/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
 import { Search, Filter, Download, Eye, DollarSign, CreditCard, TrendingUp, Users } from 'lucide-react';
 
 export default function AdminPaymentsPage() {
@@ -255,3 +255,4 @@ export default function AdminPaymentsPage() {
     </div>
   );
 }
+

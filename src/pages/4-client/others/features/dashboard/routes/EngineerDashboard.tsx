@@ -3,3 +3,4 @@ import { DashboardContent } from "@/features/dashboard/components/DashboardConte
 export default function EngineerDashboard() {
   return <DashboardContent />;
 }
+

@@ -6,3 +6,4 @@ export function GeoHeatmap({ features, metricKey }:{ features:any[]; metricKey:s
   );
 }
 
+

@@ -10,11 +10,11 @@ import {
   Users,
   DollarSign
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { useAuthStore } from '../../../../stores/auth';
 import { SubscriptionCard } from './SubscriptionCard';
 import { PlanUpgrade } from './PlanUpgrade';
@@ -395,3 +395,4 @@ export function BillingDashboard() {
     </div>
   );
 }
+

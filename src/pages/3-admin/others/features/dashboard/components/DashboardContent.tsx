@@ -16,19 +16,19 @@ import { DashboardEditMode } from './DashboardEditMode';
 import { EditableWrapper } from './EditableWrapper';
 import { Toolbar } from '@/components/toolbar/Toolbar';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
+import { Button } from '@/pages/1-HomePage/others/components/ui/button";
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar";
+import { Progress } from '@/pages/1-HomePage/others/components/ui/progress";
+import { Input } from '@/pages/1-HomePage/others/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from '@/pages/1-HomePage/others/components/ui/popover";
 import { ChatComposer } from "@/features/ai/components/ChatComposer";
 import { useAiStore } from "@/features/ai/store/useAiStore";
 import { MessageBubble } from "@/features/ai/components/MessageBubble";
 import { Link } from "react-router-dom";
 import { R } from "@/lib/routes";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs";
 import { useAuthStore } from "../../../stores/auth";
 import { supabase } from "@/shared/supabase/client";
 import { useThemeStore } from "../../../stores/theme";
@@ -37,7 +37,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/pages/1-HomePage/others/components/ui/dropdown-menu";
 
 // AI Conversation Preview Component
 function AIConversationPreview() {
@@ -1396,3 +1396,4 @@ const ActivityFeedPopup = ({ onClose, onAdd }: { onClose: () => void; onAdd: (co
     </div>
   </div>
 );
+

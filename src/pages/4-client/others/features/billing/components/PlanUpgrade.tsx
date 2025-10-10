@@ -9,10 +9,10 @@ import {
   Star,
   ChevronRight
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/pages/1-HomePage/others/components/ui/dialog';
 import { PLAN_PRICING, PLAN_DESCRIPTIONS, PLAN_FEATURES } from '@/features/billing/lib/plans';
 
 interface PlanUpgradeProps {
@@ -299,3 +299,4 @@ export function PlanUpgrade({ currentPlan, onPlanSelect, isLoading = false }: Pl
     </Dialog>
   );
 }
+

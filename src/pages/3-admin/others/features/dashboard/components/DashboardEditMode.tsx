@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useInlineDashboardEditStore } from '../../../stores/inlineDashboardEdit';
 import { InlineDashboardToolbar } from './InlineDashboardToolbar';
 import { Toolbar } from '@/components/toolbar/Toolbar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Move, X, Save, RotateCcw, Plus } from 'lucide-react';
 
 interface DashboardEditModeProps {
@@ -152,3 +152,4 @@ export const DashboardEditMode: React.FC<DashboardEditModeProps> = ({
 };
 
 export default DashboardEditMode;
+

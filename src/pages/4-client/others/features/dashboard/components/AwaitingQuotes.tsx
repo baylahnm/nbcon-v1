@@ -16,3 +16,4 @@ export function AwaitingQuotes({ quotes, onAccept, onChat }:{
     </ul>
   );
 }
+

@@ -5,3 +5,4 @@ export function EmptyState({ title, action }:{ title:string; action?:React.React
     </div>
   );
 }
+

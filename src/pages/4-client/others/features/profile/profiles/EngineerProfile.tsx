@@ -58,23 +58,23 @@ import {
   BarChart3,
   PieChart
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
+import { Button } from '@/pages/1-HomePage/others/components/ui/button";
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar";
+import { Input } from '@/pages/1-HomePage/others/components/ui/input";
+import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea";
+import { Label } from '@/pages/1-HomePage/others/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select";
+import { Switch } from '@/pages/1-HomePage/others/components/ui/switch";
+import { Separator } from '@/pages/1-HomePage/others/components/ui/separator";
+import { Progress } from '@/pages/1-HomePage/others/components/ui/progress";
+import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/pages/1-HomePage/others/components/ui/tooltip";
+import { Alert, AlertDescription } from '@/pages/1-HomePage/others/components/ui/alert";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/pages/1-HomePage/others/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/pages/1-HomePage/others/components/ui/dialog";
 import { toast } from "sonner";
 
 interface ProfileData {
@@ -1238,6 +1238,7 @@ export function EngineerProfile() {
     </div>
   );
 }
+
 
 
 

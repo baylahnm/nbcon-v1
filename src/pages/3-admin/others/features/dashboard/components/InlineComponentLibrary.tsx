@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { 
   Bot, 
   Briefcase, 
@@ -120,3 +120,4 @@ export const InlineComponentLibrary: React.FC<InlineComponentLibraryProps> = ({
 };
 
 export default InlineComponentLibrary;
+

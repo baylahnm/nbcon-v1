@@ -3,3 +3,4 @@ import { DashboardContent } from "./others/features/dashboard/components/Dashboa
 export function DashboardPage() {
   return <DashboardContent />;
 }
+

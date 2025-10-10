@@ -1,6 +1,6 @@
 import React from 'react';
 import { Loader2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/pages/1-HomePage/others/components/ui/card';
 
 interface LoadingSpinnerProps {
   message?: string;
@@ -30,3 +30,4 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 };
 
 export default LoadingSpinner;
+

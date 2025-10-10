@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { aiClient } from '../api/aiClient';
 
 interface HijriBadgeProps {
@@ -73,3 +73,4 @@ export function HijriBadge({ date, showIcon = true, isCompact = false }: HijriBa
     </Badge>
   );
 }
+

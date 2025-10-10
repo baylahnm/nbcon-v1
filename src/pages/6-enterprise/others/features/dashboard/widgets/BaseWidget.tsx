@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { 
   MoreHorizontal, 
   Settings, 
@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/pages/1-HomePage/others/components/ui/dropdown-menu';
 import { Widget } from '../types/widget';
 
 interface BaseWidgetProps {
@@ -199,3 +199,4 @@ export const BaseWidget: React.FC<BaseWidgetProps> = ({
 };
 
 export default BaseWidget;
+

@@ -1125,3 +1125,4 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
     </div>
 );
 }
+

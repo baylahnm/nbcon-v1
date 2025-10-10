@@ -15,11 +15,11 @@ import {
   Trash2,
   MoreHorizontal
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { Separator } from '@/pages/1-HomePage/others/components/ui/separator';
+import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area';
 import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
 import { MessageBubble } from './components/MessageBubble';
@@ -289,3 +289,4 @@ export function ChatPage({ onBack }: ChatPageProps) {
     </div>
   );
 }
+

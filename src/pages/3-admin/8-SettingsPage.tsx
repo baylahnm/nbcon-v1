@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Input } from '@/pages/1-HomePage/others/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
+import { Switch } from '@/pages/1-HomePage/others/components/ui/switch';
+import { Label } from '@/pages/1-HomePage/others/components/ui/label';
 import { 
   Settings, 
   Shield, 
@@ -305,3 +305,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

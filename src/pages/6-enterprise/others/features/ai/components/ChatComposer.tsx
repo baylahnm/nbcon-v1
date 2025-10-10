@@ -316,3 +316,4 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
     </div>
   );
 }
+

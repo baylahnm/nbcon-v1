@@ -7,3 +7,4 @@ export function ChartA11yToggle({ showTable, onToggle }:{ showTable:boolean; onT
   );
 }
 
+

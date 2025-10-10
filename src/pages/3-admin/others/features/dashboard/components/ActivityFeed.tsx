@@ -10,3 +10,4 @@ export function ActivityFeed({ items }:{ items:{id:string; text:string; ts:strin
     </ul>
   );
 }
+

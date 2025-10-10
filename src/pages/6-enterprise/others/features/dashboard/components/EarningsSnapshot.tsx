@@ -13,3 +13,4 @@ export function EarningsSnapshot({ data }:{ data:{ pending:number; available:num
     </div>
   );
 }
+

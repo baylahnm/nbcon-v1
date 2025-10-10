@@ -10,3 +10,4 @@ export function WorkforceUtilization({ teams }:{ teams:{name:string; utilization
     </ul>
   );
 }
+

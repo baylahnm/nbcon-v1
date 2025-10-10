@@ -4,3 +4,4 @@ export const ErrorState = ({ code, onRetry }:{ code?:string; onRetry:()=>void })
     <button onClick={onRetry} className="rounded-lg border border-[var(--border)] px-3 py-1">Retry</button>
   </div>;
 
+

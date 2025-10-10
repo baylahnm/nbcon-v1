@@ -15,3 +15,4 @@ export function ChartBar({ data, xKey, yKey }:{ data:any[]; xKey:string; yKey:st
   );
 }
 
+

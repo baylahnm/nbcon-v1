@@ -279,3 +279,4 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
     </div>
   );
 }
+
