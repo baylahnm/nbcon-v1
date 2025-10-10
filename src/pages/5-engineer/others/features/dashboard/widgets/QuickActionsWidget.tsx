@@ -12,8 +12,8 @@ import {
   DollarSign,
   Target
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
+import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Widget } from '../types/widget';
 import BaseWidget from './BaseWidget';
 

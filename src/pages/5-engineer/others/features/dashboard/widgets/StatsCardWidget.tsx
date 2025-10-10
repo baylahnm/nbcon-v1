@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
+import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Widget } from '../types/widget';
 import BaseWidget from './BaseWidget';
 

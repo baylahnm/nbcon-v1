@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ScrollArea } from '../ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Badge } from '../ui/badge';
+import { Skeleton } from '../ui/skeleton';
 import { useMessages, type Message } from '@/hooks/useMessaging';
 import { useAuthStore } from '../../stores/auth';
 import { formatDistanceToNow, format } from 'date-fns';

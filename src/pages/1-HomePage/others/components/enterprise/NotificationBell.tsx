@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Bell } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { ScrollArea } from '../ui/scroll-area';
 import { useTeamStore } from '@/hooks/useTeamStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';

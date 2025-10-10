@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '../ui/dialog';
+import { Card, CardContent } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Separator } from '../ui/separator';
 import { 
   Plus, 
   Layout, 
@@ -14,7 +14,7 @@ import {
   AlertCircle,
   Lightbulb
 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '../ui/use-toast';
 import { useKanbanStore, KanbanColumn } from './hooks/useKanbanStore';
 
 interface AddColumnDialogProps {
