@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
 import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
@@ -23,7 +23,9 @@ import {
   Map as MapIcon,
   List,
   Zap,
-  Building
+  Building,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 // Import enhancement components
@@ -36,6 +38,7 @@ import { CompanyProfilePreview } from './others/features/jobs/components/Company
 import { SkillsGapAnalysis } from './others/features/jobs/components/SkillsGapAnalysis';
 import { JobsMapView } from './others/features/jobs/components/JobsMapView';
 import { QuickApply } from './others/features/jobs/components/QuickApply';
+import XScroll from '../1-HomePage/others/components/ui/x-scroll';
 
 interface Job {
   id: string;
@@ -155,6 +158,48 @@ export default function JobsPage() {
   const [showQuickApply, setShowQuickApply] = useState(false);
   const [showCompanyProfile, setShowCompanyProfile] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<string>('');
+  
+  // Scroll state for arrow visibility
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Update arrow visibility based on scroll position
+  const updateArrowVisibility = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    setShowLeftArrow(scrollLeft > 10);
+    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+  };
+
+  // Attach scroll listener
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    updateArrowVisibility();
+    container.addEventListener('scroll', updateArrowVisibility);
+
+    return () => {
+      container.removeEventListener('scroll', updateArrowVisibility);
+    };
+  }, []);
+
+  // Scroll to next/previous card
+  const scrollToCard = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const cardWidth = 400 + 16; // card width + gap
+    const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
+    
+    container.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+  };
 
   const filteredJobs = mockJobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -226,50 +271,44 @@ export default function JobsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Eye className="h-4 w-4 text-blue-600" />
-              <div>
-                <p className="text-sm font-medium">{mockJobs.filter(j => j.status === 'open').length}</p>
-                <p className="text-xs text-muted-foreground">Available Jobs</p>
+        {[
+          { icon: Eye, label: 'Available Jobs', count: mockJobs.filter(j => j.status === 'open').length, color: 'text-primary' },
+          { icon: Send, label: 'Applied', count: mockJobs.filter(j => j.status === 'applied').length, color: 'text-primary' },
+          { icon: CheckCircle2, label: 'Shortlisted', count: mockJobs.filter(j => j.status === 'shortlisted').length, color: 'text-primary' },
+          { icon: Bookmark, label: 'Bookmarked', count: mockJobs.filter(j => j.isBookmarked).length, color: 'text-primary' }
+        ].map((stat, index) => (
+          <Card 
+            key={index}
+            className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.5rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15), 0 0 15px hsl(var(--primary) / 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.08)';
+            }}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                <div>
+                  <p className="text-sm font-medium">{stat.count}</p>
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Send className="h-4 w-4 text-orange-600" />
-              <div>
-                <p className="text-sm font-medium">{mockJobs.filter(j => j.status === 'applied').length}</p>
-                <p className="text-xs text-muted-foreground">Applied</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
-              <div>
-                <p className="text-sm font-medium">{mockJobs.filter(j => j.status === 'shortlisted').length}</p>
-                <p className="text-xs text-muted-foreground">Shortlisted</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Bookmark className="h-4 w-4 text-purple-600" />
-              <div>
-                <p className="text-sm font-medium">{mockJobs.filter(j => j.isBookmarked).length}</p>
-                <p className="text-xs text-muted-foreground">Bookmarked</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Saved Searches - Now below stats */}
@@ -341,7 +380,19 @@ export default function JobsPage() {
               {filteredJobs.filter(job => job.status === 'open').map((job) => (
                 <div key={job.id} className="space-y-4">
                   {/* Job Card - Full Width */}
-                  <Card className="hover:shadow-md transition-shadow">
+                  <Card className="relative overflow-hidden transition-all duration-300"
+                    style={{
+                      border: '2px solid transparent',
+                      borderRadius: '0.5rem',
+                      backgroundImage: `
+                        linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                        linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, transparent 50%)
+                      `,
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+                    }}
+                  >
                     <CardContent className="p-6">
                       {/* Job Details - Full Width */}
                       <div className="flex items-start gap-3 mb-4">
@@ -446,34 +497,73 @@ export default function JobsPage() {
                     </CardContent>
                   </Card>
 
-                  {/* AI Tools - Full Width Grid Below */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <AIJobMatchScore 
-                      jobId={job.id}
-                      jobSkills={job.skills}
-                      overallMatch={job.id === '1' ? 92 : job.id === '2' ? 85 : 78}
-                    />
-                    
-                    <EarningsCalculator
-                      jobSalary={job.salary}
-                      jobBudget={job.budget}
-                      jobType={job.type}
-                    />
-                  </div>
+                  {/* AI Tools - Horizontal Scrollable with Arrows */}
+                  <div className="relative">
+                    {/* Left Arrow */}
+                    {showLeftArrow && (
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur-sm shadow-lg border-2"
+                        onClick={() => scrollToCard('left')}
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </Button>
+                    )}
 
-                  {/* Skills Gap Analysis - Collapsible */}
-                  {selectedJob?.id === job.id && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      <SkillsGapAnalysis 
-                        jobSkills={job.skills}
-                      />
-                      <SimilarJobsRecommendations
-                        currentJobId={job.id}
-                        currentJobSkills={job.skills}
-                        currentJobCategory={job.category}
-                      />
-                    </div>
-                  )}
+                    {/* Right Arrow */}
+                    {showRightArrow && (
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur-sm shadow-lg border-2"
+                        onClick={() => scrollToCard('right')}
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </Button>
+                    )}
+
+                    <XScroll>
+                      <div 
+                        ref={scrollContainerRef}
+                        className="flex gap-4 p-1 ai-tools-scroll"
+                        style={{
+                          scrollSnapType: 'x mandatory',
+                          scrollBehavior: 'smooth',
+                        }}
+                      >
+                        <div className="min-w-[400px] shrink-0 snap-start">
+                          <AIJobMatchScore 
+                            jobId={job.id}
+                            jobSkills={job.skills}
+                            overallMatch={job.id === '1' ? 92 : job.id === '2' ? 85 : 78}
+                          />
+                        </div>
+                        
+                        <div className="min-w-[400px] shrink-0 snap-start">
+                          <EarningsCalculator
+                            jobSalary={job.salary}
+                            jobBudget={job.budget}
+                            jobType={job.type}
+                          />
+                        </div>
+
+                        <div className="min-w-[400px] shrink-0 snap-start">
+                          <SkillsGapAnalysis 
+                            jobSkills={job.skills}
+                          />
+                        </div>
+
+                        <div className="min-w-[400px] shrink-0 snap-start">
+                          <SimilarJobsRecommendations
+                            currentJobId={job.id}
+                            currentJobSkills={job.skills}
+                            currentJobCategory={job.category}
+                          />
+                        </div>
+                      </div>
+                    </XScroll>
+                  </div>
                 </div>
               ))}
             </div>

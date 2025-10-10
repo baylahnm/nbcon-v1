@@ -1,9 +1,11 @@
+import { useEffect, useRef } from "react";
 import { 
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle
 } from "../../../../../1-HomePage/others/components/ui/dialog";
+import { Card } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
 import { Button } from "../../../../../1-HomePage/others/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../../1-HomePage/others/components/ui/tabs";

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
 import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
@@ -81,8 +82,53 @@ export function ApplicationStatusTracker({
     }
   };
 
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const angle = Math.atan2(-x, y);
+        card.style.setProperty("--rotation", angle + "rad");
+      }
+    };
+    if (card) {
+      card.addEventListener("mousemove", handleMouseMove);
+    }
+    return () => {
+      if (card) {
+        card.removeEventListener("mousemove", handleMouseMove);
+      }
+    };
+  }, []);
+
   return (
-    <Card>
+    <Card
+      ref={cardRef}
+      className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+      style={{
+        '--rotation': '4.2rad',
+        border: '2px solid transparent',
+        borderRadius: '0.5rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      } as React.CSSProperties}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 20px hsl(var(--primary) / 0.3)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
+      }}
+    >
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-primary" />

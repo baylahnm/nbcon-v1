@@ -303,7 +303,7 @@ export const BauhausCard: React.FC<BauhausCardProps> = ({
           {swapButtons ? (
             <>
               <ChronicleButton
-                text={outlinedButtonInscription || "Action"}
+                text={outlinedButtonInscription}
                 outlined={true}
                 width="124px"
                 onClick={() => onOutlinedButtonClick(id)}
@@ -314,7 +314,7 @@ export const BauhausCard: React.FC<BauhausCardProps> = ({
                 hoverForeground={chronicleButtonHoverFg}
               />
               <ChronicleButton
-                text={filledButtonInscription || "Action"}
+                text={filledButtonInscription}
                 width="124px"
                 onClick={() => onFilledButtonClick(id)}
                 borderRadius={borderRadius}
@@ -327,7 +327,7 @@ export const BauhausCard: React.FC<BauhausCardProps> = ({
           ) : (
             <>
               <ChronicleButton
-                text={filledButtonInscription || "Action"}
+                text={filledButtonInscription}
                 width="124px"
                 onClick={() => onFilledButtonClick(id)}
                 borderRadius={borderRadius}
@@ -337,7 +337,7 @@ export const BauhausCard: React.FC<BauhausCardProps> = ({
                 hoverForeground={chronicleButtonHoverFg}
               />
               <ChronicleButton
-                text={outlinedButtonInscription || "Action"}
+                text={outlinedButtonInscription}
                 outlined={true}
                 width="124px"
                 onClick={() => onOutlinedButtonClick(id)}
@@ -354,6 +354,4 @@ export const BauhausCard: React.FC<BauhausCardProps> = ({
     </div>
   );
 };
-
-export { BauhausCard as Component };
 
