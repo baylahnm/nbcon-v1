@@ -19,8 +19,23 @@ import {
   Send,
   CheckCircle2,
   X,
-  AlertCircle
+  AlertCircle,
+  Map as MapIcon,
+  List,
+  Zap,
+  Building
 } from 'lucide-react';
+
+// Import enhancement components
+import { AIJobMatchScore } from './others/features/jobs/components/AIJobMatchScore';
+import { EarningsCalculator } from './others/features/jobs/components/EarningsCalculator';
+import { SimilarJobsRecommendations } from './others/features/jobs/components/SimilarJobsRecommendations';
+import { SavedSearchFilters } from './others/features/jobs/components/SavedSearchFilters';
+import { ApplicationStatusTracker } from './others/features/jobs/components/ApplicationStatusTracker';
+import { CompanyProfilePreview } from './others/features/jobs/components/CompanyProfilePreview';
+import { SkillsGapAnalysis } from './others/features/jobs/components/SkillsGapAnalysis';
+import { JobsMapView } from './others/features/jobs/components/JobsMapView';
+import { QuickApply } from './others/features/jobs/components/QuickApply';
 
 interface Job {
   id: string;
@@ -135,6 +150,11 @@ export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedType, setSelectedType] = useState('all');
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [showQuickApply, setShowQuickApply] = useState(false);
+  const [showCompanyProfile, setShowCompanyProfile] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<string>('');
 
   const filteredJobs = mockJobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -177,6 +197,22 @@ export default function JobsPage() {
           <p className="text-muted-foreground">Find your next engineering opportunity</p>
         </div>
         <div className="flex gap-2">
+          <Button 
+            variant={viewMode === 'list' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setViewMode('list')}
+          >
+            <List className="h-4 w-4 mr-2" />
+            List
+          </Button>
+          <Button 
+            variant={viewMode === 'map' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setViewMode('map')}
+          >
+            <MapIcon className="h-4 w-4 mr-2" />
+            Map
+          </Button>
           <Button variant="outline" size="sm">
             <Filter className="h-4 w-4 mr-2" />
             Advanced Filters
@@ -236,14 +272,18 @@ export default function JobsPage() {
         </Card>
       </div>
 
-      {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="available">Available Jobs ({mockJobs.filter(j => j.status === 'open').length})</TabsTrigger>
-          <TabsTrigger value="applied">Applied ({mockJobs.filter(j => j.status === 'applied').length})</TabsTrigger>
-          <TabsTrigger value="shortlisted">Shortlisted ({mockJobs.filter(j => j.status === 'shortlisted').length})</TabsTrigger>
-          <TabsTrigger value="bookmarked">Bookmarked ({mockJobs.filter(j => j.isBookmarked).length})</TabsTrigger>
-        </TabsList>
+      {/* Saved Searches - Now below stats */}
+      <SavedSearchFilters />
+
+      {/* Main Content - Full Width */}
+      <div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+            <TabsList className="w-full grid grid-cols-4">
+              <TabsTrigger value="available">Available Jobs ({mockJobs.filter(j => j.status === 'open').length})</TabsTrigger>
+              <TabsTrigger value="applied">Applied ({mockJobs.filter(j => j.status === 'applied').length})</TabsTrigger>
+              <TabsTrigger value="shortlisted">Shortlisted ({mockJobs.filter(j => j.status === 'shortlisted').length})</TabsTrigger>
+              <TabsTrigger value="bookmarked">Bookmarked ({mockJobs.filter(j => j.isBookmarked).length})</TabsTrigger>
+            </TabsList>
 
         {/* Available Jobs Tab */}
         <TabsContent value="available" className="space-y-4">
@@ -284,23 +324,51 @@ export default function JobsPage() {
             </div>
           </div>
 
-          {/* Jobs List */}
-          <div className="space-y-4">
-            {filteredJobs.filter(job => job.status === 'open').map((job) => (
-              <Card key={job.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+          {/* Map View */}
+          {viewMode === 'map' && (
+            <JobsMapView 
+              jobs={filteredJobs.filter(job => job.status === 'open')}
+              onJobSelect={(jobId) => {
+                const job = filteredJobs.find(j => j.id === jobId);
+                setSelectedJob(job || null);
+              }}
+            />
+          )}
+
+          {/* List View */}
+          {viewMode === 'list' && (
+            <div className="space-y-4">
+              {filteredJobs.filter(job => job.status === 'open').map((job) => (
+                <div key={job.id} className="space-y-4">
+                  {/* Job Card - Full Width */}
+                  <Card className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-6">
+                      {/* Job Details - Full Width */}
+                      <div className="flex items-start gap-3 mb-4">
+                        <div 
+                          className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors"
+                          onClick={() => {
+                            setSelectedCompany(job.company);
+                            setShowCompanyProfile(true);
+                          }}
+                        >
                           <Briefcase className="h-6 w-6 text-muted-foreground" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold">{job.title}</h3>
+                            <h3 className="font-semibold text-lg">{job.title}</h3>
                             <Badge variant="outline">{job.type.replace('-', ' ')}</Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{job.company}</p>
+                          <button
+                            className="text-sm text-primary hover:underline mb-2"
+                            onClick={() => {
+                              setSelectedCompany(job.company);
+                              setShowCompanyProfile(true);
+                            }}
+                          >
+                            <Building className="h-3 w-3 inline mr-1" />
+                            {job.company}
+                          </button>
                           <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                             <div className="flex items-center gap-1">
                               <MapPin className="h-3 w-3" />
@@ -342,28 +410,74 @@ export default function JobsPage() {
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
                             <Calendar className="h-3 w-3" />
                             <span>Posted {job.postedDate}</span>
                             <span>•</span>
                             <span>Deadline {job.deadline}</span>
                           </div>
+
+                          {/* Enhanced Actions */}
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => setSelectedJob(job)}
+                            >
+                              View Details
+                            </Button>
+                            <Button 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedJob(job);
+                                setShowQuickApply(true);
+                              }}
+                              className="gap-2"
+                            >
+                              <Zap className="h-4 w-4" />
+                              Quick Apply
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Bookmark className={`h-3 w-3 ${job.isBookmarked ? 'fill-current' : ''}`} />
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col gap-2 ml-4">
-                      <Button size="sm" variant="outline">
-                        <Bookmark className={`h-3 w-3 ${job.isBookmarked ? 'fill-current' : ''}`} />
-                      </Button>
-                      <Button size="sm">
-                        Apply Now
-                      </Button>
-                    </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* AI Tools - Full Width Grid Below */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <AIJobMatchScore 
+                      jobId={job.id}
+                      jobSkills={job.skills}
+                      overallMatch={job.id === '1' ? 92 : job.id === '2' ? 85 : 78}
+                    />
+                    
+                    <EarningsCalculator
+                      jobSalary={job.salary}
+                      jobBudget={job.budget}
+                      jobType={job.type}
+                    />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+
+                  {/* Skills Gap Analysis - Collapsible */}
+                  {selectedJob?.id === job.id && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <SkillsGapAnalysis 
+                        jobSkills={job.skills}
+                      />
+                      <SimilarJobsRecommendations
+                        currentJobId={job.id}
+                        currentJobSkills={job.skills}
+                        currentJobCategory={job.category}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         {/* Applied Jobs Tab */}
@@ -400,6 +514,16 @@ export default function JobsPage() {
                         View Application
                       </Button>
                     </div>
+                  </div>
+                  
+                  {/* Application Status Tracker */}
+                  <div className="mt-4 border-t pt-4">
+                    <ApplicationStatusTracker
+                      jobTitle={job.title}
+                      company={job.company}
+                      applicationDate={job.postedDate}
+                      currentStage={2}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -494,7 +618,27 @@ export default function JobsPage() {
             ))}
           </div>
         </TabsContent>
-      </Tabs>
+          </Tabs>
+      </div>
+
+      {/* Dialogs */}
+      {selectedJob && (
+        <>
+          <QuickApply
+            open={showQuickApply}
+            onOpenChange={setShowQuickApply}
+            jobTitle={selectedJob.title}
+            company={selectedJob.company}
+            matchScore={selectedJob.id === '1' ? 92 : selectedJob.id === '2' ? 85 : 78}
+          />
+          
+          <CompanyProfilePreview
+            open={showCompanyProfile}
+            onOpenChange={setShowCompanyProfile}
+            companyName={selectedCompany || selectedJob.company}
+          />
+        </>
+      )}
     </div>
   );
 }
