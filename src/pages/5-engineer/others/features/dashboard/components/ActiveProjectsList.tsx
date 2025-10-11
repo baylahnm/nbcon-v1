@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Progress } from '../../../../../1-HomePage/others/components/ui/progress';
-import { Building, Calendar, Eye, Upload, MessageSquare, FolderOpen, TrendingUp } from 'lucide-react';
+import { Building, Calendar, Eye, Upload, MessageSquare, FolderOpen, TrendingUp, ChevronUp, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Project {
@@ -54,6 +55,8 @@ const defaultProjects: Project[] = [
 ];
 
 export function ActiveProjectsList({ projects = defaultProjects }: ActiveProjectsListProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'on-track':
@@ -75,7 +78,19 @@ export function ActiveProjectsList({ projects = defaultProjects }: ActiveProject
   };
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-border/50">
+    <Card 
+      className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+    >
       <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -89,16 +104,31 @@ export function ActiveProjectsList({ projects = defaultProjects }: ActiveProject
               </p>
             </div>
           </div>
-          <Button asChild variant="outline" size="sm" className="h-8 text-xs">
-            <Link to="/engineer/projects">
-              <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
-              View All
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm" className="h-8 text-xs">
+              <Link to="/engineer/projects">
+                <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
+                View All
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 pt-2 space-y-4">
+      {!isCollapsed && (
+        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {projects.map((project) => {
           const statusColor = getStatusColor(project.status);
           
@@ -191,7 +221,8 @@ export function ActiveProjectsList({ projects = defaultProjects }: ActiveProject
             </p>
           </div>
         )}
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 }

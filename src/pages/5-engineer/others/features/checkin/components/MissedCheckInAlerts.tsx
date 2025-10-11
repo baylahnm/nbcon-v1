@@ -9,7 +9,8 @@ import {
   CheckCircle,
   Clock,
   FileText,
-  XCircle
+  XCircle,
+  Award
 } from "lucide-react";
 import { useState } from "react";
 
@@ -79,14 +80,31 @@ export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps
 
   if (!hasMissed) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-            Perfect Attendance
+      <Card
+        style={{
+          border: '2px solid transparent',
+          borderRadius: '0.75rem',
+          backgroundImage: `
+            linear-gradient(hsl(var(--card)), hsl(var(--card))),
+            linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+          `,
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+        }}
+        className="gap-0"
+      >
+        <CardHeader className="p-5 pb-3 border-b border-border/40">
+          <CardTitle className="flex items-center gap-3">
+            <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <CheckCircle className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">Perfect Attendance</div>
+              <p className="text-xs text-muted-foreground mt-0.5">No missed check-ins</p>
+            </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="flex items-center gap-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20">
             <Award className="w-10 h-10 text-green-600" />
             <div>
@@ -102,12 +120,29 @@ export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+      className="gap-0"
+    >
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-orange-600" />
-            Missed Check-ins
+          <div className="flex items-center gap-3">
+            <div className="bg-orange-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <AlertTriangle className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">Missed Check-ins</div>
+              <p className="text-xs text-muted-foreground mt-0.5">Action required</p>
+            </div>
           </div>
           <Badge variant="destructive">
             <Bell className="w-3 h-3 mr-1" />
@@ -115,7 +150,7 @@ export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Alert */}
         <Alert>
           <AlertTriangle className="h-4 w-4" />

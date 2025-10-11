@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Briefcase, FileText, DollarSign, User, TrendingUp, TrendingDown } from 'lucide-react';
@@ -12,47 +13,82 @@ interface StatCardProps {
 }
 
 function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: StatCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Add mouse tracking for animated gradient
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const angle = Math.atan2(y - centerY, x - centerX);
+      card.style.setProperty('--rotation', `${angle}rad`);
+    };
+
+    card.addEventListener('mousemove', handleMouseMove);
+    return () => card.removeEventListener('mousemove', handleMouseMove);
+  }, []);
   const colors = {
     blue: { 
-      bg: 'bg-blue-500', 
-      icon: 'text-white', 
-      gradient: 'from-blue-500/10 to-transparent'
+      bg: 'bg-primary', 
+      icon: 'text-primary-foreground', 
+      gradient: 'from-primary/10 to-transparent'
     },
     amber: { 
-      bg: 'bg-amber-500', 
-      icon: 'text-white', 
-      gradient: 'from-amber-500/10 to-transparent'
+      bg: 'bg-primary', 
+      icon: 'text-primary-foreground', 
+      gradient: 'from-primary/10 to-transparent'
     },
     green: { 
-      bg: 'bg-green-500', 
-      icon: 'text-white', 
-      gradient: 'from-green-500/10 to-transparent'
+      bg: 'bg-primary', 
+      icon: 'text-primary-foreground', 
+      gradient: 'from-primary/10 to-transparent'
     },
     purple: { 
-      bg: 'bg-purple-500', 
-      icon: 'text-white', 
-      gradient: 'from-purple-500/10 to-transparent'
+      bg: 'bg-primary', 
+      icon: 'text-primary-foreground', 
+      gradient: 'from-primary/10 to-transparent'
     },
   };
 
   return (
-    <Card 
-      className="group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 cursor-pointer border-border/50 overflow-hidden relative"
-      onClick={onClick}
+    <div
+      ref={cardRef}
+      className="relative overflow-hidden transition-all duration-300"
       style={{
-        backgroundImage: `linear-gradient(135deg, ${colors[color].gradient})`,
-      }}
+        '--rotation': '4.2rad',
+        border: '2px solid transparent',
+        borderRadius: '0.5rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      } as React.CSSProperties}
     >
-      <CardContent className="p-5">
-        <div className="flex items-center gap-4">
-          <div className={`${colors[color].bg} h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md group-hover:scale-110 transition-transform`}>
-            <Icon className={`h-6 w-6 ${colors[color].icon}`} />
+      <Card 
+        className="cursor-pointer bg-transparent border-0"
+        onClick={onClick}
+      >
+        <CardContent className="p-5">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className={`${colors[color].bg} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md group-hover:scale-110 transition-transform`}>
+              <Icon className={`h-5 w-5 ${colors[color].icon}`} />
+            </div>
+            <p className="text-xs font-medium text-muted-foreground">{label}</p>
           </div>
-          <div className="flex-1">
+          <div>
             <p className="text-xl font-bold tracking-tight">{value}</p>
-            <p className="text-xs font-medium text-muted-foreground mt-0.5">{label}</p>
             {trend && (
-              <div className={`flex items-center gap-1 text-xs mt-1 font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`flex items-center gap-1 text-xs mt-1.5 font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
                 {trend.isPositive ? (
                   <TrendingUp className="h-3 w-3" />
                 ) : (
@@ -65,6 +101,7 @@ function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: 
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 }
 

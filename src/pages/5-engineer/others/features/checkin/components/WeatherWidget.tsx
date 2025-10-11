@@ -108,27 +108,41 @@ export function WeatherWidget({ projectLocation, coordinates }: WeatherWidgetPro
   const uvBadge = getUVIndexBadge(weather.uvIndex);
 
   return (
-    <Card>
-      <CardHeader>
+    <Card
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+      className="gap-0"
+    >
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {getWeatherIcon()}
+          <div className="flex items-center gap-3">
+            <div className="bg-orange-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Thermometer className="w-6 h-6 text-white" />
+            </div>
             <div>
-              <div className="text-xl">Weather Conditions</div>
-              <div className="text-sm font-normal text-muted-foreground">{weather.locationName}</div>
+              <div className="text-base font-bold">Weather Conditions</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{weather.locationName}</div>
             </div>
           </div>
           <div className="text-right">
-            <div className={`text-4xl font-bold ${getTemperatureColor(weather.temperature)}`}>
+            <div className={`text-3xl font-bold ${getTemperatureColor(weather.temperature)}`}>
               {weather.temperature}°C
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs text-muted-foreground">
               Feels like {weather.feelsLike}°C
             </div>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Humidity */}
           <div className="flex items-center gap-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">

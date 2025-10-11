@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../../1-HomePage/others/components/ui/tabs";
@@ -29,6 +30,27 @@ interface CheckInAnalyticsProps {
 }
 
 export function CheckInAnalytics({ showStreaks = true }: CheckInAnalyticsProps) {
+  const analyticsCardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const card = analyticsCardRef.current;
+    if (!card) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const angle = Math.atan2(y - centerY, x - centerX);
+      card.style.setProperty('--rotation', `${angle}rad`);
+    };
+
+    card.addEventListener('mousemove', handleMouseMove);
+    return () => card.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   // Mock data for charts
   const weeklyHoursData = [
     { day: "Mon", hours: 8.5, overtime: 0.5 },
@@ -60,14 +82,34 @@ export function CheckInAnalytics({ showStreaks = true }: CheckInAnalyticsProps) 
   const averageHoursPerDay = 8.5;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-primary" />
-          Performance Analytics
+    <div
+      ref={analyticsCardRef}
+      className="relative overflow-hidden transition-all duration-300"
+      style={{
+        '--rotation': '4.2rad',
+        border: '2px solid transparent',
+        borderRadius: '0.5rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      } as React.CSSProperties}
+    >
+    <Card className="bg-transparent border-0 gap-0">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
+        <CardTitle className="flex items-center gap-3">
+          <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+            <TrendingUp className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <div className="text-base font-bold">Performance Analytics</div>
+            <p className="text-xs text-muted-foreground mt-0.5">Detailed work insights</p>
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         <Tabs defaultValue="weekly" className="space-y-4">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="weekly">Weekly</TabsTrigger>
@@ -271,6 +313,7 @@ export function CheckInAnalytics({ showStreaks = true }: CheckInAnalyticsProps) 
         </Tabs>
       </CardContent>
     </Card>
+    </div>
   );
 }
 

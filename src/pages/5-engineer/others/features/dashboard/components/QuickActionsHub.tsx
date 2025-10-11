@@ -6,7 +6,7 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import XScroll from '../../../../../1-HomePage/others/components/ui/x-scroll';
 import {
   Briefcase, MapPin, Upload, MessageSquare, Calendar, User,
-  FileText, DollarSign, Bell, ClipboardList, Zap, ChevronLeft, ChevronRight, Plus
+  FileText, DollarSign, Bell, ClipboardList, Zap, ChevronLeft, ChevronRight, Plus, ChevronUp, ChevronDown
 } from 'lucide-react';
 
 interface QuickActionsHubProps {
@@ -14,24 +14,26 @@ interface QuickActionsHubProps {
 }
 
 export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Quick action items for engineer
   const engineerActions = [
-    { id: 'quote', label: 'Create Quote', icon: FileText, color: 'text-blue-600', bgColor: 'bg-blue-500/10', ringColor: 'ring-blue-500/20', to: '/engineer/quotes/new' },
-    { id: 'report', label: 'New Inspection', icon: ClipboardList, color: 'text-green-600', bgColor: 'bg-green-500/10', ringColor: 'ring-green-500/20', to: '/engineer/reports/new' },
+    { id: 'quote', label: 'Create Quote', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/quotes/new' },
+    { id: 'report', label: 'New Inspection', icon: ClipboardList, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/reports/new' },
     { id: 'deliverable', label: 'Upload Deliverable', icon: Upload, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/job/upload' },
-    { id: 'invoice', label: 'Send Invoice', icon: DollarSign, color: 'text-emerald-600', bgColor: 'bg-emerald-500/10', ringColor: 'ring-emerald-500/20', to: '/engineer/finance' },
-    { id: 'jobs', label: 'Browse Jobs', icon: Briefcase, color: 'text-purple-600', bgColor: 'bg-purple-500/10', ringColor: 'ring-purple-500/20', to: '/engineer/jobs' },
-    { id: 'checkin', label: 'Check-In', icon: MapPin, color: 'text-amber-600', bgColor: 'bg-amber-500/10', ringColor: 'ring-amber-500/20', to: '/engineer/checkin' },
-    { id: 'upload', label: 'Upload Files', icon: Upload, color: 'text-pink-600', bgColor: 'bg-pink-500/10', ringColor: 'ring-pink-500/20', to: '/engineer/job/upload' },
-    { id: 'messages', label: 'Messages', icon: MessageSquare, color: 'text-cyan-600', bgColor: 'bg-cyan-500/10', ringColor: 'ring-cyan-500/20', to: '/engineer/messages' },
-    { id: 'calendar', label: 'Calendar', icon: Calendar, color: 'text-indigo-600', bgColor: 'bg-indigo-500/10', ringColor: 'ring-indigo-500/20', to: '/engineer/calendar' },
-    { id: 'profile', label: 'Profile', icon: User, color: 'text-orange-600', bgColor: 'bg-orange-500/10', ringColor: 'ring-orange-500/20', to: '/engineer/profile' },
-    { id: 'alerts', label: 'Alerts', icon: Bell, color: 'text-red-600', bgColor: 'bg-red-500/10', ringColor: 'ring-red-500/20', to: '/engineer/notifications' },
-    { id: 'more', label: 'More', icon: Plus, color: 'text-gray-600', bgColor: 'bg-gray-500/10', ringColor: 'ring-gray-500/20', to: '/engineer/settings' },
+    { id: 'invoice', label: 'Send Invoice', icon: DollarSign, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/finance' },
+    { id: 'jobs', label: 'Browse Jobs', icon: Briefcase, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/jobs' },
+    { id: 'checkin', label: 'Check-In', icon: MapPin, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/checkin' },
+    { id: 'upload', label: 'Upload Files', icon: Upload, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/job/upload' },
+    { id: 'messages', label: 'Messages', icon: MessageSquare, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/messages' },
+    { id: 'calendar', label: 'Calendar', icon: Calendar, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/calendar' },
+    { id: 'profile', label: 'Profile', icon: User, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/profile' },
+    { id: 'alerts', label: 'Alerts', icon: Bell, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/notifications' },
+    { id: 'more', label: 'More', icon: Plus, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/engineer/settings' },
   ];
 
   // Handle scroll event to update arrow visibility
@@ -67,8 +69,43 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
     }
   }, []);
 
+  // Add mouse tracking for animated gradient
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const angle = Math.atan2(y - centerY, x - centerX);
+      card.style.setProperty('--rotation', `${angle}rad`);
+    };
+
+    card.addEventListener('mousemove', handleMouseMove);
+    return () => card.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 border-border/50">
+    <div
+      ref={cardRef}
+      className="relative overflow-hidden transition-all duration-300"
+      style={{
+        '--rotation': '4.2rad',
+        border: '2px solid transparent',
+        borderRadius: '0.5rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      } as React.CSSProperties}
+    >
+      <Card className="bg-transparent border-0 gap-0">
       <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -82,12 +119,32 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{engineerActions.length}</Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{engineerActions.length}</Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 pt-2">
+      {!isCollapsed && (
+        <CardContent className="py-5 px-0 bg-background rounded-b-xl">
         <div className="relative">
+          {/* Left fade/blur effect */}
+          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+          
+          {/* Right fade/blur effect */}
+          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
           {/* Left Arrow */}
           {showLeftArrow && (
             <Button
@@ -115,7 +172,7 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
           <XScroll>
             <div 
               ref={scrollContainerRef}
-              className="flex gap-4 pt-1 px-1 pb-4"
+              className="flex gap-4 pt-4 px-5 pb-4"
               style={{
                 scrollSnapType: 'x mandatory',
                 scrollBehavior: 'smooth',
@@ -128,11 +185,11 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
                   className="min-w-[100px] shrink-0 snap-start"
                 >
                   <Button 
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
-                    className="h-auto min-w-[100px] p-3 flex flex-col items-center gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 border-border/50"
+                    className="h-auto min-w-[100px] p-3 flex flex-col items-center gap-2 bg-background hover:bg-background"
                   >
-                    <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor} transition-transform group-hover:scale-110`}>
+                    <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor}`}>
                       <action.icon className={`h-4 w-4 ${action.color}`} />
                     </div>
                     <span className="text-xs font-medium text-foreground leading-tight">
@@ -144,8 +201,10 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
             </div>
           </XScroll>
         </div>
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
+    </div>
   );
 }
 

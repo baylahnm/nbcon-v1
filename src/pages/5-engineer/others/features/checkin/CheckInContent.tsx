@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "../../stores/auth";
 import { getUserDisplayName } from "../../../../1-HomePage/others/lib/userUtils";
 import { 
@@ -164,6 +164,43 @@ export function CheckInContent() {
   const [currentTime, setCurrentTime] = useState("");
   const [showExportDialog, setShowExportDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("checkin");
+  
+  // Refs for animated gradient cards
+  const currentStatusCardRef = useRef<HTMLDivElement>(null);
+  const selectProjectCardRef = useRef<HTMLDivElement>(null);
+  const locationStatusCardRef = useRef<HTMLDivElement>(null);
+
+  // Mouse tracking effect for animated gradient borders
+  useEffect(() => {
+    const setupMouseTracking = (cardRef: React.RefObject<HTMLDivElement>) => {
+      const card = cardRef.current;
+      if (!card) return;
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const angle = Math.atan2(y - centerY, x - centerX);
+        card.style.setProperty('--rotation', `${angle}rad`);
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      return () => card.removeEventListener('mousemove', handleMouseMove);
+    };
+
+    const cleanup1 = setupMouseTracking(currentStatusCardRef);
+    const cleanup2 = setupMouseTracking(selectProjectCardRef);
+    const cleanup3 = setupMouseTracking(locationStatusCardRef);
+
+    return () => {
+      cleanup1?.();
+      cleanup2?.();
+      cleanup3?.();
+    };
+  }, []);
 
   // Update time every second
   useEffect(() => {
@@ -339,11 +376,30 @@ export function CheckInContent() {
         <TabsContent value="checkin" className="space-y-4 mt-6">
 
       {/* Current Status Dashboard */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5" />
-            Current Status
+      <Card
+        ref={currentStatusCardRef}
+        className="relative overflow-hidden transition-all duration-300"
+        style={{
+          '--rotation': '4.2rad',
+          border: '2px solid transparent',
+          borderRadius: '0.5rem',
+          backgroundImage: `
+            linear-gradient(hsl(var(--card)), hsl(var(--card))),
+            linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+          `,
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+        } as React.CSSProperties}
+      >
+        <CardHeader className="p-5 pb-3 border-b border-border/40">
+          <CardTitle className="flex items-center gap-2 text-base font-bold tracking-tight">
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Clock className="w-6 h-6 text-primary-foreground" />
+            </div>
+            <div>
+              <div className="text-base font-bold tracking-tight">Current Status</div>
+              <p className="text-xs text-muted-foreground mt-0.5 font-normal">Your work session status</p>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -372,11 +428,30 @@ export function CheckInContent() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Project Selection Card */}
-        <Card className="h-full flex flex-col">
-          <CardHeader>
+        <Card 
+          ref={selectProjectCardRef}
+          className="h-full flex flex-col relative overflow-hidden transition-all duration-300"
+          style={{
+            '--rotation': '4.2rad',
+            border: '2px solid transparent',
+            borderRadius: '0.5rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+          } as React.CSSProperties}
+        >
+          <CardHeader className="p-5 pb-3 border-b border-border/40">
             <CardTitle className="flex items-center gap-2">
-              <Building className="w-5 h-5" />
-              Select Project
+              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                <Building className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <div className="text-base font-bold tracking-tight">Select Project</div>
+                <p className="text-xs text-muted-foreground mt-0.5 font-normal">Choose your work site</p>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 flex-1 flex flex-col">
@@ -435,11 +510,30 @@ export function CheckInContent() {
         </Card>
 
         {/* Location Status Card */}
-        <Card className="h-full flex flex-col">
-          <CardHeader>
+        <Card 
+          ref={locationStatusCardRef}
+          className="h-full flex flex-col relative overflow-hidden transition-all duration-300"
+          style={{
+            '--rotation': '4.2rad',
+            border: '2px solid transparent',
+            borderRadius: '0.5rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+          } as React.CSSProperties}
+        >
+          <CardHeader className="p-5 pb-3 border-b border-border/40">
             <CardTitle className="flex items-center gap-2">
-              <MapPin className="w-5 h-5" />
-              Location Status
+              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                <MapPin className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <div className="text-base font-bold tracking-tight">Location Status</div>
+                <p className="text-xs text-muted-foreground mt-0.5 font-normal">GPS and geofence info</p>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 flex-1 flex flex-col">
@@ -512,17 +606,36 @@ export function CheckInContent() {
 
       {/* Safety Checklist */}
       {selectedProject && (
-        <Card>
-          <CardHeader>
+        <Card
+          style={{
+            border: '2px solid transparent',
+            borderRadius: '0.75rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+          }}
+        >
+          <CardHeader className="p-5 pb-3 border-b border-border/40">
             <CardTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Safety Checklist
-              <Badge 
-                variant={allSafetyItemsChecked ? "default" : "secondary"}
-                className={allSafetyItemsChecked ? "bg-green-600" : ""}
-              >
-                {Object.values(safetyChecklist).filter(Boolean).length}/4 Complete
-              </Badge>
+              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                <Shield className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-base font-bold tracking-tight">Safety Checklist</div>
+                  <Badge 
+                    variant={allSafetyItemsChecked ? "default" : "secondary"}
+                    className={allSafetyItemsChecked ? "bg-green-600" : ""}
+                  >
+                    {Object.values(safetyChecklist).filter(Boolean).length}/4 Complete
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5 font-normal">Complete before check-in</p>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -583,11 +696,28 @@ export function CheckInContent() {
 
       {/* Check-in Notes */}
       {selectedProject && (
-        <Card>
-          <CardHeader>
+        <Card
+          style={{
+            border: '2px solid transparent',
+            borderRadius: '0.75rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
+          }}
+        >
+          <CardHeader className="p-5 pb-3 border-b border-border/40">
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Check-in Notes
+              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                <FileText className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <div className="text-base font-bold tracking-tight">Check-in Notes</div>
+                <p className="text-xs text-muted-foreground mt-0.5 font-normal">Add observations and comments</p>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -693,14 +823,31 @@ export function CheckInContent() {
       <MissedCheckInAlerts />
 
       {/* Recent Check-ins */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5" />
-            Recent Check-ins
+      <Card
+        style={{
+          border: '2px solid transparent',
+          borderRadius: '0.75rem',
+          backgroundImage: `
+            linear-gradient(hsl(var(--card)), hsl(var(--card))),
+            linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+          `,
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+        }}
+        className="gap-0"
+      >
+        <CardHeader className="p-5 pb-3 border-b border-border/40">
+          <CardTitle className="flex items-center gap-3">
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Clock className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">Recent Check-ins</div>
+              <p className="text-xs text-muted-foreground mt-0.5">Your recent work history</p>
+            </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="space-y-3">
             {[
               { date: "2024-01-15", project: "NEOM Smart City", checkIn: "07:15", checkOut: "15:30", hours: "8.25" },

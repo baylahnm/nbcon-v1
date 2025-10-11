@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
 import { Input } from "../../../../../1-HomePage/others/components/ui/input";
@@ -61,65 +61,37 @@ export function EarningsCalculator({
     ? ((earnings.monthly - jobAverage) / jobAverage * 100).toFixed(1)
     : 0;
 
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const card = cardRef.current;
-    const handleMouseMove = (e: MouseEvent) => {
-      if (card) {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const angle = Math.atan2(-x, y);
-        card.style.setProperty("--rotation", angle + "rad");
-      }
-    };
-    if (card) {
-      card.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      if (card) {
-        card.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
   return (
-    <Card
-      ref={cardRef}
-      className="relative overflow-hidden transition-all duration-300 cursor-pointer h-full flex flex-col justify-between"
+    <Card 
       style={{
-        '--rotation': '4.2rad',
         border: '2px solid transparent',
-        borderRadius: '0.5rem',
+        borderRadius: '0.75rem',
         backgroundImage: `
           linear-gradient(hsl(var(--card)), hsl(var(--card))),
-          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
         `,
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-      } as React.CSSProperties}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 20px hsl(var(--primary) / 0.3)';
       }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-      }}
+      className="gap-0"
     >
-      <CardHeader>
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Calculator className="w-5 h-5 text-primary" />
-            Earnings Calculator
+          <div className="flex items-center gap-3">
+            <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Calculator className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">Earnings Calculator</div>
+              <p className="text-xs text-muted-foreground mt-0.5">Estimate your potential income</p>
+            </div>
           </div>
           <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
             {jobType === 'freelance' || jobType === 'contract' ? 'Contract' : 'Full-time'}
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Input Parameters */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">

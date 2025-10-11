@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
 import { Button } from "../../../../../1-HomePage/others/components/ui/button";
@@ -71,65 +71,37 @@ export function SimilarJobsRecommendations({
     }
   ];
 
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const card = cardRef.current;
-    const handleMouseMove = (e: MouseEvent) => {
-      if (card) {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const angle = Math.atan2(-x, y);
-        card.style.setProperty("--rotation", angle + "rad");
-      }
-    };
-    if (card) {
-      card.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      if (card) {
-        card.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
   return (
-    <Card
-      ref={cardRef}
-      className="relative overflow-hidden transition-all duration-300 cursor-pointer h-full flex flex-col justify-between"
+    <Card 
       style={{
-        '--rotation': '4.2rad',
         border: '2px solid transparent',
-        borderRadius: '0.5rem',
+        borderRadius: '0.75rem',
         backgroundImage: `
           linear-gradient(hsl(var(--card)), hsl(var(--card))),
-          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
         `,
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-      } as React.CSSProperties}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 20px hsl(var(--primary) / 0.3)';
       }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-      }}
+      className="gap-0"
     >
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-600" />
-          Similar Jobs You May Like
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
+        <CardTitle className="flex items-center gap-3">
+          <div className="bg-purple-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+            <Sparkles className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <div className="text-base font-bold">Similar Jobs You May Like</div>
+            <p className="text-xs text-muted-foreground mt-0.5">AI-powered recommendations</p>
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         <div className="space-y-3">
           {similarJobs.map((job) => (
             <div 
               key={job.id}
-              className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
+              className="p-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer group"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">

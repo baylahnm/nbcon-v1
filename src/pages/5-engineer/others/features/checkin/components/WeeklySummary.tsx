@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
 import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
@@ -50,16 +51,68 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
 
   const week = weekData || defaultWeekData;
   const month = monthData || defaultMonthData;
+  
+  const thisWeekCardRef = useRef<HTMLDivElement>(null);
+  const thisMonthCardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const setupMouseTracking = (cardRef: React.RefObject<HTMLDivElement>) => {
+      const card = cardRef.current;
+      if (!card) return;
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const angle = Math.atan2(y - centerY, x - centerX);
+        card.style.setProperty('--rotation', `${angle}rad`);
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      return () => card.removeEventListener('mousemove', handleMouseMove);
+    };
+
+    const cleanup1 = setupMouseTracking(thisWeekCardRef);
+    const cleanup2 = setupMouseTracking(thisMonthCardRef);
+
+    return () => {
+      cleanup1?.();
+      cleanup2?.();
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
       {/* This Week Summary */}
-      <Card>
-        <CardHeader>
+      <div
+        ref={thisWeekCardRef}
+        className="relative overflow-hidden transition-all duration-300"
+        style={{
+          '--rotation': '4.2rad',
+          border: '2px solid transparent',
+          borderRadius: '0.5rem',
+          backgroundImage: `
+            linear-gradient(hsl(var(--card)), hsl(var(--card))),
+            linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+          `,
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+        } as React.CSSProperties}
+      >
+      <Card className="bg-transparent border-0 gap-0">
+        <CardHeader className="p-5 pb-3 border-b border-border/40">
           <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary" />
-              This Week
+            <div className="flex items-center gap-3">
+              <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                <Calendar className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-base font-bold">This Week</div>
+                <p className="text-xs text-muted-foreground mt-0.5">Weekly performance summary</p>
+              </div>
             </div>
             <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
               <Zap className="w-3 h-3 mr-1" />
@@ -67,7 +120,7 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
             </Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {/* Total Hours */}
             <div className="text-center p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
@@ -119,16 +172,37 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
           </div>
         </CardContent>
       </Card>
+      </div>
 
       {/* This Month Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-success" />
-            This Month
+      <div
+        ref={thisMonthCardRef}
+        className="relative overflow-hidden transition-all duration-300"
+        style={{
+          '--rotation': '4.2rad',
+          border: '2px solid transparent',
+          borderRadius: '0.5rem',
+          backgroundImage: `
+            linear-gradient(hsl(var(--card)), hsl(var(--card))),
+            linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+          `,
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'padding-box, border-box',
+        } as React.CSSProperties}
+      >
+      <Card className="bg-transparent border-0 gap-0">
+        <CardHeader className="p-5 pb-3 border-b border-border/40">
+          <CardTitle className="flex items-center gap-3">
+            <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">This Month</div>
+              <p className="text-xs text-muted-foreground mt-0.5">Monthly performance overview</p>
+            </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="space-y-4">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -187,6 +261,7 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

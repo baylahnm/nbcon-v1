@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
@@ -16,8 +16,30 @@ interface AIAssistantWidgetProps {
 export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetProps) {
   const { getActiveMessages } = useAiStore();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
   const activeMessages = getActiveMessages();
   const lastMessages = activeMessages.slice(-3);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / 20;
+      const rotateY = (centerX - x) / 20;
+      
+      const angle = Math.atan2(y - centerY, x - centerX);
+      card.style.setProperty('--rotation', `${angle}rad`);
+    };
+
+    card.addEventListener('mousemove', handleMouseMove);
+    return () => card.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   // Quick action prompts based on role
   const quickPrompts = [
@@ -42,18 +64,19 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
 
   return (
     <Card 
-      className="relative overflow-hidden transition-all duration-300 border-b-2 border-border/40"
+      ref={cardRef}
+      className="relative overflow-hidden transition-all duration-300 gap-0"
       style={{
+        '--rotation': '4.2rad',
         border: '2px solid transparent',
-        borderRadius: '0.75rem',
+        borderRadius: '0.5rem',
         backgroundImage: `
           linear-gradient(hsl(var(--card)), hsl(var(--card))),
-          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
         `,
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
-      }}
+      } as React.CSSProperties}
     >
       <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
@@ -99,7 +122,7 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
       </CardHeader>
 
       {!isCollapsed && (
-        <CardContent className="p-5 pt-0 pb-6 space-y-4">
+        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           {/* Quick Prompts */}
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-2">Quick Actions:</p>

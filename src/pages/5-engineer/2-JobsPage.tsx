@@ -230,6 +230,7 @@ export default function JobsPage() {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
       <div className="container mx-auto px-4 py-4 space-y-4">
@@ -279,45 +280,67 @@ export default function JobsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { icon: Eye, label: 'Available Jobs', count: mockJobs.filter(j => j.status === 'open').length, color: 'text-primary' },
-          { icon: Send, label: 'Applied', count: mockJobs.filter(j => j.status === 'applied').length, color: 'text-primary' },
-          { icon: CheckCircle2, label: 'Shortlisted', count: mockJobs.filter(j => j.status === 'shortlisted').length, color: 'text-primary' },
-          { icon: Bookmark, label: 'Bookmarked', count: mockJobs.filter(j => j.isBookmarked).length, color: 'text-primary' }
-        ].map((stat, index) => (
-          <Card 
-            key={index}
-            className="relative overflow-hidden transition-all duration-300 cursor-pointer"
-            style={{
-              border: '2px solid transparent',
-              borderRadius: '0.5rem',
-              backgroundImage: `
-                linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
-              `,
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15), 0 0 15px hsl(var(--primary) / 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.08)';
-            }}
-          >
-            <CardContent className="p-5">
-              <div className="flex items-center gap-4">
-                <div className="bg-primary/10 p-3 rounded-xl ring-1 ring-primary/20">
-                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-3xl font-bold tracking-tight">{stat.count}</p>
-                  <p className="text-sm font-medium text-muted-foreground mt-0.5">{stat.label}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+          { icon: Eye, label: 'Available Jobs', count: mockJobs.filter(j => j.status === 'open').length, bgColor: 'bg-primary' },
+          { icon: Send, label: 'Applied', count: mockJobs.filter(j => j.status === 'applied').length, bgColor: 'bg-blue-500' },
+          { icon: CheckCircle2, label: 'Shortlisted', count: mockJobs.filter(j => j.status === 'shortlisted').length, bgColor: 'bg-green-500' },
+          { icon: Bookmark, label: 'Bookmarked', count: mockJobs.filter(j => j.isBookmarked).length, bgColor: 'bg-amber-500' }
+        ].map((stat, index) => {
+          const cardRef = useRef<HTMLDivElement>(null);
+
+          useEffect(() => {
+            const card = cardRef.current;
+            if (!card) return;
+
+            const handleMouseMove = (e: MouseEvent) => {
+              const rect = card.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+              
+              const angle = Math.atan2(y - centerY, x - centerX);
+              card.style.setProperty('--rotation', `${angle}rad`);
+            };
+
+            card.addEventListener('mousemove', handleMouseMove);
+            return () => card.removeEventListener('mousemove', handleMouseMove);
+          }, []);
+
+          return (
+            <div
+              key={index}
+              ref={cardRef}
+              className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+              style={{
+                '--rotation': '4.2rad',
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              } as React.CSSProperties}
+            >
+              <Card className="bg-transparent border-0">
+                <CardContent className="p-5">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className={`${stat.bgColor} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md`}>
+                        <stat.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
+                    </div>
+                    <div>
+                      <p className="text-xl font-bold">{stat.count}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
       </div>
 
       {/* Saved Searches - Now below stats */}
@@ -389,25 +412,26 @@ export default function JobsPage() {
               {filteredJobs.filter(job => job.status === 'open').map((job) => (
                 <div key={job.id} className="space-y-4">
                   {/* Job Card - Full Width */}
-                  <Card className="relative overflow-hidden transition-all duration-300"
+                  <Card 
+                    className="gap-0"
                     style={{
                       border: '2px solid transparent',
-                      borderRadius: '0.5rem',
+                      borderRadius: '0.75rem',
                       backgroundImage: `
                         linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                        linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, transparent 50%)
+                        linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
                       `,
                       backgroundOrigin: 'border-box',
                       backgroundClip: 'padding-box, border-box',
-                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
                     }}
                   >
-                    <CardContent className="p-7">
+                    <CardContent className="p-5">
                       {/* Job Details - Enhanced Layout */}
-                      <div className="space-y-4">
+                      <div className="flex gap-6">
+                        {/* Left Side - Content */}
+                        <div className="flex-1 space-y-4">
                         {/* Title Row */}
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1 space-y-2">
+                        <div className="space-y-2">
                             <div className="flex items-center gap-2.5">
                               <Briefcase className="h-5 w-5 text-primary" />
                               <h3 className="font-bold text-xl tracking-tight">{job.title}</h3>
@@ -423,7 +447,6 @@ export default function JobsPage() {
                               <Building className="h-4 w-4" />
                               {job.company}
                             </button>
-                          </div>
                         </div>
 
                         {/* Metadata Row - Better Spacing */}
@@ -519,96 +542,47 @@ export default function JobsPage() {
                             <Bookmark className={`h-5 w-5 ${job.isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
                           </Button>
                         </div>
+                        </div>
+
+                        {/* Right Side - Image */}
+                        <div className="hidden md:block w-48 h-48 flex-shrink-0">
+                          <img 
+                            src={`/e-jobs/Available Jobs/${job.title}.jpg`}
+                            alt={job.title}
+                            className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => {
+                              // Fallback to placeholder if image doesn't exist
+                              (e.target as HTMLImageElement).src = '/placeholder.svg';
+                            }}
+                          />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
 
                   {/* AI Tools Section - Enhanced Layout */}
-                  <div className="mt-6 p-6 rounded-xl bg-gradient-to-br from-muted/30 via-muted/20 to-background border border-border/40 shadow-sm">
-                    {/* Section Header */}
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20">
-                          <Zap className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-lg">AI-Powered Job Insights</h3>
-                          <p className="text-xs text-muted-foreground">Swipe to explore intelligent analysis</p>
-                        </div>
-                      </div>
-                      <Badge variant="outline" className="font-medium">
-                        4 Tools Available
-                      </Badge>
-                    </div>
+                  <div className="mt-6 space-y-4">
+                    <AIJobMatchScore 
+                      jobId={job.id}
+                      jobSkills={job.skills}
+                      overallMatch={job.id === '1' ? 92 : job.id === '2' ? 85 : 78}
+                    />
+                    
+                    <EarningsCalculator
+                      jobSalary={job.salary}
+                      jobBudget={job.budget}
+                      jobType={job.type}
+                    />
 
-                    {/* Scrollable Container with Arrows */}
-                    <div className="relative">
-                      {/* Left Arrow - Enhanced */}
-                      {showLeftArrow && (
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-background/98 backdrop-blur-md shadow-xl border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
-                          onClick={() => scrollToCard('left')}
-                        >
-                          <ChevronLeft className="h-6 w-6 text-primary" />
-                        </Button>
-                      )}
+                    <SkillsGapAnalysis 
+                      jobSkills={job.skills}
+                    />
 
-                      {/* Right Arrow - Enhanced */}
-                      {showRightArrow && (
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-background/98 backdrop-blur-md shadow-xl border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
-                          onClick={() => scrollToCard('right')}
-                        >
-                          <ChevronRight className="h-6 w-6 text-primary" />
-                        </Button>
-                      )}
-
-                      {/* Cards Container */}
-                      <XScroll>
-                        <div 
-                          ref={scrollContainerRef}
-                          className="flex gap-4 px-2 py-6 ai-tools-scroll"
-                          style={{
-                            scrollSnapType: 'x mandatory',
-                            scrollBehavior: 'smooth',
-                          }}
-                        >
-                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
-                          <AIJobMatchScore 
-                            jobId={job.id}
-                            jobSkills={job.skills}
-                            overallMatch={job.id === '1' ? 92 : job.id === '2' ? 85 : 78}
-                          />
-                        </div>
-                        
-                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
-                          <EarningsCalculator
-                            jobSalary={job.salary}
-                            jobBudget={job.budget}
-                            jobType={job.type}
-                          />
-                        </div>
-
-                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
-                          <SkillsGapAnalysis 
-                            jobSkills={job.skills}
-                          />
-                        </div>
-
-                        <div className="min-w-[400px] w-[400px] shrink-0 snap-start min-h-[520px]">
-                          <SimilarJobsRecommendations
-                            currentJobId={job.id}
-                            currentJobSkills={job.skills}
-                            currentJobCategory={job.category}
-                          />
-                        </div>
-                      </div>
-                      </XScroll>
-                    </div>
+                    <SimilarJobsRecommendations
+                      currentJobId={job.id}
+                      currentJobSkills={job.skills}
+                      currentJobCategory={job.category}
+                    />
                   </div>
                 </div>
               ))}

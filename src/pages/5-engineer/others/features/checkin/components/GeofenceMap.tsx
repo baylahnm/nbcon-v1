@@ -58,12 +58,29 @@ export function GeofenceMap({
     : 0;
 
   return (
-    <Card>
-      <CardHeader>
+    <Card
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+      className="gap-0"
+    >
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Map className="w-5 h-5 text-primary" />
-            Geofence Map
+          <div className="flex items-center gap-3">
+            <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Map className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">Geofence Map</div>
+              <p className="text-xs text-muted-foreground mt-0.5">Site boundary visualization</p>
+            </div>
           </div>
           <Badge 
             variant="outline"
@@ -77,7 +94,7 @@ export function GeofenceMap({
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Map Placeholder */}
         <div className="relative w-full h-[400px] bg-muted rounded-lg overflow-hidden border-2 border-border">
           {mapLoaded ? (

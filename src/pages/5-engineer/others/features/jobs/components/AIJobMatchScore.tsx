@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
-import { Card } from "../../../../../1-HomePage/others/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "../../../../../1-HomePage/others/components/ui/card";
 import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
 import { 
   Sparkles, 
@@ -75,64 +75,37 @@ export function AIJobMatchScore({
     }
   };
 
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const card = cardRef.current;
-    const handleMouseMove = (e: MouseEvent) => {
-      if (card) {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const angle = Math.atan2(-x, y);
-        card.style.setProperty("--rotation", angle + "rad");
-      }
-    };
-    if (card) {
-      card.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      if (card) {
-        card.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
   return (
     <Card 
-      ref={cardRef}
-      className="relative overflow-hidden transition-all duration-300 cursor-pointer h-full flex flex-col justify-between"
       style={{
-        '--rotation': '4.2rad',
         border: '2px solid transparent',
-        borderRadius: '0.5rem',
+        borderRadius: '0.75rem',
         backgroundImage: `
           linear-gradient(hsl(var(--card)), hsl(var(--card))),
-          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
         `,
         backgroundOrigin: 'border-box',
         backgroundClip: 'padding-box, border-box',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-      } as React.CSSProperties}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.25), 0 0 20px hsl(var(--primary) / 0.3)';
       }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-      }}
+      className="gap-0"
     >
-      <div className="p-4 space-y-4">
-        {/* AI Match Score Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className={`w-5 h-5 ${matchScore >= 70 ? 'text-green-600' : 'text-orange-600'}`} />
-            <span className="font-semibold text-sm">AI Match Score</span>
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`${matchScore >= 70 ? 'bg-green-500' : 'bg-orange-500'} h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md`}>
+              <Sparkles className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">AI Match Score</div>
+              <p className="text-xs text-muted-foreground mt-0.5">How well you match this job</p>
+            </div>
           </div>
           <Badge variant="outline" className={`${getMatchColor(matchScore)} font-bold text-lg px-3 py-1`}>
             {matchScore}%
           </Badge>
-        </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
 
         {/* Overall Progress */}
         <div className="space-y-2">
@@ -180,7 +153,7 @@ export function AIJobMatchScore({
             </p>
           </div>
         )}
-      </div>
+      </CardContent>
     </Card>
   );
 }

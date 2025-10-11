@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
-import { Activity, CheckCircle2, FileText, Briefcase, Upload, MessageSquare, GraduationCap, Clock, Eye, DollarSign } from 'lucide-react';
+import { Activity, CheckCircle2, FileText, Briefcase, Upload, MessageSquare, GraduationCap, Clock, Eye, DollarSign, ChevronUp, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ActivityItem {
@@ -89,6 +90,8 @@ export function RecentActivityFeed({
   activities = defaultActivities, 
   maxItems = 10 
 }: RecentActivityFeedProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   const displayedActivities = activities.slice(0, maxItems);
 
   const getActivityIcon = (type: ActivityItem['type']) => {
@@ -134,7 +137,19 @@ export function RecentActivityFeed({
   }, {} as Record<string, ActivityItem[]>);
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-border/50">
+    <Card 
+      className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+    >
       <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -148,11 +163,26 @@ export function RecentActivityFeed({
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{activities.length}</Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{activities.length}</Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </CardHeader>
 
-      <CardContent className="p-5 pt-2">
+      {!isCollapsed && (
+        <CardContent className="p-5 bg-background rounded-b-xl">
         <div className="space-y-4">
           {Object.entries(groupedActivities).map(([dateLabel, items]) => (
             <div key={dateLabel}>
@@ -238,7 +268,8 @@ export function RecentActivityFeed({
             </p>
           </div>
         )}
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 }

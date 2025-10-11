@@ -91,13 +91,7 @@ export function DashboardContent() {
             </Card>
           </div>
           
-        {/* Section 1: AI Assistant */}
-        <AIAssistantWidget userRole={profile?.role} />
-
-        {/* Section 2: Quick Actions */}
-        <QuickActionsHub userRole={profile?.role} />
-
-        {/* Section 3: Overview Stats */}
+        {/* Section 1: Overview Stats */}
         <OverviewStats 
           activeProjects={6}
           pendingInvoices={3}
@@ -107,8 +101,14 @@ export function DashboardContent() {
           onStatClick={handleStatClick}
         />
 
+        {/* Section 2: AI Assistant */}
+        <AIAssistantWidget userRole={profile?.role} />
+
+        {/* Section 3: Quick Actions */}
+        <QuickActionsHub userRole={profile?.role} />
+
         {/* Section 4 & 5: Projects and Earnings */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="space-y-4">
           {/* Active Projects */}
           <ActiveProjectsList />
           
