@@ -232,21 +232,20 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto px-6 py-8 space-y-8">
-        {/* Header - Enhanced */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-6 border-b border-border/40">
-          <div className="space-y-1.5">
-            <h1 className="text-4xl font-bold flex items-center gap-3">
-              <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
-                <Briefcase className="h-7 w-7 text-primary" />
-              </div>
-              <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+      <div className="container mx-auto px-4 py-4 space-y-4">
+        {/* Header */}
+        <div className="border-b pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold flex items-center gap-2">
+                <Briefcase className="h-5 w-5 text-primary" />
                 Engineering Jobs
-              </span>
-            </h1>
-            <p className="text-muted-foreground text-base ml-14">Find your next engineering opportunity in Saudi Arabia</p>
-          </div>
-          <div className="flex flex-wrap gap-2.5">
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                Find your next engineering opportunity in Saudi Arabia
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2.5">
             <Button 
               variant={viewMode === 'list' ? 'default' : 'outline'} 
               size="default"
@@ -273,6 +272,7 @@ export default function JobsPage() {
               <Briefcase className="h-4 w-4 mr-2" />
               Job Alerts
             </Button>
+            </div>
           </div>
         </div>
 
@@ -571,7 +571,7 @@ export default function JobsPage() {
                       <XScroll>
                         <div 
                           ref={scrollContainerRef}
-                          className="flex gap-5 px-2 py-6 ai-tools-scroll"
+                          className="flex gap-4 px-2 py-6 ai-tools-scroll"
                           style={{
                             scrollSnapType: 'x mandatory',
                             scrollBehavior: 'smooth',

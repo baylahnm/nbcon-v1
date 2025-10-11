@@ -7,6 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../../1-HomeP
 import { Avatar } from '../../../../../1-HomePage/others/components/ui/avatar';
 
 interface RecommendationsSectionProps {
+  reviews: any[]; // Array of reviews from Supabase
+  averageRating: number;
+  totalReviews: number;
   isEditMode?: boolean;
 }
 
@@ -27,11 +30,25 @@ interface Recommendation {
   createdAt: string;
 }
 
-export function RecommendationsSection({ isEditMode = false }: RecommendationsSectionProps) {
+export function RecommendationsSection({ reviews, averageRating, totalReviews, isEditMode = false }: RecommendationsSectionProps) {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
 
-  // Mock data
-  const recommendations: Recommendation[] = [
+  // Transform Supabase reviews to component format
+  const recommendations: Recommendation[] = reviews.length > 0 ? reviews.map(r => ({
+    id: r.id,
+    reviewerName: r.reviewer_name || 'Anonymous',
+    reviewerTitle: 'Client', // Default
+    reviewerCompany: r.reviewer_company || 'Company',
+    relationship: 'client' as const,
+    overallRating: r.overall_rating || 0,
+    qualityRating: r.quality_rating || r.overall_rating || 0,
+    communicationRating: r.communication_rating || r.overall_rating || 0,
+    timelinessRating: r.timeliness_rating || r.overall_rating || 0,
+    valueRating: r.overall_rating || 0,
+    testimonial: r.review_text || 'No review text provided.',
+    associatedProject: r.project_name || undefined,
+    createdAt: r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
+  })) : [
     {
       id: '1',
       reviewerName: 'Mohammed Al-Zahrani',
@@ -87,8 +104,6 @@ export function RecommendationsSection({ isEditMode = false }: RecommendationsSe
   const filteredRecommendations = selectedFilter === 'all' 
     ? recommendations 
     : recommendations.filter(r => r.relationship === selectedFilter);
-
-  const averageRating = (recommendations.reduce((acc, r) => acc + r.overallRating, 0) / recommendations.length).toFixed(1);
 
   const renderStars = (rating: number) => {
     return (

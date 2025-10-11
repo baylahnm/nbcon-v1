@@ -49,7 +49,7 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const actionWidth = 120 + 16; // action width + gap
+    const actionWidth = 100 + 16; // action width + gap
     const scrollAmount = direction === 'left' ? -actionWidth : actionWidth;
     
     container.scrollBy({
@@ -69,11 +69,11 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-border/50">
-      <CardHeader className="p-5 pb-3">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20 group-hover:scale-110 transition-transform">
-              <Zap className="h-5 w-5 text-primary" />
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md group-hover:scale-110 transition-transform">
+              <Zap className="h-6 w-6 text-white" />
             </div>
             <div>
               <CardTitle className="text-base font-bold tracking-tight">Quick Actions</CardTitle>
@@ -82,7 +82,7 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="font-medium text-xs">{engineerActions.length} Actions</Badge>
+          <Badge variant="outline" className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{engineerActions.length}</Badge>
         </div>
       </CardHeader>
 
@@ -115,7 +115,7 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
           <XScroll>
             <div 
               ref={scrollContainerRef}
-              className="flex gap-4 p-1"
+              className="flex gap-4 pt-1 px-1 pb-4"
               style={{
                 scrollSnapType: 'x mandatory',
                 scrollBehavior: 'smooth',
@@ -125,18 +125,20 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
                 <Link
                   key={action.id}
                   to={action.to}
-                  className="min-w-[120px] shrink-0 snap-start"
+                  className="min-w-[100px] shrink-0 snap-start"
                 >
-                  <Card className="h-full hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer border-border/50">
-                    <CardContent className="p-4 flex flex-col items-center gap-2.5 text-center">
-                      <div className={`${action.bgColor} p-3 rounded-xl ring-1 ${action.ringColor} transition-transform group-hover:scale-110`}>
-                        <action.icon className={`h-6 w-6 ${action.color}`} />
-                      </div>
-                      <span className="text-xs font-medium text-foreground leading-tight">
-                        {action.label}
-                      </span>
-                    </CardContent>
-                  </Card>
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="h-auto min-w-[100px] p-3 flex flex-col items-center gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 border-border/50"
+                  >
+                    <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor} transition-transform group-hover:scale-110`}>
+                      <action.icon className={`h-4 w-4 ${action.color}`} />
+                    </div>
+                    <span className="text-xs font-medium text-foreground leading-tight">
+                      {action.label}
+                    </span>
+                  </Button>
                 </Link>
               ))}
             </div>

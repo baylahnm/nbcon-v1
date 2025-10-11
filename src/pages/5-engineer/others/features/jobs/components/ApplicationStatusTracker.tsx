@@ -135,7 +135,7 @@ export function ApplicationStatusTracker({
           Application Status
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Job Info */}
         <div className="p-3 bg-muted rounded-lg">
           <h4 className="font-semibold text-sm mb-1">{jobTitle}</h4>

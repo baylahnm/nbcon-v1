@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "../1-HomePage/others/components/ui/avatar";
 import { Input } from "../1-HomePage/others/components/ui/input";
 import { Button } from "../1-HomePage/others/components/ui/button";
-import { Search, MapPin, Home, BarChart3, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Minus, Users, User, UserCheck } from "lucide-react";
+import { Badge } from "../1-HomePage/others/components/ui/badge";
+import { Search, MapPin, BarChart3, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Minus, Users, User, UserCheck, Trophy, Star } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../1-HomePage/others/components/ui/select";
 import { Engineer, allEngineers } from "../1-HomePage/others/data/engineers";
 import { EngineerProfile } from "../1-HomePage/others/components/ranking/EngineerProfile";
 import { PerformanceChartPopover } from "../1-HomePage/others/components/ranking/PerformanceChartPopover";
+import { AnnualPrizesHero } from "./others/features/ranking/components/AnnualPrizesHero";
+import { YourRankCard } from "./others/features/ranking/components/YourRankCard";
+import { LeaderboardPodium } from "./others/features/ranking/components/LeaderboardPodium";
+import { HallOfFameSection } from "./others/features/ranking/components/HallOfFameSection";
+import { HowRankingWorksModal } from "./others/features/ranking/components/HowRankingWorksModal";
+import { RankTrendChart } from "./others/features/ranking/components/RankTrendChart";
 
 interface EngineersTableProps {
   engineers: Engineer[];
@@ -67,7 +74,7 @@ const PerformanceIndicator = ({ change }: { change: number }) => {
   }
 };
 
-export function EngineersTable({ engineers, onEngineerClick }: EngineersTableProps) {
+export function EngineersTable({ engineers, onEngineerClick, currentUserId }: EngineersTableProps & { currentUserId?: string }) {
   const [activeTab, setActiveTab] = useState<"all" | "our">("all");
   const [genderFilter, setGenderFilter] = useState<"all" | "man" | "woman">("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -93,155 +100,140 @@ export function EngineersTable({ engineers, onEngineerClick }: EngineersTablePro
   const paginatedEngineers = filteredEngineers.slice(startIndex, endIndex);
 
   return (
-    <div className="flex-1 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-6">
-
-        {/* Title */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Engineering Rankings</h1>
-          <p className="text-sm text-gray-600">{filteredEngineers.length} engineers</p>
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex items-center justify-between pb-6 border-b border-border/40">
+        <div className="flex items-center gap-3">
+          <div className="bg-amber-500/10 p-2.5 rounded-xl ring-1 ring-amber-500/20">
+            <Trophy className="h-7 w-7 text-amber-600" />
+          </div>
+          <div>
+            <h1 className="text-base font-bold tracking-tight">Engineering Rankings</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">{filteredEngineers.length} engineers competing for excellence</p>
+          </div>
         </div>
-
-        {/* Tabs */}
-        <div className="flex gap-4 border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab("all")}
-            className={`pb-3 px-4 text-sm font-medium transition-colors relative ${
-              activeTab === "all"
-                ? "text-gray-900"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <BarChart3 className="w-4 h-4 inline mr-2" />
-            Ranking
-            {activeTab === "all" && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900"></div>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("our")}
-            className={`pb-3 px-4 text-sm font-medium transition-colors relative ${
-              activeTab === "our"
-                ? "text-gray-900"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Our ranking
-            {activeTab === "our" && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900"></div>
-            )}
-          </button>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-xs px-2 py-1">
+            Top 100
+          </Badge>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="px-8 py-6">
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          {/* Filters Inside Table */}
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex gap-2">
-                  <Button
-                    variant={genderFilter === "all" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setGenderFilter("all")}
-                    className="gap-2"
-                  >
-                    <Users className="w-4 h-4" />
-                    All
-                  </Button>
-                  <Button
-                    variant={genderFilter === "man" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setGenderFilter("man")}
-                    className="gap-2"
-                  >
-                    <User className="w-4 h-4" />
-                    Man
-                  </Button>
-                  <Button
-                    variant={genderFilter === "woman" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setGenderFilter("woman")}
-                    className="gap-2"
-                  >
-                    <UserCheck className="w-4 h-4" />
-                    Woman
-                  </Button>
-                </div>
-                
-                <div className="relative w-64">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Find engineer..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 bg-white"
-                  />
-                </div>
-              </div>
-              
-              <Select value={locationFilter} onValueChange={setLocationFilter}>
-                <SelectTrigger className="w-48">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    <SelectValue placeholder="Location..." />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Locations</SelectItem>
-                  {locations.map(location => (
-                    <SelectItem key={location} value={location}>
-                      {location}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      {/* Filters */}
+      <div className="flex flex-col lg:flex-row gap-4 mb-6">
+        {/* Gender Filter Buttons */}
+        <div className="flex gap-2">
+          <Button
+            variant={genderFilter === "all" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setGenderFilter("all")}
+            className="gap-2 text-xs h-9"
+          >
+            <Users className="w-3.5 h-3.5" />
+            All
+          </Button>
+          <Button
+            variant={genderFilter === "man" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setGenderFilter("man")}
+            className="gap-2 text-xs h-9"
+          >
+            <User className="w-3.5 h-3.5" />
+            Men
+          </Button>
+          <Button
+            variant={genderFilter === "woman" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setGenderFilter("woman")}
+            className="gap-2 text-xs h-9"
+          >
+            <UserCheck className="w-3.5 h-3.5" />
+            Women
+          </Button>
+        </div>
+        
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Search engineers by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 text-xs h-9"
+          />
+        </div>
+        
+        {/* Location Filter */}
+        <Select value={locationFilter} onValueChange={setLocationFilter}>
+          <SelectTrigger className="w-full lg:w-56 text-xs h-9">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-3.5 h-3.5" />
+              <SelectValue placeholder="All Locations" />
             </div>
-          </div>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Locations</SelectItem>
+            {locations.map(location => (
+              <SelectItem key={location} value={location}>
+                {location}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-center px-6 py-3 text-xs font-semibold text-gray-600">No.</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-600">Engineer Name</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-600">Engineer ID</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-600">Expertise</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-600">Location</th>
-                <th className="text-right px-6 py-3 text-xs font-semibold text-gray-600">Rating</th>
-                <th className="text-right px-6 py-3 text-xs font-semibold text-gray-600">Projects</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {paginatedEngineers.map((engineer, index) => (
+      {/* Table Container */}
+      <div className="rounded-xl border border-border/50 overflow-hidden bg-card shadow-sm">
+        <table className="w-full">
+          <thead className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-b-2 border-primary/20">
+            <tr>
+              <th className="text-center px-4 py-3 text-xs font-semibold">Rank</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold">Engineer</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold">ID</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold">Expertise</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold">Location</th>
+              <th className="text-center px-4 py-3 text-xs font-semibold">Score</th>
+              <th className="text-center px-4 py-3 text-xs font-semibold">Rating</th>
+              <th className="text-right px-4 py-3 text-xs font-semibold">Projects</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/30">
+            {paginatedEngineers.map((engineer, index) => {
+              const rank = startIndex + index + 1;
+              const isCurrentUser = currentUserId === engineer.id;
+              const score = Math.round(engineer.rating * 200) - 15 + rank * 2; // Mock score calculation
+              
+              return (
                 <tr
                   key={engineer.id}
                   onClick={() => onEngineerClick(engineer.id)}
-                  className="hover:bg-gray-50 cursor-pointer transition-colors"
+                  className={`group cursor-pointer transition-all duration-300 ${
+                    isCurrentUser 
+                      ? 'bg-gradient-to-r from-primary/20 via-primary/10 to-transparent border-l-4 border-primary shadow-md scale-[1.02]' 
+                      : 'hover:bg-muted/50'
+                  }`}
                 >
-                  <td className="px-6 py-4 text-center">
-                    <TrophyRank rank={startIndex + index + 1} />
+                  <td className="px-4 py-4 text-center">
+                    <TrophyRank rank={rank} />
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
-                      <Avatar className="w-10 h-10">
+                      <Avatar className="w-10 h-10 ring-2 ring-border/20 group-hover:ring-primary/30 transition-all">
                         <AvatarImage src={engineer.profileImage} alt={engineer.name} />
-                        <AvatarFallback>
+                        <AvatarFallback className="text-xs font-semibold">
                           {engineer.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{engineer.name}</p>
-                        <p className="text-xs text-gray-600">{engineer.experience}</p>
+                        <p className="text-sm font-semibold">{engineer.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{engineer.experience}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
-                      <BarChart3 className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm text-blue-600 font-medium">
+                      <BarChart3 className="w-3.5 h-3.5 text-primary" />
+                      <span className="text-xs text-primary font-medium">
                         ENG{engineer.id.padStart(3, '0')}
                       </span>
                       <PerformanceChartPopover engineer={engineer}>
@@ -251,88 +243,86 @@ export function EngineersTable({ engineers, onEngineerClick }: EngineersTablePro
                       </PerformanceChartPopover>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-900">{engineer.expertise}</span>
+                  <td className="px-4 py-4">
+                    <span className="text-xs font-medium">{engineer.expertise}</span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">{engineer.location.split(',')[0]}</span>
+                      <MapPin className="w-3 h-3 text-muted-foreground" />
+                      <span className="text-xs">{engineer.location.split(',')[0]}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="font-semibold text-gray-900">{Math.round(engineer.rating * 100)}%</span>
+                  <td className="px-4 py-4 text-center">
+                    <div className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-md bg-primary/10 border border-primary/20">
+                      <span className="text-sm font-bold text-primary">{score}</span>
+                      <span className="text-[9px] text-muted-foreground">/1000</span>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="text-gray-600">{engineer.projects}</span>
+                  <td className="px-4 py-4 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                      <span className="text-sm font-semibold">{engineer.rating.toFixed(1)}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 text-right">
+                    <span className="text-sm font-semibold">{engineer.projects}</span>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              );
+            })}
+          </tbody>
+        </table>
 
-          {/* Pagination */}
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className="gap-2"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous
-            </Button>
+        {/* Pagination */}
+        <div className="px-6 py-4 border-t border-border/30 flex items-center justify-between bg-muted/20">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            className="gap-2 text-xs h-8"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            Previous
+          </Button>
 
-            <div className="flex gap-2">
-              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                let pageNum;
-                if (totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  pageNum = totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
-                
-                return (
-                  <Button
-                    key={pageNum}
-                    variant={currentPage === pageNum ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(pageNum)}
-                    className="w-8 h-8 p-0"
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
-              {totalPages > 5 && <span className="px-2 py-1 text-sm text-gray-600">...</span>}
-              {totalPages > 5 && currentPage < totalPages - 2 && (
+          <div className="flex gap-2">
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+              let pageNum;
+              if (totalPages <= 5) {
+                pageNum = i + 1;
+              } else if (currentPage <= 3) {
+                pageNum = i + 1;
+              } else if (currentPage >= totalPages - 2) {
+                pageNum = totalPages - 4 + i;
+              } else {
+                pageNum = currentPage - 2 + i;
+              }
+              
+              return (
                 <Button
-                  variant="outline"
+                  key={pageNum}
+                  variant={currentPage === pageNum ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setCurrentPage(totalPages)}
-                  className="w-8 h-8 p-0"
+                  onClick={() => setCurrentPage(pageNum)}
+                  className="w-8 h-8 p-0 text-xs"
                 >
-                  {totalPages}
+                  {pageNum}
                 </Button>
-              )}
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-              className="gap-2"
-            >
-              Next
-              <ChevronRight className="w-4 h-4" />
-            </Button>
+              );
+            })}
           </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+            className="gap-2 text-xs h-8"
+          >
+            Next
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Button>
         </div>
       </div>
     </div>
@@ -341,6 +331,22 @@ export function EngineersTable({ engineers, onEngineerClick }: EngineersTablePro
 
 export default function RankingPage() {
   const [selectedEngineer, setSelectedEngineer] = useState<Engineer | null>(null);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+
+  // Listen for modal trigger from child components
+  useEffect(() => {
+    const handleOpenModal = () => setShowHowItWorks(true);
+    window.addEventListener('openRankingModal', handleOpenModal);
+    return () => window.removeEventListener('openRankingModal', handleOpenModal);
+  }, []);
+
+  // Mock current user data (in real app, get from auth store)
+  // For testing, we'll use a mid-rank engineer
+  const currentUserId = "47"; // Mock user at rank #47
+  const currentRank = 47;
+  const previousRank = 52; // Improved from #52 last month
+  const allTimeBestRank = 38; // Best was #38 in June 2024
+  const currentScore = 892; // Out of 1000
 
   const handleEngineerClick = (engineerId: string) => {
     const engineer = allEngineers.find(e => e.id === engineerId);
@@ -358,9 +364,59 @@ export default function RankingPage() {
   }
 
   return (
-    <EngineersTable 
-      engineers={allEngineers} 
-      onEngineerClick={handleEngineerClick} 
-    />
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/10">
+        <div className="container mx-auto px-6 py-8 space-y-8">
+          {/* Annual Prizes Hero */}
+          <AnnualPrizesHero />
+
+          {/* Your Rank Card + Top 3 Podium in 2-column grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Your Rank Card (1 column) */}
+            <div className="lg:col-span-1">
+              <YourRankCard
+                currentRank={currentRank}
+                previousRank={previousRank}
+                allTimeBestRank={allTimeBestRank}
+                totalEngineers={allEngineers.length}
+                currentScore={currentScore}
+                nextTier={{
+                  name: "Platinum Tier",
+                  rankCutoff: 25,
+                  prize: "💎 SAR 10,000 + Course Bundle + Platinum Badge"
+                }}
+              />
+            </div>
+
+            {/* Podium (2 columns) */}
+            <div className="lg:col-span-2">
+              <LeaderboardPodium
+                topThree={allEngineers.slice(0, 3)}
+                onEngineerClick={handleEngineerClick}
+              />
+            </div>
+          </div>
+
+          {/* Rank Trend Chart */}
+          <RankTrendChart />
+
+          {/* Enhanced Table */}
+          <EngineersTable 
+            engineers={allEngineers} 
+            onEngineerClick={handleEngineerClick}
+            currentUserId={currentUserId}
+          />
+
+          {/* Hall of Fame */}
+          <HallOfFameSection />
+        </div>
+      </div>
+
+      {/* How Ranking Works Modal */}
+      <HowRankingWorksModal 
+        isOpen={showHowItWorks} 
+        onClose={() => setShowHowItWorks(false)} 
+      />
+    </>
   );
 }

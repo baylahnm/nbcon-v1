@@ -14,27 +14,23 @@ interface StatCardProps {
 function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: StatCardProps) {
   const colors = {
     blue: { 
-      bg: 'bg-blue-500/10', 
-      icon: 'text-blue-600', 
-      ring: 'ring-blue-500/20',
+      bg: 'bg-blue-500', 
+      icon: 'text-white', 
       gradient: 'from-blue-500/10 to-transparent'
     },
     amber: { 
-      bg: 'bg-amber-500/10', 
-      icon: 'text-amber-600', 
-      ring: 'ring-amber-500/20',
+      bg: 'bg-amber-500', 
+      icon: 'text-white', 
       gradient: 'from-amber-500/10 to-transparent'
     },
     green: { 
-      bg: 'bg-green-500/10', 
-      icon: 'text-green-600', 
-      ring: 'ring-green-500/20',
+      bg: 'bg-green-500', 
+      icon: 'text-white', 
       gradient: 'from-green-500/10 to-transparent'
     },
     purple: { 
-      bg: 'bg-purple-500/10', 
-      icon: 'text-purple-600', 
-      ring: 'ring-purple-500/20',
+      bg: 'bg-purple-500', 
+      icon: 'text-white', 
       gradient: 'from-purple-500/10 to-transparent'
     },
   };
@@ -49,8 +45,8 @@ function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: 
     >
       <CardContent className="p-5">
         <div className="flex items-center gap-4">
-          <div className={`${colors[color].bg} p-3 rounded-xl ring-1 ${colors[color].ring} group-hover:scale-110 transition-transform`}>
-            <Icon className={`h-5 w-5 ${colors[color].icon}`} />
+          <div className={`${colors[color].bg} h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md group-hover:scale-110 transition-transform`}>
+            <Icon className={`h-6 w-6 ${colors[color].icon}`} />
           </div>
           <div className="flex-1">
             <p className="text-xl font-bold tracking-tight">{value}</p>
@@ -90,7 +86,7 @@ export function OverviewStats({
   onStatClick
 }: OverviewStatsProps) {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <StatCard
         icon={Briefcase}
         label="Active Projects"

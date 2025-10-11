@@ -39,11 +39,11 @@ export function EarningsWidget({
 
   return (
     <Card className="hover:shadow-lg transition-all duration-300 border-border/50">
-      <CardHeader className="p-5 pb-3">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-green-500/10 p-2.5 rounded-xl ring-1 ring-green-500/20">
-              <DollarSign className="h-5 w-5 text-green-600" />
+            <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
             <div>
               <CardTitle className="text-base font-bold tracking-tight">Earnings Overview</CardTitle>

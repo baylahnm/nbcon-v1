@@ -3,21 +3,26 @@ import { Card, CardHeader, CardContent } from '../../../../../1-HomePage/others/
 import { Progress } from '../../../../../1-HomePage/others/components/ui/progress';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 
-export function ProfileStrengthMeter() {
-  // Mock completion data
+interface ProfileStrengthMeterProps {
+  completionPercentage: number;
+  profileData: any;
+}
+
+export function ProfileStrengthMeter({ completionPercentage, profileData }: ProfileStrengthMeterProps) {
+  // Generate completion items from real data
   const completion = {
-    percentage: 85,
+    percentage: completionPercentage,
     items: [
-      { label: 'Profile photo', completed: true },
-      { label: 'Professional bio', completed: true },
-      { label: 'Skills added (12)', completed: true },
-      { label: 'Projects showcased (6)', completed: true },
-      { label: 'Work experience', completed: true },
-      { label: 'Education added', completed: true },
-      { label: 'SCE license verified', completed: true },
-      { label: 'Add 2 more certifications', completed: false },
-      { label: 'Request 3 recommendations', completed: false },
-      { label: 'Complete contact info', completed: true },
+      { label: 'Profile photo', completed: !!profileData.avatar_url },
+      { label: 'Professional bio', completed: !!profileData.bio },
+      { label: `Skills added (${profileData.skills?.length || 0})`, completed: profileData.skills?.length >= 3 },
+      { label: `Projects showcased (${profileData.portfolio?.length || 0})`, completed: profileData.portfolio?.length >= 1 },
+      { label: 'Work experience', completed: false }, // Not tracked yet
+      { label: 'Education added', completed: false }, // Not tracked yet
+      { label: 'SCE license verified', completed: !!profileData.sce_license_number },
+      { label: 'Add 2 more certifications', completed: profileData.certifications?.length >= 2 },
+      { label: 'Request 3 recommendations', completed: profileData.reviews?.length >= 3 },
+      { label: 'Complete contact info', completed: !!profileData.email && !!profileData.phone },
     ]
   };
 

@@ -17,7 +17,9 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../../1-HomePage/others/components/ui/tabs';
 
 interface PortfolioSectionProps {
+  projects: any[]; // Array of projects from Supabase
   isEditMode?: boolean;
+  onAddProject?: (projectData: any) => Promise<{ success: boolean; error?: string }>;
 }
 
 interface Project {
@@ -37,12 +39,33 @@ interface Project {
   isFeatured: boolean;
 }
 
-export function PortfolioSection({ isEditMode = false }: PortfolioSectionProps) {
+export function PortfolioSection({ projects: rawProjects, isEditMode = false, onAddProject }: PortfolioSectionProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // Mock data
-  const projects: Project[] = [
+  // Transform Supabase projects to component format
+  const projects: Project[] = rawProjects.length > 0 ? rawProjects.map(p => {
+    const startDate = p.start_date ? new Date(p.start_date) : new Date();
+    const endDate = p.end_date ? new Date(p.end_date) : new Date();
+    const durationMonths = p.end_date ? Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 30)) : 1;
+    
+    return {
+      id: p.id,
+      name: p.project_name,
+      clientName: 'Client', // Not tracked yet
+      clientCompany: 'Company', // Not tracked yet
+      category: (p.project_category?.toLowerCase() || 'commercial') as any,
+      role: 'Engineer', // Not tracked yet
+      value: 0, // Not tracked yet
+      durationMonths,
+      startDate: p.start_date || new Date().toISOString().split('T')[0],
+      status: p.end_date ? 'completed' as const : 'in_progress' as const,
+      thumbnailUrl: p.project_image_url || undefined,
+      technologies: p.technologies_used || [],
+      rating: 0, // Not tracked yet
+      isFeatured: p.is_featured || false
+    };
+  }) : [
     {
       id: '1',
       name: 'NEOM Smart City Infrastructure Phase 1',

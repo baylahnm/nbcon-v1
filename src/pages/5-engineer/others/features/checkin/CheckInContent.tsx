@@ -284,7 +284,7 @@ export function CheckInContent() {
   const allSafetyItemsChecked = Object.values(safetyChecklist).every(Boolean);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 space-y-4">
       {/* Header */}
       <div className="border-b pb-6">
         <div className="flex items-center justify-between">
@@ -315,7 +315,7 @@ export function CheckInContent() {
       </div>
 
       {/* Tabs for organizing different views */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="checkin" className="gap-2">
             <MapPin className="w-4 h-4" />
@@ -336,7 +336,7 @@ export function CheckInContent() {
         </TabsList>
 
         {/* Check In Tab */}
-        <TabsContent value="checkin" className="space-y-6 mt-6">
+        <TabsContent value="checkin" className="space-y-4 mt-6">
 
       {/* Current Status Dashboard */}
       <Card>
@@ -370,7 +370,7 @@ export function CheckInContent() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Project Selection Card */}
         <Card className="h-full flex flex-col">
           <CardHeader>
@@ -724,17 +724,17 @@ export function CheckInContent() {
         </TabsContent>
 
         {/* Summary Tab */}
-        <TabsContent value="summary" className="space-y-6 mt-6">
+        <TabsContent value="summary" className="space-y-4 mt-6">
           <WeeklySummary />
         </TabsContent>
 
         {/* Analytics Tab */}
-        <TabsContent value="analytics" className="space-y-6 mt-6">
+        <TabsContent value="analytics" className="space-y-4 mt-6">
           <CheckInAnalytics showStreaks={true} />
         </TabsContent>
 
         {/* Overtime Tab */}
-        <TabsContent value="overtime" className="space-y-6 mt-6">
+        <TabsContent value="overtime" className="space-y-4 mt-6">
           <OvertimeCalculator
             checkInTime={checkInTime || undefined}
             checkOutTime={isCheckedIn ? undefined : "15:30"}

@@ -18,36 +18,44 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Avatar } from '../../../../../1-HomePage/others/components/ui/avatar';
 
 interface ProfileHeaderProps {
+  profileData: any; // EngineerProfileData from hook
   isEditMode?: boolean;
   isOwner?: boolean;
   onToggleEdit?: () => void;
+  onUpdate?: (updates: any) => Promise<{ success: boolean; error?: string }>;
 }
 
-export function ProfileHeader({ isEditMode = false, isOwner = true, onToggleEdit }: ProfileHeaderProps) {
+export function ProfileHeader({ profileData, isEditMode = false, isOwner = true, onToggleEdit, onUpdate }: ProfileHeaderProps) {
   const [isHoveringPhoto, setIsHoveringPhoto] = useState(false);
 
-  // Mock data - will be replaced with real data from useAuthStore
+  // Transform Supabase data to component format
   const profile = {
-    firstName: 'Ahmed',
-    lastName: 'Al-Rashid',
-    title: 'Senior Structural Engineer',
-    location: 'Riyadh, Saudi Arabia',
-    avatarUrl: null,
-    availabilityStatus: 'available' as const,
+    firstName: profileData.first_name || 'Engineer',
+    lastName: profileData.last_name || 'User',
+    title: profileData.specializations?.[0] || 'Engineer', // First specialization as title
+    location: [profileData.location_city, profileData.location_region]
+      .filter(Boolean)
+      .map((loc: string) => loc.charAt(0).toUpperCase() + loc.slice(1))
+      .join(', ') || 'Saudi Arabia',
+    avatarUrl: profileData.avatar_url,
+    availabilityStatus: (profileData.availability_status || 'available') as 'available' | 'busy' | 'unavailable',
     stats: {
-      rating: 4.9,
-      totalReviews: 47,
-      totalProjects: 156,
-      yearsExperience: 8
+      rating: profileData.averageRating || 0,
+      totalReviews: profileData.totalReviews || 0,
+      totalProjects: profileData.totalProjects || 0,
+      yearsExperience: profileData.years_experience || 0
     },
     verifications: {
-      sceVerified: true,
-      identityVerified: true,
-      isTopRated: true
+      sceVerified: !!profileData.sce_license_number,
+      identityVerified: true, // Assuming verified if they have an account
+      isTopRated: profileData.averageRating >= 4.8 && profileData.totalReviews >= 20
     },
     credentials: {
-      sceLicense: 'SCE-12345',
-      certifications: ['PMP', 'LEED AP']
+      sceLicense: profileData.sce_license_number || null,
+      certifications: profileData.certifications
+        ?.filter((c: any) => c.verification_status === 'verified')
+        .map((c: any) => c.certification_name.split(' ')[0]) // Extract short name (e.g., "PMP" from "Project Management Professional")
+        .slice(0, 3) || [] // Show max 3
     }
   };
 

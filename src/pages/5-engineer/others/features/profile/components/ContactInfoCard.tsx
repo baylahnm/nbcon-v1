@@ -3,20 +3,22 @@ import { Card, CardHeader, CardContent } from '../../../../../1-HomePage/others/
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 
 interface ContactInfoCardProps {
+  email: string | null;
+  phone: string | null;
   isOwner?: boolean;
 }
 
-export function ContactInfoCard({ isOwner = true }: ContactInfoCardProps) {
-  // Mock data
+export function ContactInfoCard({ email, phone, isOwner = true }: ContactInfoCardProps) {
+  // Use real Supabase data
   const contact = {
-    email: 'ahmed.alrashid@example.com',
-    phone: '+966 50 123 4567',
-    website: 'www.ahmed-engineer.com',
-    linkedinUrl: 'linkedin.com/in/ahmed-alrashid',
+    email: email || 'Not provided',
+    phone: phone || 'Not provided',
+    website: 'www.yoursite.com', // Not tracked yet
+    linkedinUrl: 'linkedin.com/in/yourprofile', // Not tracked yet
     visibility: {
-      showEmail: true,
-      showPhone: true,
-      showWebsite: true
+      showEmail: !!email,
+      showPhone: !!phone,
+      showWebsite: false
     }
   };
 

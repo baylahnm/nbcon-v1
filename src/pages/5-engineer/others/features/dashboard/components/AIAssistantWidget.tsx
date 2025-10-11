@@ -6,7 +6,7 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Avatar, AvatarFallback } from '../../../../../1-HomePage/others/components/ui/avatar';
 import { ChatComposer } from '../../ai/components/ChatComposer';
 import { useAiStore } from '../../ai/store/useAiStore';
-import { MessageSquare, Sparkles, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { MessageSquare, Sparkles, ChevronDown, ChevronUp, Zap, DollarSign, Search, FileText, Calculator } from 'lucide-react';
 import { R } from '../../../../../1-HomePage/others/lib/routes';
 
 interface AIAssistantWidgetProps {
@@ -21,10 +21,10 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
 
   // Quick action prompts based on role
   const quickPrompts = [
-    { label: 'Estimate Cost', icon: '💰', prompt: 'Help me estimate project costs' },
-    { label: 'Find Jobs', icon: '🔍', prompt: 'Find relevant engineering jobs for me' },
-    { label: 'Review Document', icon: '📄', prompt: 'Help me review a technical document' },
-    { label: 'Calculate', icon: '🧮', prompt: 'Perform engineering calculations' },
+    { label: 'Estimate Cost', icon: DollarSign, prompt: 'Help me estimate project costs' },
+    { label: 'Find Jobs', icon: Search, prompt: 'Find relevant engineering jobs for me' },
+    { label: 'Review Document', icon: FileText, prompt: 'Help me review a technical document' },
+    { label: 'Calculate', icon: Calculator, prompt: 'Perform engineering calculations' },
   ];
 
   const getAIRoute = () => {
@@ -42,7 +42,7 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
 
   return (
     <Card 
-      className="relative overflow-hidden transition-all duration-300"
+      className="relative overflow-hidden transition-all duration-300 border-b-2 border-border/40"
       style={{
         border: '2px solid transparent',
         borderRadius: '0.75rem',
@@ -55,16 +55,16 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.08)',
       }}
     >
-      <CardHeader className="p-5 pb-3">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
-              <Sparkles className="h-5 w-5 text-primary" />
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Sparkles className="h-6 w-6 text-white" />
             </div>
             <div>
               <CardTitle className="text-base font-bold flex items-center gap-2">
                 AI Assistant
-                <Badge variant="outline" className="text-xs font-normal">
+                <Badge variant="secondary" className="h-5 min-w-5 rounded-full px-2 text-xs font-normal bg-primary/10 text-primary border-0">
                   <Zap className="h-3 w-3 mr-1" />
                   Powered
                 </Badge>
@@ -99,7 +99,7 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
       </CardHeader>
 
       {!isCollapsed && (
-        <CardContent className="p-5 pt-0 space-y-4">
+        <CardContent className="p-5 pt-0 pb-6 space-y-4">
           {/* Quick Prompts */}
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-2">Quick Actions:</p>
@@ -109,9 +109,9 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="h-auto py-2 px-3 flex items-start gap-2 text-left hover:border-primary/30 transition-all"
+                  className="h-auto py-2 px-3 flex items-start gap-2 text-left border-2 border-border/50 hover:border-primary/40 transition-all"
                 >
-                  <span className="text-base">{prompt.icon}</span>
+                  <prompt.icon className="h-4 w-4 text-primary" />
                   <span className="text-xs flex-1">{prompt.label}</span>
                 </Button>
               ))}
@@ -122,7 +122,7 @@ export function AIAssistantWidget({ userRole = 'engineer' }: AIAssistantWidgetPr
           {lastMessages.length > 0 && (
             <div className="space-y-2">
               <p className="text-xs font-medium text-muted-foreground">Recent Conversation:</p>
-              <div className="bg-muted/30 rounded-lg p-3 space-y-2 max-h-24 overflow-y-auto scrollbar-hide">
+              <div className="bg-background rounded-lg p-3 space-y-2 border border-border/40">
                 {lastMessages.map((message, index) => (
                   <div key={message.id} className="flex items-start gap-2 text-xs">
                     <Avatar className="h-5 w-5 flex-shrink-0">

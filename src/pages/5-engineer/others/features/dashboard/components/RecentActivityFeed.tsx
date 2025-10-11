@@ -135,11 +135,11 @@ export function RecentActivityFeed({
 
   return (
     <Card className="hover:shadow-lg transition-all duration-300 border-border/50">
-      <CardHeader className="p-5 pb-3">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
-              <Activity className="h-5 w-5 text-primary" />
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Activity className="h-6 w-6 text-white" />
             </div>
             <div>
               <CardTitle className="text-base font-bold tracking-tight">Recent Activity</CardTitle>
@@ -148,7 +148,7 @@ export function RecentActivityFeed({
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="font-medium text-xs">{activities.length} Items</Badge>
+          <Badge variant="outline" className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{activities.length}</Badge>
         </div>
       </CardHeader>
 

@@ -61,10 +61,10 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto px-6 py-8 space-y-8">
+      <div className="container mx-auto px-4 py-4 space-y-4">
         
         {/* Header */}
-        <div className="pb-6 border-b border-border/40">
+        <div className="pb-0 border-b border-border/40">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -83,8 +83,8 @@ export function DashboardContent() {
                       </p>
                 </div>
         </div>
-              <Badge variant="outline" className="px-4 py-2 text-xs">
-                <Home className="h-4 w-4 mr-2" />
+              <Badge variant="outline" className="h-8 px-3 text-xs flex items-center gap-2">
+                <Home className="h-4 w-4" />
                 Dashboard
               </Badge>
               </CardContent>
@@ -108,7 +108,7 @@ export function DashboardContent() {
         />
 
         {/* Section 4 & 5: Projects and Earnings */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Active Projects */}
           <ActiveProjectsList />
           

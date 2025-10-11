@@ -14,33 +14,36 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Textarea } from '../../../../../1-HomePage/others/components/ui/textarea';
 
 interface ProfessionalSummaryProps {
+  profileData: any; // EngineerProfileData from hook
   isEditMode?: boolean;
+  onUpdate?: (updates: any) => Promise<{ success: boolean; error?: string }>;
 }
 
-export function ProfessionalSummary({ isEditMode = false }: ProfessionalSummaryProps) {
+export function ProfessionalSummary({ profileData, isEditMode = false, onUpdate }: ProfessionalSummaryProps) {
   const [bio, setBio] = useState(
-    "Experienced structural engineer with 8+ years of expertise in high-rise buildings and large-scale infrastructure projects across Saudi Arabia. Proven track record of delivering complex projects on time and within budget while maintaining the highest safety and quality standards. Specialized in seismic analysis, foundation design, and BIM implementation."
+    profileData.bio || "Add your professional bio to showcase your expertise and experience..."
   );
 
-  // Mock data
+  // Transform Supabase data to component format
   const profile = {
-    specializations: [
-      'Structural Analysis',
-      'High-Rise Design',
-      'Foundation Engineering',
-      'BIM/Revit',
-      'Seismic Analysis',
-      'Project Management'
-    ],
-    hourlyRateMin: 300,
-    hourlyRateMax: 450,
-    availableHoursPerWeek: 40,
-    startAvailability: 'Immediate',
-    workPreference: 'Hybrid',
+    specializations: profileData.specializations?.length > 0 
+      ? profileData.specializations 
+      : ['Add your specializations'],
+    hourlyRateMin: profileData.hourly_rate || 0,
+    hourlyRateMax: profileData.hourly_rate ? Math.round(profileData.hourly_rate * 1.5) : 0,
+    availableHoursPerWeek: 40, // Default for now
+    startAvailability: profileData.availability_status === 'available' ? 'Immediate' : 'Upon Request',
+    workPreference: 'Hybrid', // Default for now
     languages: [
       { name: 'Arabic', proficiency: 'Native' },
       { name: 'English', proficiency: 'Fluent' }
     ]
+  };
+
+  const handleSave = async () => {
+    if (onUpdate) {
+      await onUpdate({ bio });
+    }
   };
 
   return (

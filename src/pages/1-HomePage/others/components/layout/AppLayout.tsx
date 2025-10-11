@@ -5,6 +5,7 @@ import { AppSidebar } from '../layout/AppSidebar';
 import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
 import { Loader2, Bot } from 'lucide-react';
 import { Button } from '../ui/button';
+import { ThemeToggle } from '../ui/theme-toggle';
 import { R } from '../../lib/routes';
 
 // Dynamically import AI Drawer based on user role
@@ -89,18 +90,24 @@ export function AppLayout({
                 </div>
               </div>
               
-              {/* AI Button - Only show on dashboard routes */}
-              {isDashboardRoute && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsAiDrawerOpen(!isAiDrawerOpen)}
-                  className="flex items-center gap-2"
-                >
-                  <Bot className="w-4 h-4" />
-                  AI
-                </Button>
-              )}
+              {/* Right Side: Theme Toggle + AI Button */}
+              <div className="flex items-center gap-2">
+                {/* Theme Dropdown */}
+                <ThemeToggle />
+                
+                {/* AI Button - Only show on dashboard routes */}
+                {isDashboardRoute && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAiDrawerOpen(!isAiDrawerOpen)}
+                    className="flex items-center gap-2"
+                  >
+                    <Bot className="w-4 h-4" />
+                    AI
+                  </Button>
+                )}
+              </div>
             </div>
           </header>
 

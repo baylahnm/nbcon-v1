@@ -4,7 +4,9 @@ import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 
 interface CertificationsSectionProps {
+  certifications: any[]; // Array of certifications from Supabase
   isEditMode?: boolean;
+  onAddCertification?: (certData: any) => Promise<{ success: boolean; error?: string }>;
 }
 
 interface Certification {
@@ -19,9 +21,19 @@ interface Certification {
   isFeatured: boolean;
 }
 
-export function CertificationsSection({ isEditMode = false }: CertificationsSectionProps) {
-  // Mock data
-  const certifications: Certification[] = [
+export function CertificationsSection({ certifications: rawCertifications, isEditMode = false, onAddCertification }: CertificationsSectionProps) {
+  // Transform Supabase certifications to component format
+  const certifications: Certification[] = rawCertifications.length > 0 ? rawCertifications.map(c => ({
+    id: c.id,
+    name: c.certification_name,
+    issuingOrganization: c.issuing_organization,
+    credentialId: c.certificate_number || undefined,
+    issueDate: c.issue_date || new Date().toISOString().split('T')[0],
+    expiryDate: c.expiry_date || undefined,
+    certificateUrl: c.certificate_url || undefined,
+    verificationStatus: c.verification_status === 'verified' ? 'verified' as const : c.verification_status === 'pending' ? 'pending' as const : 'not_verified' as const,
+    isFeatured: c.verification_status === 'verified'
+  })) : [
     {
       id: '1',
       name: 'Saudi Council of Engineers (SCE) License',

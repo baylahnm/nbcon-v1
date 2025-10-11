@@ -6,7 +6,9 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../../1-HomePage/others/components/ui/tabs';
 
 interface SkillsSectionProps {
+  skills: any[]; // Array of skills from Supabase
   isEditMode?: boolean;
+  onAddSkill?: (skillData: any) => Promise<{ success: boolean; error?: string }>;
 }
 
 interface Skill {
@@ -19,20 +21,22 @@ interface Skill {
   isVerified: boolean;
 }
 
-export function SkillsSection({ isEditMode = false }: SkillsSectionProps) {
-  // Mock data
-  const [skills] = useState<Skill[]>([
-    { id: '1', name: 'Structural Analysis', category: 'technical', proficiency: 5, yearsExperience: 8, endorsementCount: 23, isVerified: true },
-    { id: '2', name: 'AutoCAD', category: 'software', proficiency: 5, yearsExperience: 8, endorsementCount: 18, isVerified: true },
-    { id: '3', name: 'Revit BIM', category: 'software', proficiency: 4, yearsExperience: 6, endorsementCount: 15, isVerified: false },
-    { id: '4', name: 'SAP2000', category: 'software', proficiency: 4, yearsExperience: 5, endorsementCount: 12, isVerified: false },
-    { id: '5', name: 'ETABS', category: 'software', proficiency: 5, yearsExperience: 7, endorsementCount: 14, isVerified: true },
-    { id: '6', name: 'Foundation Design', category: 'technical', proficiency: 5, yearsExperience: 8, endorsementCount: 19, isVerified: true },
-    { id: '7', name: 'Seismic Analysis', category: 'technical', proficiency: 4, yearsExperience: 6, endorsementCount: 11, isVerified: false },
-    { id: '8', name: 'Project Management', category: 'soft_skill', proficiency: 4, yearsExperience: 5, endorsementCount: 16, isVerified: false },
-    { id: '9', name: 'Team Leadership', category: 'soft_skill', proficiency: 5, yearsExperience: 6, endorsementCount: 21, isVerified: true },
-    { id: '10', name: 'Tekla Structures', category: 'software', proficiency: 3, yearsExperience: 3, endorsementCount: 8, isVerified: false },
-  ]);
+export function SkillsSection({ skills: rawSkills, isEditMode = false, onAddSkill }: SkillsSectionProps) {
+  // Transform Supabase skills to component format
+  const skills: Skill[] = rawSkills.length > 0 
+    ? rawSkills.map(s => ({
+        id: s.id,
+        name: s.skill_name,
+        category: (s.skill_category?.toLowerCase() || 'technical') as 'technical' | 'software' | 'soft_skill',
+        proficiency: (s.proficiency_level || 3) as 1 | 2 | 3 | 4 | 5,
+        yearsExperience: s.years_experience || 0,
+        endorsementCount: 0, // Not tracked yet
+        isVerified: s.is_verified || false,
+      }))
+    : [
+        // Empty state - show one placeholder
+        { id: 'placeholder', name: 'Add your first skill', category: 'technical' as const, proficiency: 3 as const, yearsExperience: 0, endorsementCount: 0, isVerified: false }
+      ];
 
   const categorizedSkills = {
     technical: skills.filter(s => s.category === 'technical'),
