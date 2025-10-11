@@ -31,19 +31,19 @@ import {
   Users,
   DollarSign
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../1-HomePage/others/components/ui/card";
+import { Button } from "../../../../1-HomePage/others/components/ui/button";
+import { Badge } from "../../../../1-HomePage/others/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../1-HomePage/others/components/ui/avatar";
+import { Input } from "../../../../1-HomePage/others/components/ui/input";
+import { Textarea } from "../../../../1-HomePage/others/components/ui/textarea";
+import { Label } from "../../../../1-HomePage/others/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../1-HomePage/others/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../1-HomePage/others/components/ui/select";
+import { Switch } from "../../../../1-HomePage/others/components/ui/switch";
+import { Separator } from "../../../../1-HomePage/others/components/ui/separator";
+import { Progress } from "../../../../1-HomePage/others/components/ui/progress";
+import { ScrollArea } from "../../../../1-HomePage/others/components/ui/scroll-area";
 
 import { EngineerProfile } from "./profiles/EngineerProfile";
 import { FunctionalEngineerProfile } from "./profiles/FunctionalEngineerProfile";

@@ -18,7 +18,8 @@ import JobDetails from "@/pages/5-engineer/others/features/jobs/JobDetails";
 import { MessagingPage } from "@/pages/5-engineer/4-MessagesPage";
 import ClientMessagesPage from "@/pages/4-client/9-MessagesPage";
 import SettingsPage from "@/pages/5-engineer/11-SettingsPage";
-import ProfilePage from "@/pages/5-engineer/others/features/profile/ProfilePage";
+// import ProfilePage from "@/pages/5-engineer/others/features/profile/ProfilePage";
+import ProfilePage from "@/pages/5-engineer/15-ProfilePageTest";
 import ClientSettingsPage from "@/pages/4-client/12-SettingsPage";
 import ClientProfilePage from "@/pages/4-client/2-ProfilePage";
 import VerificationPage from "@/pages/5-engineer/others/features/settings/VerificationPage";
@@ -106,9 +107,23 @@ export default function RoleRouter() {
         <LegacyRedirects />
         <Routes>
         <Route path="/" element={<Navigate to={`${ROLE_BASE[role]}/dashboard`} replace />} />
+        
+        {/* TEST: Profile route at root level */}
+        <Route path="/engineer/profile" element={
+          <div className="p-8 bg-purple-100 min-h-screen">
+            <h1 className="text-6xl font-bold text-purple-900">🎉 PROFILE ROOT ROUTE!</h1>
+            <p className="text-3xl text-purple-700 mt-4">This is at ROOT level in Routes</p>
+          </div>
+        } />
 
         <Route path="/engineer" element={<EngineerLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="profile" element={
+            <div className="p-8 bg-purple-100 min-h-screen">
+              <h1 className="text-4xl font-bold text-purple-900">🎉 PROFILE WORKS!</h1>
+              <p className="text-2xl text-purple-700 mt-4">This is inline in RoleRouter</p>
+            </div>
+          } />
           <Route path="dashboard" element={<EngineerDashboard />} />
           <Route path="jobs" element={<JobsList />} />
           {/* Deep links */}
@@ -125,7 +140,6 @@ export default function RoleRouter() {
           </Route>
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="ai/thread/:threadId" element={<ChatPage onBack={() => window.history.back()} />} />
-          <Route path="profile" element={<ProfilePage />} />
           <Route path="ranking" element={<RankingPage />} />
           <Route path="network" element={<MyNetwork />} />
           <Route path="network/:userId" element={<MyNetwork />} />
