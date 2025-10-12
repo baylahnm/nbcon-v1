@@ -8,7 +8,8 @@ import {
   DollarSign,
   Clock,
   ArrowRight,
-  Star
+  Star,
+  TrendingUp
 } from "lucide-react";
 
 interface SimilarJob {
@@ -88,7 +89,7 @@ export function SimilarJobsRecommendations({
       <CardHeader className="p-5 pb-3 border-b border-border/40">
         <CardTitle className="flex items-center gap-3">
           <div className="bg-purple-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
-            <Sparkles className="w-6 h-6 text-white" />
+            <TrendingUp className="w-6 h-6 text-white" />
           </div>
           <div>
             <div className="text-base font-bold">Similar Jobs You May Like</div>

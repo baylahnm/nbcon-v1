@@ -14,7 +14,6 @@ import CreateJob from "@/pages/4-client/others/features/jobs/CreateJob";
 import JobsList from "@/pages/5-engineer/others/features/jobs/JobsList";
 import CheckIn from "@/pages/5-engineer/12-CheckIn";
 import UploadDeliverable from "@/pages/5-engineer/others/features/deliverables/UploadDeliverableContent";
-import JobDetails from "@/pages/5-engineer/others/features/jobs/JobDetails";
 import { MessagingPage } from "@/pages/5-engineer/4-MessagesPage";
 import ClientMessagesPage from "@/pages/4-client/9-MessagesPage";
 import SettingsPage from "@/pages/5-engineer/11-SettingsPage";
@@ -126,9 +125,7 @@ export default function RoleRouter() {
           } />
           <Route path="dashboard" element={<EngineerDashboard />} />
           <Route path="jobs" element={<JobsList />} />
-          {/* Deep links */}
-          <Route path="jobs/:jobId" element={<JobDetails />} />
-          <Route path="jobs/:jobId/tasks/:taskId" element={<JobDetails />} />
+          {/* Deep links - Job details routes removed */}
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="calendar/event/:eventId" element={<CalendarPage />} />
           <Route path="checkin" element={<CheckIn />} />
@@ -136,7 +133,7 @@ export default function RoleRouter() {
           <Route path="messages/:threadId" element={<MessagingPage />} />
           <Route path="job">
             <Route path="upload" element={<UploadDeliverable />} />
-            <Route path=":id" element={<JobDetails />} />
+            {/* Job details route removed */}
           </Route>
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="ai/thread/:threadId" element={<ChatPage onBack={() => window.history.back()} />} />

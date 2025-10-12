@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../1-HomePage/others/components/ui/card';
 import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
@@ -25,19 +27,26 @@ import {
   Zap,
   Building,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Sparkles,
+  ArrowRight,
+  Calculator,
+  Target,
+  TrendingUp
 } from 'lucide-react';
 
 // Import enhancement components
-import { AIJobMatchScore } from './others/features/jobs/components/AIJobMatchScore';
-import { EarningsCalculator } from './others/features/jobs/components/EarningsCalculator';
-import { SimilarJobsRecommendations } from './others/features/jobs/components/SimilarJobsRecommendations';
+import { JobInfoPopover } from './others/features/jobs/components/JobInfoPopover';
+import { MiniAIMatchScore } from './others/features/jobs/components/mini-cards/MiniAIMatchScore';
+import { MiniEarningsCalculator } from './others/features/jobs/components/mini-cards/MiniEarningsCalculator';
+import { MiniSkillsGap } from './others/features/jobs/components/mini-cards/MiniSkillsGap';
+import { MiniSimilarJobs } from './others/features/jobs/components/mini-cards/MiniSimilarJobs';
 import { SavedSearchFilters } from './others/features/jobs/components/SavedSearchFilters';
 import { ApplicationStatusTracker } from './others/features/jobs/components/ApplicationStatusTracker';
 import { CompanyProfilePreview } from './others/features/jobs/components/CompanyProfilePreview';
-import { SkillsGapAnalysis } from './others/features/jobs/components/SkillsGapAnalysis';
 import { JobsMapView } from './others/features/jobs/components/JobsMapView';
 import { QuickApply } from './others/features/jobs/components/QuickApply';
+import JobDetailsPopover from './others/features/jobs/components/JobDetailsPopover';
 import XScroll from '../1-HomePage/others/components/ui/x-scroll';
 
 interface Job {
@@ -105,7 +114,7 @@ const mockJobs: Job[] = [
       max: 20000,
       currency: 'SAR'
     },
-    description: 'Manage large-scale renewable energy projects across the region.',
+    description: 'Manage large-scale renewable energy projects across the region. Lead multidisciplinary teams in delivering solar and wind energy projects from conception to completion. Coordinate with stakeholders, manage budgets exceeding $100M, and ensure compliance with Saudi Vision 2030 sustainability goals. Drive project excellence through agile methodologies and innovative solutions.',
     requirements: [
       'PMP certification preferred',
       '5+ years project management experience',
@@ -149,6 +158,7 @@ const mockJobs: Job[] = [
 const jobCategories = ['All', 'Structural Engineering', 'Project Management', 'Electrical Engineering', 'Mechanical Engineering'];
 
 export default function JobsPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('available');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -158,6 +168,7 @@ export default function JobsPage() {
   const [showQuickApply, setShowQuickApply] = useState(false);
   const [showCompanyProfile, setShowCompanyProfile] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<string>('');
+  const [showJobDetailsPopover, setShowJobDetailsPopover] = useState(false);
   
   // Scroll state for arrow visibility
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -308,36 +319,36 @@ export default function JobsPage() {
 
           return (
             <div
-              key={index}
+            key={index}
               ref={cardRef}
-              className="relative overflow-hidden transition-all duration-300 cursor-pointer"
-              style={{
+            className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+            style={{
                 '--rotation': '4.2rad',
-                border: '2px solid transparent',
-                borderRadius: '0.5rem',
-                backgroundImage: `
-                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              border: '2px solid transparent',
+              borderRadius: '0.5rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
                   linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
-                `,
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box',
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
               } as React.CSSProperties}
             >
               <Card className="bg-transparent border-0">
-                <CardContent className="p-5">
+            <CardContent className="p-5">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className={`${stat.bgColor} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md`}>
                         <stat.icon className="h-5 w-5 text-white" />
-                      </div>
+                </div>
                       <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
                     </div>
                     <div>
                       <p className="text-xl font-bold">{stat.count}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
             </div>
           );
         })}
@@ -411,34 +422,64 @@ export default function JobsPage() {
             <div className="space-y-4">
               {filteredJobs.filter(job => job.status === 'open').map((job) => (
                 <div key={job.id} className="space-y-4">
-                  {/* Job Card - Full Width */}
-                  <Card 
-                    className="gap-0"
-                    style={{
-                      border: '2px solid transparent',
-                      borderRadius: '0.75rem',
-                      backgroundImage: `
-                        linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                        linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
-                      `,
-                      backgroundOrigin: 'border-box',
-                      backgroundClip: 'padding-box, border-box',
-                    }}
-                  >
-                    <CardContent className="p-5">
-                      {/* Job Details - Enhanced Layout */}
-                      <div className="flex gap-6">
-                        {/* Left Side - Content */}
-                        <div className="flex-1 space-y-4">
-                        {/* Title Row */}
-                        <div className="space-y-2">
-                            <div className="flex items-center gap-2.5">
-                              <Briefcase className="h-5 w-5 text-primary" />
-                              <h3 className="font-bold text-xl tracking-tight">{job.title}</h3>
-                              <Badge variant="outline" className="ml-1 font-medium">{job.type.replace('-', ' ')}</Badge>
+                  {/* NEW ENHANCED DESIGN - Product Card Inspired */}
+                  <Card className="gap-0 w-full max-w-full overflow-hidden group bg-background text-foreground shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl border-2 border-border/50 hover:border-primary/30">
+                      {/* Image Section with Badges Overlay */}
+                      <div className="relative aspect-[21/9] overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                        <motion.img
+                          src={`/e-jobs/Available Jobs/${job.title}.jpg`}
+                          alt={job.title}
+                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/placeholder.svg';
+                          }}
+                        />
+                        
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                        
+                        {/* Badges */}
+                        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                          <Badge className="bg-blue-500 hover:bg-blue-500/90 text-white border-0 shadow-lg">
+                            New
+                          </Badge>
+                          <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 shadow-lg">
+                            Recommended
+                          </Badge>
+                          {job.clientRating && (
+                            <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                              <Star className="h-3 w-3 fill-white" />
+                              {job.clientRating}
+                            </Badge>
+                          )}
                             </div>
+                        
+                        {/* Bookmark Heart */}
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className={`absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all ${
+                            job.isBookmarked ? 'text-rose-500' : ''
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <Bookmark
+                            className={`h-5 w-5 ${job.isBookmarked ? 'fill-rose-500' : ''}`}
+                          />
+                        </Button>
+                        
+                        {/* Job Title Overlay */}
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <h3 className="font-bold text-2xl text-white drop-shadow-lg line-clamp-1">
+                            {job.title}
+                          </h3>
                             <button
-                              className="text-sm font-medium text-primary hover:underline flex items-center gap-1.5 transition-colors"
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition-colors mt-1"
                               onClick={() => {
                                 setSelectedCompany(job.company);
                                 setShowCompanyProfile(true);
@@ -447,146 +488,165 @@ export default function JobsPage() {
                               <Building className="h-4 w-4" />
                               {job.company}
                             </button>
+                          </div>
                         </div>
 
-                        {/* Metadata Row - Better Spacing */}
-                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground py-3 border-y border-border/30">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {job.location}
+                      {/* Content */}
+                      <CardContent className="p-5">
+                        <div className="space-y-4">
+                          {/* Job Type & Metadata */}
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <Badge className="bg-primary/15 text-primary border-primary/30 font-semibold px-4 py-1.5 text-xs uppercase tracking-wider">
+                                {job.type.replace('-', ' ')}
+                              </Badge>
+                              <div className="text-xs text-muted-foreground">
+                                Posted {job.postedDate}
                             </div>
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {job.experience}
                             </div>
+                            <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                              <Clock className="h-3.5 w-3.5 text-amber-600" />
+                              <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
+                                Deadline: {job.deadline}
+                              </span>
+                              <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 text-[10px] px-2 py-0.5">
+                                Apply Soon
+                              </Badge>
+                            </div>
+                          </div>
+
+                          {/* Key Info Grid */}
+                          <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                <MapPin className="h-3.5 w-3.5" />
+                                <span>Location</span>
+                              </div>
+                              <div className="font-medium text-sm">{job.location}</div>
+                            </div>
+                            
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                <Clock className="h-3.5 w-3.5" />
+                                <span>Experience</span>
+                              </div>
+                              <div className="font-medium text-sm">{job.experience}</div>
+                            </div>
+                            
                             {job.salary && (
-                              <div className="flex items-center gap-1">
-                                <DollarSign className="h-3 w-3" />
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                  <DollarSign className="h-3.5 w-3.5" />
+                                  <span>Salary</span>
+                                </div>
+                                <div className="font-semibold text-sm text-emerald-600 dark:text-emerald-400">
                                 {job.salary.min.toLocaleString()} - {job.salary.max.toLocaleString()} {job.salary.currency}
                               </div>
-                            )}
-                            {job.budget && (
-                              <div className="flex items-center gap-1">
-                                <DollarSign className="h-3 w-3" />
-                                {job.budget.toLocaleString()} {job.salary?.currency || 'SAR'}
-                              </div>
-                            )}
-                            {job.clientRating && (
-                              <div className="flex items-center gap-1">
-                                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                {job.clientRating}
                               </div>
                             )}
                           </div>
 
-                        {/* Description - Better Typography */}
+                          {/* Description */}
                         <p className="text-sm leading-relaxed text-foreground/80 line-clamp-2">
                           {job.description}
                         </p>
 
-                        {/* Skills - Enhanced */}
+                          {/* Skills - Product Card Style */}
+                          <div className="space-y-2">
+                            <div className="text-xs text-muted-foreground font-medium">Required Skills</div>
                         <div className="flex flex-wrap gap-2">
-                          {job.skills.slice(0, 4).map((skill) => (
-                            <Badge key={skill} variant="secondary" className="text-xs font-medium px-3 py-1.5 rounded-md">
+                              {job.skills.map((skill) => (
+                                <button
+                                  key={skill}
+                                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                                >
                               {skill}
-                            </Badge>
-                          ))}
-                          {job.skills.length > 4 && (
-                            <Badge variant="secondary" className="text-xs font-medium px-3 py-1.5 rounded-md bg-primary/10 text-primary border-primary/20">
-                              +{job.skills.length - 4} more
-                            </Badge>
-                          )}
+                                </button>
+                              ))}
+                            </div>
                         </div>
 
-                        {/* Dates - Enhanced */}
-                        <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
-                          <div className="flex items-center gap-1.5">
-                            <Calendar className="h-3.5 w-3.5" />
-                            <span>Posted {job.postedDate}</span>
+                          {/* Quick Info Icons - Horizontal */}
+                          <div className="space-y-2">
+                            <div className="text-xs text-muted-foreground font-medium">Quick Insights</div>
+                            <div className="flex items-center justify-between gap-2">
+                              <JobInfoPopover
+                                type="match"
+                                trigger={
+                                  <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-primary/5 transition-all border border-primary/20 group/icon">
+                                    <Sparkles className="h-5 w-5 text-primary group-hover/icon:scale-110 transition-transform" />
+                                    <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-primary transition-colors">AI Match</span>
+                                  </button>
+                                }
+                                content={<MiniAIMatchScore score={85} />}
+                              />
+                              
+                              <JobInfoPopover
+                                type="earnings"
+                                trigger={
+                                  <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-green-500/5 transition-all border border-green-500/20 group/icon">
+                                    <Calculator className="h-5 w-5 text-green-600 group-hover/icon:scale-110 transition-transform" />
+                                    <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-green-600 transition-colors">Earnings</span>
+                                  </button>
+                                }
+                                content={<MiniEarningsCalculator />}
+                              />
+                              
+                              <JobInfoPopover
+                                type="skills"
+                                trigger={
+                                  <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-orange-500/5 transition-all border border-orange-500/20 group/icon">
+                                    <Target className="h-5 w-5 text-orange-600 group-hover/icon:scale-110 transition-transform" />
+                                    <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-orange-600 transition-colors">Skills Gap</span>
+                                  </button>
+                                }
+                                content={<MiniSkillsGap matchPercentage={0} />}
+                              />
+                              
+                              <JobInfoPopover
+                                type="similar"
+                                trigger={
+                                  <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-purple-500/5 transition-all border border-purple-500/20 group/icon">
+                                    <TrendingUp className="h-5 w-5 text-purple-600 group-hover/icon:scale-110 transition-transform" />
+                                    <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-purple-600 transition-colors">Similar Jobs</span>
+                                  </button>
+                                }
+                                content={<MiniSimilarJobs />}
+                              />
                           </div>
-                          <span className="text-border">•</span>
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="h-3.5 w-3.5 text-amber-500" />
-                            <span>Deadline {job.deadline}</span>
                           </div>
                         </div>
+                      </CardContent>
 
-                        {/* Actions - Enhanced */}
-                        <div className="flex gap-3 pt-2">
+                      {/* Footer with Actions */}
+                      <CardFooter className="p-5 pt-0 flex gap-3">
                           <Button 
-                            size="default"
                             variant="outline"
-                            onClick={() => setSelectedJob(job)}
-                            className="flex-1 sm:flex-none shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
+                          onClick={() => {
+                            setSelectedJob(job);
+                            setShowJobDetailsPopover(true);
+                          }}
+                          className="flex-1 font-semibold border-2 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
                           >
                             <Eye className="h-4 w-4 mr-2" />
                             View Details
                           </Button>
                           <Button 
-                            size="default"
                             onClick={() => {
                               setSelectedJob(job);
                               setShowQuickApply(true);
                             }}
-                            className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                          className="flex-1 font-semibold bg-primary hover:bg-primary/90 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
                           >
                             <Zap className="h-4 w-4 mr-2" />
                             Quick Apply
                           </Button>
-                          <Button
-                            size="default"
-                            variant="ghost"
-                            onClick={() => {/* toggle bookmark */}}
-                            className="hover:bg-primary/10 transition-colors"
-                          >
-                            <Bookmark className={`h-5 w-5 ${job.isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-                          </Button>
-                        </div>
-                        </div>
-
-                        {/* Right Side - Image */}
-                        <div className="hidden md:block w-48 h-48 flex-shrink-0">
-                          <img 
-                            src={`/e-jobs/Available Jobs/${job.title}.jpg`}
-                            alt={job.title}
-                            className="w-full h-full object-cover rounded-lg"
-                            onError={(e) => {
-                              // Fallback to placeholder if image doesn't exist
-                              (e.target as HTMLImageElement).src = '/placeholder.svg';
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
+                      </CardFooter>
                   </Card>
 
-                  {/* AI Tools Section - Enhanced Layout */}
-                  <div className="mt-6 space-y-4">
-                    <AIJobMatchScore 
-                      jobId={job.id}
-                      jobSkills={job.skills}
-                      overallMatch={job.id === '1' ? 92 : job.id === '2' ? 85 : 78}
-                    />
-                    
-                    <EarningsCalculator
-                      jobSalary={job.salary}
-                      jobBudget={job.budget}
-                      jobType={job.type}
-                    />
-
-                    <SkillsGapAnalysis 
-                      jobSkills={job.skills}
-                    />
-
-                    <SimilarJobsRecommendations
-                      currentJobId={job.id}
-                      currentJobSkills={job.skills}
-                      currentJobCategory={job.category}
-                    />
-                  </div>
-                </div>
+                        </div>
               ))}
-            </div>
+                        </div>
           )}
         </TabsContent>
 
@@ -594,49 +654,237 @@ export default function JobsPage() {
         <TabsContent value="applied" className="space-y-4">
           <div className="space-y-4">
             {mockJobs.filter(job => job.status === 'applied').map((job) => (
-              <Card key={job.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                          <Briefcase className="h-6 w-6 text-muted-foreground" />
+              <div key={job.id} className="space-y-4">
+                {/* NEW ENHANCED DESIGN - Product Card Inspired */}
+                <Card className="gap-0 w-full max-w-full overflow-hidden group bg-background text-foreground shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl border-2 border-border/50 hover:border-primary/30">
+                    {/* Image Section with Badges Overlay */}
+                    <div className="relative aspect-[21/9] overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                      <motion.img
+                        src={`/e-jobs/Applied/${job.title}.jpg`}
+                        alt={job.title}
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                        }}
+                      />
+                      
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                      
+                      {/* Badges - Applied Status */}
+                      <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                        <Badge className={`${getStatusColor(job.status)} hover:opacity-90 border-0 shadow-lg flex items-center gap-1`}>
+                          {getStatusIcon(job.status)}
+                          <span className="capitalize">{job.status}</span>
+                      </Badge>
+                        {job.clientRating && (
+                          <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-white" />
+                            {job.clientRating}
+                          </Badge>
+                        )}
+                    </div>
+
+                      {/* Bookmark Heart */}
+                        <Button
+                        variant="secondary"
+                          size="icon"
+                        className={`absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all ${
+                          job.isBookmarked ? 'text-rose-500' : ''
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <Bookmark
+                          className={`h-5 w-5 ${job.isBookmarked ? 'fill-rose-500' : ''}`}
+                        />
+                        </Button>
+                      
+                      {/* Job Title Overlay */}
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h3 className="font-bold text-2xl text-white drop-shadow-lg line-clamp-1">
+                          {job.title}
+                        </h3>
+                        <button
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition-colors mt-1"
+                          onClick={() => {
+                            setSelectedCompany(job.company);
+                            setShowCompanyProfile(true);
+                          }}
+                        >
+                          <Building className="h-4 w-4" />
+                          {job.company}
+                        </button>
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold">{job.title}</h3>
-                            <Badge className={getStatusColor(job.status)}>
-                              {getStatusIcon(job.status)}
-                              <span className="ml-1 capitalize">{job.status}</span>
+                        </div>
+
+                    {/* Content */}
+                    <CardContent className="p-5">
+                      <div className="space-y-4">
+                        {/* Job Type & Metadata */}
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <Badge className="bg-primary/15 text-primary border-primary/30 font-semibold px-4 py-1.5 text-xs uppercase tracking-wider">
+                              {job.type.replace('-', ' ')}
                             </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">{job.company}</p>
-                          <p className="text-sm text-muted-foreground mb-3">{job.location}</p>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Calendar className="h-3 w-3" />
-                            <span>Applied on {job.postedDate}</span>
-                          </div>
+                            <div className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              Applied {job.postedDate}
                         </div>
+                        </div>
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                            <Clock className="h-3.5 w-3.5 text-amber-600" />
+                            <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
+                              Deadline: {job.deadline}
+                            </span>
+                            <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 text-[10px] px-2 py-0.5">
+                              Apply Soon
+                            </Badge>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2 ml-4">
-                      <Button size="sm" variant="outline">
-                        View Application
-                      </Button>
+
+                        {/* Key Info Grid */}
+                        <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                              <MapPin className="h-3.5 w-3.5" />
+                              <span>Location</span>
+                  </div>
+                            <div className="font-medium text-sm">{job.location}</div>
+                </div>
+                          
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span>Experience</span>
+            </div>
+                            <div className="font-medium text-sm">{job.experience}</div>
+                          </div>
+                          
+                          {job.salary && (
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                <DollarSign className="h-3.5 w-3.5" />
+                                <span>Salary</span>
+                        </div>
+                              <div className="font-semibold text-sm text-emerald-600 dark:text-emerald-400">
+                                {job.salary.min.toLocaleString()} - {job.salary.max.toLocaleString()} {job.salary.currency}
+                          </div>
+                          </div>
+                          )}
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-sm leading-relaxed text-foreground/80 line-clamp-2">
+                          {job.description}
+                        </p>
+
+                        {/* Skills - Product Card Style */}
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground font-medium">Required Skills</div>
+                          <div className="flex flex-wrap gap-2">
+                            {job.skills.map((skill) => (
+                              <button
+                                key={skill}
+                                className="px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                              >
+                                {skill}
+                              </button>
+                            ))}
+                      </div>
+                    </div>
+
+                        {/* Quick Info Icons - Horizontal */}
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground font-medium">Quick Insights</div>
+                          <div className="flex items-center justify-between gap-2">
+                            <JobInfoPopover
+                              type="match"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-primary/5 transition-all border border-primary/20 group/icon">
+                                  <Sparkles className="h-5 w-5 text-primary group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-primary transition-colors">AI Match</span>
+                                </button>
+                              }
+                              content={<MiniAIMatchScore score={85} />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="earnings"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-green-500/5 transition-all border border-green-500/20 group/icon">
+                                  <Calculator className="h-5 w-5 text-green-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-green-600 transition-colors">Earnings</span>
+                                </button>
+                              }
+                              content={<MiniEarningsCalculator />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="skills"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-orange-500/5 transition-all border border-orange-500/20 group/icon">
+                                  <Target className="h-5 w-5 text-orange-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-orange-600 transition-colors">Skills Gap</span>
+                                </button>
+                              }
+                              content={<MiniSkillsGap matchPercentage={0} />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="similar"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-purple-500/5 transition-all border border-purple-500/20 group/icon">
+                                  <TrendingUp className="h-5 w-5 text-purple-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-purple-600 transition-colors">Similar Jobs</span>
+                                </button>
+                              }
+                              content={<MiniSimilarJobs />}
+                            />
                     </div>
                   </div>
                   
                   {/* Application Status Tracker */}
-                  <div className="mt-4 border-t pt-4">
+                        <div className="border-t pt-4 mt-4">
                     <ApplicationStatusTracker
                       jobTitle={job.title}
                       company={job.company}
                       applicationDate={job.postedDate}
                       currentStage={2}
                     />
+                        </div>
                   </div>
                 </CardContent>
+
+                    {/* Footer with Actions */}
+                    <CardFooter className="p-5 pt-0 flex gap-3">
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedJob(job);
+                          setShowJobDetailsPopover(true);
+                        }}
+                        className="flex-1 font-semibold border-2 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        size="default"
+                        className="flex-1 font-semibold border-2 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-500/5 transition-all"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        View Application
+                      </Button>
+                    </CardFooter>
               </Card>
+
+              </div>
             ))}
           </div>
         </TabsContent>
@@ -645,42 +893,226 @@ export default function JobsPage() {
         <TabsContent value="shortlisted" className="space-y-4">
           <div className="space-y-4">
             {mockJobs.filter(job => job.status === 'shortlisted').map((job) => (
-              <Card key={job.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                          <Briefcase className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold">{job.title}</h3>
-                            <Badge className={getStatusColor(job.status)}>
+              <div key={job.id} className="space-y-4">
+                {/* NEW ENHANCED DESIGN - Product Card Inspired */}
+                <Card className="gap-0 w-full max-w-full overflow-hidden group bg-background text-foreground shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl border-2 border-border/50 hover:border-primary/30">
+                    {/* Image Section with Badges Overlay */}
+                    <div className="relative aspect-[21/9] overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                      <motion.img
+                        src={`/e-jobs/Shortlisted/${job.title}.jpg`}
+                        alt={job.title}
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                        }}
+                      />
+                      
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                      
+                      {/* Badges - Shortlisted Status */}
+                      <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                        <Badge className={`${getStatusColor(job.status)} hover:opacity-90 border-0 shadow-lg flex items-center gap-1`}>
                               {getStatusIcon(job.status)}
-                              <span className="ml-1 capitalize">{job.status}</span>
+                          <span className="capitalize">{job.status}</span>
                             </Badge>
+                        {job.clientRating && (
+                          <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-white" />
+                            {job.clientRating}
+                          </Badge>
+                        )}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{job.company}</p>
-                          <p className="text-sm text-muted-foreground mb-3">{job.location}</p>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      
+                      {/* Bookmark Heart */}
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className={`absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all ${
+                          job.isBookmarked ? 'text-rose-500' : ''
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <Bookmark
+                          className={`h-5 w-5 ${job.isBookmarked ? 'fill-rose-500' : ''}`}
+                        />
+                      </Button>
+                      
+                      {/* Job Title Overlay */}
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h3 className="font-bold text-2xl text-white drop-shadow-lg line-clamp-1">
+                          {job.title}
+                        </h3>
+                        <button
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition-colors mt-1"
+                          onClick={() => {
+                            setSelectedCompany(job.company);
+                            setShowCompanyProfile(true);
+                          }}
+                        >
+                          <Building className="h-4 w-4" />
+                          {job.company}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <CardContent className="p-5">
+                      <div className="space-y-4">
+                        {/* Job Type & Metadata */}
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <Badge className="bg-primary/15 text-primary border-primary/30 font-semibold px-4 py-1.5 text-xs uppercase tracking-wider">
+                              {job.type.replace('-', ' ')}
+                            </Badge>
+                            <div className="text-xs text-muted-foreground flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            <span>Shortlisted on {job.postedDate}</span>
+                              Shortlisted {job.postedDate}
+                          </div>
+                        </div>
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                            <Clock className="h-3.5 w-3.5 text-amber-600" />
+                            <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
+                              Deadline: {job.deadline}
+                            </span>
+                            <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 text-[10px] px-2 py-0.5">
+                              Apply Soon
+                            </Badge>
+                      </div>
+                    </div>
+
+                        {/* Key Info Grid */}
+                        <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                              <MapPin className="h-3.5 w-3.5" />
+                              <span>Location</span>
+                            </div>
+                            <div className="font-medium text-sm">{job.location}</div>
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span>Experience</span>
+                            </div>
+                            <div className="font-medium text-sm">{job.experience}</div>
+                          </div>
+                          
+                          {job.salary && (
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                <DollarSign className="h-3.5 w-3.5" />
+                                <span>Salary</span>
+                              </div>
+                              <div className="font-semibold text-sm text-emerald-600 dark:text-emerald-400">
+                                {job.salary.min.toLocaleString()} - {job.salary.max.toLocaleString()} {job.salary.currency}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-sm leading-relaxed text-foreground/80 line-clamp-2">
+                          {job.description}
+                        </p>
+
+                        {/* Skills - Product Card Style */}
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground font-medium">Required Skills</div>
+                          <div className="flex flex-wrap gap-2">
+                            {job.skills.map((skill) => (
+                              <button
+                                key={skill}
+                                className="px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                              >
+                                {skill}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Quick Info Icons - Horizontal */}
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground font-medium">Quick Insights</div>
+                          <div className="flex items-center justify-between gap-2">
+                            <JobInfoPopover
+                              type="match"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-primary/5 transition-all border border-primary/20 group/icon">
+                                  <Sparkles className="h-5 w-5 text-primary group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-primary transition-colors">AI Match</span>
+                                </button>
+                              }
+                              content={<MiniAIMatchScore score={85} />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="earnings"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-green-500/5 transition-all border border-green-500/20 group/icon">
+                                  <Calculator className="h-5 w-5 text-green-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-green-600 transition-colors">Earnings</span>
+                                </button>
+                              }
+                              content={<MiniEarningsCalculator />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="skills"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-orange-500/5 transition-all border border-orange-500/20 group/icon">
+                                  <Target className="h-5 w-5 text-orange-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-orange-600 transition-colors">Skills Gap</span>
+                                </button>
+                              }
+                              content={<MiniSkillsGap matchPercentage={0} />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="similar"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-purple-500/5 transition-all border border-purple-500/20 group/icon">
+                                  <TrendingUp className="h-5 w-5 text-purple-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-purple-600 transition-colors">Similar Jobs</span>
+                                </button>
+                              }
+                              content={<MiniSimilarJobs />}
+                            />
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col gap-2 ml-4">
-                      <Button size="sm" variant="outline">
+                    </CardContent>
+
+                    {/* Footer with Actions */}
+                    <CardFooter className="p-5 pt-0 flex gap-3">
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedJob(job);
+                          setShowJobDetailsPopover(true);
+                        }}
+                        className="flex-1 font-semibold border-2 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
                         View Details
                       </Button>
-                      <Button size="sm">
+                      <Button 
+                        size="default"
+                        className="flex-1 font-semibold bg-green-600 hover:bg-green-700 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                      >
+                        <Users className="h-4 w-4 mr-2" />
                         Contact Client
                       </Button>
-                    </div>
-                  </div>
-                </CardContent>
+                    </CardFooter>
               </Card>
+
+              </div>
             ))}
           </div>
         </TabsContent>
@@ -689,42 +1121,224 @@ export default function JobsPage() {
         <TabsContent value="bookmarked" className="space-y-4">
           <div className="space-y-4">
             {mockJobs.filter(job => job.isBookmarked).map((job) => (
-              <Card key={job.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                          <Briefcase className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold">{job.title}</h3>
-                            <Badge variant="outline">
-                              <Bookmark className="h-3 w-3 mr-1" />
+              <div key={job.id} className="space-y-4">
+                {/* NEW ENHANCED DESIGN - Product Card Inspired */}
+                <Card className="gap-0 w-full max-w-full overflow-hidden group bg-background text-foreground shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl border-2 border-border/50 hover:border-primary/30">
+                    {/* Image Section with Badges Overlay */}
+                    <div className="relative aspect-[21/9] overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                      <motion.img
+                        src={`/e-jobs/Bookmarked/${job.title}.jpg`}
+                        alt={job.title}
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                        }}
+                      />
+                      
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                      
+                      {/* Badges - Bookmarked */}
+                      <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                        <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                          <Bookmark className="h-3 w-3 fill-white" />
                               Bookmarked
                             </Badge>
+                        {job.clientRating && (
+                          <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-white" />
+                            {job.clientRating}
+                          </Badge>
+                        )}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{job.company}</p>
-                          <p className="text-sm text-muted-foreground mb-3">{job.location}</p>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Calendar className="h-3 w-3" />
-                            <span>Posted {job.postedDate}</span>
+                      
+                      {/* Bookmark Heart - Always filled for bookmarked tab */}
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all text-rose-500"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <Bookmark className="h-5 w-5 fill-rose-500" />
+                      </Button>
+                      
+                      {/* Job Title Overlay */}
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h3 className="font-bold text-2xl text-white drop-shadow-lg line-clamp-1">
+                          {job.title}
+                        </h3>
+                        <button
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition-colors mt-1"
+                          onClick={() => {
+                            setSelectedCompany(job.company);
+                            setShowCompanyProfile(true);
+                          }}
+                        >
+                          <Building className="h-4 w-4" />
+                          {job.company}
+                        </button>
                           </div>
                         </div>
+
+                    {/* Content */}
+                    <CardContent className="p-5">
+                      <div className="space-y-4">
+                        {/* Job Type & Metadata */}
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <Badge className="bg-primary/15 text-primary border-primary/30 font-semibold px-4 py-1.5 text-xs uppercase tracking-wider">
+                              {job.type.replace('-', ' ')}
+                            </Badge>
+                            <div className="text-xs text-muted-foreground">
+                              Posted {job.postedDate}
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2 ml-4">
-                      <Button size="sm" variant="outline">
-                        <Bookmark className="h-3 w-3 fill-current" />
-                      </Button>
-                      <Button size="sm">
-                        Apply Now
-                      </Button>
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                            <Clock className="h-3.5 w-3.5 text-amber-600" />
+                            <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
+                              Deadline: {job.deadline}
+                            </span>
+                            <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 text-[10px] px-2 py-0.5">
+                              Apply Soon
+                            </Badge>
+                          </div>
+                        </div>
+
+                        {/* Key Info Grid */}
+                        <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                              <MapPin className="h-3.5 w-3.5" />
+                              <span>Location</span>
+                            </div>
+                            <div className="font-medium text-sm">{job.location}</div>
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span>Experience</span>
+                            </div>
+                            <div className="font-medium text-sm">{job.experience}</div>
+                          </div>
+                          
+                          {job.salary && (
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                <DollarSign className="h-3.5 w-3.5" />
+                                <span>Salary</span>
+                              </div>
+                              <div className="font-semibold text-sm text-emerald-600 dark:text-emerald-400">
+                                {job.salary.min.toLocaleString()} - {job.salary.max.toLocaleString()} {job.salary.currency}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-sm leading-relaxed text-foreground/80 line-clamp-2">
+                          {job.description}
+                        </p>
+
+                        {/* Skills - Product Card Style */}
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground font-medium">Required Skills</div>
+                          <div className="flex flex-wrap gap-2">
+                            {job.skills.map((skill) => (
+                              <button
+                                key={skill}
+                                className="px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                              >
+                                {skill}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Quick Info Icons - Horizontal */}
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground font-medium">Quick Insights</div>
+                          <div className="flex items-center justify-between gap-2">
+                            <JobInfoPopover
+                              type="match"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-primary/5 transition-all border border-primary/20 group/icon">
+                                  <Sparkles className="h-5 w-5 text-primary group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-primary transition-colors">AI Match</span>
+                                </button>
+                              }
+                              content={<MiniAIMatchScore score={85} />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="earnings"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-green-500/5 transition-all border border-green-500/20 group/icon">
+                                  <Calculator className="h-5 w-5 text-green-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-green-600 transition-colors">Earnings</span>
+                                </button>
+                              }
+                              content={<MiniEarningsCalculator />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="skills"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-orange-500/5 transition-all border border-orange-500/20 group/icon">
+                                  <Target className="h-5 w-5 text-orange-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-orange-600 transition-colors">Skills Gap</span>
+                                </button>
+                              }
+                              content={<MiniSkillsGap matchPercentage={0} />}
+                            />
+                            
+                            <JobInfoPopover
+                              type="similar"
+                              trigger={
+                                <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-purple-500/5 transition-all border border-purple-500/20 group/icon">
+                                  <TrendingUp className="h-5 w-5 text-purple-600 group-hover/icon:scale-110 transition-transform" />
+                                  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-purple-600 transition-colors">Similar Jobs</span>
+                                </button>
+                              }
+                              content={<MiniSimilarJobs />}
+                            />
+                          </div>
                     </div>
                   </div>
                 </CardContent>
+
+                    {/* Footer with Actions */}
+                    <CardFooter className="p-5 pt-0 flex gap-3">
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedJob(job);
+                          setShowJobDetailsPopover(true);
+                        }}
+                        className="flex-1 font-semibold border-2 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          setSelectedJob(job);
+                          setShowQuickApply(true);
+                        }}
+                        className="flex-1 font-semibold bg-primary hover:bg-primary/90 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                      >
+                        <Zap className="h-4 w-4 mr-2" />
+                        Quick Apply
+                      </Button>
+                    </CardFooter>
               </Card>
+
+              </div>
             ))}
           </div>
         </TabsContent>
@@ -747,6 +1361,12 @@ export default function JobsPage() {
             open={showCompanyProfile}
             onOpenChange={setShowCompanyProfile}
             companyName={selectedCompany || selectedJob?.company || ''}
+          />
+          
+          <JobDetailsPopover
+            isOpen={showJobDetailsPopover}
+            onClose={() => setShowJobDetailsPopover(false)}
+            job={selectedJob}
           />
         </>
       )}

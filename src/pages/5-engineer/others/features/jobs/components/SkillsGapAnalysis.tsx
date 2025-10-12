@@ -27,11 +27,20 @@ interface SkillsGapAnalysisProps {
 }
 
 export function SkillsGapAnalysis({ 
-  jobSkills,
+  jobSkills = [],
   userSkills = ["STAAD.Pro", "ETABS", "AutoCAD", "Structural Analysis", "Python"]
 }: SkillsGapAnalysisProps) {
   // Analyze skills gap
   const analyzeSkills = (): SkillAnalysis[] => {
+    if (!jobSkills || jobSkills.length === 0) {
+      // Return default skills analysis if no job skills provided
+      return [
+        { skill: "Structural Analysis", hasSkill: true, proficiency: 85, importance: "required" },
+        { skill: "AutoCAD", hasSkill: true, proficiency: 90, importance: "required" },
+        { skill: "Project Management", hasSkill: false, importance: "preferred", learningTime: "2 weeks" }
+      ];
+    }
+    
     return jobSkills.map((skill) => {
       const hasSkill = userSkills.some(userSkill => 
         userSkill.toLowerCase().includes(skill.toLowerCase()) ||

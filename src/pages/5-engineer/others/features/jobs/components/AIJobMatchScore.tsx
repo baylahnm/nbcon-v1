@@ -26,12 +26,14 @@ interface AIJobMatchScoreProps {
 
 export function AIJobMatchScore({ 
   jobId, 
-  jobSkills,
+  jobSkills = [],
   userSkills = ["STAAD.Pro", "ETABS", "AutoCAD", "Structural Analysis"],
   overallMatch 
 }: AIJobMatchScoreProps) {
   // Calculate match score based on skills overlap
   const calculateMatch = () => {
+    if (!jobSkills || jobSkills.length === 0) return 85; // Default score if no skills provided
+    
     const matchedSkills = jobSkills.filter(skill => 
       userSkills.some(userSkill => 
         userSkill.toLowerCase().includes(skill.toLowerCase()) ||
@@ -92,7 +94,7 @@ export function AIJobMatchScore({
       <CardHeader className="p-5 pb-3 border-b border-border/40">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`${matchScore >= 70 ? 'bg-green-500' : 'bg-orange-500'} h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md`}>
+            <div className={`${matchScore >= 70 ? 'bg-primary' : 'bg-orange-500'} h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md`}>
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
