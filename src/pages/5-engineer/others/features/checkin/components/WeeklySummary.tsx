@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
 import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
 import { 
   Calendar, 
@@ -9,7 +10,9 @@ import {
   DollarSign,
   Target,
   Award,
-  Zap
+  Zap,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 interface WeeklySummaryProps {
@@ -31,6 +34,9 @@ interface WeeklySummaryProps {
 }
 
 export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
+  const [isWeekCollapsed, setIsWeekCollapsed] = useState(false);
+  const [isMonthCollapsed, setIsMonthCollapsed] = useState(false);
+
   // Default mock data if not provided
   const defaultWeekData = {
     totalHours: 42.5,
@@ -114,12 +120,27 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
                 <p className="text-xs text-muted-foreground mt-0.5">Weekly performance summary</p>
               </div>
             </div>
-            <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
-              <Zap className="w-3 h-3 mr-1" />
-              {week.streak} Day Streak
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
+                <Zap className="w-3 h-3 mr-1" />
+                {week.streak} Day Streak
+              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={() => setIsWeekCollapsed(!isWeekCollapsed)}
+              >
+                {isWeekCollapsed ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronUp className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
+        {!isWeekCollapsed && (
         <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {/* Total Hours */}
@@ -171,6 +192,7 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
             </div>
           </div>
         </CardContent>
+        )}
       </Card>
       </div>
 
@@ -192,16 +214,31 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
       >
       <Card className="bg-transparent border-0 gap-0">
         <CardHeader className="p-5 pb-3 border-b border-border/40">
-          <CardTitle className="flex items-center gap-3">
-            <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
-              <TrendingUp className="w-6 h-6 text-white" />
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-base font-bold">This Month</div>
+                <p className="text-xs text-muted-foreground mt-0.5">Monthly performance overview</p>
+              </div>
             </div>
-            <div>
-              <div className="text-base font-bold">This Month</div>
-              <p className="text-xs text-muted-foreground mt-0.5">Monthly performance overview</p>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsMonthCollapsed(!isMonthCollapsed)}
+            >
+              {isMonthCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
           </CardTitle>
         </CardHeader>
+        {!isMonthCollapsed && (
         <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="space-y-4">
             {/* Stats Grid */}
@@ -260,6 +297,7 @@ export function WeeklySummary({ weekData, monthData }: WeeklySummaryProps) {
             </div>
           </div>
         </CardContent>
+        )}
       </Card>
       </div>
     </div>

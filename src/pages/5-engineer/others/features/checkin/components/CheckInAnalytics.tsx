@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../../1-HomePage/others/components/ui/tabs";
 import { 
   BarChart, 
@@ -22,7 +23,9 @@ import {
   Award, 
   Clock,
   Target,
-  Flame
+  Flame,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 interface CheckInAnalyticsProps {
@@ -30,6 +33,7 @@ interface CheckInAnalyticsProps {
 }
 
 export function CheckInAnalytics({ showStreaks = true }: CheckInAnalyticsProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const analyticsCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -99,16 +103,31 @@ export function CheckInAnalytics({ showStreaks = true }: CheckInAnalyticsProps) 
     >
     <Card className="bg-transparent border-0 gap-0">
       <CardHeader className="p-5 pb-3 border-b border-border/40">
-        <CardTitle className="flex items-center gap-3">
-          <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
-            <TrendingUp className="w-6 h-6 text-white" />
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="text-base font-bold">Performance Analytics</div>
+              <p className="text-xs text-muted-foreground mt-0.5">Detailed work insights</p>
+            </div>
           </div>
-          <div>
-            <div className="text-base font-bold">Performance Analytics</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Detailed work insights</p>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          >
+            {isCollapsed ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronUp className="h-4 w-4" />
+            )}
+          </Button>
         </CardTitle>
       </CardHeader>
+      {!isCollapsed && (
       <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         <Tabs defaultValue="weekly" className="space-y-4">
           <TabsList className="grid w-full grid-cols-3">
@@ -312,6 +331,7 @@ export function CheckInAnalytics({ showStreaks = true }: CheckInAnalyticsProps) 
           </TabsContent>
         </Tabs>
       </CardContent>
+      )}
     </Card>
     </div>
   );

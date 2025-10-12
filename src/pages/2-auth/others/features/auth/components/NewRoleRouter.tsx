@@ -90,7 +90,7 @@ function LegacyRedirects({ fallback }: LegacyRedirectsProps = {}) {
     if (path === "/learning") return role ? `${ROLE_BASE[role]}/learning` : "/auth";
     if (path.startsWith("/c/")) return path.replace("/c", "/client");
     if (path.startsWith("/x/")) return path.replace("/x", "/enterprise");
-    if (path === "/client/payments" && role === "engineer") return "/engineer/payments";
+    if (path === "/client/payments" && role === "engineer") return "/engineer/finance";
     return null;
   }, [path, role]);
 

@@ -33,7 +33,6 @@ const makeTopMenu = (role?: string): MenuItem[] => {
         { title: 'Network', url: R.engineer.network, icon: Users },
         { title: 'Learning', url: R.engineer.learning, icon: BookOpen },
         { title: 'Finance', url: R.engineer.finance, icon: DollarSign },
-        { title: 'Payments', url: R.engineer.payments, icon: DollarSign },
         { title: 'Help', url: R.engineer.help, icon: HelpCircle },
         { title: 'Settings', url: R.engineer.settings, icon: Settings }
       ];

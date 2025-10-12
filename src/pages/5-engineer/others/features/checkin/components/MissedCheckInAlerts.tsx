@@ -10,7 +10,9 @@ import {
   Clock,
   FileText,
   XCircle,
-  Award
+  Award,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { useState } from "react";
 
@@ -29,6 +31,7 @@ interface MissedCheckInAlertsProps {
 export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps) {
   const [selectedMissed, setSelectedMissed] = useState<MissedCheckIn | null>(null);
   const [excuse, setExcuse] = useState("");
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Mock data
   const defaultMissedCheckIns: MissedCheckIn[] = [
@@ -94,16 +97,31 @@ export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps
         className="gap-0"
       >
         <CardHeader className="p-5 pb-3 border-b border-border/40">
-          <CardTitle className="flex items-center gap-3">
-            <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
-              <CheckCircle className="w-6 h-6 text-white" />
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-500 h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                <CheckCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-base font-bold">Perfect Attendance</div>
+                <p className="text-xs text-muted-foreground mt-0.5">No missed check-ins</p>
+              </div>
             </div>
-            <div>
-              <div className="text-base font-bold">Perfect Attendance</div>
-              <p className="text-xs text-muted-foreground mt-0.5">No missed check-ins</p>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
           </CardTitle>
         </CardHeader>
+        {!isCollapsed && (
         <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="flex items-center gap-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20">
             <Award className="w-10 h-10 text-green-600" />
@@ -115,6 +133,7 @@ export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps
             </div>
           </div>
         </CardContent>
+        )}
       </Card>
     );
   }
@@ -144,12 +163,27 @@ export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps
               <p className="text-xs text-muted-foreground mt-0.5">Action required</p>
             </div>
           </div>
-          <Badge variant="destructive">
-            <Bell className="w-3 h-3 mr-1" />
-            {missed.filter(m => m.status === "pending").length} Pending
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="destructive">
+              <Bell className="w-3 h-3 mr-1" />
+              {missed.filter(m => m.status === "pending").length} Pending
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
+      {!isCollapsed && (
       <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Alert */}
         <Alert>
@@ -252,6 +286,7 @@ export function MissedCheckInAlerts({ missedCheckIns }: MissedCheckInAlertsProps
           </p>
         </div>
       </CardContent>
+      )}
     </Card>
   );
 }

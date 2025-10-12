@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
 import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
 import { Alert, AlertDescription } from "../../../../../1-HomePage/others/components/ui/alert";
 import { 
@@ -9,7 +10,9 @@ import {
   TrendingUp,
   AlertTriangle,
   Award,
-  Calendar
+  Calendar,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 interface OvertimeData {
@@ -34,6 +37,8 @@ export function OvertimeCalculator({
   shiftStart = "07:00",
   shiftEnd = "15:00"
 }: OvertimeCalculatorProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   // Calculate hours worked
   const calculateHours = () => {
     if (!checkInTime || !checkOutTime) {
@@ -113,14 +118,29 @@ export function OvertimeCalculator({
               <p className="text-xs text-muted-foreground mt-0.5">Track extra hours and earnings</p>
             </div>
           </div>
-          {overtimeData.overtimeHours > 0 && (
-            <Badge className="bg-orange-600">
-              <Award className="w-3 h-3 mr-1" />
-              +{overtimeData.overtimeHours}h OT
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {overtimeData.overtimeHours > 0 && (
+              <Badge className="bg-orange-600">
+                <Award className="w-3 h-3 mr-1" />
+                +{overtimeData.overtimeHours}h OT
+              </Badge>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
+      {!isCollapsed && (
       <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Today's Hours Breakdown */}
         <div className="space-y-3">
@@ -242,6 +262,7 @@ export function OvertimeCalculator({
           </div>
         </div>
       </CardContent>
+      )}
     </Card>
     </div>
   );

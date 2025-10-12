@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
 import { 
   Cloud, 
   CloudRain, 
@@ -9,7 +10,9 @@ import {
   Droplets,
   Thermometer,
   Eye,
-  Gauge
+  Gauge,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -44,6 +47,7 @@ export function WeatherWidget({ projectLocation, coordinates }: WeatherWidgetPro
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     // In production, fetch real weather data from API
@@ -132,16 +136,31 @@ export function WeatherWidget({ projectLocation, coordinates }: WeatherWidgetPro
               <div className="text-xs text-muted-foreground mt-0.5">{weather.locationName}</div>
             </div>
           </div>
-          <div className="text-right">
-            <div className={`text-3xl font-bold ${getTemperatureColor(weather.temperature)}`}>
-              {weather.temperature}°C
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className={`text-3xl font-bold ${getTemperatureColor(weather.temperature)}`}>
+                {weather.temperature}°C
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Feels like {weather.feelsLike}°C
+              </div>
             </div>
-            <div className="text-xs text-muted-foreground">
-              Feels like {weather.feelsLike}°C
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
           </div>
         </CardTitle>
       </CardHeader>
+      {!isCollapsed && (
       <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Humidity */}
@@ -211,6 +230,7 @@ export function WeatherWidget({ projectLocation, coordinates }: WeatherWidgetPro
           </div>
         )}
       </CardContent>
+      )}
     </Card>
   );
 }

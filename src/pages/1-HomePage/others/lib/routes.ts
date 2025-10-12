@@ -11,7 +11,7 @@ export const R = {
     profile: "/engineer/profile",
     network: "/engineer/network",
     learning: "/engineer/learning",
-    payments: "/engineer/payments",
+    payments: "/engineer/finance",
     finance: "/engineer/finance",
     help: "/engineer/help",
     settings: "/engineer/settings",
@@ -74,7 +74,7 @@ export const RH = {
     learningCourse: (courseId: string) => `/engineer/learning/${courseId}`,
     learningCertificate: (certificateId: string) => `/engineer/learning/certificates/${certificateId}`,
     networkProfile: (userId: string) => `/engineer/network/${userId}`,
-    payment: (paymentId: string) => `/engineer/payments/${paymentId}`,
+    payment: (paymentId: string) => `/engineer/finance/${paymentId}`,
   },
   client: {
     myProject: (projectId: string) => `/client/myprojects/${projectId}`,

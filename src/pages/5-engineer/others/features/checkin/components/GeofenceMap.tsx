@@ -7,7 +7,9 @@ import {
   Navigation, 
   Target,
   Crosshair,
-  Radio
+  Radio,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -27,6 +29,7 @@ export function GeofenceMap({
   isWithinGeofence = false
 }: GeofenceMapProps) {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     // Simulate map loading
@@ -82,18 +85,33 @@ export function GeofenceMap({
               <p className="text-xs text-muted-foreground mt-0.5">Site boundary visualization</p>
             </div>
           </div>
-          <Badge 
-            variant="outline"
-            className={isWithinGeofence 
-              ? "bg-green-500/10 text-green-600 border-green-500/20" 
-              : "bg-red-500/10 text-red-600 border-red-500/20"
-            }
-          >
-            <Radio className="w-3 h-3 mr-1" />
-            {isWithinGeofence ? "In Range" : "Out of Range"}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge 
+              variant="outline"
+              className={isWithinGeofence 
+                ? "bg-green-500/10 text-green-600 border-green-500/20" 
+                : "bg-red-500/10 text-red-600 border-red-500/20"
+              }
+            >
+              <Radio className="w-3 h-3 mr-1" />
+              {isWithinGeofence ? "In Range" : "Out of Range"}
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
+      {!isCollapsed && (
       <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Map Placeholder */}
         <div className="relative w-full h-[400px] bg-muted rounded-lg overflow-hidden border-2 border-border">
@@ -218,6 +236,7 @@ export function GeofenceMap({
           </div>
         </div>
       </CardContent>
+      )}
     </Card>
   );
 }

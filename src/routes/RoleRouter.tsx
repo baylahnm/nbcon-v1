@@ -81,7 +81,7 @@ function LegacyRedirects({ fallback }: LegacyRedirectsProps = {}) {
     if (path === "/learning") return role ? `${ROLE_BASE[role]}/learning` : "/auth";
     if (path.startsWith("/c/")) return path.replace("/c", "/client");
     if (path.startsWith("/x/")) return path.replace("/x", "/enterprise");
-    if (path === "/client/payments" && role === "engineer") return "/engineer/payments";
+    if (path === "/client/payments" && role === "engineer") return "/engineer/finance";
     return null;
   }, [path, role]);
 
@@ -143,9 +143,8 @@ export default function RoleRouter() {
           <Route path="learning" element={<LearningPage />} />
 <Route path="learning/:courseId" element={<LearningPage />} />
           <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
-          <Route path="payments" element={<PaymentsContent />} />
-          <Route path="payments/:paymentId" element={<PaymentsContent />} />
           <Route path="finance" element={<PaymentsContent />} />
+          <Route path="finance/:paymentId" element={<PaymentsContent />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<EngineerSettingsPage />} />
         </Route>

@@ -253,7 +253,7 @@ export default function CalendarPage() {
     >
       {/* Header Section */}
       <div 
-        className="p-6 mb-4 border-b"
+        className="px-4 py-6 mb-4 border-b"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
@@ -261,8 +261,8 @@ export default function CalendarPage() {
       >
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
-              <Calendar className="h-5 w-5 text-primary" />
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <Calendar className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-base font-bold tracking-tight">Calendar</h1>
@@ -305,17 +305,6 @@ export default function CalendarPage() {
               <Switch id="hijri-switch" checked={isHijri} onCheckedChange={setIsHijri} />
               <Label htmlFor="hijri-switch" className="text-xs">Hijri</Label>
             </div>
-            <Select value={userRole} onValueChange={(value) => setUserRole(value as UserRole)}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="client">Client</SelectItem>
-                <SelectItem value="engineer">Engineer</SelectItem>
-                <SelectItem value="enterprise">Enterprise</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
             <Select value={view} onValueChange={(value) => setView(value as CalendarView)}>
               <SelectTrigger className="w-[100px]">
                 <SelectValue />
@@ -384,7 +373,7 @@ export default function CalendarPage() {
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <div className="flex flex-col lg:flex-row gap-4 mb-4 p-6">
+        <div className="flex flex-col lg:flex-row gap-4 mb-4 px-4 py-6">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />

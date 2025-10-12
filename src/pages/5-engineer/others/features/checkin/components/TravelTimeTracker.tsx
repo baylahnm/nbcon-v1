@@ -8,8 +8,11 @@ import {
   DollarSign,
   Navigation,
   TrendingUp,
-  Home
+  Home,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
+import { useState } from "react";
 
 interface TravelData {
   startLocation: string;
@@ -32,6 +35,8 @@ export function TravelTimeTracker({
   projectCoordinates,
   onStartTracking 
 }: TravelTimeTrackerProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
   // Mock travel data
   const travelData: TravelData = {
     startLocation: "Home - Al Olaya, Riyadh",
@@ -82,12 +87,27 @@ export function TravelTimeTracker({
               <p className="text-xs text-muted-foreground mt-0.5">Track commute and reimbursement</p>
             </div>
           </div>
-          <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/20">
-            {getTravelMethodIcon()}
-            <span className="ml-1">{travelData.travelMethod}</span>
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+              {getTravelMethodIcon()}
+              <span className="ml-1">{travelData.travelMethod}</span>
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
+      {!isCollapsed && (
       <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Route Info */}
         <div className="space-y-3">
@@ -193,6 +213,7 @@ export function TravelTimeTracker({
           Travel time is automatically recorded when you check in. Reimbursement is calculated based on company policy.
         </p>
       </CardContent>
+      )}
     </Card>
   );
 }

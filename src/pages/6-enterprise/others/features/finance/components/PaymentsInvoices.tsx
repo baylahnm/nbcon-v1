@@ -148,7 +148,7 @@ export function PaymentsInvoices() {
                 <Eye className="w-4 h-4 mr-2" />
                 Quick View
               </Button>
-              <Button size="sm" variant="outline" onClick={() => window.location.assign(`/engineer/payments/${invoice.id}`)}>
+              <Button size="sm" variant="outline" onClick={() => window.location.assign(`/engineer/finance/${invoice.id}`)}>
                 <Eye className="w-4 h-4 mr-2" />
                 View
               </Button>
@@ -371,7 +371,7 @@ export function PaymentsInvoices() {
                 )}
               </div>
               <div className="flex items-center gap-2 pt-2">
-                <Button size="sm" onClick={() => window.location.assign(`/engineer/payments/${previewInvoice.id}`)}>Open full page</Button>
+                <Button size="sm" onClick={() => window.location.assign(`/engineer/finance/${previewInvoice.id}`)}>Open full page</Button>
                 <Button size="sm" variant="outline" onClick={() => setPreviewInvoice(null)}>Close</Button>
               </div>
             </div>

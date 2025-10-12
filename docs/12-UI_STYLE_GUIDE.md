@@ -1,7 +1,7 @@
 # 🎨 UI Style Guide - nbcon Design System
 
 **Last Updated:** October 12, 2025  
-**Version:** 1.0  
+**Version:** 2.0 ✨ (Product-Card & Interactive Popovers Added)  
 **Status:** Production Standard
 
 ---
@@ -12,14 +12,16 @@
 2. [Color System](#color-system)
 3. [Typography](#typography)
 4. [Cards](#cards)
-5. [Buttons](#buttons)
-6. [Badges](#badges)
-7. [Borders & Outlines](#borders--outlines)
-8. [Spacing & Layout](#spacing--layout)
-9. [Hover Effects & Animations](#hover-effects--animations)
-10. [Icons](#icons)
-11. [Shadows](#shadows)
-12. [Responsive Design](#responsive-design)
+5. [Product-Card Design Pattern](#product-card-design-pattern) ✨ NEW
+6. [Interactive Popovers](#interactive-popovers) ✨ NEW
+7. [Buttons](#buttons)
+8. [Badges](#badges)
+9. [Borders & Outlines](#borders--outlines)
+10. [Spacing & Layout](#spacing--layout)
+11. [Hover Effects & Animations](#hover-effects--animations)
+12. [Icons](#icons)
+13. [Shadows](#shadows)
+14. [Responsive Design](#responsive-design)
 
 ---
 
@@ -415,6 +417,795 @@ className="p-3"                    // 12px for large icons
 className="p-2.5"                  // 10px for medium icons
 className="p-2"                    // 8px for small icons
 ```
+
+---
+
+## 🛍️ Product-Card Design Pattern
+
+### Overview
+
+The **Product-Card Design Pattern** is a modern, e-commerce-inspired card layout used for displaying jobs, projects, and other featured content. Introduced in the Jobs page redesign (October 2025).
+
+**Key Features:**
+- Hero image banner with gradient overlay
+- Overlay badges for status/metadata
+- Title and company on image
+- Structured content sections
+- Interactive Quick Insights buttons
+- Dual action buttons in footer
+
+---
+
+### Complete Product-Card Structure
+
+```tsx
+<Card className="gap-0 w-full max-w-full overflow-hidden group bg-background text-foreground shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl border-2 border-border/50 hover:border-primary/30">
+  {/* 1. Hero Image Section */}
+  <div className="relative aspect-[21/9] overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+    <motion.img
+      src={`/path/to/image.jpg`}
+      alt="Title"
+      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      onError={(e) => {
+        (e.target as HTMLImageElement).src = '/placeholder.svg';
+      }}
+    />
+    
+    {/* Gradient Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+    
+    {/* Status Badges (Top-Left) */}
+    <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+      <Badge className="bg-blue-500 hover:bg-blue-500/90 text-white border-0 shadow-lg">
+        New
+      </Badge>
+      <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 shadow-lg">
+        Recommended
+      </Badge>
+      <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+        <Star className="h-3 w-3 fill-white" />
+        4.8
+      </Badge>
+    </div>
+    
+    {/* Floating Action Button (Top-Right) */}
+    <Button
+      variant="secondary"
+      size="icon"
+      className="absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Bookmark className="h-5 w-5" />
+    </Button>
+    
+    {/* Title Overlay (Bottom) */}
+    <div className="absolute bottom-4 left-4 right-4">
+      <h3 className="font-bold text-2xl text-white drop-shadow-lg line-clamp-1">
+        Job Title Here
+      </h3>
+      <button className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition-colors mt-1">
+        <Building className="h-4 w-4" />
+        Company Name
+      </button>
+    </div>
+  </div>
+
+  {/* 2. Content Section */}
+  <CardContent className="p-5">
+    <div className="space-y-4">
+      {/* Metadata Row */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Badge className="bg-primary/15 text-primary border-primary/30 font-semibold px-4 py-1.5 text-xs uppercase tracking-wider">
+            FULL TIME
+          </Badge>
+          <div className="text-xs text-muted-foreground">
+            Posted 2024-01-20
+          </div>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+          <Clock className="h-3.5 w-3.5 text-amber-600" />
+          <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
+            Deadline: 2024-02-20
+          </span>
+          <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 text-[10px] px-2 py-0.5">
+            Apply Soon
+          </Badge>
+        </div>
+      </div>
+
+      {/* Key Info Grid */}
+      <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+            <MapPin className="h-3.5 w-3.5" />
+            <span>Location</span>
+          </div>
+          <div className="font-medium text-sm">Riyadh, Saudi Arabia</div>
+        </div>
+        
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+            <Clock className="h-3.5 w-3.5" />
+            <span>Experience</span>
+          </div>
+          <div className="font-medium text-sm">5+ years</div>
+        </div>
+        
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+            <DollarSign className="h-3.5 w-3.5" />
+            <span>Salary</span>
+          </div>
+          <div className="font-semibold text-sm text-emerald-600 dark:text-emerald-400">
+            12,000 - 20,000 SAR
+          </div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <p className="text-sm leading-relaxed text-foreground/80 line-clamp-2">
+        Detailed description of the job, project, or item. This text is truncated to 2 lines with ellipsis.
+      </p>
+
+      {/* Skills/Tags - Theme Colored */}
+      <div className="space-y-2">
+        <div className="text-xs text-muted-foreground font-medium">Required Skills</div>
+        <div className="flex flex-wrap gap-2">
+          <button className="px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary">
+            Project Management
+          </button>
+          <button className="px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary">
+            Leadership
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Insights (4 Equal Buttons) */}
+      <div className="space-y-2">
+        <div className="text-xs text-muted-foreground font-medium">Quick Insights</div>
+        <div className="flex items-center justify-between gap-2">
+          <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-primary/5 transition-all border border-primary/20 group/icon">
+            <Sparkles className="h-5 w-5 text-primary group-hover/icon:scale-110 transition-transform" />
+            <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-primary transition-colors">AI Match</span>
+          </button>
+          <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-green-500/5 transition-all border border-green-500/20 group/icon">
+            <Calculator className="h-5 w-5 text-green-600 group-hover/icon:scale-110 transition-transform" />
+            <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-green-600 transition-colors">Earnings</span>
+          </button>
+          <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-orange-500/5 transition-all border border-orange-500/20 group/icon">
+            <Target className="h-5 w-5 text-orange-600 group-hover/icon:scale-110 transition-transform" />
+            <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-orange-600 transition-colors">Skills Gap</span>
+          </button>
+          <button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-purple-500/5 transition-all border border-purple-500/20 group/icon">
+            <TrendingUp className="h-5 w-5 text-purple-600 group-hover/icon:scale-110 transition-transform" />
+            <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-purple-600 transition-colors">Similar Jobs</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </CardContent>
+
+  {/* 3. Footer Actions */}
+  <CardFooter className="p-5 pt-0 flex gap-3">
+    <Button 
+      variant="outline"
+      className="flex-1 font-semibold border-2 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+    >
+      <Eye className="h-4 w-4 mr-2" />
+      View Details
+    </Button>
+    <Button 
+      className="flex-1 font-semibold bg-primary hover:bg-primary/90 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+    >
+      <Zap className="h-4 w-4 mr-2" />
+      Quick Apply
+    </Button>
+  </CardFooter>
+</Card>
+```
+
+---
+
+### Product-Card Key Specifications
+
+**Image Section:**
+- **Aspect Ratio:** `aspect-[21/9]` (panoramic, cinematic)
+- **Overflow:** `overflow-hidden` (enables zoom effect)
+- **Background Fallback:** `bg-gradient-to-br from-muted to-muted/50`
+- **Image Hover:** `group-hover:scale-105` (zoom in on card hover)
+- **Gradient Overlay:** `from-black/60 via-black/20 to-transparent` (ensures text readability)
+
+**Badge Positioning:**
+- **Top-Left:** Status badges (New, Recommended, Rating)
+- **Top-Right:** Floating action button (Bookmark, Save, etc.)
+- **Bottom:** Title and subtitle overlay on image
+
+**Content Structure:**
+- **Zero Gap:** `gap-0` on Card component (seamless sections)
+- **Padding:** `p-5` (20px) for content and footer
+- **Border Top/Bottom:** `border-y border-border/40` on key info grid
+
+**Quick Insights Buttons:**
+- **Layout:** `flex items-center justify-between gap-2`
+- **Button Width:** `flex-1` (all buttons equal width)
+- **No Default Background:** Only shows on hover
+- **Icon Scale:** `group-hover/icon:scale-110`
+- **Color-Coded:** Primary, Green, Orange, Purple
+
+---
+
+### Product-Card Variants
+
+**1. Available Jobs (Open Status):**
+```tsx
+{/* Badges */}
+<Badge className="bg-blue-500 hover:bg-blue-500/90 text-white border-0 shadow-lg">
+  New
+</Badge>
+<Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 shadow-lg">
+  Recommended
+</Badge>
+
+{/* Image Path */}
+src={`/e-jobs/Available Jobs/${job.title}.jpg`}
+
+{/* Metadata */}
+<div className="text-xs text-muted-foreground">
+  Posted {job.postedDate}
+</div>
+
+{/* Footer Buttons */}
+<Button>View Details</Button>
+<Button>Quick Apply</Button>
+```
+
+**2. Applied Jobs:**
+```tsx
+{/* Badges */}
+<Badge className="bg-blue-100 text-blue-800 hover:opacity-90 border-0 shadow-lg flex items-center gap-1">
+  <Send className="h-3 w-3" />
+  <span>Applied</span>
+</Badge>
+
+{/* Image Path */}
+src={`/e-jobs/Applied/${job.title}.jpg`}
+
+{/* Metadata */}
+<div className="text-xs text-muted-foreground flex items-center gap-1">
+  <Calendar className="h-3 w-3" />
+  Applied {job.postedDate}
+</div>
+
+{/* Additional Content */}
+<div className="border-t pt-4 mt-4">
+  <ApplicationStatusTracker currentStage={2} />
+</div>
+
+{/* Footer Buttons */}
+<Button>View Details</Button>
+<Button variant="outline">View Application</Button>
+```
+
+**3. Shortlisted Jobs:**
+```tsx
+{/* Badges */}
+<Badge className="bg-green-100 text-green-800 hover:opacity-90 border-0 shadow-lg flex items-center gap-1">
+  <CheckCircle2 className="h-3 w-3" />
+  <span>Shortlisted</span>
+</Badge>
+
+{/* Image Path */}
+src={`/e-jobs/Shortlisted/${job.title}.jpg`}
+
+{/* Metadata */}
+<div className="text-xs text-muted-foreground flex items-center gap-1">
+  <Calendar className="h-3 w-3" />
+  Shortlisted {job.postedDate}
+</div>
+
+{/* Footer Buttons */}
+<Button>View Details</Button>
+<Button className="bg-green-600 hover:bg-green-700">Contact Client</Button>
+```
+
+**4. Bookmarked Items:**
+```tsx
+{/* Badges */}
+<Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+  <Bookmark className="h-3 w-3 fill-white" />
+  Bookmarked
+</Badge>
+
+{/* Bookmark Button (Always Filled) */}
+<Button
+  className="absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all text-rose-500"
+>
+  <Bookmark className="h-5 w-5 fill-rose-500" />
+</Button>
+
+{/* Image Path */}
+src={`/e-jobs/Bookmarked/${job.title}.jpg`}
+
+{/* Footer Buttons */}
+<Button>View Details</Button>
+<Button>Quick Apply</Button>
+```
+
+---
+
+### Hero Image Specifications
+
+**Image Dimensions:**
+- **Aspect Ratio:** 21:9 (Ultrawide/Panoramic)
+- **Recommended Size:** 1920×820px or 1680×720px
+- **Format:** JPG (optimized) or WebP
+- **Quality:** 80-85% compression
+
+**Gradient Overlay (MUST HAVE):**
+```tsx
+<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+```
+- **Direction:** Top to bottom (`bg-gradient-to-t`)
+- **Bottom Opacity:** 60% black (`from-black/60`)
+- **Middle Opacity:** 20% black (`via-black/20`)
+- **Top Opacity:** Transparent
+
+**Why Gradient?**
+- Ensures white text is readable on any image
+- Creates depth and visual hierarchy
+- Professional, polished appearance
+
+**Image Hover Effect:**
+```tsx
+className="group-hover:scale-105 transition-transform duration-500"
+```
+- **Scale:** 105% (subtle zoom)
+- **Duration:** 500ms (smooth, not jarring)
+- **Trigger:** Card hover (using `group` class)
+
+**Fallback Handling:**
+```tsx
+onError={(e) => {
+  (e.target as HTMLImageElement).src = '/placeholder.svg';
+}}
+```
+
+---
+
+### Floating Action Button Pattern
+
+**Specifications:**
+- **Size:** `h-10 w-10` (40×40px)
+- **Shape:** `rounded-full` (perfect circle)
+- **Background:** `bg-background/90 backdrop-blur-sm` (frosted glass effect)
+- **Shadow:** `shadow-lg` (elevated appearance)
+- **Hover:** `hover:scale-110` (grows on hover)
+- **Position:** `absolute top-4 right-4`
+
+**Implementation:**
+```tsx
+<Button
+  variant="secondary"
+  size="icon"
+  className={`absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all ${
+    isBookmarked ? 'text-rose-500' : ''
+  }`}
+  onClick={(e) => {
+    e.stopPropagation(); // Prevent card click
+  }}
+>
+  <Bookmark
+    className={`h-5 w-5 ${isBookmarked ? 'fill-rose-500' : ''}`}
+  />
+</Button>
+```
+
+**Color States:**
+- **Inactive:** Default foreground color
+- **Active:** `text-rose-500` with `fill-rose-500`
+
+---
+
+### Title Overlay Pattern
+
+**Structure:**
+```tsx
+<div className="absolute bottom-4 left-4 right-4">
+  <h3 className="font-bold text-2xl text-white drop-shadow-lg line-clamp-1">
+    {title}
+  </h3>
+  <button className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white transition-colors mt-1">
+    <Building className="h-4 w-4" />
+    {company}
+  </button>
+</div>
+```
+
+**Key Properties:**
+- **Title Size:** `text-2xl` (24px) - larger for hero section
+- **Text Color:** `text-white` (always white on dark gradient)
+- **Drop Shadow:** `drop-shadow-lg` (text outline for readability)
+- **Line Clamp:** `line-clamp-1` (prevent overflow)
+- **Subtitle Opacity:** `text-white/90` → `hover:text-white`
+
+---
+
+### Quick Insights Button Grid
+
+**Layout:**
+```tsx
+<div className="flex items-center justify-between gap-2">
+  {/* 4 equal-width buttons */}
+</div>
+```
+
+**Individual Button:**
+```tsx
+<button className="flex-1 flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-primary/5 transition-all border border-primary/20 group/icon">
+  <Sparkles className="h-5 w-5 text-primary group-hover/icon:scale-110 transition-transform" />
+  <span className="text-[10px] font-semibold text-foreground/70 group-hover/icon:text-primary transition-colors">AI Match</span>
+</button>
+```
+
+**Key Features:**
+- **Equal Width:** `flex-1` on each button
+- **Layout:** `flex flex-col items-center` (icon on top, text below)
+- **Spacing:** `gap-2` (8px between icon and text)
+- **Padding:** `p-3` (12px all sides)
+- **No Default Background:** Transparent by default
+- **Hover Background:** `hover:bg-{color}/5` (5% opacity tint)
+- **Border:** Always visible, colored per category
+- **Icon Scale:** `group-hover/icon:scale-110`
+- **Text Size:** `text-[10px]` (very small, compact)
+
+**Color Coding:**
+1. **Primary** - AI/Smart features
+2. **Green** - Money/Earnings
+3. **Orange** - Skills/Progress
+4. **Purple** - Recommendations/Similar
+
+---
+
+### Theme-Colored Skill Badges
+
+**Pattern:**
+```tsx
+<button className="px-3 py-1.5 rounded-full text-xs font-medium transition-all bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary">
+  {skill}
+</button>
+```
+
+**Specifications:**
+- **Background:** `bg-primary/10` (10% opacity - subtle tint)
+- **Text:** `text-primary` (full brand color)
+- **Border:** `border border-primary/20` (20% opacity outline)
+- **Padding:** `px-3 py-1.5` (12px horizontal, 6px vertical)
+- **Shape:** `rounded-full` (pill shape)
+- **Font:** `text-xs font-medium` (12px medium weight)
+
+**Hover State:**
+- **Background:** `hover:bg-primary` (solid primary color)
+- **Text:** `hover:text-primary-foreground` (white)
+- **Border:** `hover:border-primary` (solid primary border)
+
+**Why This Pattern?**
+- ✅ Consistent with theme colors
+- ✅ Clear visual hierarchy
+- ✅ Interactive (suggests clickability)
+- ✅ Works in light/dark mode
+
+---
+
+### Metadata Compact Row Pattern
+
+**Structure:**
+```tsx
+<div className="flex items-center justify-between gap-3">
+  {/* Left Side - Type & Date */}
+  <div className="flex items-center gap-3">
+    <Badge className="bg-primary/15 text-primary border-primary/30 font-semibold px-4 py-1.5 text-xs uppercase tracking-wider">
+      FULL TIME
+    </Badge>
+    <div className="text-xs text-muted-foreground">
+      Posted 2024-01-20
+    </div>
+  </div>
+  
+  {/* Right Side - Deadline Alert */}
+  <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+    <Clock className="h-3.5 w-3.5 text-amber-600" />
+    <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
+      Deadline: 2024-02-20
+    </span>
+    <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 text-[10px] px-2 py-0.5">
+      Apply Soon
+    </Badge>
+  </div>
+</div>
+```
+
+**Benefits:**
+- ✅ Space-efficient (all metadata on one line)
+- ✅ Clear visual separation (left vs right)
+- ✅ Important deadline info is prominent
+- ✅ Compact badge sizing for density
+
+---
+
+### Key Info Grid (3-Column)
+
+**Pattern:**
+```tsx
+<div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
+  <div className="space-y-1">
+    <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+      <Icon className="h-3.5 w-3.5" />
+      <span>Label</span>
+    </div>
+    <div className="font-medium text-sm">Value</div>
+  </div>
+  {/* Repeat for 2 more columns */}
+</div>
+```
+
+**Specifications:**
+- **Columns:** Always 3 (Location, Experience/Duration, Salary/Budget)
+- **Gap:** `gap-4` (16px between columns)
+- **Vertical Padding:** `py-4` (16px top/bottom)
+- **Border:** `border-y border-border/40` (top & bottom borders)
+- **Label Size:** `text-xs` (12px)
+- **Value Size:** `text-sm` (14px)
+- **Label Color:** `text-muted-foreground`
+- **Value Weight:** `font-medium` or `font-semibold`
+
+**Salary/Money Styling:**
+```tsx
+<div className="font-semibold text-sm text-emerald-600 dark:text-emerald-400">
+  12,000 - 20,000 SAR
+</div>
+```
+- Always use emerald color for money amounts
+- Always `font-semibold`
+- Always include currency
+
+---
+
+### Product-Card Animation Patterns
+
+**Framer Motion Integration:**
+```tsx
+import { motion } from 'framer-motion';
+
+<motion.img
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.3 }}
+/>
+```
+
+**Card-Level Hover Group:**
+```tsx
+<Card className="group ...">
+  {/* Child elements can use group-hover: */}
+  <img className="group-hover:scale-105 ..." />
+  <Icon className="group-hover/icon:scale-110 ..." />
+</Card>
+```
+
+**Named Groups for Nested Hovers:**
+```tsx
+<button className="group/icon ...">
+  <Icon className="group-hover/icon:scale-110 ..." />
+  <span className="group-hover/icon:text-primary ..." />
+</button>
+```
+
+---
+
+### Product-Card Usage Guidelines
+
+**When to Use:**
+- ✅ Job listings (all statuses)
+- ✅ Project showcases
+- ✅ Product catalogs
+- ✅ Featured content
+- ✅ Marketplace items
+- ✅ Portfolio pieces
+
+**When NOT to Use:**
+- ❌ Simple data tables
+- ❌ Form sections
+- ❌ Stats cards
+- ❌ Navigation cards
+- ❌ Compact lists
+
+**Image Requirements:**
+- ✅ MUST have hero image
+- ✅ MUST use gradient overlay
+- ✅ MUST have fallback placeholder
+- ✅ Recommended: 21:9 aspect ratio
+- ✅ Optimize images (< 200KB)
+
+---
+
+## 🔄 Interactive Popovers
+
+### Hybrid Hover/Click Popover Pattern
+
+**Implementation:**
+```tsx
+import { useState, useRef, useEffect } from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
+function JobInfoPopover({ trigger, content }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [openMode, setOpenMode] = useState<'hover' | 'click' | null>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout>();
+  const closeTimeoutRef = useRef<NodeJS.Timeout>();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleTriggerMouseEnter = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsOpen(true);
+      setOpenMode('hover');
+    }, 300); // 300ms delay before opening
+  };
+
+  const handleTriggerMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    if (openMode === 'hover') {
+      closeTimeoutRef.current = setTimeout(() => {
+        setIsOpen(false);
+        setOpenMode(null);
+      }, 200); // 200ms delay before closing
+    }
+  };
+
+  const handleTriggerClick = () => {
+    setIsOpen(true);
+    setOpenMode('click');
+  };
+
+  const handleContentMouseEnter = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+  };
+
+  const handleContentMouseLeave = () => {
+    if (openMode === 'hover') {
+      closeTimeoutRef.current = setTimeout(() => {
+        setIsOpen(false);
+        setOpenMode(null);
+      }, 200);
+    }
+  };
+
+  return (
+    <Popover open={isOpen} onOpenChange={(open) => {
+      if (!open) {
+        setIsOpen(false);
+        setOpenMode(null);
+      }
+    }}>
+      <PopoverTrigger asChild>
+        <div
+          onMouseEnter={handleTriggerMouseEnter}
+          onMouseLeave={handleTriggerMouseLeave}
+          onClick={handleTriggerClick}
+        >
+          {trigger}
+        </div>
+      </PopoverTrigger>
+      <PopoverContent 
+        ref={contentRef}
+        className="w-80 p-0 border-border/50 shadow-xl z-50"
+        side="top"
+        align="center"
+        sideOffset={8}
+        collisionPadding={20}
+        onMouseEnter={handleContentMouseEnter}
+        onMouseLeave={handleContentMouseLeave}
+      >
+        {content}
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+---
+
+### Popover Specifications
+
+**Width:**
+- **Fixed Width:** `w-80` (320px) on PopoverContent
+- **Inner Content:** Also `w-80` to match
+- **Max Width:** Never exceed 384px (`w-96`)
+
+**Positioning:**
+- **Default Side:** `side="top"` (appears above trigger)
+- **Alignment:** `align="center"` (centered on trigger)
+- **Offset:** `sideOffset={8}` (8px gap from trigger)
+- **Collision Padding:** `collisionPadding={20}` (20px from viewport edges)
+
+**Z-Index:**
+- **Popover:** `z-50` (above cards and content)
+- **Dialog/Modal:** `z-[100]` (above popovers)
+
+**Styling:**
+- **Padding:** `p-0` on PopoverContent (let inner content control padding)
+- **Border:** `border-border/50` (subtle outline)
+- **Shadow:** `shadow-xl` (elevated appearance)
+- **Background:** Uses `bg-popover` from theme
+
+---
+
+### Hover Behavior Specifications
+
+**Hover Delays:**
+- **Open Delay:** 300ms (prevents accidental triggers)
+- **Close Delay:** 200ms (allows moving to popover content)
+
+**Click Behavior:**
+- **Immediate Open:** No delay on click
+- **Persistent:** Stays open until Escape or outside click
+- **Override Hover:** Click mode takes precedence
+
+**Content Hover:**
+- **Keep Open:** Popover stays open when hovering over content
+- **Clear Timeout:** Cancel close timer when entering content
+- **Resume Close:** Start close timer when leaving content (hover mode only)
+
+---
+
+### Mini-Card Content Pattern
+
+**Structure:**
+```tsx
+<div className="w-80 p-4 space-y-4">
+  {/* Header */}
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-2">
+      <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg">
+        <Sparkles className="w-4 h-4 text-white" />
+      </div>
+      <div>
+        <h4 className="font-semibold text-sm">AI Match Score</h4>
+        <p className="text-[10px] text-muted-foreground">Quick Analysis</p>
+      </div>
+    </div>
+    <div className="text-2xl font-bold text-primary">85%</div>
+  </div>
+
+  {/* Content */}
+  <div className="space-y-2">
+    {/* Mini content here */}
+  </div>
+
+  {/* Footer CTA */}
+  <Button size="sm" className="w-full text-xs">
+    View Full Analysis →
+  </Button>
+</div>
+```
+
+**Specifications:**
+- **Width:** `w-80` (320px - matches popover)
+- **Padding:** `p-4` (16px all sides)
+- **Spacing:** `space-y-4` (16px between sections)
+- **Header Icon:** `h-8 w-8` (32×32px - smaller than card header)
+- **Title:** `text-sm font-semibold` (14px)
+- **Subtitle:** `text-[10px]` (10px - micro text)
 
 ---
 
@@ -1879,9 +2670,166 @@ import { Link } from 'react-router-dom';
 
 ---
 
+---
+
+## 🎯 Real-World Implementation Examples
+
+### Complete Jobs Page (Product-Card Pattern)
+
+**Location:** `src/pages/5-engineer/2-JobsPage.tsx`
+
+**What Was Implemented:**
+- ✅ 4 job tabs (Available, Applied, Shortlisted, Bookmarked)
+- ✅ Product-card design across all tabs
+- ✅ Hero images with 21:9 aspect ratio
+- ✅ Gradient overlays for text readability
+- ✅ Status-specific badges and colors
+- ✅ 4 Quick Insights popovers (AI Match, Earnings, Skills Gap, Similar Jobs)
+- ✅ Theme-colored skill badges
+- ✅ Hybrid hover/click popover behavior
+- ✅ Comprehensive "View Details" dialog
+- ✅ Responsive tab-specific action buttons
+
+**Key Learnings:**
+1. **Image Paths by Status:**
+   - Available: `/e-jobs/Available Jobs/`
+   - Applied: `/e-jobs/Applied/`
+   - Shortlisted: `/e-jobs/Shortlisted/`
+   - Bookmarked: `/e-jobs/Bookmarked/`
+
+2. **Gradient Overlay is Critical:**
+   - Without gradient: Text unreadable on bright images
+   - With gradient: Consistent readability across all images
+
+3. **320px Popover Width:**
+   - Perfect balance between content and space
+   - `w-80` matches mobile-friendly sizing
+
+4. **Quick Insights Layout:**
+   - `flex-1` makes all buttons equal width
+   - `justify-between` distributes space evenly
+   - No default background keeps it clean
+
+5. **Theme-Colored Badges:**
+   - `bg-primary/10` + `text-primary` + `border-primary/20`
+   - Better than muted colors for brand consistency
+
+---
+
+## 🎓 Design System Evolution
+
+### Version History
+
+**v2.0 (October 12, 2025)** ✨
+- ✅ Added Product-Card Design Pattern
+- ✅ Added Interactive Popovers section
+- ✅ Added Hero Image specifications
+- ✅ Added Quick Insights button grid pattern
+- ✅ Added Theme-colored skill badges
+- ✅ Added Metadata compact row pattern
+- ✅ Added Mini-card content pattern
+- ✅ Updated with Jobs page implementation examples
+
+**v1.0 (Initial Release)**
+- Bauhaus-inspired card patterns
+- Typography standards (16px/12px/14px)
+- Color system and status colors
+- Button and badge hierarchy
+- Spacing and layout guidelines
+
+---
+
+## 📚 Component Reference Files
+
+### Where Each Pattern is Used
+
+**Product-Card Design:**
+- `src/pages/5-engineer/2-JobsPage.tsx` - All 4 tabs
+- Future: Project showcase pages
+- Future: Marketplace listings
+
+**Interactive Popovers:**
+- `src/pages/5-engineer/others/features/jobs/components/JobInfoPopover.tsx`
+- `src/pages/5-engineer/others/features/jobs/components/mini-cards/` (4 mini-cards)
+
+**Standard Cards (Bauhaus Border):**
+- `src/pages/5-engineer/1-DashboardPage.tsx` - Stats cards
+- Most dashboard pages across all portals
+
+**Icon Containers:**
+- Universal across all 710+ components
+
+---
+
+## ✅ Updated Design Checklist
+
+### For Every New Component:
+
+**Typography:**
+- [ ] Uses `text-base` (16px) for titles
+- [ ] Uses `text-xs` (12px) for labels/buttons
+- [ ] Uses `text-sm` (14px) for body text
+- [ ] Uses `tracking-tight` for bold text
+
+**Cards:**
+- [ ] Bauhaus gradient border OR product-card design OR standard `border-border/50`
+- [ ] Padding: `p-5` for standard cards, `p-4` for nested
+- [ ] `gap-0` for product-cards (seamless sections)
+
+**Images (Product-Cards):**
+- [ ] 21:9 aspect ratio (`aspect-[21/9]`)
+- [ ] Gradient overlay (`from-black/60 via-black/20 to-transparent`)
+- [ ] Fallback placeholder handling
+- [ ] Zoom on hover (`group-hover:scale-105`)
+
+**Popovers:**
+- [ ] Fixed width `w-80` (320px)
+- [ ] Position `side="top"` with `collisionPadding={20}`
+- [ ] Hybrid hover/click behavior
+- [ ] 300ms open delay, 200ms close delay
+
+**Icons:**
+- [ ] Proper size (h-5 w-5 for cards, h-4 w-4 for buttons)
+- [ ] Icon containers: `bg-primary/10` with `ring-1 ring-primary/20`
+- [ ] Scale on hover: `group-hover:scale-110` (containers only)
+
+**Buttons:**
+- [ ] `text-xs` for ALL button text
+- [ ] Icon sizes match button size (h-3.5 for sm, h-4 for md)
+- [ ] Proper hover effects (`hover:shadow-xl hover:-translate-y-0.5`)
+
+**Badges:**
+- [ ] `text-xs` or `text-[10px]` for compact badges
+- [ ] Status color coding (blue/green/amber/red)
+- [ ] Theme-colored badges use `bg-primary/10 text-primary border-primary/20`
+
+**Spacing:**
+- [ ] `gap-3` or `gap-4` for card elements
+- [ ] `space-y-4` for vertical stacks
+- [ ] `gap-2` for compact button groups
+
+**Hover Effects:**
+- [ ] Cards: `hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300`
+- [ ] Icon containers: `group-hover:scale-110 transition-transform`
+- [ ] Buttons: `shadow-md hover:shadow-xl`
+
+**Accessibility:**
+- [ ] Proper ARIA labels
+- [ ] Focus states (`focus-visible:ring-2`)
+- [ ] Color contrast (WCAG AA minimum)
+- [ ] Keyboard navigation support
+
+**Dark Mode:**
+- [ ] Uses HSL variables (`hsl(var(--primary))`)
+- [ ] No hard-coded colors
+- [ ] Text colors adapt (`text-foreground`, `text-muted-foreground`)
+
+---
+
 **This style guide ensures visual consistency across all 14 Engineer Portal pages and 710+ components!** 🎨
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Maintained By:** Development Team  
-**Last Review:** October 12, 2025
+**Last Review:** October 12, 2025  
+**Latest Addition:** Product-Card Design Pattern & Interactive Popovers (Jobs Page Redesign)
 

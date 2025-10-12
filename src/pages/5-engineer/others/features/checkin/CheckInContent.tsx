@@ -27,7 +27,9 @@ import {
   Droplets,
   FileText,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../1-HomePage/others/components/ui/card";
 import { Button } from "../../../../1-HomePage/others/components/ui/button";
@@ -154,6 +156,7 @@ export function CheckInContent() {
   const [checkInTime, setCheckInTime] = useState<string | null>(null);
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
+  const [isRecentCheckInsCollapsed, setIsRecentCheckInsCollapsed] = useState(false);
   const [safetyChecklist, setSafetyChecklist] = useState({
     ppeWorn: false,
     siteSafetyBriefing: false,
@@ -837,16 +840,31 @@ export function CheckInContent() {
         className="gap-0"
       >
         <CardHeader className="p-5 pb-3 border-b border-border/40">
-          <CardTitle className="flex items-center gap-3">
-            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
-              <Clock className="w-6 h-6 text-white" />
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                <Clock className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-base font-bold">Recent Check-ins</div>
+                <p className="text-xs text-muted-foreground mt-0.5">Your recent work history</p>
+              </div>
             </div>
-            <div>
-              <div className="text-base font-bold">Recent Check-ins</div>
-              <p className="text-xs text-muted-foreground mt-0.5">Your recent work history</p>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setIsRecentCheckInsCollapsed(!isRecentCheckInsCollapsed)}
+            >
+              {isRecentCheckInsCollapsed ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronUp className="h-4 w-4" />
+              )}
+            </Button>
           </CardTitle>
         </CardHeader>
+        {!isRecentCheckInsCollapsed && (
         <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="space-y-3">
             {[
@@ -867,6 +885,7 @@ export function CheckInContent() {
             ))}
           </div>
         </CardContent>
+        )}
       </Card>
         </TabsContent>
 

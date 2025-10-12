@@ -20,7 +20,6 @@ export const NAV: Record<UserRole, NavItem[]> = {
     { labelKey: "nav.network", to: "/engineer/network", icon: "users" },
     { labelKey: "nav.learning", to: "/engineer/learning", icon: "book" },
     { labelKey: "nav.finance", to: "/engineer/finance", icon: "wallet" },
-    { labelKey: "nav.payments", to: "/engineer/payments", icon: "credit-card" },
     { labelKey: "nav.help", to: "/engineer/help", icon: "help" },
     { labelKey: "nav.settings", to: "/engineer/settings", icon: "settings" },
   ],
