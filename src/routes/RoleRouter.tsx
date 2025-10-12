@@ -27,6 +27,7 @@ import HelpPage from "@/pages/5-engineer/10-HelpPage";
 import MyNetwork from "@/pages/5-engineer/6-NetworkPage";
 import CalendarPage from "@/pages/5-engineer/3-CalendarPage";
 import LearningPage from "@/pages/5-engineer/7-LearningPage";
+import { CoursePage } from "@/pages/5-engineer/others/features/learning/pages/CoursePage";
 import { ChatPage } from "@/pages/5-engineer/others/features/ai/ChatPage";
 import { PaymentsContent } from "@/pages/6-enterprise/others/features/finance/components/PaymentsContent";
 import RankingPage from "@/pages/5-engineer/13-RankingPage";
@@ -141,7 +142,7 @@ export default function RoleRouter() {
           <Route path="network" element={<MyNetwork />} />
           <Route path="network/:userId" element={<MyNetwork />} />
           <Route path="learning" element={<LearningPage />} />
-<Route path="learning/:courseId" element={<LearningPage />} />
+          <Route path="learning/course/:courseId" element={<CoursePage />} />
           <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
           <Route path="finance" element={<PaymentsContent />} />
           <Route path="finance/:paymentId" element={<PaymentsContent />} />

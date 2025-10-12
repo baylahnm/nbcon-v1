@@ -1,0 +1,296 @@
+[
+  {
+    "category": "Structural Engineering",
+    "title": "Advanced Structural Analysis",
+    "color": "#8B4513",
+    "imagePath": "/e-learning/Structural Engineering/Advanced Structural Analysis.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Structural Engineering/Advanced Structural Analysis.svg"
+  },
+  {
+    "category": "Structural Engineering",
+    "title": "Foundation Design Principles",
+    "color": "#8B4513",
+    "imagePath": "/e-learning/Structural Engineering/Foundation Design Principles.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Structural Engineering/Foundation Design Principles.svg"
+  },
+  {
+    "category": "Structural Engineering",
+    "title": "Seismic Design and Analysis",
+    "color": "#8B4513",
+    "imagePath": "/e-learning/Structural Engineering/Seismic Design and Analysis.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Structural Engineering/Seismic Design and Analysis.svg"
+  },
+  {
+    "category": "Structural Engineering",
+    "title": "Steel Structure Design",
+    "color": "#8B4513",
+    "imagePath": "/e-learning/Structural Engineering/Steel Structure Design.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Structural Engineering/Steel Structure Design.svg"
+  },
+  {
+    "category": "Structural Engineering",
+    "title": "Concrete Design Methods",
+    "color": "#8B4513",
+    "imagePath": "/e-learning/Structural Engineering/Concrete Design Methods.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Structural Engineering/Concrete Design Methods.svg"
+  },
+  {
+    "category": "Structural Engineering",
+    "title": "Structural Health Monitoring",
+    "color": "#8B4513",
+    "imagePath": "/e-learning/Structural Engineering/Structural Health Monitoring.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Structural Engineering/Structural Health Monitoring.svg"
+  },
+  {
+    "category": "Project Management",
+    "title": "Project Management Fundamentals",
+    "color": "#4A90E2",
+    "imagePath": "/e-learning/Project Management/Project Management Fundamentals.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Project Management/Project Management Fundamentals.svg"
+  },
+  {
+    "category": "Project Management",
+    "title": "Construction Planning and Scheduling",
+    "color": "#4A90E2",
+    "imagePath": "/e-learning/Project Management/Construction Planning and Scheduling.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Project Management/Construction Planning and Scheduling.svg"
+  },
+  {
+    "category": "Project Management",
+    "title": "Cost Estimation and Control",
+    "color": "#4A90E2",
+    "imagePath": "/e-learning/Project Management/Cost Estimation and Control.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Project Management/Cost Estimation and Control.svg"
+  },
+  {
+    "category": "Project Management",
+    "title": "Risk Management in Construction",
+    "color": "#4A90E2",
+    "imagePath": "/e-learning/Project Management/Risk Management in Construction.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Project Management/Risk Management in Construction.svg"
+  },
+  {
+    "category": "Project Management",
+    "title": "Contract Administration",
+    "color": "#4A90E2",
+    "imagePath": "/e-learning/Project Management/Contract Administration.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Project Management/Contract Administration.svg"
+  },
+  {
+    "category": "Project Management",
+    "title": "Agile Project Management",
+    "color": "#4A90E2",
+    "imagePath": "/e-learning/Project Management/Agile Project Management.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Project Management/Agile Project Management.svg"
+  },
+  {
+    "category": "Renewable Energy Systems",
+    "title": "Renewable Energy Systems",
+    "color": "#7ED321",
+    "imagePath": "/e-learning/Renewable Energy Systems/Renewable Energy Systems.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Renewable Energy Systems/Renewable Energy Systems.svg"
+  },
+  {
+    "category": "Renewable Energy Systems",
+    "title": "Solar Panel Technology",
+    "color": "#7ED321",
+    "imagePath": "/e-learning/Renewable Energy Systems/Solar Panel Technology.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Renewable Energy Systems/Solar Panel Technology.svg"
+  },
+  {
+    "category": "Renewable Energy Systems",
+    "title": "Wind Energy Engineering",
+    "color": "#7ED321",
+    "imagePath": "/e-learning/Renewable Energy Systems/Wind Energy Engineering.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Renewable Energy Systems/Wind Energy Engineering.svg"
+  },
+  {
+    "category": "Renewable Energy Systems",
+    "title": "Sustainable Building Design",
+    "color": "#7ED321",
+    "imagePath": "/e-learning/Renewable Energy Systems/Sustainable Building Design.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Renewable Energy Systems/Sustainable Building Design.svg"
+  },
+  {
+    "category": "Renewable Energy Systems",
+    "title": "Energy Storage Systems",
+    "color": "#7ED321",
+    "imagePath": "/e-learning/Renewable Energy Systems/Energy Storage Systems.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Renewable Energy Systems/Energy Storage Systems.svg"
+  },
+  {
+    "category": "Renewable Energy Systems",
+    "title": "Smart Grid Technologies",
+    "color": "#7ED321",
+    "imagePath": "/e-learning/Renewable Energy Systems/Smart Grid Technologies.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Renewable Energy Systems/Smart Grid Technologies.svg"
+  },
+  {
+    "category": "Safety",
+    "title": "Construction Safety Management",
+    "color": "#F5A623",
+    "imagePath": "/e-learning/Safety/Construction Safety Management.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Safety/Construction Safety Management.svg"
+  },
+  {
+    "category": "Safety",
+    "title": "OSHA Standards and Compliance",
+    "color": "#F5A623",
+    "imagePath": "/e-learning/Safety/OSHA Standards and Compliance.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Safety/OSHA Standards and Compliance.svg"
+  },
+  {
+    "category": "Safety",
+    "title": "Risk Assessment Techniques",
+    "color": "#F5A623",
+    "imagePath": "/e-learning/Safety/Risk Assessment Techniques.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Safety/Risk Assessment Techniques.svg"
+  },
+  {
+    "category": "Safety",
+    "title": "Emergency Response Planning",
+    "color": "#F5A623",
+    "imagePath": "/e-learning/Safety/Emergency Response Planning.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Safety/Emergency Response Planning.svg"
+  },
+  {
+    "category": "Safety",
+    "title": "Safety Equipment and PPE",
+    "color": "#F5A623",
+    "imagePath": "/e-learning/Safety/Safety Equipment and PPE.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Safety/Safety Equipment and PPE.svg"
+  },
+  {
+    "category": "Safety",
+    "title": "Incident Investigation",
+    "color": "#F5A623",
+    "imagePath": "/e-learning/Safety/Incident Investigation.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Safety/Incident Investigation.svg"
+  },
+  {
+    "category": "Software",
+    "title": "Building Information Modeling (BIM)",
+    "color": "#9013FE",
+    "imagePath": "/e-learning/Software/Building Information Modeling (BIM).svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Software/Building Information Modeling (BIM).svg"
+  },
+  {
+    "category": "Software",
+    "title": "AutoCAD for Civil Engineers",
+    "color": "#9013FE",
+    "imagePath": "/e-learning/Software/AutoCAD for Civil Engineers.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Software/AutoCAD for Civil Engineers.svg"
+  },
+  {
+    "category": "Software",
+    "title": "Revit Architecture",
+    "color": "#9013FE",
+    "imagePath": "/e-learning/Software/Revit Architecture.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Software/Revit Architecture.svg"
+  },
+  {
+    "category": "Software",
+    "title": "ETABS Structural Analysis",
+    "color": "#9013FE",
+    "imagePath": "/e-learning/Software/ETABS Structural Analysis.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Software/ETABS Structural Analysis.svg"
+  },
+  {
+    "category": "Software",
+    "title": "Project Management Software",
+    "color": "#9013FE",
+    "imagePath": "/e-learning/Software/Project Management Software.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Software/Project Management Software.svg"
+  },
+  {
+    "category": "Software",
+    "title": "Engineering Drawing Standards",
+    "color": "#9013FE",
+    "imagePath": "/e-learning/Software/Engineering Drawing Standards.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Software/Engineering Drawing Standards.svg"
+  },
+  {
+    "category": "Electrical Engineering",
+    "title": "Electrical Systems Design",
+    "color": "#FF6B6B",
+    "imagePath": "/e-learning/Electrical Engineering/Electrical Systems Design.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Electrical Engineering/Electrical Systems Design.svg"
+  },
+  {
+    "category": "Electrical Engineering",
+    "title": "Power Distribution",
+    "color": "#FF6B6B",
+    "imagePath": "/e-learning/Electrical Engineering/Power Distribution.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Electrical Engineering/Power Distribution.svg"
+  },
+  {
+    "category": "Electrical Engineering",
+    "title": "Lighting Design",
+    "color": "#FF6B6B",
+    "imagePath": "/e-learning/Electrical Engineering/Lighting Design.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Electrical Engineering/Lighting Design.svg"
+  },
+  {
+    "category": "Electrical Engineering",
+    "title": "Building Automation",
+    "color": "#FF6B6B",
+    "imagePath": "/e-learning/Electrical Engineering/Building Automation.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Electrical Engineering/Building Automation.svg"
+  },
+  {
+    "category": "Electrical Engineering",
+    "title": "Renewable Energy Integration",
+    "color": "#FF6B6B",
+    "imagePath": "/e-learning/Electrical Engineering/Renewable Energy Integration.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Electrical Engineering/Renewable Energy Integration.svg"
+  },
+  {
+    "category": "Electrical Engineering",
+    "title": "Electrical Safety Standards",
+    "color": "#FF6B6B",
+    "imagePath": "/e-learning/Electrical Engineering/Electrical Safety Standards.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Electrical Engineering/Electrical Safety Standards.svg"
+  },
+  {
+    "category": "Mechanical Engineering",
+    "title": "HVAC Systems Design",
+    "color": "#50E3C2",
+    "imagePath": "/e-learning/Mechanical Engineering/HVAC Systems Design.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Mechanical Engineering/HVAC Systems Design.svg"
+  },
+  {
+    "category": "Mechanical Engineering",
+    "title": "Plumbing and Drainage",
+    "color": "#50E3C2",
+    "imagePath": "/e-learning/Mechanical Engineering/Plumbing and Drainage.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Mechanical Engineering/Plumbing and Drainage.svg"
+  },
+  {
+    "category": "Mechanical Engineering",
+    "title": "Fire Protection Systems",
+    "color": "#50E3C2",
+    "imagePath": "/e-learning/Mechanical Engineering/Fire Protection Systems.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Mechanical Engineering/Fire Protection Systems.svg"
+  },
+  {
+    "category": "Mechanical Engineering",
+    "title": "Building Energy Modeling",
+    "color": "#50E3C2",
+    "imagePath": "/e-learning/Mechanical Engineering/Building Energy Modeling.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Mechanical Engineering/Building Energy Modeling.svg"
+  },
+  {
+    "category": "Mechanical Engineering",
+    "title": "Sustainable HVAC Solutions",
+    "color": "#50E3C2",
+    "imagePath": "/e-learning/Mechanical Engineering/Sustainable HVAC Solutions.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Mechanical Engineering/Sustainable HVAC Solutions.svg"
+  },
+  {
+    "category": "Mechanical Engineering",
+    "title": "Mechanical Code Compliance",
+    "color": "#50E3C2",
+    "imagePath": "/e-learning/Mechanical Engineering/Mechanical Code Compliance.svg",
+    "svgPath": "D:/nbcon-v1/public/e-learning/Mechanical Engineering/Mechanical Code Compliance.svg"
+  }
+]
