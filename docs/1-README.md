@@ -21,6 +21,7 @@
 8. **[9-ENGINEER_PROFILE_PAGE_PLAN.md](9-ENGINEER_PROFILE_PAGE_PLAN.md)** - Profile page implementation plan
 9. **[10-ENGINEER_RANKING_PAGE_PLAN.md](10-ENGINEER_RANKING_PAGE_PLAN.md)** - Ranking & annual prizes plan
 10. **[11-PROFILE_SUPABASE_INTEGRATION.md](11-PROFILE_SUPABASE_INTEGRATION.md)** - Profile Supabase integration guide ✨
+11. **[12-UI_STYLE_GUIDE.md](12-UI_STYLE_GUIDE.md)** - Complete UI/UX style guide for consistent design 🎨
 
 ---
 
@@ -168,6 +169,7 @@ Each guide is **self-contained and focused**:
 | Check recent work | 5-IMPLEMENTATION_GUIDE | Session Summary |
 | View portal audit | 8-ENGINEER_PORTAL_AUDIT | Full Report |
 | Use HeroUI components | 6-COMPONENTS_UI | Component Examples |
+| Follow UI design standards | 12-UI_STYLE_GUIDE | Complete Patterns |
 | Clean up database | 10-DATABASE_CLEANUP | Cleanup Script |
 
 ---
@@ -181,6 +183,7 @@ Each guide is **self-contained and focused**:
 - What changed → 5-IMPLEMENTATION_GUIDE.md
 - How to use components → 6-Components-UI.md
 - Portal features → 8-ENGINEER_PORTAL_AUDIT_REPORT.md
+- UI design standards → 12-UI_STYLE_GUIDE.md
 - Database cleanup → 10-DATABASE_CLEANUP_ANALYSIS.md
 
 ### Code References
