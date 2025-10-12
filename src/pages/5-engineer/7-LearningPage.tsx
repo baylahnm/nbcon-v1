@@ -177,15 +177,15 @@ export default function LearningPage() {
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-4 space-y-6">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-primary" />
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-primary" />
             Learning Center
           </h1>
-          <p className="text-muted-foreground">Advance your engineering career with expert-led courses</p>
+          <p className="text-xs text-muted-foreground">Advance your engineering career with expert-led courses</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">

@@ -39,8 +39,8 @@ export function ProfileStrengthMeter({ completionPercentage, profileData }: Prof
   const strength = getStrengthLabel(completion.percentage);
 
   return (
-    <Card className="border-border/50 sticky top-6">
-      <CardHeader className="pb-4">
+    <Card className="gap-0 border-border/50 sticky top-6">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold">Profile Strength</h3>
           <Badge 
@@ -52,7 +52,7 @@ export function ProfileStrengthMeter({ completionPercentage, profileData }: Prof
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-5">
+      <CardContent className="p-5 space-y-5 bg-background rounded-b-xl">
         {/* Progress Bar */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">

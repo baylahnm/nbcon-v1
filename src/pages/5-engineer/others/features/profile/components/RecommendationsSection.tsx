@@ -136,8 +136,8 @@ export function RecommendationsSection({ reviews, averageRating, totalReviews, i
   };
 
   return (
-    <Card className="group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
+    <Card className="gap-0 group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
+      <CardHeader className="p-5 pb-3 border-b border-border/40 flex flex-row items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-green-500/10 p-2.5 rounded-xl ring-1 ring-green-500/20 group-hover:scale-110 transition-transform">
             <ThumbsUp className="h-5 w-5 text-green-600" />
@@ -156,13 +156,13 @@ export function RecommendationsSection({ reviews, averageRating, totalReviews, i
         </div>
         {isEditMode && (
           <Button size="sm" variant="outline" className="text-xs h-8">
-            <Plus className="h-3 w-3 mr-1.5" />
+            <Plus className="h-3.5 w-3.5 mr-1.5" />
             Request Review
           </Button>
         )}
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="p-5 space-y-6 bg-background rounded-b-xl">
         {/* Filter Tabs */}
         <Tabs value={selectedFilter} onValueChange={setSelectedFilter} className="w-full">
           <TabsList className="w-full grid grid-cols-3 gap-0">

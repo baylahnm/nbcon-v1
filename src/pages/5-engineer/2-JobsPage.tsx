@@ -260,28 +260,28 @@ export default function JobsPage() {
             <div className="flex flex-wrap gap-2.5">
             <Button 
               variant={viewMode === 'list' ? 'default' : 'outline'} 
-              size="default"
+              size="sm"
               onClick={() => setViewMode('list')}
-              className="shadow-sm hover:shadow-md transition-all"
+              className="h-8 text-xs shadow-sm hover:shadow-md transition-all"
             >
-              <List className="h-4 w-4 mr-2" />
+              <List className="h-3.5 w-3.5 mr-1.5" />
               List
             </Button>
             <Button 
               variant={viewMode === 'map' ? 'default' : 'outline'} 
-              size="default"
+              size="sm"
               onClick={() => setViewMode('map')}
-              className="shadow-sm hover:shadow-md transition-all"
+              className="h-8 text-xs shadow-sm hover:shadow-md transition-all"
             >
-              <MapIcon className="h-4 w-4 mr-2" />
+              <MapIcon className="h-3.5 w-3.5 mr-1.5" />
               Map
             </Button>
-            <Button variant="outline" size="default" className="shadow-sm hover:shadow-md transition-all">
-              <Filter className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" className="h-8 text-xs shadow-sm hover:shadow-md transition-all">
+              <Filter className="h-3.5 w-3.5 mr-1.5" />
               Advanced Filters
             </Button>
-            <Button size="default" className="bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all">
-              <Briefcase className="h-4 w-4 mr-2" />
+            <Button size="sm" className="h-8 text-xs bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all">
+              <Briefcase className="h-3.5 w-3.5 mr-1.5" />
               Job Alerts
             </Button>
             </div>

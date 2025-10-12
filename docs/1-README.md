@@ -22,6 +22,7 @@
 9. **[10-ENGINEER_RANKING_PAGE_PLAN.md](10-ENGINEER_RANKING_PAGE_PLAN.md)** - Ranking & annual prizes plan
 10. **[11-PROFILE_SUPABASE_INTEGRATION.md](11-PROFILE_SUPABASE_INTEGRATION.md)** - Profile Supabase integration guide ✨
 11. **[12-UI_STYLE_GUIDE.md](12-UI_STYLE_GUIDE.md)** - Complete UI/UX style guide for consistent design 🎨
+12. **[13-NETWORK_PAGE_REDESIGN_PLAN.md](13-NETWORK_PAGE_REDESIGN_PLAN.md)** - Network page redesign plan & implementation guide 🌐
 
 ---
 
@@ -170,6 +171,7 @@ Each guide is **self-contained and focused**:
 | View portal audit | 8-ENGINEER_PORTAL_AUDIT | Full Report |
 | Use HeroUI components | 6-COMPONENTS_UI | Component Examples |
 | Follow UI design standards | 12-UI_STYLE_GUIDE | Complete Patterns |
+| Redesign Network page | 13-NETWORK_PAGE_REDESIGN_PLAN | Full Plan |
 | Clean up database | 10-DATABASE_CLEANUP | Cleanup Script |
 
 ---

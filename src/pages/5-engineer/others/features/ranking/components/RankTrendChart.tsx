@@ -26,16 +26,29 @@ export function RankTrendChart() {
   const yearChange = mockRankHistory[0].rank - currentRank;
 
   return (
-    <Card id="rank-trend-chart" className="group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
-      <CardHeader className="pb-4">
+    <Card 
+      id="rank-trend-chart" 
+      className="gap-0 group hover:shadow-lg transition-all duration-300 border-border/50"
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+    >
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-blue-500/10 p-2.5 rounded-xl ring-1 ring-blue-500/20 group-hover:scale-110 transition-transform">
-              <BarChart3 className="h-5 w-5 text-blue-600" />
+            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+              <BarChart3 className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h2 className="text-base font-bold">Your Rank History</h2>
-              <p className="text-xs text-muted-foreground">Last 12 months performance</p>
+              <h2 className="text-base font-bold tracking-tight">Your Rank History</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Last 12 months performance</p>
             </div>
           </div>
           <Badge variant="outline" className="text-xs px-2 py-0.5">
@@ -44,7 +57,7 @@ export function RankTrendChart() {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-5">
+      <CardContent className="p-5 space-y-5 bg-background rounded-b-xl">
         {/* Chart */}
         <div className="h-[250px] -mx-2">
           <ResponsiveContainer width="100%" height="100%">
@@ -99,26 +112,26 @@ export function RankTrendChart() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="text-center p-2.5 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
             <div className="flex items-center justify-center gap-1 mb-1">
-              <Trophy className="h-3.5 w-3.5 text-green-600" />
-              <span className="text-lg font-bold text-green-600">#{bestRank}</span>
+              <Trophy className="h-3 w-3 text-green-600" />
+              <span className="text-base font-bold text-green-600">#{bestRank}</span>
             </div>
             <p className="text-[10px] text-muted-foreground">Best Rank</p>
             <p className="text-[9px] text-muted-foreground">June 2024</p>
           </div>
 
-          <div className="text-center p-3 rounded-lg bg-muted/50 border border-border/30">
-            <span className="text-lg font-bold">#{averageRank}</span>
+          <div className="text-center p-2.5 rounded-lg bg-muted/50 border border-border/30">
+            <span className="text-base font-bold">#{averageRank}</span>
             <p className="text-[10px] text-muted-foreground">Average</p>
             <p className="text-[9px] text-muted-foreground">12-month avg</p>
           </div>
 
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+          <div className="text-center p-2.5 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
             <div className="flex items-center justify-center gap-1 mb-1">
-              <TrendingUp className="h-3.5 w-3.5 text-primary" />
-              <span className="text-lg font-bold text-primary">+{yearChange}</span>
+              <TrendingUp className="h-3 w-3 text-primary" />
+              <span className="text-base font-bold text-primary">+{yearChange}</span>
             </div>
             <p className="text-[10px] text-muted-foreground">Year Change</p>
             <p className="text-[9px] text-muted-foreground">Improved!</p>
@@ -126,9 +139,9 @@ export function RankTrendChart() {
         </div>
 
         {/* Insights */}
-        <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/20">
+        <div className="p-3 rounded-lg bg-muted/30 border border-border/30">
           <h4 className="text-xs font-semibold mb-2 flex items-center gap-1.5">
-            <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
+            <TrendingUp className="h-3 w-3 text-primary" />
             Performance Insights:
           </h4>
           <ul className="space-y-1 text-[10px] text-muted-foreground">

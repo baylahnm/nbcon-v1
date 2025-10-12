@@ -338,20 +338,18 @@ export function UploadDeliverableContent() {
   const allQualityItemsChecked = Object.values(qualityChecklist).every(Boolean);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 space-y-6">
       {/* Header */}
       <div className="border-b pb-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
+          <div>
+            <h1 className="text-xl font-bold flex items-center gap-2">
               <Upload className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-base font-bold tracking-tight">Upload Deliverable</h1>
-              <p className="text-muted-foreground text-xs mt-0.5">
-                Submit milestone deliverables for Saudi engineering projects
-              </p>
-            </div>
+              Upload Deliverable
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Submit milestone deliverables for Saudi engineering projects
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="flex items-center gap-1 text-xs">
@@ -367,14 +365,14 @@ export function UploadDeliverableContent() {
       </div>
 
       {/* Project Selection */}
-      <Card>
-        <CardHeader>
+      <Card className="gap-0">
+        <CardHeader className="p-5 pb-3 border-b border-border/40">
           <CardTitle className="flex items-center gap-2 text-base">
             <Building className="w-5 h-5" />
             Select Project & Milestone
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Project</Label>
@@ -501,15 +499,15 @@ export function UploadDeliverableContent() {
 
           <TabsContent value="upload" className="space-y-6">
             {/* File Upload Area */}
-            <Card>
-              <CardHeader>
+            <Card className="gap-0">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <CloudUpload className="w-5 h-5" />
                   Upload Files
                   <Badge variant="secondary" className="text-xs">{uploadedFiles.length} Files</Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 {/* Drag & Drop Area */}
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
@@ -531,7 +529,7 @@ export function UploadDeliverableContent() {
                     onClick={() => fileInputRef.current?.click()}
                     className="text-xs h-8"
                   >
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-3.5 h-3.5 mr-1.5" />
                     Select Files
                   </Button>
                   <input
@@ -591,12 +589,13 @@ export function UploadDeliverableContent() {
                             )}
                           </div>
                           <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" className="text-xs h-8 w-8 p-0">
                               <Eye className="w-4 h-4" />
                             </Button>
                             <Button 
                               variant="ghost" 
                               size="sm"
+                              className="text-xs h-8 w-8 p-0"
                               onClick={() => removeFile(file.id)}
                             >
                               <Trash2 className="w-4 h-4" />
@@ -613,8 +612,8 @@ export function UploadDeliverableContent() {
 
           <TabsContent value="quality" className="space-y-6">
             {/* Quality Checklist */}
-            <Card>
-              <CardHeader>
+            <Card className="gap-0">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <Shield className="w-5 h-5" />
                   Quality Assurance Checklist
@@ -626,7 +625,7 @@ export function UploadDeliverableContent() {
                   </Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-5 bg-background rounded-b-xl">
                 <div className="space-y-4">
                   {[
                     { 
@@ -674,14 +673,14 @@ export function UploadDeliverableContent() {
             </Card>
 
             {/* Notes Section */}
-            <Card>
-              <CardHeader>
+            <Card className="gap-0">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <MessageSquare className="w-5 h-5" />
                   Deliverable Notes
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-5 bg-background rounded-b-xl">
                 <Textarea
                   placeholder="Add notes about the deliverable, any special considerations, changes from original scope, or instructions for the client..."
                   value={deliverableNotes}
@@ -694,14 +693,14 @@ export function UploadDeliverableContent() {
 
           <TabsContent value="submit" className="space-y-6">
             {/* Submission Summary */}
-            <Card>
-              <CardHeader>
+            <Card className="gap-0">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <FileCheck className="w-5 h-5" />
                   Submission Summary
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div>
@@ -777,12 +776,12 @@ export function UploadDeliverableContent() {
             </Card>
 
             {/* Submit Actions */}
-            <Card>
-              <CardContent className="pt-6">
+            <Card className="gap-0">
+              <CardContent className="p-5 bg-background rounded-b-xl">
                 {uploadedFiles.length === 0 || !allQualityItemsChecked ? (
                   <Alert>
                     <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription>
+                    <AlertDescription className="text-xs">
                       Please upload files and complete the quality checklist before submitting.
                     </AlertDescription>
                   </Alert>
@@ -790,7 +789,7 @@ export function UploadDeliverableContent() {
                   <div className="space-y-4">
                     <Alert>
                       <CheckCircle className="h-4 w-4" />
-                      <AlertDescription>
+                      <AlertDescription className="text-xs">
                         Ready to submit deliverable. Once submitted, the client will be notified for review.
                       </AlertDescription>
                     </Alert>
@@ -802,12 +801,12 @@ export function UploadDeliverableContent() {
                     >
                       {isSubmitting ? (
                         <>
-                          <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                           Submitting Deliverable...
                         </>
                       ) : (
                         <>
-                          <Send className="w-5 h-5 mr-2" />
+                          <Send className="w-4 h-4 mr-2" />
                           Submit Deliverable for Review
                         </>
                       )}
@@ -822,14 +821,14 @@ export function UploadDeliverableContent() {
 
       {/* Recent Submissions */}
       {!selectedMilestone && (
-        <Card>
-          <CardHeader>
+        <Card className="gap-0">
+          <CardHeader className="p-5 pb-3 border-b border-border/40">
             <CardTitle className="flex items-center gap-2 text-base">
               <Clock className="w-5 h-5" />
               Recent Submissions
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 bg-background rounded-b-xl">
             <div className="space-y-3">
               {[
                 { 

@@ -103,14 +103,12 @@ export function EngineersTable({ engineers, onEngineerClick, currentUserId }: En
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between pb-6 border-b border-border/40">
-        <div className="flex items-center gap-3">
-          <div className="bg-amber-500/10 p-2.5 rounded-xl ring-1 ring-amber-500/20">
-            <Trophy className="h-7 w-7 text-amber-600" />
-          </div>
-          <div>
-            <h1 className="text-base font-bold tracking-tight">Engineering Rankings</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">{filteredEngineers.length} engineers competing for excellence</p>
-          </div>
+        <div>
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-primary" />
+            Engineering Rankings
+          </h1>
+          <p className="text-xs text-muted-foreground">{filteredEngineers.length} engineers competing for excellence</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="text-xs px-2 py-1">
@@ -185,19 +183,19 @@ export function EngineersTable({ engineers, onEngineerClick, currentUserId }: En
       {/* Table Container */}
       <div className="rounded-xl border border-border/50 overflow-hidden bg-card shadow-sm">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-b-2 border-primary/20">
+          <thead className="bg-primary border-b-2 border-primary">
             <tr>
-              <th className="text-center px-4 py-3 text-xs font-semibold">Rank</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold">Engineer</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold">ID</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold">Expertise</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold">Location</th>
-              <th className="text-center px-4 py-3 text-xs font-semibold">Score</th>
-              <th className="text-center px-4 py-3 text-xs font-semibold">Rating</th>
-              <th className="text-right px-4 py-3 text-xs font-semibold">Projects</th>
+              <th className="text-center px-4 py-3 text-xs font-semibold text-white">Rank</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-white">Engineer</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-white">ID</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-white">Expertise</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-white">Location</th>
+              <th className="text-center px-4 py-3 text-xs font-semibold text-white">Score</th>
+              <th className="text-center px-4 py-3 text-xs font-semibold text-white">Rating</th>
+              <th className="text-right px-4 py-3 text-xs font-semibold text-white">Projects</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border/30">
+          <tbody className="divide-y divide-border/30 bg-background">
             {paginatedEngineers.map((engineer, index) => {
               const rank = startIndex + index + 1;
               const isCurrentUser = currentUserId === engineer.id;
@@ -274,7 +272,7 @@ export function EngineersTable({ engineers, onEngineerClick, currentUserId }: En
         </table>
 
         {/* Pagination */}
-        <div className="px-6 py-4 border-t border-border/30 flex items-center justify-between bg-muted/20">
+        <div className="p-3 border-t border-border/30 flex items-center justify-between bg-muted/20">
           <Button
             variant="outline"
             size="sm"
@@ -366,45 +364,38 @@ export default function RankingPage() {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/10">
-        <div className="container mx-auto px-6 py-8 space-y-8">
-          {/* Annual Prizes Hero */}
-          <AnnualPrizesHero />
-
-          {/* Your Rank Card + Top 3 Podium in 2-column grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Your Rank Card (1 column) */}
-            <div className="lg:col-span-1">
-              <YourRankCard
-                currentRank={currentRank}
-                previousRank={previousRank}
-                allTimeBestRank={allTimeBestRank}
-                totalEngineers={allEngineers.length}
-                currentScore={currentScore}
-                nextTier={{
-                  name: "Platinum Tier",
-                  rankCutoff: 25,
-                  prize: "💎 SAR 10,000 + Course Bundle + Platinum Badge"
-                }}
-              />
-            </div>
-
-            {/* Podium (2 columns) */}
-            <div className="lg:col-span-2">
-              <LeaderboardPodium
-                topThree={allEngineers.slice(0, 3)}
-                onEngineerClick={handleEngineerClick}
-              />
-            </div>
-          </div>
-
-          {/* Rank Trend Chart */}
-          <RankTrendChart />
-
+        <div className="container mx-auto p-4 space-y-8">
           {/* Enhanced Table */}
           <EngineersTable 
             engineers={allEngineers} 
             onEngineerClick={handleEngineerClick}
             currentUserId={currentUserId}
+          />
+
+          {/* Your Rank Card */}
+          <YourRankCard
+            currentRank={currentRank}
+            previousRank={previousRank}
+            allTimeBestRank={allTimeBestRank}
+            totalEngineers={allEngineers.length}
+            currentScore={currentScore}
+            nextTier={{
+              name: "Platinum Tier",
+              rankCutoff: 25,
+              prize: "💎 SAR 10,000 + Course Bundle + Platinum Badge"
+            }}
+          />
+
+          {/* Rank Trend Chart */}
+          <RankTrendChart />
+
+          {/* Annual Prizes Hero */}
+          <AnnualPrizesHero />
+
+          {/* Top 3 Podium */}
+          <LeaderboardPodium
+            topThree={allEngineers.slice(0, 3)}
+            onEngineerClick={handleEngineerClick}
           />
 
           {/* Hall of Fame */}

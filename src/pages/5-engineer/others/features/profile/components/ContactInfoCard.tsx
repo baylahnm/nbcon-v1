@@ -60,12 +60,12 @@ export function ContactInfoCard({ email, phone, isOwner = true }: ContactInfoCar
   ];
 
   return (
-    <Card className="border-border/50 sticky top-[340px]">
-      <CardHeader className="pb-4">
+    <Card className="gap-0 border-border/50 sticky top-[340px]">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <h3 className="text-base font-bold">Contact Information</h3>
       </CardHeader>
 
-      <CardContent className="space-y-3">
+      <CardContent className="p-5 space-y-3 bg-background rounded-b-xl">
         {contactItems.map((item) => {
           const Icon = item.icon;
           

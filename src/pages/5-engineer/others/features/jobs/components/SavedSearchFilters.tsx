@@ -128,8 +128,8 @@ export function SavedSearchFilters({ onApplyFilter }: SavedSearchFiltersProps) {
                 <p className="text-xs text-muted-foreground mt-0.5">Quick access to your filters</p>
               </div>
             </div>
-            <Button size="sm" onClick={() => setShowDialog(true)}>
-              <Plus className="w-4 h-4 mr-2" />
+            <Button size="sm" onClick={() => setShowDialog(true)} className="h-8 text-xs">
+              <Plus className="w-3.5 h-3.5 mr-1.5" />
               Save Current
             </Button>
           </CardTitle>

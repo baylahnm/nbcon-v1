@@ -89,7 +89,7 @@ export function PaymentsContent() {
   ];
 
   return (
-    <div className="flex-1 bg-background p-6">
+    <div className="flex-1 bg-background p-4">
       {/* Header */}
       <div className="bg-background p-0">
         <div className="flex items-center justify-between pb-6 border-b">
@@ -98,7 +98,7 @@ export function PaymentsContent() {
               <CreditCard className="h-5 w-5 text-primary" />
               Finance
             </h1>
-            <p className="text-sm text-muted-foreground">Manage your payments and financial transactions</p>
+            <p className="text-xs text-muted-foreground">Manage your payments and financial transactions</p>
           </div>
         </div>
       </div>

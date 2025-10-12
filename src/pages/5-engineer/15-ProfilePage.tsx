@@ -53,19 +53,17 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto p-4">
         {/* Page Header */}
         <div className="flex items-center justify-between pb-6 border-b border-border/40 mb-8">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
-              <User className="h-7 w-7 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-base font-bold tracking-tight">Engineer Profile</h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Showcase your expertise and connect with clients
-              </p>
-            </div>
+          <div>
+            <h1 className="text-xl font-bold flex items-center gap-2">
+              <User className="h-5 w-5 text-primary" />
+              Engineer Profile
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Showcase your expertise and connect with clients
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-xs px-3 py-1">

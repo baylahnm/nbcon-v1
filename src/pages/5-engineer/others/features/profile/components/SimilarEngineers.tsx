@@ -43,13 +43,13 @@ export function SimilarEngineers() {
   ];
 
   return (
-    <Card className="border-border/50">
-      <CardHeader className="pb-4">
+    <Card className="gap-0 border-border/50">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <h3 className="text-base font-bold">Similar Engineers</h3>
         <p className="text-xs text-muted-foreground">Based on your specialization</p>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {similarEngineers.map((engineer) => (
           <div 
             key={engineer.id}
@@ -103,14 +103,14 @@ export function SimilarEngineers() {
                 variant="outline"
                 className="flex-1 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-xs h-7"
               >
-                <Eye className="h-3 w-3 mr-1" />
+                <Eye className="h-3.5 w-3.5 mr-1.5" />
                 View
               </Button>
               <Button 
                 size="sm"
                 className="flex-1 shadow-sm hover:shadow-md transition-all text-xs h-7"
               >
-                <UserPlus className="h-3 w-3 mr-1" />
+                <UserPlus className="h-3.5 w-3.5 mr-1.5" />
                 Connect
               </Button>
             </div>

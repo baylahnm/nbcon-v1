@@ -119,8 +119,8 @@ export function ExperienceSection({ isEditMode = false }: ExperienceSectionProps
   };
 
   return (
-    <Card className="group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
+    <Card className="gap-0 group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
+      <CardHeader className="p-5 pb-3 border-b border-border/40 flex flex-row items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-purple-500/10 p-2.5 rounded-xl ring-1 ring-purple-500/20 group-hover:scale-110 transition-transform">
             <Briefcase className="h-5 w-5 text-purple-600" />
@@ -132,13 +132,13 @@ export function ExperienceSection({ isEditMode = false }: ExperienceSectionProps
         </div>
         {isEditMode && (
           <Button size="sm" variant="outline" className="text-xs h-8">
-            <Plus className="h-3 w-3 mr-1.5" />
+            <Plus className="h-3.5 w-3.5 mr-1.5" />
             Add Experience
           </Button>
         )}
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
         {/* Timeline */}
         <div className="relative">
           {experiences.map((exp, index) => {

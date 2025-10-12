@@ -333,17 +333,18 @@ export function CheckInContent() {
               <Navigation className="h-5 w-5 text-primary" />
               Site Check In
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground">
               Geofenced check-in system for Saudi engineering projects
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Button 
               variant="outline" 
+              size="sm"
               onClick={() => setShowExportDialog(true)}
-              className="gap-2"
+              className="h-8 text-xs gap-2"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5" />
               Export Report
             </Button>
             <div className="text-right">

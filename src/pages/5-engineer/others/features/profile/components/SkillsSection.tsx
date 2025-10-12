@@ -95,8 +95,8 @@ export function SkillsSection({ skills: rawSkills, isEditMode = false, onAddSkil
   );
 
   return (
-    <Card className="group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
+    <Card className="gap-0 group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
+      <CardHeader className="p-5 pb-3 border-b border-border/40 flex flex-row items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-blue-500/10 p-2.5 rounded-xl ring-1 ring-blue-500/20 group-hover:scale-110 transition-transform">
             <Wrench className="h-5 w-5 text-blue-600" />
@@ -108,13 +108,13 @@ export function SkillsSection({ skills: rawSkills, isEditMode = false, onAddSkil
         </div>
         {isEditMode && (
           <Button size="sm" variant="outline" className="text-xs h-8">
-            <Plus className="h-3 w-3 mr-1.5" />
+            <Plus className="h-3.5 w-3.5 mr-1.5" />
             Add Skill
           </Button>
         )}
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="p-5 bg-background rounded-b-xl">
         <Tabs defaultValue="technical" className="w-full">
           <TabsList className="w-full grid grid-cols-3 gap-0 mb-6">
             <TabsTrigger value="technical" className="text-xs">

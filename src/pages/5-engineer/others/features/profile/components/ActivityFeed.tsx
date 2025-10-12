@@ -81,8 +81,8 @@ export function ActivityFeed() {
   ];
 
   return (
-    <Card className="border-border/50">
-      <CardHeader className="pb-4">
+    <Card className="gap-0 border-border/50">
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold">Recent Activity</h3>
           <Badge variant="outline" className="text-xs px-2 py-0 h-5">
@@ -91,7 +91,7 @@ export function ActivityFeed() {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 max-h-[400px] overflow-y-auto scrollbar-hide">
+      <CardContent className="p-5 space-y-3 max-h-[400px] overflow-y-auto scrollbar-hide bg-background rounded-b-xl">
         {activities.map((activity) => {
           const Icon = activity.icon;
           

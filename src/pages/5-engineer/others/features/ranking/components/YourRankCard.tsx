@@ -72,46 +72,58 @@ export function YourRankCard({
   const TrendIcon = trend.Icon;
 
   return (
-    <Card className="group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
-      <CardHeader className="pb-4">
+    <Card 
+      className="gap-0 group hover:shadow-lg transition-all duration-300 border-border/50"
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+    >
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center gap-3">
-          <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20 group-hover:scale-110 transition-transform">
-            <BarChart3 className="h-5 w-5 text-primary" />
+          <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+            <BarChart3 className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-bold">Your Ranking</h2>
-            <p className="text-xs text-muted-foreground">Personal performance tracker</p>
+            <h2 className="text-base font-bold tracking-tight">Your Ranking</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Personal performance tracker</p>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="p-5 space-y-6 bg-background rounded-b-xl">
         {/* Rank Stats Grid */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           {/* Current Rank */}
-          <div className="text-center p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-            <p className="text-xs text-muted-foreground mb-2">Current Rank</p>
-            <div className="text-3xl font-bold text-primary tracking-tight">#{currentRank}</div>
-            <div className={`flex items-center justify-center gap-1 mt-2 text-xs ${trend.color}`}>
+          <div className="text-center p-2.5 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+            <p className="text-[10px] text-muted-foreground mb-1">Current Rank</p>
+            <div className="text-2xl font-bold text-primary tracking-tight">#{currentRank}</div>
+            <div className={`flex items-center justify-center gap-1 mt-1 text-[10px] ${trend.color}`}>
               <TrendIcon className="h-3 w-3" />
               <span className="font-medium">{trend.text}</span>
             </div>
           </div>
 
           {/* Last Month */}
-          <div className="text-center p-4 rounded-lg bg-muted/50 border border-border/40">
-            <p className="text-xs text-muted-foreground mb-2">Last Month</p>
-            <div className="text-3xl font-bold tracking-tight">#{previousRank}</div>
-            <p className="text-xs text-muted-foreground mt-2">
+          <div className="text-center p-2.5 rounded-lg bg-muted/50 border border-border/40">
+            <p className="text-[10px] text-muted-foreground mb-1">Last Month</p>
+            <div className="text-2xl font-bold tracking-tight">#{previousRank}</div>
+            <p className="text-[10px] text-muted-foreground mt-1">
               {rankChange > 0 ? 'Improved!' : rankChange < 0 ? 'Dropped' : 'Stable'}
             </p>
           </div>
 
           {/* All-Time Best */}
-          <div className="text-center p-4 rounded-lg bg-muted/50 border border-border/40">
-            <p className="text-xs text-muted-foreground mb-2">All-Time Best</p>
-            <div className="text-3xl font-bold tracking-tight">#{allTimeBestRank}</div>
-            <p className="text-xs text-muted-foreground mt-2">
+          <div className="text-center p-2.5 rounded-lg bg-muted/50 border border-border/40">
+            <p className="text-[10px] text-muted-foreground mb-1">All-Time Best</p>
+            <div className="text-2xl font-bold tracking-tight">#{allTimeBestRank}</div>
+            <p className="text-[10px] text-muted-foreground mt-1">
               {allTimeBestRank === currentRank ? 'Current best!' : 'Jun 2024'}
             </p>
           </div>
@@ -200,27 +212,28 @@ export function YourRankCard({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 pt-4 border-t border-border/30">
+        <div className="flex gap-2 pt-4 border-t border-border/30">
           <Button 
+            variant="outline" 
             size="sm" 
-            variant="outline"
             onClick={() => {
               document.getElementById('rank-trend-chart')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="flex-1 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-xs h-8"
+            className="flex-1 h-7 text-[11px]"
           >
-            <BarChart3 className="h-3 w-3 mr-1.5" />
+            <BarChart3 className="h-3 w-3 mr-1" />
             View Analytics
           </Button>
           <Button 
+            variant="outline" 
             size="sm"
             onClick={() => {
               const event = new CustomEvent('openRankingModal');
               window.dispatchEvent(event);
             }}
-            className="flex-1 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all text-xs h-8"
+            className="flex-1 h-7 text-[11px]"
           >
-            <Lightbulb className="h-3 w-3 mr-1.5" />
+            <Lightbulb className="h-3 w-3 mr-1" />
             See Formula
           </Button>
         </div>

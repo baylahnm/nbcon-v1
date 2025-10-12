@@ -1,5 +1,5 @@
 import { Trophy, Award, Star, Briefcase, MapPin, TrendingUp, TrendingDown } from 'lucide-react';
-import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
+import { Card, CardHeader, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '../../../../../1-HomePage/others/components/ui/avatar';
 import { Engineer } from '../../../../../1-HomePage/others/data/engineers';
@@ -60,21 +60,21 @@ export function LeaderboardPodium({ topThree, onEngineerClick }: LeaderboardPodi
       <Card 
         key={engineer.id}
         onClick={() => onEngineerClick(engineer.id)}
-        className={`group relative cursor-pointer overflow-hidden border-2 ${config.border} bg-gradient-to-br ${config.gradient} hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ${config.height} ${config.zIndex} ${config.scale}`}
+        className={`gap-0 group relative cursor-pointer overflow-hidden border-2 ${config.border} bg-gradient-to-br ${config.gradient} hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 ${config.height} ${config.zIndex} ${config.scale}`}
       >
         {/* Floating Medal */}
         <div className="absolute -top-4 -right-4 text-5xl transform rotate-12 group-hover:rotate-0 group-hover:scale-125 transition-transform duration-300">
           {config.medal}
         </div>
 
-        <CardContent className="p-6 h-full flex flex-col justify-between">
+        <CardContent className="p-5 h-full flex flex-col justify-between bg-background rounded-xl">
           {/* Rank Badge */}
-          <div className="flex justify-between items-start mb-4">
-            <Badge className={`${config.badge} border-0 ring-2 ${config.ring} text-xs px-2.5 py-1 font-bold shadow-lg`}>
+          <div className="flex justify-between items-start mb-3">
+            <Badge className={`${config.badge} border-0 ring-1 ${config.ring} text-[10px] px-2 py-0.5 font-bold shadow-md`}>
               #{rank}
             </Badge>
             {rankChange !== 0 && (
-              <div className={`flex items-center gap-1 text-xs font-medium ${rankChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`flex items-center gap-0.5 text-[10px] font-medium ${rankChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {rankChange > 0 ? (
                   <>
                     <TrendingUp className="h-3 w-3" />
@@ -93,58 +93,58 @@ export function LeaderboardPodium({ topThree, onEngineerClick }: LeaderboardPodi
           {/* Engineer Info */}
           <div className="flex flex-col items-center text-center space-y-4">
             {/* Avatar */}
-            <Avatar className={`h-20 w-20 ring-4 ${config.ring} shadow-xl group-hover:scale-110 transition-transform`}>
+            <Avatar className={`h-16 w-16 ring-2 ${config.ring} shadow-md group-hover:scale-110 transition-transform`}>
               <AvatarImage src={engineer.profileImage} alt={engineer.name} />
-              <AvatarFallback className="text-lg font-bold">
+              <AvatarFallback className="text-base font-bold">
                 {engineer.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
 
             {/* Name & Age */}
             <div>
-              <h3 className="text-base font-bold leading-tight mb-1">
+              <h3 className="text-sm font-bold leading-tight mb-0.5">
                 {engineer.name}
               </h3>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground">
                 {engineer.experience}
               </p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-3 w-full">
+            <div className="grid grid-cols-2 gap-2 w-full">
               {/* Rating */}
-              <div className="text-center p-2 rounded-lg bg-white/50 border border-border/30">
-                <div className="flex items-center justify-center gap-1 mb-1">
+              <div className="text-center p-1.5 rounded-md bg-white/50 border border-border/30">
+                <div className="flex items-center justify-center gap-0.5 mb-0.5">
                   <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                  <span className="text-base font-bold">{engineer.rating.toFixed(1)}</span>
+                  <span className="text-sm font-bold">{engineer.rating.toFixed(1)}</span>
                 </div>
-                <p className="text-[10px] text-muted-foreground">Rating</p>
+                <p className="text-[9px] text-muted-foreground">Rating</p>
               </div>
 
               {/* Projects */}
-              <div className="text-center p-2 rounded-lg bg-white/50 border border-border/30">
-                <div className="flex items-center justify-center gap-1 mb-1">
+              <div className="text-center p-1.5 rounded-md bg-white/50 border border-border/30">
+                <div className="flex items-center justify-center gap-0.5 mb-0.5">
                   <Briefcase className="h-3 w-3 text-primary" />
-                  <span className="text-base font-bold">{engineer.projects}</span>
+                  <span className="text-sm font-bold">{engineer.projects}</span>
                 </div>
-                <p className="text-[10px] text-muted-foreground">Projects</p>
+                <p className="text-[9px] text-muted-foreground">Projects</p>
               </div>
             </div>
 
             {/* Score */}
-            <div className="w-full p-3 rounded-lg bg-white/60 border-2 border-border/40 shadow-sm">
-              <p className="text-[10px] text-muted-foreground mb-1">Total Score</p>
-              <p className="text-2xl font-bold">{score}</p>
-              <p className="text-[9px] text-muted-foreground">out of 1000</p>
+            <div className="w-full p-2 rounded-md bg-white/60 border border-border/40">
+              <p className="text-[9px] text-muted-foreground mb-0.5">Total Score</p>
+              <p className="text-xl font-bold">{score}</p>
+              <p className="text-[8px] text-muted-foreground">out of 1000</p>
             </div>
 
             {/* Specialty & Location */}
-            <div className="space-y-1.5 w-full">
-              <div className="flex items-center justify-center gap-1.5 text-xs">
+            <div className="space-y-1 w-full">
+              <div className="flex items-center justify-center gap-1 text-[10px]">
                 <Award className="h-3 w-3 text-primary flex-shrink-0" />
                 <span className="font-medium truncate">{engineer.expertise}</span>
               </div>
-              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+              <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
                 <MapPin className="h-3 w-3 flex-shrink-0" />
                 <span className="truncate">{engineer.location.split(',')[0]}</span>
               </div>
@@ -152,7 +152,7 @@ export function LeaderboardPodium({ topThree, onEngineerClick }: LeaderboardPodi
           </div>
 
           {/* View Profile Button */}
-          <button className="w-full mt-4 py-2 px-3 text-xs font-medium rounded-lg bg-white/80 hover:bg-white border border-border/40 hover:border-primary/40 transition-all shadow-sm hover:shadow-md">
+          <button className="w-full mt-3 py-1.5 px-3 text-[10px] font-medium rounded-md bg-white/80 hover:bg-white border border-border/40 hover:border-primary/40 transition-all">
             View Profile
           </button>
         </CardContent>
@@ -161,44 +161,54 @@ export function LeaderboardPodium({ topThree, onEngineerClick }: LeaderboardPodi
   };
 
   return (
-    <div className="mb-8">
-      {/* Title */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center gap-2 mb-2">
-          <Trophy className="h-6 w-6 text-amber-600" />
-          <h2 className="text-xl font-bold">Top 3 Champions</h2>
-          <Trophy className="h-6 w-6 text-amber-600" />
+    <Card
+      className="gap-0 mb-8"
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+    >
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+            <Trophy className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold tracking-tight">Top 3 Champions</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              The elite engineers leading the 2025 rankings
+            </p>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground">
-          The elite engineers leading the 2025 rankings
-        </p>
-      </div>
+      </CardHeader>
 
-      {/* Podium */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 md:items-end">
-        {/* Second Place */}
-        <div className="md:order-1">
-          {getPodiumCard(second, 2)}
+      <CardContent className="p-5 space-y-5 bg-background rounded-b-xl">
+
+        {/* Podium */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 md:items-end">
+          {/* Second Place */}
+          <div className="md:order-1">
+            {getPodiumCard(second, 2)}
+          </div>
+
+          {/* First Place (Center, Elevated) */}
+          <div className="md:order-2">
+            {getPodiumCard(first, 1)}
+          </div>
+
+          {/* Third Place */}
+          <div className="md:order-3">
+            {getPodiumCard(third, 3)}
+          </div>
         </div>
-
-        {/* First Place (Center, Elevated) */}
-        <div className="md:order-2">
-          {getPodiumCard(first, 1)}
-        </div>
-
-        {/* Third Place */}
-        <div className="md:order-3">
-          {getPodiumCard(third, 3)}
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="mt-8 mb-6 flex items-center gap-4">
-        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
-        <span className="text-xs font-medium text-muted-foreground px-3">Top 100 Leaderboard</span>
-        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

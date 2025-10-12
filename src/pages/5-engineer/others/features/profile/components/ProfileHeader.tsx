@@ -80,8 +80,8 @@ export function ProfileHeader({ profileData, isEditMode = false, isOwner = true,
   const availability = availabilityConfig[profile.availabilityStatus];
 
   return (
-    <Card className="relative overflow-hidden transition-all duration-300 border-border/50 bg-gradient-to-br from-card to-card/50">
-      <div className="p-7">
+    <Card className="gap-0 relative overflow-hidden transition-all duration-300 border-border/50 bg-gradient-to-br from-card to-card/50">
+      <div className="p-5">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Profile Photo */}
           <div className="flex-shrink-0">

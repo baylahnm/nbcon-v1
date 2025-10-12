@@ -135,113 +135,130 @@ export function HallOfFameSection() {
   };
 
   return (
-    <div id="hall-of-fame" className="mt-8">
-      {/* Section Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center gap-2 mb-3">
-          <Trophy className="h-7 w-7 text-amber-600" />
-          <h2 className="text-xl font-bold">Hall of Fame</h2>
-          <Trophy className="h-7 w-7 text-amber-600" />
+    <Card
+      id="hall-of-fame"
+      className="gap-0 mt-8"
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+    >
+      <CardHeader className="p-5 pb-3 border-b border-border/40">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+            <Trophy className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold tracking-tight">Hall of Fame</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Annual award winners who set the standard for engineering excellence
+            </p>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Annual award winners who set the standard for engineering excellence
-        </p>
-      </div>
+      </CardHeader>
 
-      {/* Year Tabs (Future: add 2023, 2022, All-Time) */}
-      <div className="flex items-center justify-center gap-2 mb-6">
-        <Button variant="default" size="sm" className="text-xs h-8">
-          <Calendar className="h-3 w-3 mr-1.5" />
-          2024 Winners
-        </Button>
-        <Button variant="outline" size="sm" disabled className="text-xs h-8">
-          2023
-        </Button>
-        <Button variant="outline" size="sm" disabled className="text-xs h-8">
-          2022
-        </Button>
-        <Button variant="outline" size="sm" disabled className="text-xs h-8">
-          All-Time Legends
-        </Button>
-      </div>
+      <CardContent className="p-5 space-y-5 bg-background rounded-b-xl">
 
-      {/* Winners Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Year Tabs (Future: add 2023, 2022, All-Time) */}
+        <div className="flex items-center justify-center gap-2">
+          <Button variant="default" size="sm" className="h-7 text-[11px]">
+            <Calendar className="h-3 w-3 mr-1" />
+            2024 Winners
+          </Button>
+          <Button variant="outline" size="sm" disabled className="h-7 text-[11px]">
+            2023
+          </Button>
+          <Button variant="outline" size="sm" disabled className="h-7 text-[11px]">
+            2022
+          </Button>
+          <Button variant="outline" size="sm" disabled className="h-7 text-[11px]">
+            All-Time Legends
+          </Button>
+        </div>
+
+        {/* Winners Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {mockWinners.map((winner) => {
           const config = getTierConfig(winner.tier);
           
           return (
             <Card 
               key={winner.engineer.id}
-              className={`relative overflow-hidden border-2 ${config.border} bg-gradient-to-br ${config.gradient} hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
+              className={`gap-0 relative overflow-hidden border-2 ${config.border} bg-gradient-to-br ${config.gradient} hover:shadow-md hover:-translate-y-0.5 transition-all duration-300`}
             >
               {/* Floating Badge */}
-              <div className="absolute -top-3 -right-3 z-10">
-                <Badge className={`${config.badge} border-0 shadow-xl font-bold text-xs px-3 py-1.5 ring-4 ring-background`}>
+              <div className="absolute -top-2.5 -right-2.5 z-10">
+                <Badge className={`${config.badge} border-0 shadow-md font-bold text-[10px] px-2.5 py-1 ring-2 ring-background`}>
                   {winner.year} {winner.tier.toUpperCase()} {config.medal}
                 </Badge>
               </div>
 
-              <CardContent className="p-6">
+              <CardContent className="p-4 bg-background rounded-xl">
                 {/* Engineer Info */}
-                <div className="flex items-start gap-4 mb-5">
-                  <Avatar className="h-16 w-16 ring-4 ring-background shadow-lg">
+                <div className="flex items-start gap-3 mb-4">
+                  <Avatar className="h-14 w-14 ring-2 ring-background shadow-md">
                     <AvatarImage src={winner.engineer.avatar} alt={winner.engineer.name} />
-                    <AvatarFallback className="text-base font-bold bg-primary/10 text-primary">
+                    <AvatarFallback className="text-sm font-bold bg-primary/10 text-primary">
                       {winner.engineer.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold leading-tight mb-1 truncate">
+                    <h3 className="text-sm font-bold leading-tight mb-0.5 truncate">
                       {winner.engineer.name}
                     </h3>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-[10px] text-muted-foreground truncate">
                       {winner.engineer.specialty}
                     </p>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-[10px] text-muted-foreground truncate">
                       {winner.engineer.company}
                     </p>
                   </div>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="text-center p-2 rounded-lg bg-white/60 border border-border/30">
-                    <div className="flex items-center justify-center gap-0.5 mb-1">
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="text-center p-1.5 rounded-md bg-white/60 border border-border/30">
+                    <div className="flex items-center justify-center gap-0.5 mb-0.5">
                       <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-bold">{winner.finalRating.toFixed(1)}</span>
+                      <span className="text-xs font-bold">{winner.finalRating.toFixed(1)}</span>
                     </div>
-                    <p className="text-[9px] text-muted-foreground">Rating</p>
+                    <p className="text-[8px] text-muted-foreground">Rating</p>
                   </div>
-                  <div className="text-center p-2 rounded-lg bg-white/60 border border-border/30">
-                    <div className="flex items-center justify-center gap-0.5 mb-1">
+                  <div className="text-center p-1.5 rounded-md bg-white/60 border border-border/30">
+                    <div className="flex items-center justify-center gap-0.5 mb-0.5">
                       <Briefcase className="h-3 w-3 text-primary" />
-                      <span className="text-sm font-bold">{winner.totalProjects}</span>
+                      <span className="text-xs font-bold">{winner.totalProjects}</span>
                     </div>
-                    <p className="text-[9px] text-muted-foreground">Projects</p>
+                    <p className="text-[8px] text-muted-foreground">Projects</p>
                   </div>
-                  <div className="text-center p-2 rounded-lg bg-white/60 border border-border/30">
-                    <span className="text-sm font-bold">{winner.finalScore}</span>
-                    <p className="text-[9px] text-muted-foreground">Score</p>
+                  <div className="text-center p-1.5 rounded-md bg-white/60 border border-border/30">
+                    <span className="text-xs font-bold">{winner.finalScore}</span>
+                    <p className="text-[8px] text-muted-foreground">Score</p>
                   </div>
                 </div>
 
                 {/* Prizes Won */}
-                <div className={`p-3 rounded-lg border ${config.border} bg-white/40 mb-4`}>
-                  <h4 className="text-xs font-semibold mb-2 flex items-center gap-1.5">
+                <div className={`p-2.5 rounded-md border ${config.border} bg-white/40 mb-3`}>
+                  <h4 className="text-[10px] font-semibold mb-1.5 flex items-center gap-1">
                     <Gift className="h-3 w-3" />
                     Prizes Awarded:
                   </h4>
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-medium">💵 SAR {winner.prizes.cash.toLocaleString()}</p>
-                    <p className="text-[10px] font-medium">🚗 {winner.prizes.physical}</p>
-                    <p className="text-[10px] font-medium">📚 {winner.prizes.courses} Premium Courses</p>
+                  <div className="space-y-0.5">
+                    <p className="text-[9px] font-medium">💵 SAR {winner.prizes.cash.toLocaleString()}</p>
+                    <p className="text-[9px] font-medium">🚗 {winner.prizes.physical}</p>
+                    <p className="text-[9px] font-medium">📚 {winner.prizes.courses} Premium Courses</p>
                   </div>
                 </div>
 
                 {/* Testimonial */}
-                <blockquote className={`p-3 border-l-4 ${config.border} bg-muted/30 rounded-r-lg mb-4`}>
-                  <p className="text-[10px] italic leading-relaxed line-clamp-3">
+                <blockquote className={`p-2.5 border-l-2 ${config.border} bg-muted/30 rounded-r-md mb-3`}>
+                  <p className="text-[9px] italic leading-relaxed line-clamp-3">
                     "{winner.testimonial}"
                   </p>
                 </blockquote>
@@ -250,52 +267,53 @@ export function HallOfFameSection() {
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  className="w-full shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-xs h-8"
+                  className="w-full h-7 text-[11px]"
                 >
-                  <ExternalLink className="h-3 w-3 mr-1.5" />
+                  <ExternalLink className="h-3 w-3 mr-1" />
                   View Full Profile
                 </Button>
               </CardContent>
             </Card>
           );
         })}
-      </div>
+        </div>
 
-      {/* Additional Past Winners Summary */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border border-orange-600/30 bg-gradient-to-br from-orange-600/10 to-transparent hover:shadow-lg transition-shadow">
-          <CardContent className="p-5 text-center">
-            <p className="text-xs text-muted-foreground mb-2">Bronze Tier (#4-10)</p>
-            <p className="text-2xl font-bold mb-1">7 Engineers</p>
-            <p className="text-[10px] text-muted-foreground">SAR 25,000 + iPad + Courses each</p>
-          </CardContent>
-        </Card>
+        {/* Additional Past Winners Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="gap-0 border border-orange-600/30 bg-gradient-to-br from-orange-600/10 to-transparent hover:shadow-md transition-shadow">
+            <CardContent className="p-4 text-center bg-background rounded-xl">
+              <p className="text-[10px] text-muted-foreground mb-1.5">Bronze Tier (#4-10)</p>
+              <p className="text-xl font-bold mb-1">7 Engineers</p>
+              <p className="text-[9px] text-muted-foreground">SAR 25,000 + iPad + Courses each</p>
+            </CardContent>
+          </Card>
 
-        <Card className="border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent hover:shadow-lg transition-shadow">
-          <CardContent className="p-5 text-center">
-            <p className="text-xs text-muted-foreground mb-2">Platinum Tier (#11-25)</p>
-            <p className="text-2xl font-bold mb-1">15 Engineers</p>
-            <p className="text-[10px] text-muted-foreground">SAR 10,000 + Courses each</p>
-          </CardContent>
-        </Card>
+          <Card className="gap-0 border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-transparent hover:shadow-md transition-shadow">
+            <CardContent className="p-4 text-center bg-background rounded-xl">
+              <p className="text-[10px] text-muted-foreground mb-1.5">Platinum Tier (#11-25)</p>
+              <p className="text-xl font-bold mb-1">15 Engineers</p>
+              <p className="text-[9px] text-muted-foreground">SAR 10,000 + Courses each</p>
+            </CardContent>
+          </Card>
 
-        <Card className="border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-transparent hover:shadow-lg transition-shadow">
-          <CardContent className="p-5 text-center">
-            <p className="text-xs text-muted-foreground mb-2">Star Tier (#26-50)</p>
-            <p className="text-2xl font-bold mb-1">25 Engineers</p>
-            <p className="text-[10px] text-muted-foreground">Course Bundle + Certificate</p>
-          </CardContent>
-        </Card>
-      </div>
+          <Card className="gap-0 border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-transparent hover:shadow-md transition-shadow">
+            <CardContent className="p-4 text-center bg-background rounded-xl">
+              <p className="text-[10px] text-muted-foreground mb-1.5">Star Tier (#26-50)</p>
+              <p className="text-xl font-bold mb-1">25 Engineers</p>
+              <p className="text-[9px] text-muted-foreground">Course Bundle + Certificate</p>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Download Certificate */}
-      <div className="mt-6 text-center">
-        <Button variant="outline" size="sm" className="shadow-sm hover:shadow-md transition-all text-xs h-9">
-          <Award className="h-3.5 w-3.5 mr-2" />
-          Download 2024 Winners Certificate
-        </Button>
-      </div>
-    </div>
+        {/* Download Certificate */}
+        <div className="text-center">
+          <Button variant="outline" size="sm" className="h-7 text-[11px]">
+            <Award className="h-3 w-3 mr-1" />
+            Download 2024 Winners Certificate
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
