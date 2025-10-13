@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
 import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
@@ -7,10 +8,10 @@ import { Badge } from '../1-HomePage/others/components/ui/badge';
 import { Progress } from '../1-HomePage/others/components/ui/progress';
 import { CourseCard } from './others/features/learning/components/CourseCard';
 import { CourseSearch } from './others/features/learning/components/CourseSearch';
-import { CourseDetailView } from './others/features/learning/components/CourseDetailView';
 import { CourseProgress } from './others/features/learning/components/CourseProgress';
 import { LearningPaths } from './others/features/learning/components/LearningPaths';
 import { SkillAssessment } from './others/features/learning/components/SkillAssessment';
+import { HorizontalScrollCards } from './others/features/learning/components/HorizontalScrollCards';
 import { 
   BookOpen, 
   Play, 
@@ -1103,7 +1104,7 @@ const mockCourseProgress: CourseProgressData[] = [
       name: 'Dr. Ahmed Al-Rashid',
       avatar: '/api/placeholder/40/40'
     },
-    thumbnail: '/api/placeholder/300/200',
+    thumbnail: '/e-learning/Structural Engineering/Advanced Structural Analysis.jpg',
     progress: 75,
     totalLectures: 24,
     completedLectures: 18,
@@ -1143,7 +1144,7 @@ const mockCourseProgress: CourseProgressData[] = [
       name: 'Sarah Mitchell',
       avatar: '/api/placeholder/40/40'
     },
-    thumbnail: '/api/placeholder/300/200',
+    thumbnail: '/e-learning/Project Management/Project Management Fundamentals.jpg',
     progress: 100,
     totalLectures: 16,
     completedLectures: 16,
@@ -1180,7 +1181,7 @@ const mockCourseProgress: CourseProgressData[] = [
       name: 'Prof. Michael Chen',
       avatar: '/api/placeholder/40/40'
     },
-    thumbnail: '/api/placeholder/300/200',
+    thumbnail: '/e-learning/Renewable Energy Systems/Renewable Energy Systems.jpg',
     progress: 25,
     totalLectures: 20,
     completedLectures: 5,
@@ -1208,11 +1209,11 @@ const mockCourseProgress: CourseProgressData[] = [
 ];
 
 export default function LearningPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('courses');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   const categories = ['all', 'Structural Engineering', 'Project Management', 'Energy Engineering', 'Software', 'Safety'];
 
@@ -1230,14 +1231,8 @@ export default function LearningPage() {
   };
 
   const handleCourseView = (courseId: string) => {
-    const course = mockCourses.find(c => c.id === courseId);
-    if (course) {
-      setSelectedCourse(course);
-    }
-  };
-
-  const handleCloseDetailView = () => {
-    setSelectedCourse(null);
+    // Navigate to dynamic course page
+    navigate(`/engineer/learning/course/${courseId}`);
   };
 
   const handleContinueLearning = (courseId: string, lessonId: string) => {
@@ -1290,32 +1285,32 @@ export default function LearningPage() {
             icon: BookOpen,
             label: 'Enrolled Courses',
             value: mockCourses.length,
-            color: 'text-blue-600',
-            bgColor: 'bg-blue-500/10',
+            color: 'text-white',
+            bgColor: 'bg-blue-500',
             trend: '+12%'
           },
           {
             icon: CheckCircle2,
             label: 'Completed',
             value: mockCourses.filter(c => c.completed).length,
-            color: 'text-green-600',
-            bgColor: 'bg-green-500/10',
+            color: 'text-white',
+            bgColor: 'bg-green-500',
             trend: '+8%'
           },
           {
             icon: Award,
             label: 'Certifications',
             value: mockCertifications.filter(c => c.status === 'completed').length,
-            color: 'text-yellow-600',
-            bgColor: 'bg-yellow-500/10',
+            color: 'text-white',
+            bgColor: 'bg-amber-500',
             trend: '+5%'
           },
           {
             icon: TrendingUp,
             label: 'Avg. Progress',
             value: '85%',
-            color: 'text-purple-600',
-            bgColor: 'bg-purple-500/10',
+            color: 'text-white',
+            bgColor: 'bg-purple-500',
             trend: '+3%'
           }
         ].map((stat, index) => (
@@ -1337,8 +1332,8 @@ export default function LearningPage() {
               <CardContent className="p-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className={`${stat.bgColor} p-2 rounded-lg`}>
-                      <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                    <div className={`${stat.bgColor} p-2.5 rounded-lg shadow-md`}>
+                      <stat.icon className={`h-5 w-5 ${stat.color}`} />
                     </div>
                     <div className="flex items-center gap-1 text-xs font-medium text-green-600">
                       <TrendingUp className="h-3 w-3" />
@@ -1390,16 +1385,25 @@ export default function LearningPage() {
           <TrendingUp className="h-5 w-5 text-orange-500" />
           <h2 className="text-lg font-semibold">Trending Courses</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <HorizontalScrollCards 
+          className="w-full"
+          cardsPerView={{
+            mobile: 1.1,    // Show 1.1 cards on mobile (partial view of next)
+            tablet: 2.1,    // Show 2.1 cards on tablet  
+            desktop: 3.1,   // Show 3.1 cards on desktop
+            wide: 4.1       // Show 4.1 cards on wide screens
+          }}
+        >
           {filteredCourses.filter(course => course.isTrending).map((course) => (
             <CourseCard
               key={course.id}
               course={course}
               onEnroll={handleCourseEnroll}
               onView={handleCourseView}
+              layout="threeRow"
             />
           ))}
-        </div>
+        </HorizontalScrollCards>
       </div>
 
       {/* Best Seller Courses Section */}
@@ -1408,16 +1412,25 @@ export default function LearningPage() {
           <Award className="h-5 w-5 text-red-500" />
           <h2 className="text-lg font-semibold">Best Sellers</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <HorizontalScrollCards 
+          className="w-full"
+          cardsPerView={{
+            mobile: 1.1,    // Show 1.1 cards on mobile (partial view of next)
+            tablet: 2.1,    // Show 2.1 cards on tablet  
+            desktop: 3.1,   // Show 3.1 cards on desktop
+            wide: 4.1       // Show 4.1 cards on wide screens
+          }}
+        >
           {filteredCourses.filter(course => course.isBestSeller).map((course) => (
             <CourseCard
               key={course.id}
               course={course}
               onEnroll={handleCourseEnroll}
               onView={handleCourseView}
+              layout="threeRow"
             />
           ))}
-        </div>
+        </HorizontalScrollCards>
       </div>
 
       {/* Main Content */}
@@ -1502,13 +1515,14 @@ export default function LearningPage() {
 
         {/* Browse All Tab */}
         <TabsContent value="browse" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {filteredCourses.map((course) => (
               <CourseCard
                 key={course.id}
                 course={course}
                 onEnroll={handleCourseEnroll}
                 onView={handleCourseView}
+                layout="threeRow"
               />
             ))}
           </div>
@@ -1528,16 +1542,10 @@ export default function LearningPage() {
           )}
         </TabsContent>
       </Tabs>
-
-      {/* Course Detail View Modal */}
-      {selectedCourse && (
-        <CourseDetailView
-          course={selectedCourse}
-          onClose={handleCloseDetailView}
-          onEnroll={handleCourseEnroll}
-          onContinueLearning={handleCourseView}
-        />
-      )}
     </div>
   );
 }
+
+// Export mockCourses and Course type for use in CoursePage and other components
+export { mockCourses };
+export type { Course, Instructor, CourseSection, CourseLecture, CourseReview };

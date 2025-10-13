@@ -48,9 +48,11 @@ interface CourseCardProps {
   course: Course;
   onEnroll?: (courseId: string) => void;
   onView?: (courseId: string) => void;
+  width?: string;
+  layout?: 'default' | 'threeRow';
 }
 
-export function CourseCard({ course, onEnroll, onView }: CourseCardProps) {
+export function CourseCard({ course, onEnroll, onView, width, layout = 'default' }: CourseCardProps) {
   const navigate = useNavigate();
   
   const discountPercentage = course.originalPrice 
@@ -74,9 +76,7 @@ export function CourseCard({ course, onEnroll, onView }: CourseCardProps) {
     }
   };
 
-  return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0">
-      {/* Course Thumbnail */}
+  const Thumbnail = (
       <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-muted to-muted/50">
         <img 
           src={course.thumbnail} 
@@ -132,8 +132,10 @@ export function CourseCard({ course, onEnroll, onView }: CourseCardProps) {
           </div>
         )}
       </div>
+  );
 
-      <CardContent className="p-4 pb-4 space-y-3">
+  const Content = (
+      <CardContent className={`p-4 pb-4 space-y-3 bg-muted/20 ${layout === 'threeRow' ? 'flex-1' : ''}`}>
         {/* Course Title */}
         <div>
           <h3 className="font-bold text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
@@ -204,7 +206,8 @@ export function CourseCard({ course, onEnroll, onView }: CourseCardProps) {
           </div>
         )}
 
-        {/* Price and Actions */}
+        {/* Price and Actions (default layout keeps inside content) */}
+        {layout === 'default' && (
         <div className="flex items-center justify-between pt-2 border-t border-border/50">
           <div className="flex items-center gap-2">
             {course.originalPrice && course.originalPrice > course.price && (
@@ -265,7 +268,84 @@ export function CourseCard({ course, onEnroll, onView }: CourseCardProps) {
             )}
           </div>
         </div>
+        )}
       </CardContent>
+  );
+
+  const BottomBar = (
+    <div className="flex items-center justify-between px-4 py-3 border-t border-border/50 bg-card/60">
+      <div className="flex items-center gap-2">
+        {course.originalPrice && course.originalPrice > course.price && (
+          <span className="text-xs text-muted-foreground line-through">
+            ${course.originalPrice}
+          </span>
+        )}
+        <span className="font-bold text-sm text-primary">
+          ${course.price}
+        </span>
+      </div>
+      <div className="flex items-center gap-1">
+        {course.isEnrolled ? (
+          <>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="h-7 w-7 p-0"
+              onClick={handleViewCourse}
+            >
+              <Eye className="h-3 w-3" />
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="h-7 text-[10px] px-2"
+              onClick={handleViewCourse}
+            >
+              Continue
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="h-7 w-7 p-0"
+              onClick={handleViewCourse}
+            >
+              <Eye className="h-3 w-3" />
+            </Button>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="h-7 w-7 p-0"
+            >
+              <Bookmark className="h-3 w-3" />
+            </Button>
+            <Button 
+              size="sm" 
+              className="h-7 text-[10px] px-2 bg-gradient-primary"
+              onClick={() => onEnroll?.(course.id)}
+            >
+              Enroll
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <Card 
+      className={`group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0 flex-shrink-0 snap-center ${
+        layout === 'threeRow' ? 'flex flex-col h-full' : ''
+      }`}
+      style={{ width: width || '320px' }}
+    >
+      {Thumbnail}
+      <div className={layout === 'threeRow' ? 'flex-1 flex flex-col' : ''}>
+        {Content}
+      </div>
+      {layout === 'threeRow' && BottomBar}
     </Card>
   );
 }

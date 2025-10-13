@@ -1988,5 +1988,35 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
     background: var(--bg);
     color: var(--fg);
+    overflow-x: hidden; /* Prevent horizontal page scrolling */
+    max-width: 100%; /* Ensure body doesn't exceed viewport */
+  }
+
+  /* Prevent horizontal overflow on all elements */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Ensure html element doesn't cause overflow */
+  html {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  /* Horizontal scroll container styles */
+  .horizontal-scroll-container {
+    overflow-x: auto;
+    overscroll-behavior-x: contain; /* Prevent scroll chaining to parent */
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbars but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
   }
 }

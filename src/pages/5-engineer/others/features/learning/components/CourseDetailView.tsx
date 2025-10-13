@@ -174,9 +174,14 @@ export function CourseDetailView({ course, onClose, onEnroll, onContinueLearning
   };
 
   return (
-    <div className="fixed inset-0 bg-background z-50 flex">
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+      
+      {/* Side Panel */}
+      <div className="fixed inset-y-0 right-0 w-full max-w-6xl bg-background z-50 flex shadow-2xl">
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="bg-background border-b border-border/50 px-6 py-4">
           <div className="flex items-center justify-between">
@@ -809,5 +814,6 @@ export function CourseDetailView({ course, onClose, onEnroll, onContinueLearning
         </div>
       </div>
     </div>
+    </>
   );
 }
