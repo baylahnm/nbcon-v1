@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { useTheme } from 'next-themes';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type ThemePreset = 'light' | 'dark' | 'wazeer' | 'sunset' | 'abstract' | 'nika' | 'lagoon' | 'dark-nature' | 'full-gradient' | 'sea-purple';
@@ -17,11 +16,6 @@ export interface ThemeState {
   preset: ThemePreset;
   custom: Record<string, string>;
   applied: Record<string, string>;
-  isOrgLocked: boolean;
-  orgDefault: {
-    preset: ThemePreset;
-    custom: Record<string, string>;
-  } | null;
   
   // Actions
   setMode: (mode: ThemeMode) => void;
@@ -33,11 +27,9 @@ export interface ThemeState {
   exportTheme: () => { mode: ThemeMode; preset: ThemePreset; custom: Record<string, string> };
   randomize: () => void;
   save: () => Promise<void>;
-  setOrgDefault: (preset: ThemePreset, custom: Record<string, string>) => Promise<void>;
-  lockOrgTheme: (locked: boolean) => Promise<void>;
 }
 
-// Default theme tokens based on your CSS variables
+// Default theme tokens based on CSS variables
 export const THEME_TOKENS: ThemeToken[] = [
   // Core
   { key: '--background', value: '0 0% 100%', description: 'Main background color', category: 'core' },
@@ -468,8 +460,6 @@ export const useThemeStore = create<ThemeState>()(
       preset: 'wazeer',
       custom: {},
       applied: {},
-      isOrgLocked: false,
-      orgDefault: null,
 
       setMode: (mode) => {
         set({ mode });
@@ -490,34 +480,6 @@ export const useThemeStore = create<ThemeState>()(
           document.documentElement.style.setProperty(key, value);
         });
         
-        // Also update legacy CSS variables for backward compatibility
-        const legacyMappings = {
-          '--color-primary': applied['--primary'] ? `hsl(${applied['--primary']})` : '#27c862',
-          '--bg': applied['--background'] ? `hsl(${applied['--background']})` : '#efefef',
-          '--surface': applied['--card'] ? `hsl(${applied['--card']})` : '#efefef',
-          '--fg': applied['--foreground'] ? `hsl(${applied['--foreground']})` : '#101010',
-          '--border': applied['--border'] ? `hsl(${applied['--border']})` : '#e6e6e6',
-          '--input-bg': applied['--input-background'] ? `hsl(${applied['--input-background']})` : '#ffffff',
-          '--input-fg': applied['--input-foreground'] ? `hsl(${applied['--input-foreground']})` : '#101010',
-          '--input-placeholder': applied['--input-placeholder'] ? `hsl(${applied['--input-placeholder']})` : '#737373',
-        };
-        
-        Object.entries(legacyMappings).forEach(([key, value]) => {
-          document.documentElement.style.setProperty(key, value);
-        });
-        
-        // Update next-themes if available
-        if (typeof window !== 'undefined' && window.document) {
-          // Set the theme classes on the document element (both raw and theme- prefixed for compatibility)
-          const rawClass = preset;
-          const aliasClass = preset === 'wazeer' ? 'wazeer' : '';
-          document.documentElement.className = document.documentElement.className
-            .replace(/(?:^|\s)(light|dark|wazeer|wazeer|sunset|abstract|nika|lagoon|dark-nature|full-gradient|sea-purple)(?=\s|$)/g, '')
-            .replace(/theme-\w+/g, '')
-            .replace(/\s+/g, ' ')
-            .trim() + ` ${rawClass} ${aliasClass} theme-${preset}`;
-        }
-        
         set({ preset, applied });
       },
 
@@ -530,24 +492,6 @@ export const useThemeStore = create<ThemeState>()(
         
         // Update applied tokens
         const applied = { ...THEME_PRESETS[preset], ...newCustom };
-        
-        // Also update legacy CSS variables if this affects them
-        const legacyMappings: Record<string, string> = {};
-        if (key === '--primary') {
-          legacyMappings['--color-primary'] = `hsl(${value})`;
-        } else if (key === '--background') {
-          legacyMappings['--bg'] = `hsl(${value})`;
-        } else if (key === '--card') {
-          legacyMappings['--surface'] = `hsl(${value})`;
-        } else if (key === '--foreground') {
-          legacyMappings['--fg'] = `hsl(${value})`;
-        } else if (key === '--border') {
-          legacyMappings['--border'] = `hsl(${value})`;
-        }
-        
-        Object.entries(legacyMappings).forEach(([legacyKey, legacyValue]) => {
-          document.documentElement.style.setProperty(legacyKey, legacyValue);
-        });
         
         set({ custom: newCustom, applied });
       },
@@ -568,22 +512,6 @@ export const useThemeStore = create<ThemeState>()(
           document.documentElement.style.setProperty(key, value);
         });
         
-        // Also update legacy CSS variables
-        const legacyMappings = {
-          '--color-primary': applied['--primary'] ? `hsl(${applied['--primary']})` : '#27c862',
-          '--bg': applied['--background'] ? `hsl(${applied['--background']})` : '#efefef',
-          '--surface': applied['--card'] ? `hsl(${applied['--card']})` : '#efefef',
-          '--fg': applied['--foreground'] ? `hsl(${applied['--foreground']})` : '#101010',
-          '--border': applied['--border'] ? `hsl(${applied['--border']})` : '#e6e6e6',
-          '--input-bg': applied['--input-background'] ? `hsl(${applied['--input-background']})` : '#ffffff',
-          '--input-fg': applied['--input-foreground'] ? `hsl(${applied['--input-foreground']})` : '#101010',
-          '--input-placeholder': applied['--input-placeholder'] ? `hsl(${applied['--input-placeholder']})` : '#737373',
-        };
-        
-        Object.entries(legacyMappings).forEach(([key, value]) => {
-          document.documentElement.style.setProperty(key, value);
-        });
-        
         set({ custom: newCustom, applied });
       },
 
@@ -596,22 +524,6 @@ export const useThemeStore = create<ThemeState>()(
           document.documentElement.style.setProperty(key, value);
         });
         
-        // Also update legacy CSS variables
-        const legacyMappings = {
-          '--color-primary': applied['--primary'] ? `hsl(${applied['--primary']})` : '#27c862',
-          '--bg': applied['--background'] ? `hsl(${applied['--background']})` : '#efefef',
-          '--surface': applied['--card'] ? `hsl(${applied['--card']})` : '#efefef',
-          '--fg': applied['--foreground'] ? `hsl(${applied['--foreground']})` : '#101010',
-          '--border': applied['--border'] ? `hsl(${applied['--border']})` : '#e6e6e6',
-          '--input-bg': applied['--input-background'] ? `hsl(${applied['--input-background']})` : '#ffffff',
-          '--input-fg': applied['--input-foreground'] ? `hsl(${applied['--input-foreground']})` : '#101010',
-          '--input-placeholder': applied['--input-placeholder'] ? `hsl(${applied['--input-placeholder']})` : '#737373',
-        };
-        
-        Object.entries(legacyMappings).forEach(([key, value]) => {
-          document.documentElement.style.setProperty(key, value);
-        });
-        
         set({ custom: {}, applied });
       },
 
@@ -621,22 +533,6 @@ export const useThemeStore = create<ThemeState>()(
         // Apply the imported theme
         const applied = { ...THEME_PRESETS[preset], ...custom };
         Object.entries(applied).forEach(([key, value]) => {
-          document.documentElement.style.setProperty(key, value);
-        });
-        
-        // Also update legacy CSS variables
-        const legacyMappings = {
-          '--color-primary': applied['--primary'] ? `hsl(${applied['--primary']})` : '#27c862',
-          '--bg': applied['--background'] ? `hsl(${applied['--background']})` : '#efefef',
-          '--surface': applied['--card'] ? `hsl(${applied['--card']})` : '#efefef',
-          '--fg': applied['--foreground'] ? `hsl(${applied['--foreground']})` : '#101010',
-          '--border': applied['--border'] ? `hsl(${applied['--border']})` : '#e6e6e6',
-          '--input-bg': applied['--input-background'] ? `hsl(${applied['--input-background']})` : '#ffffff',
-          '--input-fg': applied['--input-foreground'] ? `hsl(${applied['--input-foreground']})` : '#101010',
-          '--input-placeholder': applied['--input-placeholder'] ? `hsl(${applied['--input-placeholder']})` : '#737373',
-        };
-        
-        Object.entries(legacyMappings).forEach(([key, value]) => {
           document.documentElement.style.setProperty(key, value);
         });
         
@@ -685,22 +581,6 @@ export const useThemeStore = create<ThemeState>()(
           document.documentElement.style.setProperty(key, value);
         });
         
-        // Also update legacy CSS variables
-        const legacyMappings = {
-          '--color-primary': applied['--primary'] ? `hsl(${applied['--primary']})` : '#27c862',
-          '--bg': applied['--background'] ? `hsl(${applied['--background']})` : '#efefef',
-          '--surface': applied['--card'] ? `hsl(${applied['--card']})` : '#efefef',
-          '--fg': applied['--foreground'] ? `hsl(${applied['--foreground']})` : '#101010',
-          '--border': applied['--border'] ? `hsl(${applied['--border']})` : '#e6e6e6',
-          '--input-bg': applied['--input-background'] ? `hsl(${applied['--input-background']})` : '#ffffff',
-          '--input-fg': applied['--input-foreground'] ? `hsl(${applied['--input-foreground']})` : '#101010',
-          '--input-placeholder': applied['--input-placeholder'] ? `hsl(${applied['--input-placeholder']})` : '#737373',
-        };
-        
-        Object.entries(legacyMappings).forEach(([key, value]) => {
-          document.documentElement.style.setProperty(key, value);
-        });
-        
         set({ custom: randomCustom, applied });
       },
 
@@ -708,19 +588,9 @@ export const useThemeStore = create<ThemeState>()(
         // TODO: Implement Supabase persistence
         console.log('Saving theme settings...');
       },
-
-      setOrgDefault: async (preset, custom) => {
-        // TODO: Implement organization default setting
-        console.log('Setting org default theme...');
-      },
-
-      lockOrgTheme: async (locked) => {
-        // TODO: Implement organization theme locking
-        console.log('Locking org theme:', locked);
-      },
     }),
     {
-      name: 'nbcon-theme-storage',
+      name: 'nbcon-engineer-theme-storage',
       partialize: (state) => ({
         mode: state.mode,
         preset: state.preset,

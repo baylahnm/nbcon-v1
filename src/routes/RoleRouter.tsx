@@ -28,6 +28,8 @@ import { ChatPage } from "@/pages/5-engineer/others/features/ai/ChatPage";
 import { PaymentsContent } from "@/pages/6-enterprise/others/features/finance/components/PaymentsContent";
 import RankingPage from "@/pages/5-engineer/13-RankingPage";
 import EngineerSettingsPage from "@/pages/5-engineer/11-SettingsPage";
+import ReportsPage from "@/pages/5-engineer/14-ReportsPage";
+import SubscriptionPage from "@/pages/5-engineer/16-SubscriptionPage";
 import { DashboardPage as EnterpriseDashboardPage } from "@/pages/6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "@/pages/6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -123,6 +125,8 @@ export default function RoleRouter() {
           <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
           <Route path="finance" element={<PaymentsContent />} />
           <Route path="finance/:paymentId" element={<PaymentsContent />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="subscription" element={<SubscriptionPage />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<EngineerSettingsPage />} />
         </Route>

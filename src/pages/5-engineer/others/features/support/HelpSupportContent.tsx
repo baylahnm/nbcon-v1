@@ -425,37 +425,23 @@ export function HelpSupportContent() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="help-center" className="space-y-6">
-          <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
-            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
-              <TabsTrigger 
-                value="help-center"
-                className="flex items-center gap-2 px-4 py-3 min-w-fit"
-              >
-                <HelpCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Help Center</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="faqs"
-                className="flex items-center gap-2 px-4 py-3 min-w-fit"
-              >
-                <Book className="w-4 h-4" />
-                <span className="hidden sm:inline">FAQs</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="contact"
-                className="flex items-center gap-2 px-4 py-3 min-w-fit"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Contact Support</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="resources"
-                className="flex items-center gap-2 px-4 py-3 min-w-fit"
-              >
-                <FileText className="w-4 h-4" />
-                <span className="hidden sm:inline">Resources</span>
-              </TabsTrigger>
-            </div>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="help-center" className="gap-2">
+              <HelpCircle className="w-4 h-4" />
+              Help Center
+            </TabsTrigger>
+            <TabsTrigger value="faqs" className="gap-2">
+              <Book className="w-4 h-4" />
+              FAQs
+            </TabsTrigger>
+            <TabsTrigger value="contact" className="gap-2">
+              <MessageCircle className="w-4 h-4" />
+              Contact Support
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="gap-2">
+              <FileText className="w-4 h-4" />
+              Resources
+            </TabsTrigger>
           </TabsList>
 
           {/* Help Center Tab */}

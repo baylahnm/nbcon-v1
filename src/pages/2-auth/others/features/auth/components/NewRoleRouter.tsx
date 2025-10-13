@@ -31,6 +31,8 @@ import LearningPage from "../../../../../5-engineer/7-LearningPage";
 import { ChatPage } from "../../../../../5-engineer/others/features/ai/ChatPage";
 import { PaymentsContent } from "../../../../../6-enterprise/others/features/finance/components/PaymentsContent";
 import RankingPage from "../../../../../5-engineer/13-RankingPage";
+import ReportsPage from "../../../../../5-engineer/14-ReportsPage";
+import SubscriptionPage from "../../../../../5-engineer/16-SubscriptionPage";
 import { DashboardPage as EnterpriseDashboardPage } from "../../../../../6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "../../../../../6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -166,6 +168,8 @@ export default function NewRoleRouter() {
             <Route path="payments" element={<PaymentsContent />} />
             <Route path="payments/:paymentId" element={<PaymentsContent />} />
             <Route path="finance" element={<PaymentsContent />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="subscription" element={<SubscriptionPage />} />
             <Route path="help" element={<HelpPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>

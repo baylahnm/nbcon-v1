@@ -19,9 +19,8 @@ import { PaymentsMilestone } from "./PaymentsMilestone";
 import { PaymentsEscrow } from "./PaymentsEscrow";
 import { PaymentsPayout } from "./PaymentsPayout";
 import { PaymentsRefund } from "./PaymentsRefund";
-import { PaymentsReports } from "./PaymentsReports";
 import { PaymentsSettings } from "./PaymentsSettings";
-import { PaymentsSubscription } from "./PaymentsSubscription";
+import QuotationPage from "./quotations/QuotationPage";
 
 export function PaymentsContent() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -43,6 +42,12 @@ export function PaymentsContent() {
       label: "Invoices",
       icon: FileText,
       description: "Invoice management"
+    },
+    {
+      value: "quotations",
+      label: "Quotations",
+      icon: FileText,
+      description: "Quotation management"
     },
     {
       value: "milestone",
@@ -67,18 +72,6 @@ export function PaymentsContent() {
       label: "Refund",
       icon: ArrowDownCircle,
       description: "Refund management"
-    },
-    {
-      value: "reports",
-      label: "Reports",
-      icon: BarChart3,
-      description: "Financial reports"
-    },
-    {
-      value: "subscription",
-      label: "Subscription",
-      icon: Crown,
-      description: "Manage subscription plan"
     },
     {
       value: "settings",
@@ -107,22 +100,20 @@ export function PaymentsContent() {
       <div className="p-0 mt-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Tab Navigation */}
-          <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full mb-6">
-            <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <TabsTrigger 
-                    key={tab.value}
-                    value={tab.value}
-                    className="flex items-center gap-2 px-4 py-3 min-w-fit"
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{tab.label}</span>
-                  </TabsTrigger>
-                );
-              })}
-            </div>
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-7">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger 
+                  key={tab.value}
+                  value={tab.value}
+                  className="gap-2"
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
 
           {/* Tab Content */}
@@ -132,6 +123,10 @@ export function PaymentsContent() {
 
           <TabsContent value="invoices" className="space-y-6">
             <PaymentsInvoices />
+          </TabsContent>
+
+          <TabsContent value="quotations" className="space-y-6">
+            <QuotationPage />
           </TabsContent>
 
           <TabsContent value="milestone" className="space-y-6">
@@ -150,13 +145,6 @@ export function PaymentsContent() {
             <PaymentsRefund />
           </TabsContent>
 
-          <TabsContent value="reports" className="space-y-6">
-            <PaymentsReports />
-          </TabsContent>
-
-          <TabsContent value="subscription" className="space-y-6">
-            <PaymentsSubscription />
-          </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
             <PaymentsSettings />
