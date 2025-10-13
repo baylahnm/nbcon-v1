@@ -65,9 +65,12 @@ export function AdminSidebar() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      navigate('/');
+      // Use hard redirect to fully clear React state and force fresh initialization
+      window.location.href = '/auth';
     } catch (error) {
       console.error('Sign out error:', error);
+      // Fallback to auth page even on error
+      window.location.href = '/auth';
     }
   };
 

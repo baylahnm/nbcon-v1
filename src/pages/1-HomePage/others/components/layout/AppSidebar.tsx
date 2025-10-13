@@ -1,6 +1,6 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'next-themes';
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../ui/sidebar';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
@@ -117,9 +117,12 @@ export function AppSidebar() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      navigate('/');
+      // Use hard redirect to fully clear React state and force fresh initialization
+      window.location.href = '/auth';
     } catch (error) {
       console.error('Sign out error:', error);
+      // Fallback to auth page even on error
+      window.location.href = '/auth';
     }
   };
   const getInitials = () => getUserInitials(profile);
@@ -142,7 +145,6 @@ export function AppSidebar() {
 
         {/* Main Navigation */}
         <SidebarGroup className="sidebar-main-group border-b border-sidebar-border">
-          <SidebarGroupLabel className="sidebar-main-menu-label">Main Menu</SidebarGroupLabel>
           <SidebarGroupContent className="sidebar-main-content">
             <SidebarMenu className="sidebar-main-menu">
               {menuItems.map(item => <SidebarMenuItem key={item.title}>

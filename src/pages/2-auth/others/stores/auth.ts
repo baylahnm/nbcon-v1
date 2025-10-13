@@ -328,7 +328,7 @@ export const initializeAuth = () => {
                 .eq('user_id', session.user.id)
                 .single(),
               new Promise<{ data: null; error: Error }>((_, reject) => 
-                setTimeout(() => reject(new Error('Profile query timeout')), 3000)
+                setTimeout(() => reject(new Error('Profile query timeout')), 5000)
               )
             ]);
             
@@ -405,7 +405,7 @@ export const initializeAuth = () => {
                 .eq('user_id', session.user.id)
                 .single(),
               new Promise<{ data: null; error: Error }>((_, reject) => 
-                setTimeout(() => reject(new Error('Profile query timeout')), 3000)
+                setTimeout(() => reject(new Error('Profile query timeout')), 5000)
               )
             ]);
             
@@ -439,9 +439,25 @@ export const initializeAuth = () => {
       } else if (event === 'SIGNED_OUT') {
         // User signed out - clear all storage and state
         console.log('[AUTH LISTENER] Processing SIGNED_OUT event, clearing all storage...');
-        setUser(null);
+        
+        // Reset ALL state including isInitialized to prevent race conditions
+        set({
+          user: null,
+          profile: null,
+          isAuthenticated: false,
+          isLoading: false,
+          isInitialized: false  // Reset initialization flag
+        });
+        
+        // Clear ALL storage keys comprehensively
         clearStoredUser();
-        console.log('[AUTH LISTENER] SIGNED_OUT complete');
+        safeLocalStorageSet(null);
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('nbcon_user');
+          localStorage.removeItem('nbcon-auth-storage');
+        }
+        
+        console.log('[AUTH LISTENER] SIGNED_OUT complete - all state and storage cleared');
       } else if (event === 'TOKEN_REFRESHED') {
         // Token refreshed - session still valid
         console.log('Session token refreshed');

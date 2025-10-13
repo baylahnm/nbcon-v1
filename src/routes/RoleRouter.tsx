@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, Suspense } from "react";
+import { useMemo, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
 import { ROLE_BASE, UserRole } from "@/pages/1-HomePage/others/lib/auth/role";
@@ -10,19 +10,15 @@ import AdminLayout from "@/pages/2-auth/others/layouts/AdminLayout";
 import EngineerDashboard from "@/pages/5-engineer/others/features/dashboard/routes/EngineerDashboard";
 import ClientDashboardPage from "@/pages/4-client/1-DashboardPage";
 import BrowseEngineers from "@/pages/4-client/3-BrowseEngineersPage";
-import CreateJob from "@/pages/4-client/others/features/jobs/CreateJob";
-import JobsList from "@/pages/5-engineer/others/features/jobs/JobsList";
+import PostJobPage from "@/pages/4-client/4-PostJobPage";
+import JobsPage from "@/pages/5-engineer/2-JobsPage";
 import CheckIn from "@/pages/5-engineer/12-CheckIn";
-import UploadDeliverable from "@/pages/5-engineer/others/features/deliverables/UploadDeliverableContent";
-import { MessagingPage } from "@/pages/5-engineer/4-MessagesPage";
+import { UploadDeliverableContent } from "@/pages/5-engineer/others/features/deliverables/UploadDeliverableContent";
+import { MessagesPage } from "@/pages/5-engineer/4-MessagesPage";
 import ClientMessagesPage from "@/pages/4-client/9-MessagesPage";
-import SettingsPage from "@/pages/5-engineer/11-SettingsPage";
-// import ProfilePage from "@/pages/5-engineer/others/features/profile/ProfilePage";
-import ProfilePage from "@/pages/5-engineer/15-ProfilePageTest";
+import ProfilePage from "@/pages/5-engineer/15-ProfilePage";
 import ClientSettingsPage from "@/pages/4-client/12-SettingsPage";
 import ClientProfilePage from "@/pages/4-client/2-ProfilePage";
-import VerificationPage from "@/pages/5-engineer/others/features/settings/VerificationPage";
-import ThemePage from "@/pages/5-engineer/others/features/settings/ThemePage";
 import HelpPage from "@/pages/5-engineer/10-HelpPage";
 import MyNetwork from "@/pages/5-engineer/6-NetworkPage";
 import CalendarPage from "@/pages/5-engineer/3-CalendarPage";
@@ -37,22 +33,16 @@ import { TeamProjectsPage } from "@/pages/6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
   import("@/pages/6-enterprise/5-AnalyticsPage").then((m) => ({ default: m.AnalyticsPage }))
 );
-import { EmployersPage } from "@/pages/6-enterprise/others/features/employers/EmployersPage";
 const ProcurementPage = React.lazy(() =>
   import("@/pages/6-enterprise/7-ProcurementPage").then((m) => ({ default: m.ProcurementPage }))
 );
-import { PerformancePage } from "@/pages/6-enterprise/others/features/performance/PerformancePage";
-import { VendorsPage } from "@/pages/6-enterprise/others/features/vendors/VendorsPage";
 const FinancePage = React.lazy(() =>
   import("@/pages/6-enterprise/6-FinancePage").then((m) => ({ default: m.FinancePage }))
 );
 import { HelpPage as EnterpriseHelpPage } from "@/pages/6-enterprise/11-HelpPage";
 import { SettingsPage as EnterpriseSettingsPage } from "@/pages/6-enterprise/12-SettingsPage";
-import { ProfilePage as EnterpriseProfilePage } from "@/pages/6-enterprise/others/features/profile/ProfilePage";
-import { MessagesPage as EnterpriseMessagesPage } from "@/pages/6-enterprise/others/features/messages/MessagesPage";
 import { AIAssistantPage } from "@/pages/6-enterprise/9-AIAssistantPage";
 import { CalendarPage as EnterpriseCalendarPage } from "@/pages/6-enterprise/3-CalendarPage";
-import PostProjectPage from "@/pages/6-enterprise/others/features/projects/PostProjectPage";
 import { RouteErrorBoundary } from "@/pages/1-HomePage/others/app/routing/RouteErrorBoundary";
 import RouteFallback from "@/pages/1-HomePage/others/app/routing/RouteFallback";
 import Forbidden from "@/pages/7-Forbidden";
@@ -107,33 +97,20 @@ export default function RoleRouter() {
         <LegacyRedirects />
         <Routes>
         <Route path="/" element={<Navigate to={`${ROLE_BASE[role]}/dashboard`} replace />} />
-        
-        {/* TEST: Profile route at root level */}
-        <Route path="/engineer/profile" element={
-          <div className="p-8 bg-purple-100 min-h-screen">
-            <h1 className="text-6xl font-bold text-purple-900">🎉 PROFILE ROOT ROUTE!</h1>
-            <p className="text-3xl text-purple-700 mt-4">This is at ROOT level in Routes</p>
-          </div>
-        } />
 
         <Route path="/engineer" element={<EngineerLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="profile" element={
-            <div className="p-8 bg-purple-100 min-h-screen">
-              <h1 className="text-4xl font-bold text-purple-900">🎉 PROFILE WORKS!</h1>
-              <p className="text-2xl text-purple-700 mt-4">This is inline in RoleRouter</p>
-            </div>
-          } />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="dashboard" element={<EngineerDashboard />} />
-          <Route path="jobs" element={<JobsList />} />
+          <Route path="jobs" element={<JobsPage />} />
           {/* Deep links - Job details routes removed */}
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="calendar/event/:eventId" element={<CalendarPage />} />
           <Route path="checkin" element={<CheckIn />} />
-          <Route path="messages" element={<MessagingPage />} />
-          <Route path="messages/:threadId" element={<MessagingPage />} />
+          <Route path="messages" element={<MessagesPage />} />
+          <Route path="messages/:threadId" element={<MessagesPage />} />
           <Route path="job">
-            <Route path="upload" element={<UploadDeliverable />} />
+            <Route path="upload" element={<UploadDeliverableContent />} />
             {/* Job details route removed */}
           </Route>
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
@@ -154,12 +131,12 @@ export default function RoleRouter() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ClientDashboardPage />} />
           <Route path="browse" element={<BrowseEngineers />} />
-          <Route path="myprojects" element={<JobsList />} />
+          <Route path="myprojects" element={<JobsPage />} />
           {/* Deep links */}
-          <Route path="myprojects/:projectId" element={<JobsList />} />
-          <Route path="myprojects/:projectId/tasks/:taskId" element={<JobsList />} />
+          <Route path="myprojects/:projectId" element={<JobsPage />} />
+          <Route path="myprojects/:projectId/tasks/:taskId" element={<JobsPage />} />
           <Route path="job">
-            <Route path="new" element={<CreateJob />} />
+            <Route path="new" element={<PostJobPage />} />
           </Route>
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="calendar/event/:eventId" element={<CalendarPage />} />
@@ -173,7 +150,7 @@ export default function RoleRouter() {
           <Route path="network" element={<MyNetwork />} />
           <Route path="network/:userId" element={<MyNetwork />} />
           <Route path="learning" element={<LearningPage />} />
-          <Route path="learning/:courseId" element={<LearningPage />} />
+          <Route path="learning/course/:courseId" element={<NewCoursePage />} />
           <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<ClientSettingsPage />} />
@@ -186,21 +163,21 @@ export default function RoleRouter() {
           <Route path="calendar/event/:eventId" element={<EnterpriseCalendarPage />} />
           <Route path="team-projects" element={<TeamProjectsPage />} />
           <Route path="team-projects/:projectId" element={<TeamProjectsPage />} />
-          <Route path="post-project" element={<PostProjectPage />} />
+          <Route path="post-project" element={<div className="p-8 text-center">Post Project Page - Coming Soon</div>} />
           <Route path="analytics" element={<AnalyticsPage />} />
-          <Route path="messages" element={<EnterpriseMessagesPage />} />
-          <Route path="messages/:threadId" element={<EnterpriseMessagesPage />} />
+          <Route path="messages" element={<div className="p-8 text-center">Messages Page - Coming Soon</div>} />
+          <Route path="messages/:threadId" element={<div className="p-8 text-center">Messages Page - Coming Soon</div>} />
           <Route path="ai" element={<AIAssistantPage />} />
           <Route path="ai/thread/:threadId" element={<AIAssistantPage />} />
-          <Route path="employers" element={<EmployersPage />} />
-          <Route path="employers/:employeeId" element={<EmployersPage />} />
+          <Route path="employers" element={<div className="p-8 text-center">Employers Page - Coming Soon</div>} />
+          <Route path="employers/:employeeId" element={<div className="p-8 text-center">Employers Page - Coming Soon</div>} />
           <Route path="procurement" element={<ProcurementPage />} />
           <Route path="procurement/:entityId" element={<ProcurementPage />} />
-          <Route path="performance" element={<PerformancePage />} />
-          <Route path="performance/:itemId" element={<PerformancePage />} />
-          <Route path="profile" element={<EnterpriseProfilePage />} />
-          <Route path="vendors" element={<VendorsPage />} />
-          <Route path="vendors/:vendorId" element={<VendorsPage />} />
+          <Route path="performance" element={<div className="p-8 text-center">Performance Page - Coming Soon</div>} />
+          <Route path="performance/:itemId" element={<div className="p-8 text-center">Performance Page - Coming Soon</div>} />
+          <Route path="profile" element={<div className="p-8 text-center">Enterprise Profile - Coming Soon</div>} />
+          <Route path="vendors" element={<div className="p-8 text-center">Vendors Page - Coming Soon</div>} />
+          <Route path="vendors/:vendorId" element={<div className="p-8 text-center">Vendors Page - Coming Soon</div>} />
           <Route path="finance" element={<FinancePage />} />
           <Route path="finance/:paymentId" element={<FinancePage />} />
           <Route path="help" element={<EnterpriseHelpPage />} />
@@ -214,7 +191,7 @@ export default function RoleRouter() {
           <Route path="projects" element={<div />} />
           <Route path="payments" element={<div />} />
           <Route path="risk" element={<div />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route path="settings" element={<EngineerSettingsPage />} />
         </Route>
 
         <Route path="/403" element={<Forbidden />} />

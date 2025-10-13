@@ -2008,6 +2008,15 @@ All colors MUST be HSL.
     overflow-x: auto;
     overscroll-behavior-x: contain; /* Prevent scroll chaining to parent */
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Better iOS support */
+  }
+
+  /* Fallback for browsers without overscroll-behavior support */
+  @supports not (overscroll-behavior-x: contain) {
+    .horizontal-scroll-container {
+      /* Old browsers - ensure scrolling still works */
+      overflow-x: auto;
+    }
   }
 
   /* Hide scrollbars but keep functionality */
