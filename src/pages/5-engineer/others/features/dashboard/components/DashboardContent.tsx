@@ -64,11 +64,11 @@ export function DashboardContent() {
       <div className="container mx-auto px-4 py-4 space-y-4">
         
         {/* Header */}
-        <div className="pb-0 border-b border-border/40">
+        <div className="pb-6 border-b border-border/40">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16 ring-2 ring-primary/20">
+                <Avatar className="h-12 w-12 ring-2 ring-primary/20">
                   <AvatarImage src={profile?.avatar_url || undefined} />
                   <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
                     {displayName.charAt(0)}

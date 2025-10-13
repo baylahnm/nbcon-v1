@@ -44,7 +44,7 @@ export const THEME_TOKENS: ThemeToken[] = [
   { key: '--foreground', value: '0 0% 6%', description: 'Main text color', category: 'core' },
   
   // Card/Popover
-  { key: '--card', value: '0 0% 94%', description: 'Card background', category: 'card' },
+  { key: '--card', value: '0 0% 96.1%', description: 'Card background', category: 'card' },
   { key: '--card-foreground', value: '0 0% 6%', description: 'Card text color', category: 'card' },
   { key: '--popover', value: '0 0% 100%', description: 'Popover background', category: 'card' },
   { key: '--popover-foreground', value: '0 0% 6%', description: 'Popover text color', category: 'card' },
@@ -97,7 +97,7 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   light: {
     '--background': '0 0% 100%',
     '--foreground': '0 0% 9%',
-    '--card': '0 0% 100%',
+    '--card': '0 0% 96.1%',
     '--card-foreground': '0 0% 9%',
     '--popover': '0 0% 100%',
     '--popover-foreground': '0 0% 9%',
@@ -206,7 +206,7 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
     '--input-placeholder': '20 25% 35%',
     '--ring': '160 30% 25%',
     '--sidebar-background': '30 15% 92%',
-    '--sidebar-foreground': '25 25% 35%',
+    '--sidebar-foreground': '20 25% 35%',
     '--sidebar-primary': '160 30% 25%',
     '--sidebar-primary-foreground': '0 0% 100%',
     '--sidebar-accent': '160 30% 25%',
@@ -252,7 +252,7 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   abstract: {
     '--background': '0 0% 100%',
     '--foreground': '0 0% 0%',
-    '--card': '0 0% 96%',
+    '--card': '0 0% 96.1%',
     '--card-foreground': '0 0% 0%',
     '--popover': '0 0% 100%',
     '--popover-foreground': '0 0% 0%',
@@ -287,7 +287,7 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   'nika': {
     '--background': '0 0% 100%',
     '--foreground': '0 0% 0%',
-    '--card': '0 0% 96%',
+    '--card': '0 0% 96.1%',
     '--card-foreground': '0 0% 0%',
     '--popover': '0 0% 100%',
     '--popover-foreground': '0 0% 0%',

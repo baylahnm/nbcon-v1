@@ -250,10 +250,10 @@ export const validateQuotation = (quotation: Partial<Quotation>): string[] => {
 
 // Default quotation theme
 export const getDefaultQuotationTheme = (): QuotationTheme => ({
-  headerColor: '#2d5346',
+  headerColor: '#705243',
   headerTextColor: '#ffffff',
   tableHeaderColor: '#eeebe8',
-  tableTextColor: '#2d5346',
+  tableTextColor: '#705243',
   signatureStampBgColor: '#f3f4f6'
 });
 

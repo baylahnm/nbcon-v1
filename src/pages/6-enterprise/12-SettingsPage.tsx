@@ -319,12 +319,12 @@ export function SettingsPage() {
   }) {
     // Convert HSL to RGB for display
     const hslToRgb = (hsl: string) => {
-      const match = hsl.match(/(\d+)\s+(\d+)%\s+(\d+)%/);
+      const match = hsl.match(/(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%/);
       if (!match) return '#000000';
       
-      const h = parseInt(match[1]) / 360;
-      const s = parseInt(match[2]) / 100;
-      const l = parseInt(match[3]) / 100;
+      const h = parseFloat(match[1]) / 360;
+      const s = parseFloat(match[2]) / 100;
+      const l = parseFloat(match[3]) / 100;
       
       const hue2rgb = (p: number, q: number, t: number) => {
         if (t < 0) t += 1;
@@ -403,9 +403,10 @@ export function SettingsPage() {
           {!isCssVar && (
             <input
               type="color"
-              value={displayValue.startsWith('rgb') ? 
-                `#${Math.round(parseInt(displayValue.match(/\d+/g)?.[0] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[1] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[2] || '0')).toString(16).padStart(2, '0')}` : 
-                displayValue
+              value={displayValue.startsWith('#') ? displayValue : 
+                displayValue.startsWith('rgb') ? 
+                  `#${Math.round(parseInt(displayValue.match(/\d+/g)?.[0] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[1] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[2] || '0')).toString(16).padStart(2, '0')}` : 
+                  '#f5f5f5'
               }
               onChange={(e) => {
                 const hex = e.target.value;
@@ -442,7 +443,11 @@ export function SettingsPage() {
             />
           )}
           <Input
-            value={displayValue}
+            value={displayValue.startsWith('#') ? displayValue : 
+              displayValue.startsWith('rgb') ? 
+                `#${Math.round(parseInt(displayValue.match(/\d+/g)?.[0] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[1] || '0')).toString(16).padStart(2, '0')}${Math.round(parseInt(displayValue.match(/\d+/g)?.[2] || '0')).toString(16).padStart(2, '0')}` : 
+                displayValue
+            }
             onChange={(e) => onChange(e.target.value)}
             className="font-mono text-xs flex-1"
             placeholder="Enter hex value (e.g., #3b82f6)"

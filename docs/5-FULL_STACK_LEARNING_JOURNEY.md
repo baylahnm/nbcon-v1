@@ -1,7 +1,7 @@
 # 🚀 Full-Stack Development Learning Journey
 
 **Created:** October 13, 2025  
-**Last Updated:** October 13, 2025  
+**Last Updated:** January 15, 2025  
 **Status:** Active Learning & Implementation  
 
 ---
@@ -261,6 +261,125 @@ const analyzeSkillsGap = (userSkills: Skill[], jobRequirements: Skill[]) => {
 - Learning time estimation improves user experience
 - Priority algorithms help users focus on most important skills
 
+### 4. **Engineer Portal - Multi-Role Application**
+
+**Project Overview:** Comprehensive engineer management platform with finance, reports, subscription management, and role-based access control.
+
+**Technical Challenges Solved:**
+
+#### **Dynamic Tab System with Role-Based Content**
+**Problem:** Creating flexible tab systems that adapt to different user roles and contexts
+**Solution:** Implemented dynamic tab configuration with role-based content rendering
+
+```typescript
+// Dynamic tab configuration system
+const createTabSystem = (tabs: TabConfig[], activeTab: string) => {
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <TabsList className="grid w-full grid-cols-4">
+        {tabs.map((tab) => (
+          <TabsTrigger key={tab.id} value={tab.id} className="gap-2">
+            <tab.icon className="w-4 h-4" />
+            {tab.label}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {tabs.map((tab) => (
+        <TabsContent key={tab.id} value={tab.id}>
+          {tab.component}
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+};
+```
+
+**Key Learnings:**
+- Dynamic tab systems provide flexible content organization
+- Icon integration improves visual hierarchy
+- Role-based content rendering ensures proper access control
+
+#### **Theme System with CSS Variables and Persistence**
+**Problem:** Implementing a comprehensive theme system with user preferences
+**Solution:** Created Zustand-based theme store with CSS variable manipulation
+
+```typescript
+// Advanced theme system with token editing
+const useThemeStore = create<ThemeState>()(
+  persist(
+    (set, get) => ({
+      currentTheme: 'light',
+      customTokens: {},
+      setTheme: (theme) => {
+        const themeConfig = THEME_TOKENS[theme];
+        Object.entries(themeConfig).forEach(([key, value]) => {
+          document.documentElement.style.setProperty(key, value);
+        });
+        set({ currentTheme: theme });
+      },
+      updateToken: (token, value) => {
+        const { customTokens } = get();
+        const newTokens = { ...customTokens, [token]: value };
+        document.documentElement.style.setProperty(token, value);
+        set({ customTokens: newTokens });
+      }
+    }),
+    { name: 'theme-storage' }
+  )
+);
+```
+
+**Key Learnings:**
+- CSS variables provide powerful theming capabilities
+- Zustand with persistence creates robust state management
+- Token-based theming allows for granular customization
+
+#### **Component Cloning and Reusability**
+**Problem:** Reusing complex components across different contexts without code duplication
+**Solution:** Implemented component cloning with context-aware modifications
+
+```typescript
+// Component cloning pattern
+const cloneComponentWithModifications = (sourceComponent, modifications) => {
+  return {
+    ...sourceComponent,
+    props: {
+      ...sourceComponent.props,
+      ...modifications
+    }
+  };
+};
+
+// Usage: Cloning QuotationPage from enterprise to engineer context
+import { QuotationPage } from "../../../6-enterprise/others/features/finance/components/quotations/QuotationPage";
+// Direct import and usage without modification needed
+```
+
+**Key Learnings:**
+- Component reusability reduces code duplication
+- Proper import paths ensure clean architecture
+- Context-aware modifications maintain functionality
+
+#### **Routing Architecture and Navigation**
+**Problem:** Managing complex routing with role-based access and nested routes
+**Solution:** Implemented hierarchical routing with role-based guards
+
+```typescript
+// Role-based routing with nested structure
+<Route path="/engineer" element={<EngineerLayout />}>
+  <Route path="dashboard" element={<EngineerDashboard />} />
+  <Route path="finance" element={<PaymentsContent />} />
+  <Route path="reports" element={<ReportsPage />} />
+  <Route path="subscription" element={<SubscriptionPage />} />
+  <Route path="settings" element={<SettingsPage />} />
+</Route>
+```
+
+**Key Learnings:**
+- Hierarchical routing provides clear navigation structure
+- Role-based guards ensure proper access control
+- Nested routes enable complex application organization
+
 ---
 
 ## 💡 Novel Solutions & Approaches
@@ -323,6 +442,72 @@ import { seedCourse, Course, Lesson } from './data/courseData';
 - Eliminates circular import errors
 - Centralized data management
 - Easier testing and maintenance
+
+### 4. **Consistent Spacing System with 16px Standard**
+
+**Innovation:** Unified spacing system across all components using 16px as the base unit
+
+**Implementation:**
+- **Card Gaps**: `gap-4` (16px) between cards
+- **Card Content Padding**: `p-4` (16px) inside all cards
+- **Card Header Padding**: `p-4 pb-3` (16px horizontal, 12px bottom)
+- **Icon Container Sizing**: `h-5 w-5` for header icons, `h-4 w-4` for list icons
+
+```css
+/* Consistent spacing system */
+.card-container { gap: 16px; } /* Tailwind: gap-4 */
+.card-content { padding: 16px; } /* Tailwind: p-4 */
+.card-header { padding: 16px 16px 12px 16px; } /* Tailwind: p-4 pb-3 */
+```
+
+**Benefits:**
+- Visual consistency across all pages
+- Better mobile experience with optimal spacing
+- Easier maintenance with standardized values
+- Professional, polished appearance
+
+### 5. **Modern Plan Card Design System**
+
+**Innovation:** Reusable plan card components with integrated charts and feature lists
+
+**Implementation:**
+```typescript
+// Modern plan card with chart integration
+const PlanCard = ({ plan, showChart, isPopular, isCurrent }) => (
+  <div className={`flex flex-col justify-between space-y-4 transition-all rounded-lg p-4 border bg-background ${
+    isCurrent ? 'ring-2 ring-primary bg-primary/5 border-primary' : 'border-border hover:bg-muted/30'
+  }`}>
+    <div className="space-y-4">
+      <div className="relative">
+        {isPopular && (
+          <Badge className="absolute -top-2 left-0 bg-primary text-primary-foreground text-xs">
+            <Star className="w-3 h-3 mr-1" />
+            Most Popular
+          </Badge>
+        )}
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold">{plan.name}</h2>
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+            <Icon className="w-5 h-5 text-white" />
+          </div>
+        </div>
+      </div>
+      
+      {showChart && (
+        <div className="bg-muted/30 h-fit w-full rounded-lg border p-2">
+          <PlanChart planName={plan.name} />
+        </div>
+      )}
+    </div>
+  </div>
+);
+```
+
+**Benefits:**
+- Consistent plan presentation across different contexts
+- Integrated charts provide visual appeal
+- Popular badges improve conversion rates
+- Responsive design works on all devices
 
 ---
 
@@ -405,6 +590,88 @@ const VirtualizedCourseList = ({ courses }: { courses: Course[] }) => {
 ```
 
 **Key Learning:** Virtual scrolling significantly improves performance with large datasets.
+
+### Challenge 4: **Router Configuration and Route Discovery**
+
+**Problem:** New routes were redirecting to dashboard instead of rendering the correct components
+**Root Cause:** Application was using a different router file than expected (`NewRoleRouter.tsx` vs `RoleRouter.tsx`)
+
+**Solution:**
+1. **Router Discovery Process:**
+   ```typescript
+   // Identified the correct router file
+   // src/pages/2-auth/others/features/auth/components/NewRoleRouter.tsx
+   
+   // Added new routes to the correct router
+   <Route path="/engineer" element={<EngineerLayout />}>
+     <Route path="reports" element={<ReportsPage />} />
+     <Route path="subscription" element={<SubscriptionPage />} />
+   </Route>
+   ```
+
+2. **Component Import Verification:**
+   ```typescript
+   // Ensured proper component imports
+   import ReportsPage from "../../../../../5-engineer/14-ReportsPage";
+   import SubscriptionPage from "../../../../../5-engineer/16-SubscriptionPage";
+   ```
+
+3. **Development Server Restart:**
+   - Restarted server to ensure new route configurations were loaded
+
+**Key Learning:** Always verify which router file is actually being used by the application.
+
+### Challenge 5: **Component Library Integration and File Conflicts**
+
+**Problem:** Adding shadcn/ui components caused file overwrite conflicts during installation
+**Root Cause:** Existing UI components had different versions or configurations
+
+**Solution:**
+1. **Selective Component Addition:**
+   ```bash
+   # Added specific components without overwriting existing ones
+   pnpm dlx shadcn@latest add chart table dashboard-01
+   ```
+
+2. **Conflict Resolution:**
+   - Responded "y" to overwrite prompts for updated components
+   - Handled file lock errors gracefully by proceeding with successful additions
+
+3. **Component Integration:**
+   ```typescript
+   // Integrated new components into existing pages
+   import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
+   import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../ui/table';
+   ```
+
+**Key Learning:** Component library updates require careful conflict resolution and testing.
+
+### Challenge 6: **Design Pattern Consistency Across Pages**
+
+**Problem:** Different pages had inconsistent spacing, typography, and visual hierarchy
+**Root Cause:** Lack of standardized design system implementation
+
+**Solution:**
+1. **Design Pattern Analysis:**
+   ```typescript
+   // Analyzed reference page (CheckInContent.tsx) for patterns
+   // Extracted: Bauhaus gradient borders, card header structure, icon sizing
+   ```
+
+2. **Systematic Pattern Application:**
+   ```typescript
+   // Applied consistent patterns across all pages
+   // - Header icons: h-5 w-5
+   // - Card padding: p-4
+   // - Card headers: p-4 pb-3 border-b border-border/40
+   // - Bauhaus borders: gradient background with rotation
+   ```
+
+3. **Visual Consistency Verification:**
+   - Tested all pages in browser to ensure uniform appearance
+   - Verified responsive behavior across different screen sizes
+
+**Key Learning:** Systematic design pattern application ensures visual consistency and professional appearance.
 
 ---
 
@@ -499,6 +766,93 @@ const VirtualizedCourseList = ({ courses }: { courses: Course[] }) => {
 </div>
 ```
 
+### 4. **Tab System Pattern**
+
+**Use Case:** Content organization, settings pages, multi-step forms
+**Key Features:**
+- Grid-based tab layout with icons
+- Responsive column adjustment
+- Consistent spacing and hover effects
+
+```tsx
+<Tabs value={activeTab} onValueChange={setActiveTab}>
+  <TabsList className="grid w-full grid-cols-4">
+    <TabsTrigger value="tab1" className="gap-2">
+      <Icon className="w-4 h-4" />
+      Tab Label
+    </TabsTrigger>
+  </TabsList>
+  <TabsContent value="tab1" className="space-y-6">
+    {/* Tab content */}
+  </TabsContent>
+</Tabs>
+```
+
+### 5. **Plan Card Pattern**
+
+**Use Case:** Subscription plans, pricing tiers, feature comparison
+**Key Features:**
+- Popular badge with star icon
+- Icon containers with primary colors
+- Integrated charts for visual appeal
+- Feature lists with check icons
+
+```tsx
+<div className="flex flex-col justify-between space-y-4 transition-all rounded-lg p-4 border bg-background">
+  <div className="space-y-4">
+    <div className="relative">
+      {isPopular && (
+        <Badge className="absolute -top-2 left-0 bg-primary text-primary-foreground text-xs">
+          <Star className="w-3 h-3 mr-1" />
+          Most Popular
+        </Badge>
+      )}
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-lg font-semibold">{plan.name}</h2>
+        <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+      </div>
+    </div>
+    
+    {showChart && (
+      <div className="bg-muted/30 h-fit w-full rounded-lg border p-2">
+        <PlanChart planName={plan.name} />
+      </div>
+    )}
+  </div>
+</div>
+```
+
+### 6. **Chart Integration Pattern**
+
+**Use Case:** Analytics dashboards, performance metrics, data visualization
+**Key Features:**
+- Compact chart containers with muted backgrounds
+- Consistent chart sizing and styling
+- Tooltip integration for data exploration
+
+```tsx
+<div className="bg-muted/30 h-fit w-full rounded-lg border p-2">
+  <Card className="border-0 shadow-none">
+    <CardHeader className="space-y-0 border-b p-2">
+      <CardTitle className="text-xs">Chart Title</CardTitle>
+      <p className="text-[10px] text-muted-foreground">Chart description</p>
+    </CardHeader>
+    <CardContent className="p-2">
+      <ChartContainer config={chartConfig} className="h-24">
+        <LineChart data={chartData}>
+          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <XAxis tickLine={false} axisLine={false} />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <Line dataKey="value" stroke="var(--color-primary)" />
+        </LineChart>
+      </ChartContainer>
+    </CardContent>
+  </Card>
+</div>
+```
+
 ---
 
 ## ⚡ Performance Optimizations
@@ -571,6 +925,38 @@ const CourseCard = React.memo(({ course, onEnroll, onView }) => {
 - Prevents unnecessary re-renders
 - Optimizes expensive calculations
 - Improves overall performance
+
+### 4. **Component Library Optimization**
+
+**Implementation:**
+```typescript
+// Selective component imports to reduce bundle size
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../ui/table';
+
+// Tree-shaking friendly imports
+import { BarChart, PieChart, ResponsiveContainer } from 'recharts';
+```
+
+**Benefits:**
+- Reduced bundle size through selective imports
+- Better tree-shaking with specific component imports
+- Improved loading performance
+
+### 5. **Consistent Spacing Optimization**
+
+**Implementation:**
+```css
+/* Standardized spacing system reduces layout calculations */
+.card-container { gap: 16px; } /* Consistent gap calculation */
+.card-content { padding: 16px; } /* Uniform padding reduces reflow */
+.card-header { padding: 16px 16px 12px 16px; } /* Optimized padding values */
+```
+
+**Benefits:**
+- Reduced layout calculations with consistent spacing
+- Better rendering performance with uniform values
+- Improved visual consistency across components
 
 ---
 
@@ -687,6 +1073,8 @@ const CourseCard = React.memo(({ course, onEnroll, onView }) => {
 2. **Performance Matters:** Small optimizations can have significant impact on user satisfaction
 3. **Documentation is Critical:** Well-documented code and solutions save time and prevent confusion
 4. **Testing is Essential:** Comprehensive testing prevents bugs and improves code quality
+5. **Consistency is Key:** Standardized spacing and design patterns create professional, polished interfaces
+6. **Component Reusability:** Well-designed components can be reused across different contexts with minimal modifications
 
 ### Lessons Learned
 
@@ -694,6 +1082,9 @@ const CourseCard = React.memo(({ course, onEnroll, onView }) => {
 2. **Plan for Scale:** Design systems and patterns that can grow with the application
 3. **Embrace Challenges:** Difficult problems often lead to the most innovative solutions
 4. **Continuous Learning:** Technology evolves rapidly; staying current is essential
+5. **Router Architecture:** Understanding the actual router being used is crucial for proper route configuration
+6. **Design System Implementation:** Systematic application of design patterns ensures visual consistency
+7. **Component Library Integration:** Careful handling of component library updates prevents conflicts and issues
 
 ### Success Metrics
 
@@ -708,6 +1099,6 @@ const CourseCard = React.memo(({ course, onEnroll, onView }) => {
 
 ---
 
-**Last Updated:** October 13, 2025  
+**Last Updated:** January 15, 2025  
 **Status:** Active Learning & Implementation  
-**Next Review:** November 13, 2025
+**Next Review:** February 15, 2025

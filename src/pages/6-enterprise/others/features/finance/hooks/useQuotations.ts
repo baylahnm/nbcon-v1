@@ -55,10 +55,10 @@ const mockQuotations: Quotation[] = [
     },
     notes: 'This quotation includes all engineering services as specified.',
     theme: {
-      headerColor: '#2d5346',
+      headerColor: '#705243',
       headerTextColor: '#ffffff',
       tableHeaderColor: '#eeebe8',
-      tableTextColor: '#2d5346',
+      tableTextColor: '#705243',
       signatureStampBgColor: '#f3f4f6'
     },
     totalAmount: 26450,
@@ -111,10 +111,10 @@ const mockQuotations: Quotation[] = [
     },
     notes: 'HVAC design services for residential complex.',
     theme: {
-      headerColor: '#2d5346',
+      headerColor: '#705243',
       headerTextColor: '#ffffff',
       tableHeaderColor: '#eeebe8',
-      tableTextColor: '#2d5346',
+      tableTextColor: '#705243',
       signatureStampBgColor: '#f3f4f6'
     },
     totalAmount: 11040,
