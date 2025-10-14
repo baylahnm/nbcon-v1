@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
-import { R } from '@/lib/routes';
-import { ProjectTemplate, MarketplaceTemplate } from '../../types/project';
+import { useToast } from '../../../1-HomePage/others/components/ui/use-toast';
+import { R } from '../../../1-HomePage/others/lib/routes';
+import { ProjectTemplate, MarketplaceTemplate } from '../../../6-enterprise/others/types/project';
 
 export interface PostProjectRouteParams {
   tab?: 'new' | 'template' | 'marketplace';

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useNamespace } from "@/pages/1-HomePage/others/lib/i18n/useNamespace";
-import { Shield, Lock, CheckCircle, ArrowRight, ArrowLeft, AlertCircle } from "lucide-react";
+import { Shield, Lock, CheckCircle, ArrowRight, ArrowLeft, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/pages/1-HomePage/others/components/ui/button";
 import { Input } from "@/pages/1-HomePage/others/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/pages/1-HomePage/others/components/ui/card";
@@ -38,11 +38,17 @@ export default function AdminSignup() {
   const { user, isAuthenticated, login } = useAuthStore();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Personal Info - Pre-fill from authenticated user
   const [fullName, setFullName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
+  
+  // Password fields
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Step 1: Verification
   const [invitationToken, setInvitationToken] = useState("");
@@ -129,6 +135,7 @@ export default function AdminSignup() {
       // Create profile only (user already authenticated)
       const result = await createProfileOnly({
         email: user.email,
+        password: '', // Not used for profile-only creation
         role: 'admin',
         firstName: firstName,
         lastName: lastName,
@@ -329,7 +336,7 @@ export default function AdminSignup() {
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <option value="">{t('admin.fields.departmentPlaceholder')}</option>
-          {t('admin.departments', { returnObjects: true }).map((dept: string) => (
+          {DEPARTMENTS.map((dept: string) => (
             <option key={dept} value={dept}>{dept}</option>
           ))}
         </select>

@@ -185,7 +185,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
       {/* Tool Menu */}
       {showToolMenu && (
         <ToolMenu
-          currentMode={mode}
+          currentMode={['chat', 'research', 'image', 'agent', 'connectors'].includes(mode) ? mode as "chat" | "research" | "image" | "agent" | "connectors" : 'chat'}
           onModeChange={switchMode}
           onClose={() => setShowToolMenu(false)}
         />

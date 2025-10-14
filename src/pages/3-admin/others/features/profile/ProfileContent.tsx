@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useAuthStore } from "../../../stores/auth";
-import { getUserDisplayName, getUserInitials } from "@/lib/userUtils";
+import { useAuthStore } from "../../../../2-auth/others/stores/auth";
+import { getUserDisplayName, getUserInitials } from "../../../../1-HomePage/others/lib/userUtils";
 import { 
   User,
   MapPin,

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { CurrencyOption } from '../../types/project';
+import { CurrencyOption } from '../../../6-enterprise/others/types/project';
 
 const CURRENCIES: CurrencyOption[] = [
   { code: 'USD', symbol: '$', name: 'US Dollar', rate: 1.0 },

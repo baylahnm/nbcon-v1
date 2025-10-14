@@ -74,11 +74,14 @@ export function CalendarEventCard({
   const eventColors = getEventTypeColor ? { className: getEventTypeColor(event.type) } : defaultEventTypeColor(event.type);
   const formattedAmount = formatCurrency ? formatCurrency(event.amount) : defaultFormatCurrency(event.amount);
 
+  // Type guard to check if eventColors has className property
+  const hasClassName = 'className' in eventColors;
+
   if (isCompact) {
     return (
       <div
-        className={`p-2 rounded cursor-pointer hover:shadow-sm ${eventColors.className || ''}`}
-        style={eventColors.className ? {} : {
+        className={`p-2 rounded cursor-pointer hover:shadow-sm ${hasClassName ? eventColors.className : ''}`}
+        style={hasClassName ? {} : {
           backgroundColor: eventColors.backgroundColor,
           color: eventColors.color,
           borderColor: eventColors.borderColor,
@@ -99,8 +102,8 @@ export function CalendarEventCard({
 
   return (
     <div
-      className={`p-3 rounded-lg cursor-pointer hover:shadow-sm border ${eventColors.className || ''}`}
-      style={eventColors.className ? {} : {
+      className={`p-3 rounded-lg cursor-pointer hover:shadow-sm border ${hasClassName ? eventColors.className : ''}`}
+      style={hasClassName ? {} : {
         backgroundColor: eventColors.backgroundColor,
         color: eventColors.color,
         borderColor: eventColors.borderColor

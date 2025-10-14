@@ -46,19 +46,19 @@ import {
   Send,
   Loader2
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
-import { Button } from '@/pages/1-HomePage/others/components/ui/button";
-import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
-import { Input } from '@/pages/1-HomePage/others/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/pages/1-HomePage/others/components/ui/accordion";
-import { Separator } from '@/pages/1-HomePage/others/components/ui/separator";
-import { Alert, AlertDescription } from '@/pages/1-HomePage/others/components/ui/alert";
-import { Avatar, AvatarFallback } from '@/pages/1-HomePage/others/components/ui/avatar";
-import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea";
-import { Label } from '@/pages/1-HomePage/others/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select";
-import { useToast } from '@/pages/1-HomePage/others/components/ui/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../1-HomePage/others/components/ui/card";
+import { Button } from "../../../../1-HomePage/others/components/ui/button";
+import { Badge } from "../../../../1-HomePage/others/components/ui/badge";
+import { Input } from "../../../../1-HomePage/others/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../1-HomePage/others/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../../1-HomePage/others/components/ui/accordion";
+import { Separator } from "../../../../1-HomePage/others/components/ui/separator";
+import { Alert, AlertDescription } from "../../../../1-HomePage/others/components/ui/alert";
+import { Avatar, AvatarFallback } from "../../../../1-HomePage/others/components/ui/avatar";
+import { Textarea } from "../../../../1-HomePage/others/components/ui/textarea";
+import { Label } from "../../../../1-HomePage/others/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../1-HomePage/others/components/ui/select";
+import { useToast } from "../../../../1-HomePage/others/components/ui/use-toast";
 
 interface HelpArticle {
   id: string;

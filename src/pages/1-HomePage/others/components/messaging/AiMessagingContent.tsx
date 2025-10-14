@@ -21,7 +21,8 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useAuthStore } from "../../stores/auth";
-// AI features not available in HomePage
+import { useAiStore } from "../../../../5-engineer/others/features/ai/store/useAiStore";
+import { aiClient } from "../../../../5-engineer/others/features/ai/api/aiClient";
 import { getUserDisplayName, getUserInitials } from "../../lib/userUtils";
 
 interface AiMessagingContentProps {

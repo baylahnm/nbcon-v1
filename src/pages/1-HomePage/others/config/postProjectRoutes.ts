@@ -1,4 +1,4 @@
-import { R } from '@/lib/routes';
+import { R } from '../lib/routes';
 
 export interface PostProjectRouteConfig {
   path: string;
@@ -200,12 +200,13 @@ export const getActionConfig = (path: string, action: string) => {
 };
 
 export const validateAction = (path: string, action: string, userPermissions: string[]): boolean => {
+  const routeConfig = getRouteConfig(path);
   const actionConfig = getActionConfig(path, action);
-  if (!actionConfig) return false;
+  if (!actionConfig || !routeConfig) return false;
   
   if (actionConfig.requiresAuth && !userPermissions.length) return false;
   
-  return actionConfig.permissions?.every(permission => 
+  return routeConfig.permissions?.every(permission => 
     userPermissions.includes(permission)
   ) ?? true;
 };

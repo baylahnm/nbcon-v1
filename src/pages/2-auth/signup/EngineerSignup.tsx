@@ -57,8 +57,17 @@ export default function EngineerSignup() {
   const [idVerification, setIdVerification] = useState<File[]>([]);
 
   // Step 4: Payment & Terms
-  const [paymentMethod, setPaymentMethod] = useState({
-    type: 'card' as const,
+  const [paymentMethod, setPaymentMethod] = useState<{
+    type: 'card' | 'bank' | 'applepay';
+    cardNumber?: string;
+    cardExpiry?: string;
+    cardCvv?: string;
+    cardName?: string;
+    bankName?: string;
+    accountNumber?: string;
+    iban?: string;
+  }>({
+    type: 'card',
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
 
@@ -139,6 +148,7 @@ export default function EngineerSignup() {
       // Create profile only (user already authenticated)
       const result = await createProfileOnly({
         email: user.email,
+        password: '', // Not used for profile-only creation
         role: 'engineer',
         firstName: firstName,
         lastName: lastName,

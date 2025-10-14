@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useNamespace } from "@/pages/1-HomePage/others/lib/i18n/useNamespace";
-import { Building2, Users, CreditCard, FileText, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
+import { Building2, Users, CreditCard, FileText, CheckCircle, ArrowRight, ArrowLeft, Lock, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/pages/1-HomePage/others/components/ui/button";
 import { Input } from "@/pages/1-HomePage/others/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/pages/1-HomePage/others/components/ui/card";
@@ -46,6 +46,12 @@ export default function EnterpriseSignup() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Password fields
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   // Step 1: Company Info
   const [companyLegalName, setCompanyLegalName] = useState("");
   const [companyDomain, setCompanyDomain] = useState("");
@@ -75,8 +81,17 @@ export default function EnterpriseSignup() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
 
   // Step 4: Payment & Terms
-  const [paymentMethod, setPaymentMethod] = useState({
-    type: 'card' as const,
+  const [paymentMethod, setPaymentMethod] = useState<{
+    type: 'card' | 'bank' | 'applepay';
+    cardNumber?: string;
+    cardExpiry?: string;
+    cardCvv?: string;
+    cardName?: string;
+    bankName?: string;
+    accountNumber?: string;
+    iban?: string;
+  }>({
+    type: 'card',
   });
   const [ssoSamlDomain, setSsoSamlDomain] = useState("");
   const [customRequirements, setCustomRequirements] = useState("");
@@ -157,6 +172,7 @@ export default function EnterpriseSignup() {
       // Create profile only (user already authenticated)
       const result = await createProfileOnly({
         email: user.email,
+        password: '', // Not used for profile-only creation
         role: 'enterprise',
         firstName: firstName,
         lastName: lastName,

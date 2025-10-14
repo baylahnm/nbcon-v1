@@ -3,11 +3,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useNamespace } from "@/pages/1-HomePage/others/lib/i18n/useNamespace";
 import { supabase } from "@/shared/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { AuthLayout } from "@/components/auth/AuthLayout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useToast } from "@/pages/1-HomePage/others/components/ui/use-toast";
+import { AuthLayout } from "@/pages/1-HomePage/others/components/auth/AuthLayout";
+import { Button } from "@/pages/1-HomePage/others/components/ui/button";
+import { Input } from "@/pages/1-HomePage/others/components/ui/input";
+import { Label } from "@/pages/1-HomePage/others/components/ui/label";
 import { Eye, EyeOff, Lock, CheckCircle } from "lucide-react";
 
 export default function ResetPassword() {

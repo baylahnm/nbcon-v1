@@ -181,7 +181,7 @@ export const useAiStore = create<AiState>()(
         translate: false,
         hint: DEFAULT_HINT,
       },
-      availableServiceModes: SERVICE_MODES,
+      availableServiceModes: [...SERVICE_MODES],
       serviceModes: SERVICE_MODE_CONFIG,
       settings: {
         rtl: false,
@@ -316,10 +316,8 @@ export const useAiStore = create<AiState>()(
       addMessage: (message) => {
         const messageWithId: Message = {
           ...message,
-          id:
-            message.id ??
-            `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          timestamp: message.timestamp ?? new Date().toISOString(),
+          id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          timestamp: new Date().toISOString(),
         };
 
         set((state) => {

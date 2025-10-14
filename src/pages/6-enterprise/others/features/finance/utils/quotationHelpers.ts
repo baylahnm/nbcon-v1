@@ -1,4 +1,4 @@
-import { Quotation, QuotationItem, QuotationStatus } from '../types/quotation';
+import { Quotation, QuotationItem, QuotationStatus, QuotationTheme, QuotationTerms } from '../types/quotation';
 
 // Generate quotation number
 export const generateQuotationNumber = (existingCount: number = 0): string => {

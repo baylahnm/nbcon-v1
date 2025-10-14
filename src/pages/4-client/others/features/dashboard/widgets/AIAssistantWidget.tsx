@@ -2,7 +2,7 @@ import React from 'react';
 import { Bot, MessageSquare } from 'lucide-react';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Widget } from '../types/widget';
-import { ChatComposer } from '@/features/ai/components/ChatComposer';
+import { ChatComposer } from '../../ai/components/ChatComposer';
 import BaseWidget from './BaseWidget';
 
 interface AIAssistantWidgetProps {

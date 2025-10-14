@@ -16,7 +16,8 @@ import {
   Search,
   Image as ImageIcon,
   Cog,
-  Link as LinkIcon
+  Link as LinkIcon,
+  FileText
 } from 'lucide-react';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
@@ -29,6 +30,7 @@ interface MessageBubbleProps {
   message: Message;
   isRTL?: boolean;
   showHijri?: boolean;
+  isCompact?: boolean;
   onCitationClick?: (citation: Citation) => void;
   onImageDownload?: (image: GeneratedImage) => void;
   onRegenerate?: (messageId: string) => void;
@@ -39,6 +41,7 @@ export function MessageBubble({
   message, 
   isRTL = false,
   showHijri = false,
+  isCompact = false,
   onCitationClick,
   onImageDownload,
   onRegenerate,

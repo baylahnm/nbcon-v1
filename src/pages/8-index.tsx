@@ -5,10 +5,22 @@ import HomePage from './1-HomePage/HomePage';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { user, profile, isLoading } = useAuthStore();
+  const { user, profile, isLoading, isInitialized } = useAuthStore();
 
   useEffect(() => {
-    if (!isLoading && user && profile) {
+    // Safety check: Don't redirect if sign-out is in progress
+    if (typeof window !== 'undefined') {
+      const isSigningOut = sessionStorage.getItem('manual-signout') === 'true';
+      if (isSigningOut) {
+        console.log('[INDEX] Skipping redirect - sign-out in progress');
+        return;
+      }
+    }
+
+    // Only redirect if auth is fully initialized and user is authenticated
+    if (!isLoading && isInitialized && user && profile) {
+      console.log('[INDEX] Redirecting authenticated user to:', profile.role, 'dashboard');
+      
       // Redirect authenticated users to their dashboard
       switch (profile.role) {
         case 'engineer':
@@ -20,11 +32,15 @@ const Index = () => {
         case 'enterprise':
           navigate('/enterprise/dashboard', { replace: true });
           break;
+        case 'admin':
+          navigate('/admin/dashboard', { replace: true });
+          break;
         default:
+          console.warn('[INDEX] Unknown role:', profile.role, '- redirecting to role selection');
           navigate('/auth/role', { replace: true });
       }
     }
-  }, [user, profile, isLoading, navigate]);
+  }, [user, profile, isLoading, isInitialized, navigate]);
 
   // Show home page for unauthenticated users
   return <HomePage />;

@@ -59,15 +59,9 @@ export function newTaskValidation(task: any): { isValid: boolean; errors: string
 // BEFORE: Traditional error handling in CreateJob
 export async function oldCreateJob(jobData: any) {
   try {
-    const { data, error } = await supabase
-      .from('jobs')
-      .insert(jobData)
-      .select()
-      .single();
-
-    if (error) throw error;
-    
-    return { success: true, data };
+    // Mock database operation (supabase not imported)
+    const mockData = { ...jobData, id: Date.now().toString() };
+    return { success: true, data: mockData };
   } catch (error) {
     return { success: false, error };
   }
@@ -75,17 +69,13 @@ export async function oldCreateJob(jobData: any) {
 
 // AFTER: Using Option for cleaner error handling
 export async function newCreateJob(jobData: any): Promise<Option<any>> {
-  return Option.fromPromise(
-    supabase
-      .from('jobs')
-      .insert(jobData)
-      .select()
-      .single()
-      .then(({ data, error }) => {
-        if (error) throw error;
-        return data;
-      })
-  );
+  try {
+    // Mock successful database operation
+    const mockData = { ...jobData, id: Date.now().toString() };
+    return Option.of(mockData);
+  } catch (error) {
+    return Option.empty();
+  }
 }
 
 // Usage example:
@@ -94,18 +84,13 @@ export async function handleJobCreation(jobData: any) {
   
   result.ifPresentOrElse(
     (data) => {
-      toast({
-        title: "Job Created Successfully!",
-        description: "Your job has been posted.",
-      });
-      navigate(`/client/myprojects`);
+      console.log("Job Created Successfully!", data);
+      // External dependencies: toast({ title: "Job Created Successfully!", description: "Your job has been posted." });
+      // External dependencies: navigate(`/client/myprojects`);
     },
     () => {
-      toast({
-        title: "Error",
-        description: "Failed to create job. Please try again.",
-        variant: "destructive"
-      });
+      console.error("Failed to create job. Please try again.");
+      // External dependencies: toast({ title: "Error", description: "Failed to create job. Please try again.", variant: "destructive" });
     }
   );
 }
@@ -208,18 +193,20 @@ export function oldGetTaskStatus(task: any): string {
 }
 
 // AFTER: Using Option for cleaner conditional logic
-export function newGetTaskStatus(task: any): string {
+export function newGetTaskStatus(task: any): 'completed' | 'pending' | 'overdue' | 'unknown' {
+  type ValidStatus = 'completed' | 'pending' | 'overdue' | 'unknown';
+  
   return Option.ofNullable(task)
     .map(t => {
-      if (t.completed) return 'completed';
+      if (t.completed) return 'completed' as ValidStatus;
       
       return Option.ofNullable(t.dueDate)
         .map(dueDate => {
           const due = new Date(dueDate);
           const now = new Date();
-          return due < now ? 'overdue' : 'pending';
+          return (due < now ? 'overdue' : 'pending') as ValidStatus;
         })
-        .orElse('pending');
+        .orElse('pending' as ValidStatus);
     })
-    .orElse('unknown');
+    .orElse('unknown' as ValidStatus);
 }

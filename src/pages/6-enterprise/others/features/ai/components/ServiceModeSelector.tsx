@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Loader2, Sparkles, AlertCircle } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
-import { Button } from '@/pages/1-HomePage/others/components/ui/button";
-import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
-import { Separator } from '@/pages/1-HomePage/others/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
+import { Button } from '../../../../../1-HomePage/others/components/ui/button';
+import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
+import { Separator } from '../../../../../1-HomePage/others/components/ui/separator';
 
 import { useAiStore } from "../store/useAiStore";
 import { aiClient, type ServicePlan } from "../api/aiClient";
-import type { ServiceMode } from "../services/config";
+import type { ServiceMode, ServiceModeConfig } from "../services/config";
 
 export function ServiceModeSelector() {
   const {
@@ -70,7 +70,7 @@ export function ServiceModeSelector() {
 
       <div className="space-y-3">
         {availableServiceModes.map((mode) => {
-          const config = serviceModes[mode];
+          const config = (serviceModes as Record<string, ServiceModeConfig>)[mode];
           const isActive = activeServiceMode === mode;
           return (
             <Card
@@ -82,7 +82,7 @@ export function ServiceModeSelector() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle className="text-base font-semibold">
-                    {config.title}
+                    {config?.title || mode}
                   </CardTitle>
                   <Badge
                     variant={isActive ? "default" : "outline"}
@@ -92,12 +92,12 @@ export function ServiceModeSelector() {
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {config.summary}
+                  {config?.summary || ''}
                 </p>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex flex-wrap gap-2">
-                  {config.tools.map((tool) => (
+                  {config?.tools?.map((tool) => (
                     <Badge key={tool.id} variant="secondary" className="text-xs">
                       {tool.label}
                     </Badge>
@@ -109,7 +109,7 @@ export function ServiceModeSelector() {
                     Workflow Stages
                   </p>
                   <div className="grid gap-1 text-sm text-muted-foreground">
-                    {config.workflow.map((stage, index) => (
+                    {config?.workflow?.map((stage, index) => (
                       <div key={stage.id} className="flex items-baseline gap-2">
                         <span className="text-xs font-semibold text-primary">{index + 1}.</span>
                         <span>{stage.title}</span>
@@ -186,3 +186,4 @@ export function ServiceModeSelector() {
     </div>
   );
 }
+

@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
-import { useAuthStore } from "../../../../stores/auth";
-import { useProfile } from "@/hooks/useProfile";
-import { getUserDisplayName, getUserInitials } from "@/lib/userUtils";
-import { ProfileImageUpload } from "@/components/profile/ProfileImageUpload";
-import { SkillDialog } from "@/components/profile/SkillDialog";
-import { ProjectDialog } from "@/components/profile/ProjectDialog";
-import { AchievementDialog } from "@/components/profile/AchievementDialog";
+import { useAuthStore } from "../../../../../2-auth/others/stores/auth";
+import { useProfile } from "../../../../../2-auth/others/hooks/useProfile";
+import { getUserDisplayName, getUserInitials } from "../../../../../1-HomePage/others/lib/userUtils";
+import { ProfileImageUpload } from "../../../../../1-HomePage/others/components/profile/ProfileImageUpload";
+import { SkillDialog } from "../../../../../1-HomePage/others/components/profile/SkillDialog";
+import { ProjectDialog } from "../../../../../1-HomePage/others/components/profile/ProjectDialog";
+import { AchievementDialog } from "../../../../../1-HomePage/others/components/profile/AchievementDialog";
 import { 
   Briefcase,
   MapPin,
@@ -62,23 +62,23 @@ import {
   BarChart3,
   PieChart
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
-import { Button } from '@/pages/1-HomePage/others/components/ui/button";
-import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar";
-import { Input } from '@/pages/1-HomePage/others/components/ui/input";
-import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea";
-import { Label } from '@/pages/1-HomePage/others/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select";
-import { Switch } from '@/pages/1-HomePage/others/components/ui/switch";
-import { Separator } from '@/pages/1-HomePage/others/components/ui/separator";
-import { Progress } from '@/pages/1-HomePage/others/components/ui/progress";
-import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/pages/1-HomePage/others/components/ui/tooltip";
-import { Alert, AlertDescription } from '@/pages/1-HomePage/others/components/ui/alert";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/pages/1-HomePage/others/components/ui/collapsible";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/pages/1-HomePage/others/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
+import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../../1-HomePage/others/components/ui/avatar";
+import { Input } from "../../../../../1-HomePage/others/components/ui/input";
+import { Textarea } from "../../../../../1-HomePage/others/components/ui/textarea";
+import { Label } from "../../../../../1-HomePage/others/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../../1-HomePage/others/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../../1-HomePage/others/components/ui/select";
+import { Switch } from "../../../../../1-HomePage/others/components/ui/switch";
+import { Separator } from "../../../../../1-HomePage/others/components/ui/separator";
+import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
+import { ScrollArea } from "../../../../../1-HomePage/others/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../../../1-HomePage/others/components/ui/tooltip";
+import { Alert, AlertDescription } from "../../../../../1-HomePage/others/components/ui/alert";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../../../../1-HomePage/others/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../../../../1-HomePage/others/components/ui/dialog";
 import { toast } from "sonner";
 
 export function FunctionalEngineerProfile() {

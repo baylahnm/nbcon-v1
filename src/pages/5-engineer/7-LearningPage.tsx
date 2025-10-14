@@ -35,6 +35,7 @@ import {
 interface Instructor {
   name: string;
   avatar: string;
+  title: string;
   rating: number;
   bio?: string;
   students?: number;
@@ -104,30 +105,32 @@ interface LearningPath {
   id: string;
   title: string;
   description: string;
-  longDescription?: string;
+  longDescription: string;
   totalCourses: number;
   completedCourses: number;
+  totalDuration: string;
   estimatedDuration: string;
+  estimatedCompletion: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   thumbnail: string;
   progress: number;
-  isEnrolled?: boolean;
-  isCompleted?: boolean;
-  category?: string;
-  skills?: string[];
-  prerequisites?: string[];
-  outcomes?: string[];
-  instructors?: Instructor[];
-  courses?: PathCourse[];
+  isEnrolled: boolean;
+  isCompleted: boolean;
+  category: string;
+  skills: string[];
+  prerequisites: string[];
+  outcomes: string[];
+  instructors: Instructor[];
+  courses: PathCourse[];
   certificate?: {
     id: string;
     title: string;
     description: string;
   };
-  price?: number;
+  price: number;
   originalPrice?: number;
-  isPopular?: boolean;
-  isNew?: boolean;
+  isPopular: boolean;
+  isNew: boolean;
 }
 
 interface PathCourse {
@@ -203,6 +206,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Ahmed Al-Rashid',
       avatar: '/api/placeholder/40/40',
+      title: 'Professor of Structural Engineering',
       rating: 4.8,
       bio: 'Dr. Ahmed Al-Rashid is a structural engineering professor with over 15 years of experience in the field. He has worked on major infrastructure projects worldwide and has published numerous research papers.',
       students: 15420,
@@ -317,6 +321,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Sarah Johnson',
       avatar: '/api/placeholder/40/40',
+      title: 'Project Management Expert',
       rating: 4.6
     },
     duration: '6 weeks',
@@ -338,6 +343,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Mohammed Al-Zahrani',
       avatar: '/api/placeholder/40/40',
+      title: 'Renewable Energy Specialist',
       rating: 4.9
     },
     duration: '10 weeks',
@@ -359,6 +365,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Lisa Chen',
       avatar: '/api/placeholder/40/40',
+      title: 'CAD Design Instructor',
       rating: 4.7
     },
     duration: '4 weeks',
@@ -379,6 +386,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Michael Rodriguez',
       avatar: '/api/placeholder/40/40',
+      title: 'BIM Specialist',
       rating: 4.5
     },
     duration: '12 weeks',
@@ -398,6 +406,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Jennifer Kim',
       avatar: '/api/placeholder/40/40',
+      title: 'Safety Consultant',
       rating: 4.8
     },
     duration: '3 weeks',
@@ -418,6 +427,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Fatima Al-Otaibi',
       avatar: '/api/placeholder/40/40',
+      title: 'Solar Energy Expert',
       rating: 4.9
     },
     duration: '8 weeks',
@@ -438,6 +448,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Omar Hassan',
       avatar: '/api/placeholder/40/40',
+      title: 'Electrical Engineer',
       rating: 4.7
     },
     duration: '10 weeks',
@@ -456,6 +467,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Sarah Al-Mansour',
       avatar: '/api/placeholder/40/40',
+      title: 'Risk Management Consultant',
       rating: 4.6
     },
     duration: '6 weeks',
@@ -476,6 +488,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Abdullah Al-Zahrani',
       avatar: '/api/placeholder/40/40',
+      title: 'Fire Safety Engineer',
       rating: 4.8
     },
     duration: '7 weeks',
@@ -494,6 +507,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'John Williams',
       avatar: '/api/placeholder/40/40',
+      title: 'OSHA Compliance Expert',
       rating: 4.7
     },
     duration: '4 weeks',
@@ -514,6 +528,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Maria Garcia',
       avatar: '/api/placeholder/40/40',
+      title: 'Wind Energy Specialist',
       rating: 4.9
     },
     duration: '9 weeks',
@@ -533,6 +548,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Khalid Al-Mutairi',
       avatar: '/api/placeholder/40/40',
+      title: 'Automation Engineer',
       rating: 4.6
     },
     duration: '8 weeks',
@@ -552,6 +568,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Nora Al-Salem',
       avatar: '/api/placeholder/40/40',
+      title: 'Plumbing Engineer',
       rating: 4.5
     },
     duration: '6 weeks',
@@ -570,6 +587,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Hassan Al-Rashidi',
       avatar: '/api/placeholder/40/40',
+      title: 'Energy Storage Expert',
       rating: 4.8
     },
     duration: '7 weeks',
@@ -589,6 +607,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Layla Al-Harbi',
       avatar: '/api/placeholder/40/40',
+      title: 'Electrical Safety Specialist',
       rating: 4.7
     },
     duration: '5 weeks',
@@ -608,6 +627,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Mohammed Al-Ghamdi',
       avatar: '/api/placeholder/40/40',
+      title: 'Contract Administrator',
       rating: 4.6
     },
     duration: '8 weeks',
@@ -626,6 +646,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Aisha Al-Dosari',
       avatar: '/api/placeholder/40/40',
+      title: 'Emergency Response Specialist',
       rating: 4.8
     },
     duration: '4 weeks',
@@ -645,6 +666,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Youssef Al-Khaldi',
       avatar: '/api/placeholder/40/40',
+      title: 'Smart Grid Specialist',
       rating: 4.9
     },
     duration: '10 weeks',
@@ -664,6 +686,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Reem Al-Qahtani',
       avatar: '/api/placeholder/40/40',
+      title: 'HVAC Specialist',
       rating: 4.7
     },
     duration: '9 weeks',
@@ -683,6 +706,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Ahmed Al-Subai',
       avatar: '/api/placeholder/40/40',
+      title: 'Cost Estimator',
       rating: 4.6
     },
     duration: '7 weeks',
@@ -702,6 +726,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Lina Al-Shammari',
       avatar: '/api/placeholder/40/40',
+      title: 'Lighting Design Engineer',
       rating: 4.5
     },
     duration: '6 weeks',
@@ -720,6 +745,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Tariq Al-Harbi',
       avatar: '/api/placeholder/40/40',
+      title: 'Incident Investigation Specialist',
       rating: 4.7
     },
     duration: '5 weeks',
@@ -738,6 +764,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Hanan Al-Mutlaq',
       avatar: '/api/placeholder/40/40',
+      title: 'Sustainable Design Expert',
       rating: 4.9
     },
     duration: '12 weeks',
@@ -759,6 +786,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Faisal Al-Dossary',
       avatar: '/api/placeholder/40/40',
+      title: 'Energy Modeling Specialist',
       rating: 4.6
     },
     duration: '8 weeks',
@@ -777,6 +805,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Sami Al-Anzi',
       avatar: '/api/placeholder/40/40',
+      title: 'Scheduling Specialist',
       rating: 4.8
     },
     duration: '9 weeks',
@@ -797,6 +826,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Nada Al-Hamad',
       avatar: '/api/placeholder/40/40',
+      title: 'Risk Assessment Expert',
       rating: 4.7
     },
     duration: '6 weeks',
@@ -815,6 +845,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Ibrahim Al-Shehri',
       avatar: '/api/placeholder/40/40',
+      title: 'Renewable Integration Specialist',
       rating: 4.8
     },
     duration: '11 weeks',
@@ -834,6 +865,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Huda Al-Qahtani',
       avatar: '/api/placeholder/40/40',
+      title: 'Safety Equipment Specialist',
       rating: 4.6
     },
     duration: '3 weeks',
@@ -854,6 +886,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Waleed Al-Shammari',
       avatar: '/api/placeholder/40/40',
+      title: 'Mechanical Code Expert',
       rating: 4.5
     },
     duration: '7 weeks',
@@ -872,6 +905,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Sarah Thompson',
       avatar: '/api/placeholder/40/40',
+      title: 'Agile Coach',
       rating: 4.7
     },
     duration: '6 weeks',
@@ -891,6 +925,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. David Miller',
       avatar: '/api/placeholder/40/40',
+      title: 'Technical Drawing Instructor',
       rating: 4.6
     },
     duration: '5 weeks',
@@ -909,6 +944,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Ahmed Khalil',
       avatar: '/api/placeholder/40/40',
+      title: 'Structural Analysis Expert',
       rating: 4.8
     },
     duration: '10 weeks',
@@ -929,6 +965,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Jennifer Brown',
       avatar: '/api/placeholder/40/40',
+      title: 'PM Software Trainer',
       rating: 4.7
     },
     duration: '8 weeks',
@@ -948,6 +985,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Architect Maria Garcia',
       avatar: '/api/placeholder/40/40',
+      title: 'Architect & BIM Specialist',
       rating: 4.9
     },
     duration: '12 weeks',
@@ -968,6 +1006,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Hassan Al-Mutairi',
       avatar: '/api/placeholder/40/40',
+      title: 'Concrete Design Specialist',
       rating: 4.7
     },
     duration: '9 weeks',
@@ -986,6 +1025,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Prof. Saleh Al-Qahtani',
       avatar: '/api/placeholder/40/40',
+      title: 'Professor of Geotechnical Engineering',
       rating: 4.8
     },
     duration: '8 weeks',
@@ -1006,6 +1046,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Dr. Nora Al-Shehri',
       avatar: '/api/placeholder/40/40',
+      title: 'Seismic Engineering Expert',
       rating: 4.9
     },
     duration: '10 weeks',
@@ -1025,6 +1066,7 @@ const mockCourses: Course[] = [
     instructor: {
       name: 'Eng. Khalid Al-Dosari',
       avatar: '/api/placeholder/40/40',
+      title: 'Steel Design Engineer',
       rating: 4.6
     },
     duration: '11 weeks',
@@ -1046,27 +1088,49 @@ const mockLearningPaths: LearningPath[] = [
     longDescription: 'This learning path is designed for engineers who want to advance to senior positions. It covers advanced technical skills, leadership, project management, and industry best practices.',
     totalCourses: 12,
     completedCourses: 8,
+    totalDuration: '6 months',
     estimatedDuration: '6 months',
+    estimatedCompletion: 'June 2025',
     difficulty: 'Advanced',
     thumbnail: '/api/placeholder/300/200',
     progress: 67,
     isEnrolled: true,
+    isCompleted: false,
     category: 'Career Development',
     skills: ['Leadership', 'Project Management', 'Advanced Technical Skills', 'Team Management'],
+    prerequisites: [],
+    outcomes: [],
+    instructors: [],
+    courses: [],
     price: 899,
     originalPrice: 1199,
-    isPopular: true
+    isPopular: true,
+    isNew: false
   },
   {
     id: '2',
     title: 'Project Management Certification',
     description: 'Prepare for PMP certification',
+    longDescription: 'Comprehensive preparation for the PMP certification exam.',
     totalCourses: 8,
     completedCourses: 3,
+    totalDuration: '4 months',
     estimatedDuration: '4 months',
+    estimatedCompletion: 'April 2025',
     difficulty: 'Intermediate',
     thumbnail: '/api/placeholder/300/200',
-    progress: 38
+    progress: 38,
+    isEnrolled: true,
+    isCompleted: false,
+    category: 'Project Management',
+    skills: [],
+    prerequisites: [],
+    outcomes: [],
+    instructors: [],
+    courses: [],
+    price: 599,
+    isPopular: false,
+    isNew: false
   }
 ];
 

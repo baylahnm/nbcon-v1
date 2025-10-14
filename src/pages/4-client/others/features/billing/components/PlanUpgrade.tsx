@@ -13,7 +13,7 @@ import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/pages/1-HomePage/others/components/ui/dialog';
-import { PLAN_PRICING, PLAN_DESCRIPTIONS, PLAN_FEATURES } from '@/features/billing/lib/plans';
+import { PLAN_PRICING, PLAN_DESCRIPTIONS, PLAN_FEATURES } from '../lib/plans';
 
 interface PlanUpgradeProps {
   currentPlan: string;

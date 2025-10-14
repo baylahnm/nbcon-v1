@@ -199,3 +199,9 @@ export async function retryOperation<T>(
   throw new Error('Operation failed after all retries');
 }
 
+/**
+ * Helper function to wait for a specified duration
+ */
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

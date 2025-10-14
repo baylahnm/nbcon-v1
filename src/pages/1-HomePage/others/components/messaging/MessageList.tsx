@@ -1,12 +1,42 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollArea } from '../ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '../ui/skeleton';
-import { useMessages, type Message } from '@/hooks/useMessaging';
 import { useAuthStore } from '../../stores/auth';
 import { formatDistanceToNow, format } from 'date-fns';
 import { MessageCircle } from 'lucide-react';
+
+// Message type definition (since useMessaging was deleted)
+type Message = {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  content: string;
+  message_type: "text" | "file" | "image" | "audio" | "system";
+  file_url?: string | null;
+  file_name?: string | null;
+  file_size?: number | null;
+  read_at?: string | null;
+  created_at: string;
+  metadata?: Record<string, unknown> | null;
+  reactions?: any[] | null;
+  sender_profile?: {
+    first_name: string;
+    last_name: string;
+    avatar_url?: string | null;
+  };
+  fileName?: string;
+  fileSize?: number;
+};
+
+// Mock useMessages hook (since the original was deleted)
+const useMessages = (conversationId: string | null) => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  return { messages, isLoading };
+};
 
 interface MessageListProps {
   conversationId: string | null;

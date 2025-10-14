@@ -14,21 +14,21 @@ import {
 import { useInlineDashboardEditStore } from '../../../stores/inlineDashboardEdit';
 import { DashboardEditMode } from './DashboardEditMode';
 import { EditableWrapper } from './EditableWrapper';
-import { Toolbar } from '@/components/toolbar/Toolbar';
+import { Toolbar } from "../../../../../1-HomePage/others/components/toolbar/Toolbar";
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
-import { Button } from '@/pages/1-HomePage/others/components/ui/button";
-import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar";
-import { Progress } from '@/pages/1-HomePage/others/components/ui/progress";
-import { Input } from '@/pages/1-HomePage/others/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from '@/pages/1-HomePage/others/components/ui/popover";
-import { ChatComposer } from "@/features/ai/components/ChatComposer";
-import { useAiStore } from "@/features/ai/store/useAiStore";
-import { MessageBubble } from "@/features/ai/components/MessageBubble";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
+import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../../1-HomePage/others/components/ui/avatar";
+import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
+import { Input } from "../../../../../1-HomePage/others/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../../../../../1-HomePage/others/components/ui/popover";
+import { ChatComposer } from "../../ai/components/ChatComposer";
+import { useAiStore } from "../../ai/store/useAiStore";
+import { MessageBubble } from "../../ai/components/MessageBubble";
 import { Link } from "react-router-dom";
-import { R } from "@/lib/routes";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs";
+import { R } from "../../../../../1-HomePage/others/lib/routes";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../../1-HomePage/others/components/ui/tabs";
 import { useAuthStore } from "../../../stores/auth";
 import { supabase } from "@/shared/supabase/client";
 import { useThemeStore } from "../../../stores/theme";
@@ -37,7 +37,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/pages/1-HomePage/others/components/ui/dropdown-menu";
+} from "../../../../../1-HomePage/others/components/ui/dropdown-menu";
 
 // AI Conversation Preview Component
 function AIConversationPreview() {

@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { useDashboardStore } from "@/features/dashboard/store/useDashboardStore";
-import { KpiStrip } from "@/features/dashboard/components/KpiStrip";
-import { Card } from "@/features/dashboard/components/Card";
-import { PortfolioGlance } from "@/features/dashboard/components/PortfolioGlance";
-import { FinanceSnapshot } from "@/features/dashboard/components/FinanceSnapshot";
-import { WorkforceUtilization } from "@/features/dashboard/components/WorkforceUtilization";
-import { ComplianceCard } from "@/features/dashboard/components/ComplianceCard";
-import { ActivityFeed } from "@/features/dashboard/components/ActivityFeed";
-import { QuickActions } from "@/features/dashboard/components/QuickActions";
+import { useDashboardStore } from "../store/useDashboardStore";
+import { KpiStrip } from "../components/KpiStrip";
+import { Card } from "../components/Card";
+import { PortfolioGlance } from "../components/PortfolioGlance";
+import { FinanceSnapshot } from "../components/FinanceSnapshot";
+import { WorkforceUtilization } from "../components/WorkforceUtilization";
+import { ComplianceCard } from "../components/ComplianceCard";
+import { ActivityFeed } from "../components/ActivityFeed";
+import { QuickActions } from "../components/QuickActions";
 
 export default function EnterpriseDashboard() {
   const { load, refresh, loading, error, kpis, widgets } = useDashboardStore();

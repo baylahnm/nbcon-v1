@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '@/pages/1-HomePage/others/components/ui/button';
-import { usePostProjectRouting } from '@/hooks/usePostProjectRouting';
+import { Button } from '../../../../1-HomePage/others/components/ui/button';
+import { usePostProjectRouting } from '../../../../2-auth/others/hooks/usePostProjectRouting';
 import { ProjectTemplate, MarketplaceTemplate } from '../../types/project';
 import { 
   Save, 
@@ -80,7 +80,7 @@ export const PostProjectButtonHandler: React.FC<ButtonHandlerProps> = ({
         if (template) handlePreviewTemplate(template);
         break;
       case 'purchase-template':
-        if (template && 'isFree' in template) handlePurchaseTemplate(template);
+        if (template && 'isFree' in template) handlePurchaseTemplate(template as MarketplaceTemplate);
         break;
       case 'create-from-current':
         handleCreateFromCurrent();
@@ -175,14 +175,17 @@ export const PreviewTemplateButton: React.FC<{
   </PostProjectButtonHandler>
 );
 
-export const PurchaseTemplateButton: React.FC<{ 
-  template: MarketplaceTemplate;
+export const PurchaseTemplateButton: React.FC<{
+  template: MarketplaceTemplate | ProjectTemplate;
   disabled?: boolean;
-}> = ({ template, disabled }) => (
-  <PostProjectButtonHandler type="purchase-template" template={template} disabled={disabled}>
-    {template.isFree ? 'Get Free' : 'Purchase'}
-  </PostProjectButtonHandler>
-);
+}> = ({ template, disabled }) => {
+  const isFree = 'isFree' in template ? template.isFree : false;
+  return (
+    <PostProjectButtonHandler type="purchase-template" template={template as MarketplaceTemplate} disabled={disabled}>
+      {isFree ? 'Get Free' : 'Purchase'}
+    </PostProjectButtonHandler>
+  );
+};
 
 export const ViewModeButton: React.FC<{ 
   mode: 'grid' | 'list';
@@ -191,7 +194,7 @@ export const ViewModeButton: React.FC<{
   <PostProjectButtonHandler 
     type="view-mode" 
     viewMode={mode}
-    variant={active ? 'default' : 'outline'}
+    className={active ? '' : 'border'}
   >
     {mode === 'grid' ? 'Grid' : 'List'}
   </PostProjectButtonHandler>
@@ -201,7 +204,7 @@ export const ClearFiltersButton: React.FC<{ show?: boolean }> = ({ show = true }
   if (!show) return null;
   
   return (
-    <PostProjectButtonHandler type="clear-filters" variant="ghost" size="sm">
+    <PostProjectButtonHandler type="clear-filters" className="h-8">
       <X className="h-4 w-4 mr-1" />
       Clear Filters
     </PostProjectButtonHandler>

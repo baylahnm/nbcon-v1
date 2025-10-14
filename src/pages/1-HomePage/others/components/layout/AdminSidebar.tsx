@@ -4,12 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { useAuthStore } from '../../stores/auth';
-import { getUserDisplayName, getUserInitials, getUserProfileImage } from '@/lib/userUtils';
+import { getUserDisplayName, getUserInitials, getUserProfileImage } from '../../lib/userUtils';
 import { 
   Home, Users, FolderOpen, MessageSquare, DollarSign, Shield, Settings, 
   LogOut, User, ChevronDown
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 interface AdminMenuItem {
   title: string;
@@ -107,7 +107,6 @@ export function AdminSidebar() {
                     <SidebarMenuButton 
                       asChild 
                       isActive={isPathActive(item.url)}
-                      variant="ghost"
                       className="shadow-none border-none"
                     >
                       <NavLink to={item.url}>

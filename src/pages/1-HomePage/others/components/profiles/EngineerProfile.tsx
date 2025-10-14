@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../../stores/auth";
-import { getUserDisplayName, getUserInitials } from "@/lib/userUtils";
+import { getUserDisplayName, getUserInitials } from "../../lib/userUtils";
 import { 
   Briefcase,
   MapPin,
@@ -17,6 +17,7 @@ import {
   Plus,
   Trash2,
   Eye,
+  EyeOff,
   Camera,
   FileText,
   Globe,
@@ -41,7 +42,6 @@ import {
   Bookmark,
   Zap,
   Timer,
-  Dollar,
   Percent,
   Image as ImageIcon,
   Video,
@@ -58,23 +58,23 @@ import {
   BarChart3,
   PieChart
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Switch } from "../ui/switch";
+import { Separator } from "../ui/separator";
+import { Progress } from "../ui/progress";
+import { ScrollArea } from "../ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Alert, AlertDescription } from "../ui/alert";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { toast } from "sonner";
 
 interface ProfileData {
@@ -153,32 +153,6 @@ interface PortfolioProject {
   skills: string[];
 }
 
-interface Skill {
-  name: string;
-  level: number;
-  category: "technical" | "software" | "management" | "communication";
-  verified: boolean;
-}
-
-interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  issuer: string;
-  type: "award" | "certification" | "recognition" | "milestone";
-}
-
-interface Review {
-  id: string;
-  clientName: string;
-  projectName: string;
-  rating: number;
-  comment: string;
-  date: string;
-}
-
-
 interface License {
   id: string;
   name: string;
@@ -214,9 +188,6 @@ interface PortfolioProject {
   status: "completed" | "ongoing" | "planning";
   images: string[];
   skills: string[];
-  technologies: string[];
-  role: string;
-  deliverables: string[];
 }
 
 interface Skill {
@@ -224,7 +195,6 @@ interface Skill {
   level: number;
   category: "technical" | "software" | "management" | "communication";
   verified: boolean;
-  yearsOfExperience: number;
 }
 
 interface Achievement {
@@ -781,7 +751,7 @@ export function EngineerProfile() {
                     <Label>Profile Visibility</Label>
                     <Select
                       value={profileData.settings.profileVisibility}
-                      onValueChange={(value) => setProfileData(prev => ({
+                      onValueChange={(value: "public" | "professional" | "private") => setProfileData(prev => ({
                         ...prev,
                         settings: { ...prev.settings, profileVisibility: value }
                       }))}

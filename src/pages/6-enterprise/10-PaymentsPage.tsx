@@ -1,6 +1,19 @@
 import React from 'react';
-import { MessagesContent } from '@/features/messaging/MessagesContent';
+import { Card, CardContent, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
 
-export function MessagesPage() {
-  return <MessagesContent />;
+export function PaymentsPage() {
+  return (
+    <div className="p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Payments</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Payments page - to be implemented</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
+
+export default PaymentsPage;

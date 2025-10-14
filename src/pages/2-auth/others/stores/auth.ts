@@ -335,10 +335,16 @@ export const initializeAuth = () => {
   }
 
   // Check if we're in the middle of a sign-out process
+  // Only skip if BOTH: isInitialized is false AND manual-signout flag is set
   const currentState = useAuthStore.getState();
   if (currentState.isInitialized === false && !currentState.user) {
-    console.log('[AUTH INIT] Skipping initialization - in sign-out process');
-    return () => {};
+    // Check if this is actually a sign-out or just first load
+    if (typeof window !== 'undefined' && sessionStorage.getItem('manual-signout') === 'true') {
+      console.log('[AUTH INIT] Skipping initialization - sign-out in progress');
+      return () => {};
+    }
+    // Otherwise, this is just first load with uninitialized state - proceed normally
+    console.log('[AUTH INIT] First load detected - proceeding with initialization');
   }
 
   setLoading(true);
@@ -512,7 +518,7 @@ export const initializeAuth = () => {
         console.log('[AUTH LISTENER] Processing SIGNED_OUT event, clearing all storage...');
         
         // Reset ALL state including isInitialized to prevent race conditions
-        set({
+        useAuthStore.setState({
           user: null,
           profile: null,
           isAuthenticated: false,

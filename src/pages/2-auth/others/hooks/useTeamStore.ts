@@ -16,7 +16,7 @@ import {
   TaskStatus,
   TaskPriority,
   ProjectStatus
-} from '../../types/enterprise';
+} from '../../../6-enterprise/others/types/EnterpriseTypes';
 
 interface CreateProjectInput {
   name: string;

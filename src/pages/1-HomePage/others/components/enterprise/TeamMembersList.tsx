@@ -23,7 +23,7 @@ import {
   XCircle
 } from 'lucide-react';
 import { useTeamStore } from '../../../../2-auth/others/hooks/useTeamStore';
-import { User, ProjectRole } from '../../types/enterprise';
+import { User, ProjectRole } from '../../../../6-enterprise/others/types/EnterpriseTypes';
 import { getRoleColor } from '../../utils/permissions';
 import { toast } from 'sonner';
 

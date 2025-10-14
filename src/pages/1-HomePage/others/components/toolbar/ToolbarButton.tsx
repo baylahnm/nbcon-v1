@@ -10,7 +10,7 @@ interface ToolbarButtonProps {
   isActive?: boolean;
   disabled?: boolean;
   variant?: 'default' | 'outline' | 'ghost';
-  size?: 'xs' | 'sm' | 'default' | 'lg';
+  size?: 'sm' | 'default' | 'lg' | 'icon';
 }
 
 export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
@@ -22,6 +22,15 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   variant = 'ghost',
   size = 'sm'
 }) => {
+  const getSizeClass = () => {
+    switch (size) {
+      case 'sm': return 'h-8 w-8';
+      case 'lg': return 'h-12 w-12';
+      case 'icon': return 'h-10 w-10';
+      default: return 'h-10 w-10';
+    }
+  };
+
   return (
     <TooltipProvider>
       <Tooltip>
@@ -32,7 +41,7 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
             onClick={onClick}
             disabled={disabled}
             className={`
-              ${size === 'xs' ? 'h-6 w-6' : 'h-10 w-10'} p-0 rounded-md transition-all duration-200
+              ${getSizeClass()} p-0 rounded-md transition-all duration-200
               ${isActive 
                 ? 'bg-primary/20 text-primary border-primary/30' 
                 : variant === 'default' 

@@ -22,13 +22,13 @@ import {
   Globe,
   Plus
 } from 'lucide-react';
-import CalendarContent from '../calendar/CalendarContent';
-import CalendarMini from '@/components/calendar/CalendarMini';
-import CalendarFilters from '@/components/calendar/CalendarFilters';
-import CreateEventDialog from '@/components/calendar/CreateEventDialog';
+import CalendarContent from '../1-HomePage/others/components/calendar/CalendarContent';
+import CalendarMini from '../1-HomePage/others/components/calendar/CalendarMini';
+import CalendarFilters from '../1-HomePage/others/components/calendar/CalendarFilters';
+import CreateEventDialog from '../1-HomePage/others/components/calendar/CreateEventDialog';
 import { useCalendarStore, CalendarView, UserRole } from "./others/stores/useCalendarStore";
 import type { CalendarEvent } from "./others/stores/useCalendarStore";
-import { useTeamStore } from '@/hooks/useTeamStore';
+import { useTeamStore } from '../2-auth/others/hooks/useTeamStore';
 import { useThemeStore } from "./others/stores/theme";
 import { useToast } from '@/pages/1-HomePage/others/components/ui/use-toast';
 

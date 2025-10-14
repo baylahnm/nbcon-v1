@@ -42,6 +42,12 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
     clearComposer,
     switchMode,
   } = useAiStore();
+  
+  // Type guard for mode display
+  const getCoreMode = (aiMode: typeof mode): 'chat' | 'research' | 'image' | 'agent' | 'connectors' => {
+    const coreModesset = new Set(['chat', 'research', 'image', 'agent', 'connectors']);
+    return coreModesset.has(aiMode) ? aiMode as any : 'chat';
+  };
 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
@@ -185,7 +191,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
       {/* Tool Menu */}
       {showToolMenu && (
         <ToolMenu
-          currentMode={mode}
+          currentMode={getCoreMode(mode)}
           onModeChange={switchMode}
           onClose={() => setShowToolMenu(false)}
         />
@@ -294,11 +300,17 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
 
             {/* Mode Badge */}
             <Badge variant="outline" className="text-xs">
-              {mode === 'chat' && (composer.lang === 'ar' ? 'محادثة' : 'Chat')}
-              {mode === 'research' && (composer.lang === 'ar' ? 'بحث عميق' : 'Research')}
-              {mode === 'image' && (composer.lang === 'ar' ? 'صورة' : 'Image')}
-              {mode === 'agent' && (composer.lang === 'ar' ? 'وكيل' : 'Agent')}
-              {mode === 'connectors' && (composer.lang === 'ar' ? 'موصلات' : 'Connectors')}
+              {['chat', 'research', 'image', 'agent', 'connectors'].includes(mode) ? (
+                <>
+                  {mode === 'chat' && (composer.lang === 'ar' ? 'محادثة' : 'Chat')}
+                  {mode === 'research' && (composer.lang === 'ar' ? 'بحث عميق' : 'Research')}
+                  {mode === 'image' && (composer.lang === 'ar' ? 'صورة' : 'Image')}
+                  {mode === 'agent' && (composer.lang === 'ar' ? 'وكيل' : 'Agent')}
+                  {mode === 'connectors' && (composer.lang === 'ar' ? 'موصلات' : 'Connectors')}
+                </>
+              ) : (
+                <span>{mode}</span>
+              )}
             </Badge>
           </div>
         </div>

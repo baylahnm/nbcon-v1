@@ -26,9 +26,9 @@ import { Progress } from '../../../../../1-HomePage/others/components/ui/progres
 import { Input } from '../../../../../1-HomePage/others/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../../../1-HomePage/others/components/ui/popover';
 // AI components - placeholder for now
-const ChatComposer = () => <div>Chat composer - to be implemented</div>;
+const ChatComposer = (props: any) => <div>Chat composer - to be implemented</div>;
 const useAiStore = () => ({ getActiveMessages: () => [], settings: {} });
-const MessageBubble = () => <div>Message bubble - to be implemented</div>;
+const MessageBubble = (props: any) => <div>Message bubble - to be implemented</div>;
 import { Link } from "react-router-dom";
 import { R } from '../../../../../1-HomePage/others/lib/routes';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../../1-HomePage/others/components/ui/tabs';
@@ -45,6 +45,9 @@ import {
 // AI Conversation Preview Component
 function AIConversationPreview() {
   const { getActiveMessages, settings } = useAiStore();
+  const themeStore = useThemeStore((s: any) => s);
+  const lang = themeStore.language || 'en';
+  const isRtl = lang === 'ar';
   const activeMessages = getActiveMessages();
   const lastMessages = activeMessages.slice(-3); // Show last 3 messages
 
@@ -55,7 +58,7 @@ function AIConversationPreview() {
           <MessageSquare className="w-4 h-4 text-muted-foreground" />
         </div>
         <p className="text-xs text-muted-foreground">
-          {settings.rtl ? 'ابدأ محادثة جديدة' : 'Start a new conversation'}
+          {isRtl ? 'ابدأ محادثة جديدة' : 'Start a new conversation'}
         </p>
       </div>
     );
@@ -660,7 +663,7 @@ export function DashboardContent() {
         </div>
         <div className="bg-background border rounded-lg p-4 space-y-3">
           <AIConversationPreview />
-          <ChatComposer isCompact />
+          <ChatComposer isCompact={true} />
         </div>
       </div>
               </CardContent>

@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/oth
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
-import { useAuthStore } from '../../../../stores/auth';
+import { useAuthStore } from '../../../../../2-auth/others/stores/auth';
 import { SubscriptionCard } from './SubscriptionCard';
 import { PlanUpgrade } from './PlanUpgrade';
 import { 
@@ -26,8 +26,8 @@ import {
   getPaymentMethods,
   Subscription,
   PaymentMethod
-} from '@/features/billing/services/stripe-service';
-import { getPriceIdForPlan, isPaidPlan } from '@/features/billing/services/stripe-service';
+} from '../services/stripe-service';
+import { getPriceIdForPlan, isPaidPlan } from '../services/stripe-service';
 
 export function BillingDashboard() {
   const { user } = useAuthStore();

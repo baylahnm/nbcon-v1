@@ -20,7 +20,7 @@ import {
   UserMinus
 } from 'lucide-react';
 import { useTeamStore } from '../../../../2-auth/others/hooks/useTeamStore';
-import { ProjectRole } from '../../types/enterprise';
+import { ProjectRole } from '../../../../6-enterprise/others/types/EnterpriseTypes';
 import { can, getRoleColor } from '../../utils/permissions';
 import { toast } from 'sonner';
 
@@ -43,7 +43,6 @@ export function EditProjectModal({ isOpen, onClose, projectId }: EditProjectModa
   const project = getProjectById(projectId);
   const [name, setName] = useState('');
   const [subtitle, setSubtitle] = useState('');
-  const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   // Initialize form with project data
@@ -51,7 +50,6 @@ export function EditProjectModal({ isOpen, onClose, projectId }: EditProjectModa
     if (project) {
       setName(project.name);
       setSubtitle(project.subtitle || '');
-      setDescription(project.description || '');
     }
   }, [project]);
   
@@ -73,7 +71,6 @@ export function EditProjectModal({ isOpen, onClose, projectId }: EditProjectModa
       updateProject(projectId, {
         name: name.trim(),
         subtitle: subtitle.trim() || undefined,
-        description: description.trim() || undefined,
         updatedAt: new Date().toISOString()
       });
       
@@ -147,18 +144,6 @@ export function EditProjectModal({ isOpen, onClose, projectId }: EditProjectModa
                     value={subtitle}
                     onChange={(e) => setSubtitle(e.target.value)}
                     placeholder="Brief project description"
-                    disabled={!canEdit}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Detailed project description"
-                    rows={4}
                     disabled={!canEdit}
                   />
                 </div>

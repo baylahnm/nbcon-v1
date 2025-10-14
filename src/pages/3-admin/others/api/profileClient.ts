@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/supabase/client';
-import { AuthenticatedUser } from '../../../stores/auth';
+import { AuthenticatedUser } from '../../../2-auth/others/stores/auth';
 
 export interface ProfileData {
   personalInfo: {

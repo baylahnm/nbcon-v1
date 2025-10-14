@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '@/pages/1-HomePage/others/components/ui/dropdown-menu';
 import { useInlineDashboardEditStore } from '../../../stores/inlineDashboardEdit';
-import { Toolbar } from '@/components/toolbar/Toolbar';
+import { Toolbar } from "../../../../../1-HomePage/others/components/toolbar/Toolbar";
 
 interface InlineDashboardToolbarProps {
   onSave?: () => void;

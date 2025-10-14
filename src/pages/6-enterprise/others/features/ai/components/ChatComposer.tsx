@@ -42,6 +42,12 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
     clearComposer,
     switchMode,
   } = useAiStore();
+  
+  // Type guard for mode display
+  const getCoreMode = (aiMode: typeof mode): 'chat' | 'research' | 'image' | 'agent' | 'connectors' => {
+    const coreModes = new Set(['chat', 'research', 'image', 'agent', 'connectors']);
+    return coreModes.has(aiMode) ? aiMode as 'chat' | 'research' | 'image' | 'agent' | 'connectors' : 'chat';
+  };
 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
@@ -185,7 +191,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
       {/* Tool Menu */}
       {showToolMenu && (
         <ToolMenu
-          currentMode={mode}
+          currentMode={getCoreMode(mode)}
           onModeChange={switchMode}
           onClose={() => setShowToolMenu(false)}
         />

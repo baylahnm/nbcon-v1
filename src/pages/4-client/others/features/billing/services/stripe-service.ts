@@ -1,4 +1,10 @@
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+// TODO: Install Stripe packages first: pnpm add @stripe/stripe-js stripe
+// import { loadStripe, Stripe } from '@stripe/stripe-js';
+type Stripe = any;
+const loadStripe = async (key: string): Promise<Stripe | null> => {
+  console.warn('[stripe-service] Stripe not installed yet - install @stripe/stripe-js package');
+  return null;
+};
 import { STRIPE_CONFIG, STRIPE_PRODUCTS, STRIPE_ERROR_MESSAGES } from './stripe-config';
 import { supabase } from '@/shared/supabase/client';
 
@@ -156,17 +162,19 @@ export async function createBillingPortalSession(userId: string, returnUrl: stri
 // Get customer's subscriptions
 export async function getCustomerSubscriptions(userId: string): Promise<Subscription[]> {
   try {
+    // TODO: Add stripe_customer_id column to profiles table first
     const { data: profile } = await supabase
       .from('profiles')
-      .select('stripe_customer_id')
+      .select('*')
       .eq('user_id', userId)
       .single();
 
-    if (!profile?.stripe_customer_id) {
+    const stripeCustomerId = (profile as any)?.stripe_customer_id;
+    if (!stripeCustomerId) {
       return [];
     }
 
-    const response = await fetch(`/api/stripe/subscriptions/${profile.stripe_customer_id}`, {
+    const response = await fetch(`/api/stripe/subscriptions/${stripeCustomerId}`, {
       method: 'GET',
     });
 
@@ -242,17 +250,19 @@ export async function updateSubscription(
 // Get payment methods
 export async function getPaymentMethods(userId: string): Promise<PaymentMethod[]> {
   try {
+    // TODO: Add stripe_customer_id column to profiles table first
     const { data: profile } = await supabase
       .from('profiles')
-      .select('stripe_customer_id')
+      .select('*')
       .eq('user_id', userId)
       .single();
 
-    if (!profile?.stripe_customer_id) {
+    const stripeCustomerId = (profile as any)?.stripe_customer_id;
+    if (!stripeCustomerId) {
       return [];
     }
 
-    const response = await fetch(`/api/stripe/payment-methods/${profile.stripe_customer_id}`, {
+    const response = await fetch(`/api/stripe/payment-methods/${stripeCustomerId}`, {
       method: 'GET',
     });
 

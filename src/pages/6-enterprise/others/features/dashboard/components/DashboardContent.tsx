@@ -12,19 +12,40 @@ import { Button } from "../../../../../1-HomePage/others/components/ui/button";
 import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../../1-HomePage/others/components/ui/avatar";
 import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
-import { useAuthStore } from "../../../stores/auth";
+import { useAuthStore } from "../../../../../2-auth/others/stores/auth";
 import { getUserDisplayName } from '../../../../../1-HomePage/others/lib/userUtils';
 import { Link } from "react-router-dom";
 import { R } from "../../../../../1-HomePage/others/lib/routes";
 
 // Enterprise-specific components
 import { EnterpriseOverviewStats } from './EnterpriseOverviewStats';
-import { TeamManagementWidget } from './TeamManagementWidget';
 import { ProjectOversightWidget } from './ProjectOversightWidget';
-import { FinancialOverviewWidget } from './FinancialOverviewWidget';
 import { EnterpriseQuickActions } from './EnterpriseQuickActions';
 import { RecentActivityFeed } from './RecentActivityFeed';
-import { AIAssistantWidget } from './AIAssistantWidget';
+import { AIAssistantWidget } from '../../dashboard/widgets/AIAssistantWidget';
+
+// Mock widgets until they're implemented
+const TeamManagementWidget = () => (
+  <Card>
+    <CardHeader className="p-4 pb-3 border-b border-border/40">
+      <CardTitle className="text-base font-bold">Team Management</CardTitle>
+    </CardHeader>
+    <CardContent className="p-4">
+      <p className="text-sm text-muted-foreground">Team management widget - to be implemented</p>
+    </CardContent>
+  </Card>
+);
+
+const FinancialOverviewWidget = () => (
+  <Card>
+    <CardHeader className="p-4 pb-3 border-b border-border/40">
+      <CardTitle className="text-base font-bold">Financial Overview</CardTitle>
+    </CardHeader>
+    <CardContent className="p-4">
+      <p className="text-sm text-muted-foreground">Financial overview widget - to be implemented</p>
+    </CardContent>
+  </Card>
+);
 
 export function DashboardContent() {
   const { profile } = useAuthStore();
@@ -120,10 +141,10 @@ export function DashboardContent() {
         />
 
         {/* Section 2: AI Assistant */}
-        <AIAssistantWidget userRole={profile?.role} />
+        <AIAssistantWidget />
 
         {/* Section 3: Enterprise Quick Actions */}
-        <EnterpriseQuickActions userRole={profile?.role} />
+        <EnterpriseQuickActions />
 
         {/* Section 4 & 5: Team Management and Project Oversight */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -132,12 +153,7 @@ export function DashboardContent() {
       </div>
 
         {/* Section 6: Financial Overview */}
-        <FinancialOverviewWidget 
-          monthlyRevenue="2,450,000 SAR"
-          quarterlyGrowth={18}
-          pendingPayments="450,000 SAR"
-          totalBudget="15,200,000 SAR"
-        />
+        <FinancialOverviewWidget />
 
         {/* Section 7: Recent Activity */}
         <RecentActivityFeed />

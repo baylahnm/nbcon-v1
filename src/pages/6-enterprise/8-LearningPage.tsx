@@ -11,7 +11,7 @@ import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/pages/1-HomePage/others/components/ui/table';
 import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area';
 import { Label } from '@/pages/1-HomePage/others/components/ui/label';
-import { R, RH } from '@/lib/routes';
+import { R, RH } from '../1-HomePage/others/lib/routes';
 import { 
   BarChart, 
   Bar, 
@@ -49,7 +49,7 @@ import {
   Trophy,
   Timer
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../1-HomePage/others/lib/utils';
 
 interface EmployeePerformance {
   id: string;

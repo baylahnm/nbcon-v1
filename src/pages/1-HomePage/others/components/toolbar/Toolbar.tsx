@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-// Draggable hook - placeholder for now
-const useDraggable = () => ({ isDragging: false, dragProps: {} });
+// Mock useDraggable - the actual hook is incompatible with this usage
+const useDraggable = (options?: any) => ({ 
+  position: { x: 50, y: 50 }, 
+  isDragging: false, 
+  dragRef: { current: null } as React.RefObject<HTMLDivElement>,
+  handleMouseDown: (e: React.MouseEvent) => {},
+  handleTouchStart: (e: React.TouchEvent) => {}
+});
 import { ToolbarButton } from './ToolbarButton';
 import {
   GripHorizontal,
@@ -102,7 +108,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               label="Close toolbar"
               onClick={handleClose}
               variant="default"
-              size="xs"
+              size="sm"
             />
           </div>
         </div>

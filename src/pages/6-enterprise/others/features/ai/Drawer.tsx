@@ -24,6 +24,7 @@ import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
 import { MessageBubble } from './components/MessageBubble';
 import { HijriBadge } from './components/HijriBadge';
+import { ServiceModeSelector } from './components/ServiceModeSelector';
 import { aiClient } from './api/aiClient';
 
 interface AiDrawerProps {
@@ -246,7 +247,6 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                       message={message}
                       isRTL={settings.rtl}
                       showHijri={settings.hijri}
-                      isCompact
                     />
                   ))}
                 </div>

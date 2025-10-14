@@ -204,7 +204,7 @@ const HomePage = () => {
         <PricingSection />
         <FAQSection />
         <ContactSection 
-          language={i18n.language}
+          language={i18n.language as 'ar' | 'en'}
           contactData={{
             title: t('homepage:contact.title'),
             subtitle: t('homepage:contact.subtitle'),

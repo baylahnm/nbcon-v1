@@ -98,18 +98,17 @@ export default function EnterpriseCreateEventDialog({
       return;
     }
 
-    const eventData: Omit<CalendarEvent, 'id'> = {
+    const eventData: any = {
       title: formData.title,
       description: formData.description,
       startTime: formData.startTime,
       endTime: formData.endTime,
       type: formData.type,
       location: formData.location,
-      participants: formData.participants,
-      // Add enterprise-specific fields
+      // Add enterprise-specific fields (participants removed as it's not in CalendarEvent type)
       department: formData.department,
       team: formData.team,
-      priority: formData.priority,
+      priority: (formData.priority.charAt(0).toUpperCase() + formData.priority.slice(1)) as 'High' | 'Medium' | 'Low',
       isRecurring: formData.isRecurring,
       recurrencePattern: formData.recurrencePattern,
       sendNotifications: formData.sendNotifications,

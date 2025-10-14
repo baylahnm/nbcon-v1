@@ -62,6 +62,7 @@ const ACCOUNT_TYPES = {
       'Performance Analytics',
       '24/7 Support'
     ],
+    popular: false,
     showChart: false
   },
   engineer: {
@@ -107,6 +108,7 @@ const ACCOUNT_TYPES = {
       'White-Label Solutions',
       'API Access'
     ],
+    popular: false,
     showChart: true
   }
 };

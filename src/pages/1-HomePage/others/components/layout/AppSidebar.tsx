@@ -156,7 +156,7 @@ export function AppSidebar() {
                   <SidebarMenuButton 
                     asChild 
                     isActive={isPathActive(item.url)}
-                    variant={item.isSpecial ? "outline" : "ghost"}
+                    variant={item.isSpecial ? "outline" : "default"}
                     className="shadow-none border-none"
                   >
                     <NavLink to={item.url}>

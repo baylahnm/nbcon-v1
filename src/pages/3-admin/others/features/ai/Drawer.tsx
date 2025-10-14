@@ -24,6 +24,7 @@ import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
 import { MessageBubble } from './components/MessageBubble';
 import { HijriBadge } from './components/HijriBadge';
+import { ServiceModeSelector } from './components/ServiceModeSelector';
 import { aiClient } from './api/aiClient';
 
 interface AiDrawerProps {

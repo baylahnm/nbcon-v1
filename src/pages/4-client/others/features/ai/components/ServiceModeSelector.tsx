@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Loader2, Sparkles, AlertCircle } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
-import { Button } from '@/pages/1-HomePage/others/components/ui/button";
-import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
-import { Separator } from '@/pages/1-HomePage/others/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
+import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Separator } from "../../../../../1-HomePage/others/components/ui/separator";
 
 import { useAiStore } from "../store/useAiStore";
 import { aiClient, type ServicePlan } from "../api/aiClient";

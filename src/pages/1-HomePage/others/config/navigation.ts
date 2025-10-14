@@ -1,4 +1,4 @@
-import type { UserRole } from "@/lib/auth/role";
+import type { UserRole } from "../lib/auth/role";
 
 export type NavItem = {
   labelKey: string;

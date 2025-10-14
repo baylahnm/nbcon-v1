@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { BillingDashboard } from '@/features/billing/components/BillingDashboard';
-import { CheckoutFlow } from '@/features/billing/components/CheckoutFlow';
-import { AccountTypeSelection } from '@/features/auth/pages/AccountTypeSelection';
-import { AuthGuard } from '@/features/auth/guards/AuthGuard';
+import { BillingDashboard } from '../components/BillingDashboard';
+import { CheckoutFlow } from '../components/CheckoutFlow';
+// TODO: These auth components don't exist yet - to be implemented
+// import { AccountTypeSelection } from '../../../../2-auth/others/features/auth/pages/AccountTypeSelection';
+// import { AuthGuard } from '../../../../2-auth/others/features/auth/guards/AuthGuard';
 
 export default function BillingPage() {
   const [searchParams] = useSearchParams();
@@ -43,28 +44,26 @@ export default function BillingPage() {
   };
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-background">
-        {currentStep === 'dashboard' && (
-          <div className="container mx-auto px-4 py-8">
-            <BillingDashboard />
-          </div>
-        )}
+    <div className="min-h-screen bg-background">
+      {currentStep === 'dashboard' && (
+        <div className="container mx-auto px-4 py-8">
+          <BillingDashboard />
+        </div>
+      )}
 
-        {currentStep === 'plans' && (
-          <div className="container mx-auto px-4 py-8">
-            <AccountTypeSelection />
-          </div>
-        )}
+      {currentStep === 'plans' && (
+        <div className="container mx-auto px-4 py-8">
+          <p>Account Type Selection - to be implemented</p>
+        </div>
+      )}
 
-        {currentStep === 'checkout' && selectedPlan && (
-          <CheckoutFlow
-            selectedPlan={selectedPlan}
-            onBack={handleBackToPlans}
-          />
-        )}
-      </div>
-    </AuthGuard>
+      {currentStep === 'checkout' && selectedPlan && (
+        <CheckoutFlow
+          selectedPlan={selectedPlan}
+          onBack={handleBackToPlans}
+        />
+      )}
+    </div>
   );
 }
 

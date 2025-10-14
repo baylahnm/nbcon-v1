@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Engineer } from "@/data/engineers";
+import { Engineer } from "../../data/engineers";
 
 interface PerformanceChartPopoverProps {
   engineer: Engineer;

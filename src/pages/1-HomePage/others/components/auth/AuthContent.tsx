@@ -238,7 +238,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
             email: authData.user.email || '',
             name: authData.user.user_metadata?.full_name || authData.user.email?.split('@')[0] || 'User',
             isVerified: authData.user.email_confirmed_at ? true : false,
-            language: language,
+            language: (language === 'ar' ? 'ar' : 'en') as 'ar' | 'en',
             avatar: authData.user.user_metadata?.avatar_url || 'user-default'
           };
 
@@ -256,9 +256,9 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
           isVerified: authData.user.email_confirmed_at ? true : false,
           location: `${profile.location_city || ''}, ${profile.location_region || ''}`.trim().replace(/^,\s*|,\s*$/g, '') || 'Riyadh, Saudi Arabia',
           phone: profile.phone || '',
-          language: profile.preferred_language || 'en',
+          language: (profile.preferred_language === 'ar' ? 'ar' : 'en') as 'ar' | 'en',
           avatar: profile.avatar_url || 'user-default',
-          company: profile.company || ''
+          company: '' // Company field not in profiles table schema
         };
 
         onAuthSuccess(authenticatedUser);

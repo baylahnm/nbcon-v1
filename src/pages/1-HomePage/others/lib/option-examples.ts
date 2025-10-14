@@ -68,11 +68,11 @@ export function getUserDisplayName(user: User | null | undefined): Option<string
   return Option.ofNullable(user)
     .flatMap(u => Option.ofNullable(u.profile))
     .map(profile => `${profile.firstName} ${profile.lastName}`)
-    .orElseGet(() => 
+    .or(
       Option.ofNullable(user)
-        .map(u => u.email)
-        .orElse('Unknown User')
-    );
+        .flatMap(u => Option.ofNullable(u.email))
+    )
+    .or(Option.of('Unknown User'));
 }
 
 // Example 6: Safe parsing operations

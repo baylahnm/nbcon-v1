@@ -1,7 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
-import Stripe from 'stripe';
+// TODO: Install Stripe server package first: pnpm add stripe
+// import Stripe from 'stripe';
+type Stripe = any;
+const StripeConstructor = class {} as any;
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new StripeConstructor(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
 });
 

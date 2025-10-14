@@ -1,4 +1,4 @@
-import { UserProfile } from '../../stores/auth';
+import { UserProfile } from '../../../2-auth/others/stores/auth';
 
 /**
  * Get the user's display name from profile data

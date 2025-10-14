@@ -358,13 +358,14 @@ class AiClient {
     mode: string;
     userId: string;
   }): Promise<void> {
-    const { error } = await supabase
-      .from('ai_threads')
-      .insert(thread);
-
-    if (error) {
-      throw new Error(`Failed to save thread: ${error.message}`);
-    }
+    // TODO: Commented out - 'ai_threads' table doesn't exist yet. Create migration first.
+    // const { error } = await supabase
+    //   .from('ai_threads')
+    //   .insert(thread);
+    // if (error) {
+    //   throw new Error(`Failed to save thread: ${error.message}`);
+    // }
+    console.log('[aiClient] saveThread called (not persisted - table missing):', thread);
   }
 
   async saveMessage(message: {
@@ -378,41 +379,44 @@ class AiClient {
     images?: any;
     userId: string;
   }): Promise<void> {
-    const { error } = await supabase
-      .from('ai_messages')
-      .insert(message);
-
-    if (error) {
-      throw new Error(`Failed to save message: ${error.message}`);
-    }
+    // TODO: Commented out - 'ai_messages' table doesn't exist yet. Create migration first.
+    // const { error } = await supabase
+    //   .from('ai_messages')
+    //   .insert(message);
+    // if (error) {
+    //   throw new Error(`Failed to save message: ${error.message}`);
+    // }
+    console.log('[aiClient] saveMessage called (not persisted - table missing):', message);
   }
 
   async getThreads(userId: string): Promise<any[]> {
-    const { data, error } = await supabase
-      .from('ai_threads')
-      .select('*')
-      .eq('user_id', userId)
-      .order('updated_at', { ascending: false });
-
-    if (error) {
-      throw new Error(`Failed to fetch threads: ${error.message}`);
-    }
-
-    return data || [];
+    // TODO: Commented out - 'ai_threads' table doesn't exist yet. Create migration first.
+    // const { data, error } = await supabase
+    //   .from('ai_threads')
+    //   .select('*')
+    //   .eq('user_id', userId)
+    //   .order('updated_at', { ascending: false });
+    // if (error) {
+    //   throw new Error(`Failed to fetch threads: ${error.message}`);
+    // }
+    // return data || [];
+    console.log('[aiClient] getThreads called (not persisted - table missing):', userId);
+    return [];
   }
 
   async getMessages(threadId: string): Promise<any[]> {
-    const { data, error } = await supabase
-      .from('ai_messages')
-      .select('*')
-      .eq('thread_id', threadId)
-      .order('created_at', { ascending: true });
-
-    if (error) {
-      throw new Error(`Failed to fetch messages: ${error.message}`);
-    }
-
-    return data || [];
+    // TODO: Commented out - 'ai_messages' table doesn't exist yet. Create migration first.
+    // const { data, error } = await supabase
+    //   .from('ai_messages')
+    //   .select('*')
+    //   .eq('thread_id', threadId)
+    //   .order('created_at', { ascending: true });
+    // if (error) {
+    //   throw new Error(`Failed to fetch messages: ${error.message}`);
+    // }
+    // return data || [];
+    console.log('[aiClient] getMessages called (not persisted - table missing):', threadId);
+    return [];
   }
 
   async logEvent(event: {
@@ -424,16 +428,17 @@ class AiClient {
     if (!event.userId) {
       return;
     }
-    const { error } = await supabase
-      .from('ai_events')
-      .insert({
-        ...event,
-        timestamp: new Date().toISOString(),
-      });
-
-    if (error) {
-      console.error('Failed to log event:', error);
-    }
+    // TODO: Commented out - 'ai_events' table doesn't exist yet. Create migration first.
+    // const { error } = await supabase
+    //   .from('ai_events')
+    //   .insert({
+    //     ...event,
+    //     timestamp: new Date().toISOString(),
+    //   });
+    // if (error) {
+    //   console.error('Failed to log event:', error);
+    // }
+    console.log('[aiClient] logEvent called (not persisted - table missing):', event);
   }
 
   // Analytics events

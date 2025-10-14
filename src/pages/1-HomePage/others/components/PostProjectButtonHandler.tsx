@@ -1,2 +1,2 @@
 // Re-export from new location
-export { PostProjectButtonHandler, SaveDraftButton, SubmitProjectButton, UseTemplateButton, PreviewTemplateButton, PurchaseTemplateButton, ViewModeButton, ClearFiltersButton } from "@/features/projects/PostProjectButtonHandler";
+export { PostProjectButtonHandler, SaveDraftButton, SubmitProjectButton, UseTemplateButton, PreviewTemplateButton, PurchaseTemplateButton, ViewModeButton, ClearFiltersButton } from "../../../6-enterprise/others/features/projects/PostProjectButtonHandler";

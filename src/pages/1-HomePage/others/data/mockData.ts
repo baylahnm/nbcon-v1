@@ -1,4 +1,4 @@
-import { ProjectTemplate, MarketplaceTemplate, ServerAlias, ProjectAlias } from '../types/project';
+import { ProjectTemplate, MarketplaceTemplate, ServerAlias, ProjectAlias } from '../types/ProjectTypes';
 
 export const MOCK_TEMPLATES: ProjectTemplate[] = [
   {

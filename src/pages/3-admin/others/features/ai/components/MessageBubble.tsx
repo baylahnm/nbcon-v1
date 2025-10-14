@@ -16,7 +16,8 @@ import {
   Search,
   Image as ImageIcon,
   Cog,
-  Link as LinkIcon
+  Link as LinkIcon,
+  FileText
 } from 'lucide-react';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
@@ -42,8 +43,9 @@ export function MessageBubble({
   onCitationClick,
   onImageDownload,
   onRegenerate,
-  onFeedback
-}: MessageBubbleProps) {
+  onFeedback,
+  isCompact
+}: MessageBubbleProps & { isCompact?: boolean }) {
   const [copied, setCopied] = useState(false);
   const [showConfidential, setShowConfidential] = useState(false);
 

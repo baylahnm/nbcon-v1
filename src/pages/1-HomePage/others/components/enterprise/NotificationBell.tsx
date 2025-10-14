@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { ScrollArea } from '../ui/scroll-area';
-import { useTeamStore } from '@/hooks/useTeamStore';
+import { useTeamStore } from '../../../../2-auth/others/hooks/useTeamStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 

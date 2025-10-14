@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import { Plus, Filter, Edit3, Trash2, MoreHorizontal, ChevronDown, ChevronUp } from "lucide-react";
 import { ProjectCard } from "./ProjectCard";
 import { KanbanFiltersDialog } from "./KanbanFilters";
@@ -7,9 +7,9 @@ import { NewTaskDialog } from "./NewTaskDialog";
 import { TaskDetailDialog } from "./TaskDetailDialog";
 import { AddColumnDialog } from "./AddColumnDialog";
 import { useKanbanStore, Task, KanbanColumn } from "./hooks/useKanbanStore";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { Input } from "../ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "../ui/dialog";
+import { useToast } from "../ui/use-toast";
 
 export function KanbanBoard() {
   const { 

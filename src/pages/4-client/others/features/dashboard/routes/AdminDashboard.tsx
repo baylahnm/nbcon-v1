@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useDashboardStore } from "@/features/dashboard/store/useDashboardStore";
-import { KpiStrip } from "@/features/dashboard/components/KpiStrip";
-import { Card } from "@/features/dashboard/components/Card";
-import { StatusPanel } from "@/features/dashboard/components/StatusPanel";
+import { useDashboardStore } from "../store/useDashboardStore";
+import { KpiStrip } from "../components/KpiStrip";
+import { Card } from "../components/Card";
+import { StatusPanel } from "../components/StatusPanel";
 
 export default function AdminDashboard() {
   const { load, refresh, loading, error, kpis, widgets } = useDashboardStore();

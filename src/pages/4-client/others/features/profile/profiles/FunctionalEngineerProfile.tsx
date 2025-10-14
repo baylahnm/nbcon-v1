@@ -1,11 +1,24 @@
 import { useState, useRef } from "react";
-import { useAuthStore } from "../../../stores/auth";
+import { useAuthStore } from "../../../../../2-auth/others/stores/auth";
 // Profile components - placeholder for now
-const useProfile = () => ({ profile: null, updateProfile: () => {} });
-const ProfileImageUpload = () => <div>Profile image upload - to be implemented</div>;
-const SkillDialog = () => <div>Skill dialog - to be implemented</div>;
-const ProjectDialog = () => <div>Project dialog - to be implemented</div>;
-const AchievementDialog = () => <div>Achievement dialog - to be implemented</div>;
+const useProfile = () => ({
+  profileData: null,
+  isLoading: false,
+  isSaving: false,
+  error: null,
+  updatePersonalInfo: (info: any) => {},
+  updateProfessionalInfo: (info: any) => {},
+  updateSettings: (settings: any) => {},
+  uploadProfileImage: async () => {},
+  addSpecialization: (spec: any) => {},
+  removeSpecialization: (id: string) => {},
+  addLanguage: (lang: any) => {},
+  removeLanguage: (id: string) => {}
+});
+const ProfileImageUpload = (props: any) => <div>Profile image upload - to be implemented</div>;
+const SkillDialog = (props: any) => <div>Skill dialog - to be implemented</div>;
+const ProjectDialog = (props: any) => <div>Project dialog - to be implemented</div>;
+const AchievementDialog = (props: any) => <div>Achievement dialog - to be implemented</div>;
 import { getUserDisplayName, getUserInitials } from "../../../../../1-HomePage/others/lib/userUtils";
 import { 
   Briefcase,

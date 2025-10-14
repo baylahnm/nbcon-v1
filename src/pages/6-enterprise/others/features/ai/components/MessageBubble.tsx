@@ -16,7 +16,8 @@ import {
   Search,
   Image as ImageIcon,
   Cog,
-  Link as LinkIcon
+  Link as LinkIcon,
+  FileText
 } from 'lucide-react';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';

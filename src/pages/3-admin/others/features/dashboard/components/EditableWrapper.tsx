@@ -10,7 +10,7 @@ import {
   Move
 } from 'lucide-react';
 import { useInlineDashboardEditStore } from '../../../stores/inlineDashboardEdit';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../../../1-HomePage/others/lib/utils';
 
 interface EditableWrapperProps {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useAuthStore } from "../../../stores/auth";
-import { getUserDisplayName } from "@/lib/userUtils";
+import { useAuthStore } from "../../../../2-auth/others/stores/auth";
+import { getUserDisplayName } from "../../../../1-HomePage/others/lib/userUtils";
 import { 
   User,
   Settings as SettingsIcon,
@@ -84,7 +84,7 @@ import {
   Check,
   AlertCircle,
   Clock,
-  Calendar as CalendarIcon,
+  CalendarIcon,
   Tag,
   Hash,
   AtSign,
@@ -119,9 +119,6 @@ import {
   Thermometer,
   Gauge,
   Timer,
-  Stopwatch,
-  Clock as ClockIcon,
-  Calendar as CalendarIcon2,
   Map,
   Navigation,
   Compass,
@@ -132,17 +129,11 @@ import {
   Store,
   School,
   Hospital,
-  Church,
-  Mosque,
-  Bank,
-  Hotel,
-  Restaurant,
   Coffee,
   ShoppingCart,
   ShoppingBag,
   CreditCard as CreditCardIcon,
   Wallet,
-  PiggyBank,
   Coins,
   Banknote,
   Receipt,
@@ -151,60 +142,29 @@ import {
   Plus as PlusIcon,
   Minus as MinusIcon,
   Divide,
-  X as XIcon,
-  Equal,
-  NotEqual,
-  LessThan,
-  GreaterThan,
-  LessThanOrEqual,
-  GreaterThanOrEqual,
-  Infinity,
-  Pi,
-  Sigma,
-  Alpha,
-  Beta,
-  Gamma,
-  Delta,
-  Epsilon,
-  Zeta,
-  Eta,
-  Theta,
-  Iota,
-  Kappa,
-  Lambda,
-  Mu,
-  Nu,
-  Xi,
-  Omicron,
-  Rho,
-  Tau,
-  Upsilon,
-  Phi,
-  Chi,
-  Psi,
-  Omega
+  X as XIcon
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
-import { Button } from '@/pages/1-HomePage/others/components/ui/button";
-import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar";
-import { Input } from '@/pages/1-HomePage/others/components/ui/input";
-import { Label } from '@/pages/1-HomePage/others/components/ui/label";
-import { Switch } from '@/pages/1-HomePage/others/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select";
-import { Separator } from '@/pages/1-HomePage/others/components/ui/separator";
-import { Progress } from '@/pages/1-HomePage/others/components/ui/progress";
-import { Alert, AlertDescription } from '@/pages/1-HomePage/others/components/ui/alert";
-import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea";
-import { Slider } from '@/pages/1-HomePage/others/components/ui/slider";
-import { RadioGroup, RadioGroupItem } from '@/pages/1-HomePage/others/components/ui/radio-group";
-import { Checkbox } from '@/pages/1-HomePage/others/components/ui/checkbox";
-import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/pages/1-HomePage/others/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from '@/pages/1-HomePage/others/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/pages/1-HomePage/others/components/ui/command";
-import { Calendar } from '@/pages/1-HomePage/others/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../1-HomePage/others/components/ui/card";
+import { Button } from "../../../../1-HomePage/others/components/ui/button";
+import { Badge } from "../../../../1-HomePage/others/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../1-HomePage/others/components/ui/avatar";
+import { Input } from "../../../../1-HomePage/others/components/ui/input";
+import { Label } from "../../../../1-HomePage/others/components/ui/label";
+import { Switch } from "../../../../1-HomePage/others/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../1-HomePage/others/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../1-HomePage/others/components/ui/select";
+import { Separator } from "../../../../1-HomePage/others/components/ui/separator";
+import { Progress } from "../../../../1-HomePage/others/components/ui/progress";
+import { Alert, AlertDescription } from "../../../../1-HomePage/others/components/ui/alert";
+import { Textarea } from "../../../../1-HomePage/others/components/ui/textarea";
+import { Slider } from "../../../../1-HomePage/others/components/ui/slider";
+import { RadioGroup, RadioGroupItem } from "../../../../1-HomePage/others/components/ui/radio-group";
+import { Checkbox } from "../../../../1-HomePage/others/components/ui/checkbox";
+import { ScrollArea } from "../../../../1-HomePage/others/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../../../1-HomePage/others/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../../../../1-HomePage/others/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../../../1-HomePage/others/components/ui/command";
+import { Calendar as CalendarComponent } from "../../../../1-HomePage/others/components/ui/calendar";
 import { format } from "date-fns";
 
 interface NotificationSetting {

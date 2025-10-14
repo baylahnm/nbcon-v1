@@ -91,13 +91,19 @@ export const useQuotationBuilder = (existingQuotations: Array<{ quotationNumber:
 
   // Update nested field
   const updateNestedField = useCallback((parent: keyof QuotationFormData, field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [parent]: {
-        ...prev[parent],
-        [field]: value
+    setFormData(prev => {
+      const parentData = prev[parent];
+      if (typeof parentData === 'object' && parentData !== null) {
+        return {
+          ...prev,
+          [parent]: {
+            ...parentData,
+            [field]: value
+          }
+        };
       }
-    }));
+      return prev;
+    });
     
     // Clear error when nested field is updated
     const errorKey = `${parent}.${field}`;

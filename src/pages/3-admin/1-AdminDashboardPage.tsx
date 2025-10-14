@@ -41,7 +41,7 @@ import {
 } from "../1-HomePage/others/components/ui/sheet";
 import { Skeleton } from "../1-HomePage/others/components/ui/skeleton";
 import { useToast } from "../1-HomePage/others/components/ui/use-toast";
-import { Bot, Search, Filter, Download, Eye, UserCheck, UserX, MoreHorizontal, AlertTriangle, CheckCircle, XCircle, Clock, TrendingUp, TrendingDown } from "lucide-react";
+import { Bot, Search, Filter, Download, Eye, UserCheck, UserX, MoreHorizontal, AlertTriangle, CheckCircle, XCircle, Clock, TrendingUp, TrendingDown, Users, FolderOpen, DollarSign } from "lucide-react";
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 
 // Mock data
@@ -152,7 +152,7 @@ function KPICard({ title, value, delta, trend, icon: Icon, isLoading }: KPICardP
                 <span className={`text-xs ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
                   {delta > 0 ? '+' : ''}{delta}%
                 </span>
-                <span className="text-xs text-muted-foreground ml-1">{t('admin:dashboard.kpis.vsLastPeriod')}</span>
+                <span className="text-xs text-muted-foreground ml-1">vs last period</span>
               </div>
             )}
           </div>
@@ -170,6 +170,9 @@ export default function AdminDashboardPage() {
   const { toast } = useToast();
   const ready = useNamespace(['admin', 'common']);
   const { t } = useTranslation(['admin', 'common']);
+  
+  // Safe type guard for trend
+  const asTrend = (value: string): 'up' | 'down' => value === 'down' ? 'down' : 'up';
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -249,7 +252,7 @@ export default function AdminDashboardPage() {
           title={t('admin:dashboard.kpis.totalUsers')}
           value={kpiData.totalUsers.value}
           delta={kpiData.totalUsers.delta}
-          trend={kpiData.totalUsers.trend}
+          trend={asTrend(kpiData.totalUsers.trend)}
           icon={Users}
           isLoading={isLoading}
         />
@@ -257,7 +260,7 @@ export default function AdminDashboardPage() {
           title={t('admin:dashboard.kpis.activeProjects')}
           value={kpiData.activeProjects.value}
           delta={kpiData.activeProjects.delta}
-          trend={kpiData.activeProjects.trend}
+          trend={asTrend(kpiData.activeProjects.trend)}
           icon={FolderOpen}
           isLoading={isLoading}
         />
@@ -265,7 +268,7 @@ export default function AdminDashboardPage() {
           title={t('admin:dashboard.kpis.revenueMTD')}
           value={`${(kpiData.revenueMTD.value / 1000000).toFixed(1)}M SAR`}
           delta={kpiData.revenueMTD.delta}
-          trend={kpiData.revenueMTD.trend}
+          trend={asTrend(kpiData.revenueMTD.trend)}
           icon={DollarSign}
           isLoading={isLoading}
         />
@@ -273,7 +276,7 @@ export default function AdminDashboardPage() {
           title={t('admin:dashboard.kpis.overdueInvoices')}
           value={kpiData.overdueInvoices.value}
           delta={kpiData.overdueInvoices.delta}
-          trend={kpiData.overdueInvoices.trend}
+          trend={asTrend(kpiData.overdueInvoices.trend)}
           icon={AlertTriangle}
           isLoading={isLoading}
         />

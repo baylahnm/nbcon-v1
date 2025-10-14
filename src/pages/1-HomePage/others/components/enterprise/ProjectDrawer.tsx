@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import { useTeamStore } from '../../../../2-auth/others/hooks/useTeamStore';
 import { TaskModal } from './TaskModal';
-import { ProjectRole, TaskStatus, TaskWithDetails } from '../../types/enterprise';
+import { ProjectRole, TaskStatus, TaskWithDetails } from '../../../../6-enterprise/others/types/EnterpriseTypes';
 import { can, canModifyTask, getPriorityColor, getStatusColor, getRoleColor } from '../../utils/permissions';
 import { toast } from 'sonner';
 import { R } from '../../lib/routes';
@@ -93,7 +93,7 @@ export function ProjectDrawer({ isOpen, onClose, projectId }: ProjectDrawerProps
   
   const handleQuickStatusUpdate = (taskId: string, status: TaskStatus) => {
     const task = tasks.find(t => t.id === taskId);
-    if (task && canModifyTask(userRole!, currentUserId, task.createdBy, task.assignees.map(a => a.id))) {
+    if (task && canModifyTask(task, userRole!)) {
       updateTask(taskId, { status });
       if (status === 'done') {
         updateTask(taskId, { progress: 100 });
@@ -579,7 +579,6 @@ export function ProjectDrawer({ isOpen, onClose, projectId }: ProjectDrawerProps
         onClose={() => setIsTaskModalOpen(false)}
         task={selectedTask}
         projectId={projectId}
-        mode={taskModalMode}
       />
     </>
   );

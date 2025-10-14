@@ -1,4 +1,4 @@
-import { DashboardContent } from "@/features/dashboard/components/DashboardContent";
+import { DashboardContent } from "../components/DashboardContent";
 
 export default function EngineerDashboard() {
   return <DashboardContent />;

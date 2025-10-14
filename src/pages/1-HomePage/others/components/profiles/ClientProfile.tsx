@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../../stores/auth";
-import { getUserDisplayName, getUserInitials } from "@/lib/userUtils";
+import { getUserDisplayName, getUserInitials } from "../../lib/userUtils";
 import { 
   User,
   MapPin,
@@ -31,19 +31,19 @@ import {
   Users,
   DollarSign
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Switch } from "../ui/switch";
+import { Separator } from "../ui/separator";
+import { Progress } from "../ui/progress";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface ProfileData {
   personalInfo: {

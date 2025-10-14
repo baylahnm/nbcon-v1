@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useInlineDashboardEditStore } from '../../../stores/inlineDashboardEdit';
 import { InlineDashboardToolbar } from './InlineDashboardToolbar';
-import { Toolbar } from '@/components/toolbar/Toolbar';
+import { Toolbar } from "../../../../../1-HomePage/others/components/toolbar/Toolbar";
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Move, X, Save, RotateCcw, Plus } from 'lucide-react';

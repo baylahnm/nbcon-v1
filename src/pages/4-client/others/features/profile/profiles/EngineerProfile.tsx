@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useAuthStore } from "../../../../stores/auth";
-import { getUserDisplayName, getUserInitials } from "@/lib/userUtils";
+import { useAuthStore } from "../../../../../2-auth/others/stores/auth";
+import { getUserDisplayName, getUserInitials } from "../../../../../1-HomePage/others/lib/userUtils";
 import { 
   Briefcase,
   MapPin,
@@ -17,6 +17,7 @@ import {
   Plus,
   Trash2,
   Eye,
+  EyeOff,
   Camera,
   FileText,
   Globe,
@@ -41,7 +42,6 @@ import {
   Bookmark,
   Zap,
   Timer,
-  Dollar,
   Percent,
   Image as ImageIcon,
   Video,
@@ -58,23 +58,23 @@ import {
   BarChart3,
   PieChart
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card";
-import { Button } from '@/pages/1-HomePage/others/components/ui/button";
-import { Badge } from '@/pages/1-HomePage/others/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar";
-import { Input } from '@/pages/1-HomePage/others/components/ui/input";
-import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea";
-import { Label } from '@/pages/1-HomePage/others/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select";
-import { Switch } from '@/pages/1-HomePage/others/components/ui/switch";
-import { Separator } from '@/pages/1-HomePage/others/components/ui/separator";
-import { Progress } from '@/pages/1-HomePage/others/components/ui/progress";
-import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/pages/1-HomePage/others/components/ui/tooltip";
-import { Alert, AlertDescription } from '@/pages/1-HomePage/others/components/ui/alert";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/pages/1-HomePage/others/components/ui/collapsible";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/pages/1-HomePage/others/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../../1-HomePage/others/components/ui/card";
+import { Button } from "../../../../../1-HomePage/others/components/ui/button";
+import { Badge } from "../../../../../1-HomePage/others/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../../1-HomePage/others/components/ui/avatar";
+import { Input } from "../../../../../1-HomePage/others/components/ui/input";
+import { Textarea } from "../../../../../1-HomePage/others/components/ui/textarea";
+import { Label } from "../../../../../1-HomePage/others/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../../1-HomePage/others/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../../1-HomePage/others/components/ui/select";
+import { Switch } from "../../../../../1-HomePage/others/components/ui/switch";
+import { Separator } from "../../../../../1-HomePage/others/components/ui/separator";
+import { Progress } from "../../../../../1-HomePage/others/components/ui/progress";
+import { ScrollArea } from "../../../../../1-HomePage/others/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../../../1-HomePage/others/components/ui/tooltip";
+import { Alert, AlertDescription } from "../../../../../1-HomePage/others/components/ui/alert";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../../../../1-HomePage/others/components/ui/collapsible";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../../../../1-HomePage/others/components/ui/dialog";
 import { toast } from "sonner";
 
 interface ProfileData {
@@ -338,7 +338,10 @@ export function EngineerProfile() {
           duration: "18 months",
           status: "completed",
           images: [],
-          skills: ["Structural Design", "ETABS", "Seismic Analysis", "Project Management"]
+          skills: ["Structural Design", "ETABS", "Seismic Analysis", "Project Management"],
+          technologies: ["ETABS", "AutoCAD", "Revit", "SAP2000"],
+          role: "Lead Structural Engineer",
+          deliverables: ["Structural calculations", "Design drawings", "Construction supervision", "Quality control reports"]
         },
         {
           id: "2",
@@ -350,7 +353,10 @@ export function EngineerProfile() {
           duration: "12 months",
           status: "completed",
           images: [],
-          skills: ["Retrofitting", "Seismic Design", "Steel Structures", "Code Compliance"]
+          skills: ["Retrofitting", "Seismic Design", "Steel Structures", "Code Compliance"],
+          technologies: ["SAP2000", "ETABS", "Tekla Structures"],
+          role: "Structural Consultant",
+          deliverables: ["Seismic assessment", "Retrofit design", "Construction monitoring", "As-built documentation"]
         },
         {
           id: "3",
@@ -362,18 +368,21 @@ export function EngineerProfile() {
           duration: "8 months",
           status: "ongoing",
           images: [],
-          skills: ["Foundation Design", "Coastal Engineering", "Environmental Engineering"]
+          skills: ["Foundation Design", "Coastal Engineering", "Environmental Engineering"],
+          technologies: ["SAFE", "GeoStudio", "Plaxis", "LPILE"],
+          role: "Geotechnical/Structural Engineer",
+          deliverables: ["Foundation design", "Geotechnical investigation report", "Construction drawings", "Site supervision"]
         }
       ],
       skills: [
-        { name: "Structural Analysis", level: 95, category: "technical", verified: true },
-        { name: "ETABS", level: 90, category: "software", verified: true },
-        { name: "AutoCAD", level: 88, category: "software", verified: true },
-        { name: "Seismic Design", level: 92, category: "technical", verified: true },
-        { name: "Project Management", level: 85, category: "management", verified: true },
-        { name: "SAFE", level: 87, category: "software", verified: false },
-        { name: "Team Leadership", level: 88, category: "management", verified: true },
-        { name: "Client Relations", level: 90, category: "communication", verified: true }
+        { name: "Structural Analysis", level: 95, category: "technical", verified: true, yearsOfExperience: 12 },
+        { name: "ETABS", level: 90, category: "software", verified: true, yearsOfExperience: 10 },
+        { name: "AutoCAD", level: 88, category: "software", verified: true, yearsOfExperience: 12 },
+        { name: "Seismic Design", level: 92, category: "technical", verified: true, yearsOfExperience: 8 },
+        { name: "Project Management", level: 85, category: "management", verified: true, yearsOfExperience: 7 },
+        { name: "SAFE", level: 87, category: "software", verified: false, yearsOfExperience: 6 },
+        { name: "Team Leadership", level: 88, category: "management", verified: true, yearsOfExperience: 8 },
+        { name: "Client Relations", level: 90, category: "communication", verified: true, yearsOfExperience: 10 }
       ],
       achievements: [
         {
@@ -781,7 +790,7 @@ export function EngineerProfile() {
                     <Label>Profile Visibility</Label>
                     <Select
                       value={profileData.settings.profileVisibility}
-                      onValueChange={(value) => setProfileData(prev => ({
+                      onValueChange={(value: "public" | "professional" | "private") => setProfileData(prev => ({
                         ...prev,
                         settings: { ...prev.settings, profileVisibility: value }
                       }))}

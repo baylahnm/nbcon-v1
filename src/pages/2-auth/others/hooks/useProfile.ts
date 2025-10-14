@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuthStore } from '../../stores/auth';
-import { profileClient, ProfileData } from '@/api/profileClient';
+import { useAuthStore } from '../stores/auth';
+import { profileClient, ProfileData } from '../../../3-admin/others/api/profileClient';
 import { toast } from 'sonner';
 
 export function useProfile() {

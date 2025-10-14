@@ -19,7 +19,8 @@ import {
   Filter,
   Search,
   Receipt,
-  FileText
+  FileText,
+  Save
 } from 'lucide-react';
 
 interface Payment {

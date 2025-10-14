@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useTeamStore } from '../../../../2-auth/others/hooks/useTeamStore';
 import { TaskModal } from './TaskModal';
-import { TaskStatus, TaskWithDetails, ProjectWithDetails } from '../../types/enterprise';
+import { TaskStatus, TaskWithDetails, ProjectWithDetails } from '../../../../6-enterprise/others/types/EnterpriseTypes';
 import { can, canModifyTask, getPriorityColor, getStatusColor } from '../../utils/permissions';
 import { toast } from 'sonner';
 
@@ -30,7 +30,7 @@ export function GlobalKanbanBoard() {
     updateTask
   } = useTeamStore();
   
-  const [selectedTask, setSelectedTask] = useState<TaskWithDetails | undefined>();
+  const [selectedTask, setSelectedTask] = useState<(TaskWithDetails & { project: ProjectWithDetails }) | undefined>();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string>('all');
   
@@ -61,7 +61,7 @@ export function GlobalKanbanBoard() {
   
   const handleQuickStatusUpdate = (task: TaskWithDetails & { project: ProjectWithDetails }, status: TaskStatus) => {
     const userRole = getUserRole(task.project.id, currentUserId);
-    if (userRole && canModifyTask(userRole, currentUserId, task.createdBy, task.assignees.map(a => a.id))) {
+    if (userRole && canModifyTask(task, userRole)) {
       updateTask(task.id, { status });
       if (status === 'done') {
         updateTask(task.id, { progress: 100 });
@@ -123,7 +123,6 @@ export function GlobalKanbanBoard() {
           }}
           task={selectedTask}
           projectId={selectedTask.project.id}
-          mode="edit"
         />
       )}
     </>

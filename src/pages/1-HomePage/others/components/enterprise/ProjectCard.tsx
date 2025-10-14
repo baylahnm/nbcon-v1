@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Progress } from '../ui/progress';
-import { ProjectWithDetails } from '../../types/enterprise';
+import { ProjectWithDetails } from '../../../../6-enterprise/others/types/EnterpriseTypes';
 import { useTeamStore } from '../../../../2-auth/others/hooks/useTeamStore';
 import { MoreHorizontal, Users, CheckCircle2, Settings } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';

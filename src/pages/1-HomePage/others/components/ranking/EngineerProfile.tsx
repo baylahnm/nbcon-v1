@@ -19,7 +19,7 @@ import {
   Star,
   BarChart3
 } from "lucide-react";
-import { Engineer } from "@/data/engineers";
+import { Engineer } from "../../data/engineers";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface EngineerProfileProps {
@@ -247,14 +247,6 @@ export function EngineerProfile({ engineer, onBack }: EngineerProfileProps) {
                     LinkedIn Profile
                   </a>
                 </div>
-                {engineer.twitter && (
-                  <div className="flex items-center gap-2">
-                    <Twitter className="w-4 h-4 text-blue-400" />
-                    <a href={engineer.twitter} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-400 hover:underline">
-                      Twitter
-                    </a>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>
@@ -394,7 +386,7 @@ export function EngineerProfile({ engineer, onBack }: EngineerProfileProps) {
                         <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                           <div>
                             <h4 className="font-semibold text-gray-900">{cert.name}</h4>
-                            <p className="text-sm text-gray-600">{cert.org}</p>
+                            <p className="text-sm text-gray-600">{cert.organization}</p>
                           </div>
                           <span className="text-sm text-gray-500">{cert.year}</span>
                         </div>
