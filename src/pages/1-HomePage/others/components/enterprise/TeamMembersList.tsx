@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Label } from '../ui/label';
-import { ScrollArea } from '../ui/scroll-area';
 import { 
   Users, 
   UserPlus, 
@@ -135,7 +134,7 @@ export function TeamMembersList() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search members..."
-                    className="pl-10"
+                    className="pl-10 h-9"
                   />
                 </div>
               </div>
@@ -144,7 +143,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label>Availability</Label>
                 <Select value={availabilityFilter} onValueChange={(value: 'all' | 'free' | 'busy') => setAvailabilityFilter(value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -159,7 +158,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label>Specialty</Label>
                 <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -183,7 +182,7 @@ export function TeamMembersList() {
                     setAvailabilityFilter('all');
                     setSpecialtyFilter('all');
                   }}
-                  className="w-full"
+                  className="w-full h-9"
                 >
                   Clear Filters
                 </Button>
@@ -198,9 +197,8 @@ export function TeamMembersList() {
             <h3 className="font-medium">Team Directory</h3>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="h-[500px]">
-              <div className="rounded-lg overflow-hidden border">
-                <Table>
+            <div className="rounded-lg overflow-hidden border">
+              <Table>
                   <TableHeader>
                     <TableRow className="border-b bg-primary hover:bg-primary">
                       <TableHead className="border-r text-primary-foreground">Member</TableHead>
@@ -319,7 +317,6 @@ export function TeamMembersList() {
                   <p>No team members found matching your criteria</p>
                 </div>
               )}
-            </ScrollArea>
           </CardContent>
         </Card>
       </motion.div>
@@ -351,7 +348,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label htmlFor="project">Select Project</Label>
                 <Select value={selectedProject} onValueChange={setSelectedProject}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-9">
                     <SelectValue placeholder="Choose a project" />
                   </SelectTrigger>
                   <SelectContent>
@@ -368,7 +365,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label htmlFor="role">Assign Role</Label>
                 <Select value={selectedRole} onValueChange={(role: ProjectRole) => setSelectedRole(role)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

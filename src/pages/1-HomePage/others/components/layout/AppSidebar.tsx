@@ -119,11 +119,14 @@ export function AppSidebar() {
   const handleSignOut = async () => {
     try {
       await signOut();
+      // Wait a moment for Supabase to fully clear the session
+      await new Promise(resolve => setTimeout(resolve, 500));
       // Use hard redirect to fully clear React state and force fresh initialization
       window.location.href = '/auth';
     } catch (error) {
       console.error('Sign out error:', error);
       // Fallback to auth page even on error
+      await new Promise(resolve => setTimeout(resolve, 500));
       window.location.href = '/auth';
     }
   };

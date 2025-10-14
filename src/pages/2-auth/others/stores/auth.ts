@@ -162,8 +162,17 @@ export const useAuthStore = create<AuthState>()(
       signOut: async () => {
         console.log('[SIGN OUT] Starting sign out process...');
         
-        // Sign out from Supabase with local scope to clear session
-        const { error } = await supabase.auth.signOut({ scope: 'local' });
+        // Set a flag to prevent auto-login
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('manual-signout', 'true');
+          console.log('[SIGN OUT] Set manual-signout flag:', sessionStorage.getItem('manual-signout'));
+        }
+        
+        // First, set isInitialized to false to prevent auto-login during redirect
+        set({ isInitialized: false, isLoading: true });
+        
+        // Sign out from Supabase with global scope to clear all sessions
+        const { error } = await supabase.auth.signOut({ scope: 'global' });
         
         if (error) {
           console.error('[SIGN OUT] Supabase sign out error:', error);
@@ -172,9 +181,31 @@ export const useAuthStore = create<AuthState>()(
         }
         
         // Clear local auth state and all storage
-        get().logout();
+        set({
+          user: null,
+          profile: null,
+          isAuthenticated: false,
+          isLoading: false,
+          isInitialized: false, // Keep as false to prevent auto-login
+        });
         
-        console.log('[SIGN OUT] Sign out complete');
+        // Clear ALL storage comprehensively (except the manual-signout flag)
+        clearStoredUser();
+        safeLocalStorageSet(null);
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('nbcon_user');
+          localStorage.removeItem('nbcon-auth-storage');
+          localStorage.removeItem('theme');
+          localStorage.removeItem('language');
+          // Clear any other app-specific storage
+          Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('nbcon-') || key.startsWith('auth-')) {
+              localStorage.removeItem(key);
+            }
+          });
+        }
+        
+        console.log('[SIGN OUT] Sign out complete, all storage cleared');
       },
 
       setLoading: (loading) => set({ isLoading: loading }),
@@ -303,6 +334,13 @@ export const initializeAuth = () => {
     return () => {};
   }
 
+  // Check if we're in the middle of a sign-out process
+  const currentState = useAuthStore.getState();
+  if (currentState.isInitialized === false && !currentState.user) {
+    console.log('[AUTH INIT] Skipping initialization - in sign-out process');
+    return () => {};
+  }
+
   setLoading(true);
   console.log('[AUTH INIT] Checking for Supabase session...');
   
@@ -311,6 +349,24 @@ export const initializeAuth = () => {
     .then(async ({ data: { session } }) => {
       console.log('[AUTH INIT] getSession callback executed, session:', !!session);
       if (session?.user) {
+        // Check if this is right after a manual sign-out
+        if (typeof window !== 'undefined' && sessionStorage.getItem('manual-signout') === 'true') {
+          console.log('[AUTH INIT] Ignoring session - manual sign-out in progress');
+          // Clear the flag after a successful auth page load
+          sessionStorage.removeItem('manual-signout');
+          syncFromStorage();
+          return;
+        }
+        
+        // Check if user already exists to prevent race condition
+        const currentUser = useAuthStore.getState().user;
+        if (currentUser && currentUser.id === session.user.id) {
+          console.log('[AUTH INIT] User already exists with same ID, skipping duplicate creation');
+          setLoading(false);
+          setInitialized(true);
+          return;
+        }
+        
         // User has active Supabase session
         console.log('[AUTH INIT] Found session, fetching role from profile...');
         const userMetadata = session.user.user_metadata;
@@ -387,6 +443,21 @@ export const initializeAuth = () => {
       }
       
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
+        // Check if this is right after a manual sign-out
+        const manualSignoutFlag = typeof window !== 'undefined' ? sessionStorage.getItem('manual-signout') : null;
+        console.log('[AUTH LISTENER] manual-signout flag:', manualSignoutFlag);
+        if (manualSignoutFlag === 'true') {
+          console.log('[AUTH LISTENER] Ignoring SIGNED_IN event - manual sign-out in progress');
+          return;
+        }
+        
+        // Check if user already exists to prevent race condition
+        const currentUser = useAuthStore.getState().user;
+        if (currentUser && currentUser.id === session.user.id) {
+          console.log('[AUTH LISTENER] User already exists with same ID, skipping duplicate creation');
+          return;
+        }
+        
         // User signed in - fetch role from profile
         console.log('[AUTH LISTENER] Processing SIGNED_IN event, fetching role...');
         
@@ -446,7 +517,7 @@ export const initializeAuth = () => {
           profile: null,
           isAuthenticated: false,
           isLoading: false,
-          isInitialized: false  // Reset initialization flag
+          isInitialized: true  // Set to true to prevent re-initialization
         });
         
         // Clear ALL storage keys comprehensively
@@ -455,6 +526,14 @@ export const initializeAuth = () => {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('nbcon_user');
           localStorage.removeItem('nbcon-auth-storage');
+          localStorage.removeItem('theme');
+          localStorage.removeItem('language');
+          // Clear any other app-specific storage
+          Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('nbcon-') || key.startsWith('auth-')) {
+              localStorage.removeItem(key);
+            }
+          });
         }
         
         console.log('[AUTH LISTENER] SIGNED_OUT complete - all state and storage cleared');
