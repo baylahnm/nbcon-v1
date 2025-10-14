@@ -23,14 +23,8 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
   // If no widget prop provided, render without BaseWidget wrapper
   if (!widget) {
     return (
-      <div className="h-full"
-        style={{
-          backgroundColor: '#ffffff',
-          borderRadius: 8,
-          padding: 16
-        }}
-      >
-      <div className="h-full flex flex-col">
+      <div className="h-full bg-card rounded-lg p-4 border border-border/50">
+        <div className="h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center gap-2 mb-3">
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -88,7 +82,7 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
             </div>
           </div>
         )}
-      </div>
+        </div>
       </div>
     );
   }

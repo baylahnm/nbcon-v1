@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../../stores/auth';
 import { getLandingPage, getEffectiveRole, hasRolePermission } from '../lib/role-resolution';
 import { UserRole } from '../../../../../1-HomePage/others/lib/auth/role';
+import { useAuthSession } from '@/shared/hooks/useAuthSession';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -14,13 +15,22 @@ export function AuthGuard({ children, requiredRole, redirectTo }: AuthGuardProps
   const navigate = useNavigate();
   const location = useLocation();
   const { user, profile, isLoading, isInitialized } = useAuthStore();
+  const { session, isLoading: sessionLoading } = useAuthSession();
 
   useEffect(() => {
-    // Don't redirect while still loading
-    if (isLoading || !isInitialized) return;
+    // CRITICAL: Wait for session to load before any redirects
+    if (sessionLoading || isLoading || !isInitialized) {
+      console.log('[AuthGuard] Waiting for auth to initialize...', {
+        sessionLoading,
+        isLoading,
+        isInitialized
+      });
+      return;
+    }
 
-    // If no user, redirect to auth
-    if (!user) {
+    // If no session, redirect to auth (prevents redirect loop)
+    if (session === null && !user) {
+      console.log('[AuthGuard] No session and no user, redirecting to /auth');
       navigate('/auth', { 
         state: { from: location.pathname },
         replace: true 
@@ -29,7 +39,8 @@ export function AuthGuard({ children, requiredRole, redirectTo }: AuthGuardProps
     }
 
     // If no profile, redirect to account type selection
-    if (!profile) {
+    if (user && !profile) {
+      console.log('[AuthGuard] User exists but no profile, redirecting to account type selection');
       navigate('/auth/account-type', { 
         state: { from: location.pathname },
         replace: true 
@@ -38,7 +49,7 @@ export function AuthGuard({ children, requiredRole, redirectTo }: AuthGuardProps
     }
 
     // Check role requirements
-    if (requiredRole) {
+    if (requiredRole && user && profile) {
       const userRole = profile.role as UserRole;
       const effectiveRole = getEffectiveRole(userRole);
       
@@ -46,6 +57,7 @@ export function AuthGuard({ children, requiredRole, redirectTo }: AuthGuardProps
       const hasPermission = roles.some(role => hasRolePermission(effectiveRole, role));
 
       if (!hasPermission) {
+        console.log('[AuthGuard] User lacks required role permission, redirecting');
         // Redirect to appropriate landing page or forbidden
         if (redirectTo) {
           navigate(redirectTo, { replace: true });
@@ -56,10 +68,10 @@ export function AuthGuard({ children, requiredRole, redirectTo }: AuthGuardProps
         return;
       }
     }
-  }, [user, profile, isLoading, isInitialized, requiredRole, redirectTo, navigate, location.pathname]);
+  }, [user, profile, session, sessionLoading, isLoading, isInitialized, requiredRole, redirectTo, navigate, location.pathname]);
 
-  // Show loading state
-  if (isLoading || !isInitialized) {
+  // Show loading state while session or auth is loading
+  if (sessionLoading || isLoading || !isInitialized) {
     return (
       <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
         <div className="text-center space-y-4">

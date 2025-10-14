@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../../stores/auth';
 import { getLandingPage, getEffectiveRole } from '../lib/role-resolution';
@@ -26,37 +26,21 @@ type AuthStep = 'auth' | 'verify-otp' | 'account-type';
 export function NewAuthFlow() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, user, profile } = useAuthStore();
+  const { login, user, profile, isInitialized } = useAuthStore();
   const { toast } = useToast();
   
   const [currentStep, setCurrentStep] = useState<AuthStep>('auth');
   const [currentUser, setCurrentUser] = useState<Partial<AuthenticatedUser> | null>(null);
   const [otpMethod, setOtpMethod] = useState<'sms' | 'email'>('sms');
 
-  // Check for existing authentication on mount
-  useEffect(() => {
-    if (user && profile) {
-      // User is already authenticated, redirect to appropriate dashboard
-      const landingPage = getLandingPage(profile.role);
-      navigate(landingPage, { replace: true });
-      return;
-    }
-
-    // Check for stored user in localStorage
-    const existingUser = localStorage.getItem('nbcon_user');
-    if (existingUser) {
-      try {
-        const user = JSON.parse(existingUser);
-        if (user && user.isVerified) {
-          login(user);
-          return;
-        }
-      } catch (error) {
-        console.error('Error parsing stored user:', error);
-        localStorage.removeItem('nbcon_user');
-      }
-    }
-  }, [user, profile, navigate, login]);
+  // CRITICAL FIX: If user is authenticated, redirect immediately and don't render
+  if (isInitialized && user && profile) {
+    const landingPage = getLandingPage(profile.role);
+    console.log('[NewAuthFlow] User authenticated, redirecting to:', landingPage);
+    // Use window.location for hard redirect (no React Router issues)
+    window.location.href = landingPage;
+    return null; // Don't render anything
+  }
 
   // Handle URL-based routing
   useEffect(() => {
