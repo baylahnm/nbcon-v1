@@ -16,7 +16,7 @@ import { PhoneInput } from "./components/PhoneInput";
 import { BillingAddressForm } from "./components/BillingAddressForm";
 import { PaymentMethodSelector } from "./components/PaymentMethodSelector";
 import { MultiEmailInput } from "./components/MultiEmailInput";
-import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
+import { PLAN_PRICING } from "@/pages/4-free/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
 import { createProfileOnly } from "@/pages/2-auth/others/utils/signup-helper";

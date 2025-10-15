@@ -73,7 +73,7 @@ src/pages/
 │   ├── 8-SettingsPage.tsx
 │   └── others/              # Admin-specific features
 │
-├── 4-client/                 # Client Portal (12 pages)
+├── 4-free/                  # Free Tier Portal (12 pages)
 │   ├── 1-DashboardPage.tsx
 │   ├── 2-ProfilePage.tsx
 │   ├── 3-BrowseEngineersPage.tsx
@@ -986,7 +986,7 @@ try {
 1-HomePage    → Obviously first/foundational
 2-auth        → Authentication comes second
 3-admin       → Management layer
-4-client      → Customer-facing
+4-free      → Customer-facing
 5-engineer    → Professional users
 6-enterprise  → Business clients
 ```

@@ -15,7 +15,7 @@ import { PhoneInput } from "./components/PhoneInput";
 import { VATFields } from "./components/VATFields";
 import { PaymentMethodSelector } from "./components/PaymentMethodSelector";
 import { FileUploader } from "./components/FileUploader";
-import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
+import { PLAN_PRICING } from "@/pages/4-free/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
 import { createProfileOnly, is406Error, getErrorDetails } from "@/pages/2-auth/others/utils/signup-helper";

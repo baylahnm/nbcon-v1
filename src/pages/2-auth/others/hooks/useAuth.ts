@@ -31,7 +31,7 @@ export function useAuth() {
         navigate('/engineer');
         break;
       case 'client':
-        navigate('/client');
+        navigate('/free');
         break;
       case 'enterprise':
         navigate('/enterprise');

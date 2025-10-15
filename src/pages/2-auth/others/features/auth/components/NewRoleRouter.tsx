@@ -9,19 +9,19 @@ import React from "react";
 const EnterpriseLayout = React.lazy(() => import("../../../layouts/EnterpriseLayout"));
 import AdminLayout from "../../../layouts/AdminLayout";
 import EngineerDashboard from "../../../../../5-engineer/1-DashboardPage";
-import ClientDashboardPage from "../../../../../4-client/1-DashboardPage";
-import BrowseEngineers from "../../../../../4-client/3-BrowseEngineersPage";
-import CreateJob from "../../../../../4-client/4-PostJobPage";
+import ClientDashboardPage from "../../../../../4-free/1-DashboardPage";
+import BrowseEngineers from "../../../../../4-free/3-BrowseEngineersPage";
+import CreateJob from "../../../../../4-free/4-PostJobPage";
 import JobsList from "../../../../../5-engineer/2-JobsPage";
 import CheckIn from "../../../../../5-engineer/12-CheckIn";
 import UploadDeliverable from "../../../../../5-engineer/5-UploadDeliverablePage";
 import JobDetails from "../../../../../5-engineer/2-JobsPage";
 import { MessagesPage } from "../../../../../5-engineer/4-MessagesPage";
-import ClientMessagesPage from "../../../../../4-client/9-MessagesPage";
+import ClientMessagesPage from "../../../../../4-free/9-MessagesPage";
 import SettingsPage from "../../../../../5-engineer/11-SettingsPage";
 import ProfilePage from "../../../../../5-engineer/15-ProfilePage";
-import ClientSettingsPage from "../../../../../4-client/12-SettingsPage";
-import ClientProfilePage from "../../../../../4-client/2-ProfilePage";
+import ClientSettingsPage from "../../../../../4-free/12-SettingsPage";
+import ClientProfilePage from "../../../../../4-free/2-ProfilePage";
 // import VerificationPage from "../../../../../5-engineer/11-SettingsPage";
 // import ThemePage from "../../../../../5-engineer/11-SettingsPage";
 import HelpPage from "../../../../../5-engineer/10-HelpPage";
@@ -174,8 +174,8 @@ export default function NewRoleRouter() {
             <Route path="settings" element={<SettingsPage />} />
           </Route>
 
-          {/* Client Routes */}
-          <Route path="/client" element={<ClientLayout />}>
+          {/* Free Tier Routes */}
+          <Route path="/free" element={<ClientLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<ClientDashboardPage />} />
             <Route path="browse" element={<BrowseEngineers />} />

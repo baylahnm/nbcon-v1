@@ -1180,7 +1180,7 @@ src/pages/
 ├── 1-HomePage/others/stores/theme.ts         [737 lines]
 ├── 2-auth/others/stores/theme.ts             [737 lines]
 ├── 3-admin/others/stores/theme.ts            [737 lines]
-├── 4-client/others/stores/theme.ts           [737 lines]
+├── 4-free/others/stores/theme.ts           [737 lines]
 ├── 5-engineer/others/stores/theme.ts         [607 lines]
 └── 6-enterprise/others/stores/theme.ts       [738 lines]
 

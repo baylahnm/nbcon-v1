@@ -22,7 +22,7 @@ import {
   ChartTooltipContent,
 } from '@/pages/1-HomePage/others/components/ui/chart';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
-import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/pages/4-client/others/features/billing/lib/plans';
+import { PLAN_PRICING, PLAN_DESCRIPTIONS } from '@/pages/4-free/others/features/billing/lib/plans';
 import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
 import { supabase } from '@/shared/supabase/client';
 

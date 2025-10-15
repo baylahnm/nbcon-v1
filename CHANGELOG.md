@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `src/pages/1-HomePage/others/stores/theme.ts` → Wrapper (was 737 lines)
   - `src/pages/2-auth/others/stores/theme.ts` → Wrapper (was 737 lines)
   - `src/pages/3-admin/others/stores/theme.ts` → Wrapper (was 737 lines)
-  - `src/pages/4-client/others/stores/theme.ts` → Wrapper (was 737 lines)
+  - `src/pages/4-free/others/stores/theme.ts` → Wrapper (was 737 lines)
   - `src/pages/5-engineer/others/stores/theme.ts` → Wrapper (was 607 lines)
   - `src/pages/6-enterprise/others/stores/theme.ts` → Wrapper (was 738 lines)
 

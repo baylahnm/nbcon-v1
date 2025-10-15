@@ -4,7 +4,7 @@ export type UserRole = "engineer" | "client" | "enterprise" | "admin";
 
 export const ROLE_BASE: Record<UserRole, string> = {
   engineer: "/engineer",
-  client: "/client",
+  client: "/free",
   enterprise: "/enterprise",
   admin: "/admin",
 };

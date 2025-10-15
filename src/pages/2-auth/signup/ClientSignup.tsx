@@ -15,7 +15,7 @@ import { VATFields } from "./components/VATFields";
 import { BillingAddressForm } from "./components/BillingAddressForm";
 import { PaymentMethodSelector } from "./components/PaymentMethodSelector";
 import { MultiEmailInput } from "./components/MultiEmailInput";
-import { PLAN_PRICING } from "@/pages/4-client/others/features/billing/lib/plans";
+import { PLAN_PRICING } from "@/pages/4-free/others/features/billing/lib/plans";
 import { LanguageSwitcher } from "@/pages/1-HomePage/others/components/i18n/LanguageSwitcher";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
 import { createProfileOnly } from "@/pages/2-auth/others/utils/signup-helper";
@@ -159,7 +159,7 @@ export default function ClientSignup() {
 
       // Small delay to show success message, then navigate
       setTimeout(() => {
-        navigate('/client/dashboard');
+        navigate('/free/dashboard');
       }, 1000);
     } catch (error) {
       console.error('Profile creation failed:', error);

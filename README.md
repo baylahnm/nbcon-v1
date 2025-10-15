@@ -94,7 +94,7 @@ src/pages/
 ├── 1-HomePage/          # Public landing + shared components
 ├── 2-auth/              # Authentication (4 signup flows)
 ├── 3-admin/             # Admin portal (8 pages)
-├── 4-client/            # Client portal (12 pages)
+├── 4-free/            # Client portal (12 pages)
 ├── 5-engineer/          # Engineer portal (14 pages) ⭐
 └── 6-enterprise/        # Enterprise portal (12 pages)
 

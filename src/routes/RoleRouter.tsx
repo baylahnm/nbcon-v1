@@ -8,17 +8,17 @@ import React from "react";
 const EnterpriseLayout = React.lazy(() => import("@/pages/2-auth/others/layouts/EnterpriseLayout"));
 import AdminLayout from "@/pages/2-auth/others/layouts/AdminLayout";
 import EngineerDashboard from "@/pages/5-engineer/others/features/dashboard/routes/EngineerDashboard";
-import ClientDashboardPage from "@/pages/4-client/1-DashboardPage";
-import BrowseEngineers from "@/pages/4-client/3-BrowseEngineersPage";
-import PostJobPage from "@/pages/4-client/4-PostJobPage";
+import ClientDashboardPage from "@/pages/4-free/1-DashboardPage";
+import BrowseEngineers from "@/pages/4-free/3-BrowseEngineersPage";
+import PostJobPage from "@/pages/4-free/4-PostJobPage";
 import JobsPage from "@/pages/5-engineer/2-JobsPage";
 import CheckIn from "@/pages/5-engineer/12-CheckIn";
 import { UploadDeliverableContent } from "@/pages/5-engineer/others/features/deliverables/UploadDeliverableContent";
 import { MessagesPage } from "@/pages/5-engineer/4-MessagesPage";
-import ClientMessagesPage from "@/pages/4-client/9-MessagesPage";
+import ClientMessagesPage from "@/pages/4-free/9-MessagesPage";
 import ProfilePage from "@/pages/5-engineer/15-ProfilePage";
-import ClientSettingsPage from "@/pages/4-client/12-SettingsPage";
-import ClientProfilePage from "@/pages/4-client/2-ProfilePage";
+import ClientSettingsPage from "@/pages/4-free/12-SettingsPage";
+import ClientProfilePage from "@/pages/4-free/2-ProfilePage";
 import HelpPage from "@/pages/5-engineer/10-HelpPage";
 import MyNetwork from "@/pages/5-engineer/6-NetworkPage";
 import CalendarPage from "@/pages/5-engineer/3-CalendarPage";
@@ -72,9 +72,9 @@ function LegacyRedirects({ fallback }: LegacyRedirectsProps = {}) {
     if (path === "/profile") return role ? `${ROLE_BASE[role]}/profile` : "/auth";
     if (path === "/network") return role ? `${ROLE_BASE[role]}/network` : "/auth";
     if (path === "/learning") return role ? `${ROLE_BASE[role]}/learning` : "/auth";
-    if (path.startsWith("/c/")) return path.replace("/c", "/client");
+    if (path.startsWith("/c/")) return path.replace("/c", "/free");
     if (path.startsWith("/x/")) return path.replace("/x", "/enterprise");
-    if (path === "/client/payments" && role === "engineer") return "/engineer/finance";
+    if (path === "/free/payments" && role === "engineer") return "/engineer/finance";
     return null;
   }, [path, role]);
 
@@ -131,7 +131,7 @@ export default function RoleRouter() {
           <Route path="settings" element={<EngineerSettingsPage />} />
         </Route>
 
-        <Route path="/client" element={<ClientLayout />}>
+        <Route path="/free" element={<ClientLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ClientDashboardPage />} />
           <Route path="browse" element={<BrowseEngineers />} />

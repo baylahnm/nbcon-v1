@@ -9,7 +9,7 @@ import { ThemeToggle } from '../ui/theme-toggle';
 import { R } from '../../lib/routes';
 
 // Dynamically import AI Drawer based on user role
-const ClientAiDrawer = lazy(() => import('@/pages/4-client/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
+const ClientAiDrawer = lazy(() => import('@/pages/4-free/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
 const EngineerAiDrawer = lazy(() => import('@/pages/5-engineer/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
 const EnterpriseAiDrawer = lazy(() => import('@/pages/6-enterprise/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));
 const AdminAiDrawer = lazy(() => import('@/pages/3-admin/others/features/ai/Drawer').then(m => ({ default: m.AiDrawer })));

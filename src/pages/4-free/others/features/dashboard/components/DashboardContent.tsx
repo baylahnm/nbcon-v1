@@ -31,16 +31,16 @@ export function DashboardContent() {
   const handleStatClick = (stat: string) => {
     switch (stat) {
       case 'projects':
-        navigate('/client/projects');
+        navigate('/free/projects');
         break;
       case 'engineers':
-        navigate('/client/browse-engineers');
+        navigate('/free/browse-engineers');
         break;
       case 'quotes':
-        navigate('/client/quotes');
+        navigate('/free/quotes');
         break;
       case 'finance':
-        navigate('/client/payments');
+        navigate('/free/payments');
         break;
       default:
         break;

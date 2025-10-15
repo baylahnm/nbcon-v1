@@ -3,7 +3,7 @@ import { Moon, Sun, Palette, Sunset, Paintbrush, Circle, Waves, TreePine, Sparkl
 import { useActiveRole } from "../../../../2-auth/others/features/auth/components/NewRoleRouter";
 import { useThemeStore as useEngineerThemeStore } from "../../../../5-engineer/others/stores/theme";
 import { useThemeStore as useEnterpriseThemeStore } from "../../../../6-enterprise/others/stores/theme";
-import { useThemeStore as useClientThemeStore } from "../../../../4-client/others/stores/theme";
+import { useThemeStore as useClientThemeStore } from "../../../../4-free/others/stores/theme";
 import { useThemeStore as useAdminThemeStore } from "../../../../3-admin/others/stores/theme";
 
 import { Button } from "./button";
