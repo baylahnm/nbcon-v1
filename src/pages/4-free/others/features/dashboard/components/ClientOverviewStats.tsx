@@ -159,22 +159,7 @@ const Layer3: React.FC<{ color: string }> = ({ color }) => {
 };
 
 const Layer4: React.FC<LayerProps> = ({ color, secondaryColor, hovered }) => {
-  const rectsData = [
-    { width: 15, height: 20, y: 110, hoverHeight: 20, hoverY: 130, x: 40, fill: "currentColor", hoverFill: secondaryColor },
-    { width: 15, height: 20, y: 90, hoverHeight: 20, hoverY: 130, x: 60, fill: color, hoverFill: color },
-    { width: 15, height: 40, y: 70, hoverHeight: 30, hoverY: 120, x: 80, fill: color, hoverFill: color },
-    { width: 15, height: 30, y: 80, hoverHeight: 50, hoverY: 100, x: 100, fill: color, hoverFill: color },
-    { width: 15, height: 30, y: 110, hoverHeight: 40, hoverY: 110, x: 120, fill: "currentColor", hoverFill: secondaryColor },
-    { width: 15, height: 50, y: 110, hoverHeight: 20, hoverY: 130, x: 140, fill: "currentColor", hoverFill: secondaryColor },
-    { width: 15, height: 50, y: 60, hoverHeight: 30, hoverY: 120, x: 160, fill: color, hoverFill: color },
-    { width: 15, height: 30, y: 80, hoverHeight: 20, hoverY: 130, x: 180, fill: color, hoverFill: color },
-    { width: 15, height: 20, y: 110, hoverHeight: 40, hoverY: 110, x: 200, fill: "currentColor", hoverFill: secondaryColor },
-    { width: 15, height: 40, y: 70, hoverHeight: 60, hoverY: 90, x: 220, fill: color, hoverFill: color },
-    { width: 15, height: 30, y: 110, hoverHeight: 70, hoverY: 80, x: 240, fill: "currentColor", hoverFill: secondaryColor },
-    { width: 15, height: 50, y: 110, hoverHeight: 50, hoverY: 100, x: 260, fill: "currentColor", hoverFill: secondaryColor },
-    { width: 15, height: 20, y: 110, hoverHeight: 80, hoverY: 70, x: 280, fill: "currentColor", hoverFill: secondaryColor },
-    { width: 15, height: 30, y: 80, hoverHeight: 90, hoverY: 60, x: 300, fill: color, hoverFill: color },
-  ];
+  const rectsData: any[] = [];
 
   return (
     <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[8] flex h-full w-full items-center justify-center text-muted-foreground/10 transition-transform duration-500 group-hover/animated-card:scale-150">
@@ -255,10 +240,16 @@ function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: 
   return (
     <div
       ref={cardRef}
-      role="region"
-      aria-labelledby="card-title"
-      aria-describedby="card-description"
-      className="group/animated-card relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300"
+      className="relative overflow-hidden transition-all duration-300 group"
+      style={{
+        '--rotation': '4.2rad',
+        border: '2px solid transparent',
+        borderRadius: '0.5rem',
+        backgroundImage: `linear-gradient(hsl(var(--card)), hsl(var(--card))), 
+                         linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)`,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      } as React.CSSProperties}
       onClick={onClick}
     >
       {/* Animated Chart Visualization */}
@@ -271,27 +262,31 @@ function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: 
       </div>
 
       {/* Card Content */}
-      <div className="flex flex-col space-y-1.5 border-t border-border p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className={`${colors[color].bg} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md`}>
-            <Icon className={`h-5 w-5 ${colors[color].icon}`} />
-          </div>
-          <p className="text-xs font-medium text-muted-foreground">{label}</p>
-        </div>
-        <div>
-          <p className="text-xl font-bold tracking-tight">{value}</p>
-          {trend && (
-            <div className={`flex items-center gap-1 text-xs mt-1.5 font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {trend.isPositive ? (
-                <TrendingUp className="h-3 w-3" />
-              ) : (
-                <TrendingDown className="h-3 w-3" />
-              )}
-              <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
+      <Card className="cursor-pointer bg-transparent border-0">
+        <CardContent className="p-5">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className={`${colors[color].bg} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md group-hover:scale-110 transition-transform`}>
+                <Icon className={`h-5 w-5 ${colors[color].icon}`} />
+              </div>
+              <p className="text-xs font-medium text-muted-foreground">{label}</p>
             </div>
-          )}
-        </div>
-      </div>
+            <div>
+              <p className="text-xl font-bold tracking-tight">{value}</p>
+              {trend && (
+                <div className={`flex items-center gap-1 text-xs mt-1.5 font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                  {trend.isPositive ? (
+                    <TrendingUp className="h-3 w-3" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3" />
+                  )}
+                  <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
