@@ -189,7 +189,7 @@ export default function PostJobPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-6 py-8 space-y-8">
+      <div className="container mx-auto px-6 py-8 space-y-4">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
         <div className="flex items-center gap-3">
@@ -271,7 +271,7 @@ export default function PostJobPage() {
 
         {/* Basic Information Tab */}
         <TabsContent value="basic" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card className="border-border/50">
               <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-bold tracking-tight">Job Title & Category</CardTitle>
@@ -417,7 +417,7 @@ export default function PostJobPage() {
 
         {/* Requirements Tab */}
         <TabsContent value="requirements" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <Card className="border-border/50">
               <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-bold tracking-tight">Required Skills</CardTitle>
@@ -521,7 +521,7 @@ export default function PostJobPage() {
               <CardDescription className="text-xs">Check all details before publishing</CardDescription>
             </CardHeader>
             <CardContent className="p-5 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-base font-bold tracking-tight mb-2">Basic Information</h3>
                   <div className="space-y-2 text-sm">
