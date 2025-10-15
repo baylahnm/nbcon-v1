@@ -272,8 +272,8 @@ export default function PostJobPage() {
         {/* Basic Information Tab */}
         <TabsContent value="basic" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader className="p-5 pb-3">
+            <Card className="border-border/50">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-bold tracking-tight">Job Title & Category</CardTitle>
                 <CardDescription className="text-xs">Basic information about your job posting</CardDescription>
               </CardHeader>
@@ -315,8 +315,8 @@ export default function PostJobPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="p-5 pb-3">
+            <Card className="border-border/50">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-bold tracking-tight">Budget & Timeline</CardTitle>
                 <CardDescription className="text-xs">Set your budget range and project timeline</CardDescription>
               </CardHeader>
@@ -386,8 +386,8 @@ export default function PostJobPage() {
 
         {/* Project Details Tab */}
         <TabsContent value="details" className="space-y-4">
-          <Card>
-            <CardHeader className="p-5 pb-3">
+          <Card className="border-border/50">
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
               <CardTitle className="text-base font-bold tracking-tight">Project Description</CardTitle>
               <CardDescription className="text-xs">Describe your project in detail</CardDescription>
             </CardHeader>
@@ -418,8 +418,8 @@ export default function PostJobPage() {
         {/* Requirements Tab */}
         <TabsContent value="requirements" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader className="p-5 pb-3">
+            <Card className="border-border/50">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-bold tracking-tight">Required Skills</CardTitle>
                 <CardDescription className="text-xs">Technical skills needed</CardDescription>
               </CardHeader>
@@ -446,8 +446,8 @@ export default function PostJobPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="p-5 pb-3">
+            <Card className="border-border/50">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-bold tracking-tight">Requirements</CardTitle>
                 <CardDescription className="text-xs">Must-have requirements</CardDescription>
               </CardHeader>
@@ -474,8 +474,8 @@ export default function PostJobPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="p-5 pb-3">
+            <Card className="border-border/50">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
                 <CardTitle className="text-base font-bold tracking-tight">Deliverables</CardTitle>
                 <CardDescription className="text-xs">Expected project outputs</CardDescription>
               </CardHeader>
@@ -515,8 +515,8 @@ export default function PostJobPage() {
 
         {/* Review Tab */}
         <TabsContent value="review" className="space-y-4">
-          <Card>
-            <CardHeader className="p-5 pb-3">
+          <Card className="border-border/50">
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
               <CardTitle className="text-base font-bold tracking-tight">Review Your Job Posting</CardTitle>
               <CardDescription className="text-xs">Check all details before publishing</CardDescription>
             </CardHeader>
