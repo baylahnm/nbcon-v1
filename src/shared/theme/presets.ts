@@ -89,7 +89,7 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
     '--input-foreground': '0 0% 95%',
     '--input-placeholder': '0 0% 60%',
     '--ring': '142 65% 47%',
-    '--sidebar-background': '0 0% 3%',
+    '--sidebar-background': '0 0% 6%',
     '--sidebar-foreground': '0 0% 95%',
     '--sidebar-primary': '142 65% 47%',
     '--sidebar-primary-foreground': '0 0% 100%',

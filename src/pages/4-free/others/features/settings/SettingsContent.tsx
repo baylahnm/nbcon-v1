@@ -357,8 +357,8 @@ export function SettingsContent() {
               <SettingsIcon className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-bold tracking-tight">Settings</h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <h1 className="text-[18px] font-bold tracking-tight">Settings</h1>
+              <p className="text-[14px] text-muted-foreground mt-0.5">
                 Manage your account preferences and platform settings
               </p>
             </div>
@@ -372,24 +372,24 @@ export function SettingsContent() {
         </div>
 
       <Tabs defaultValue="account" className="space-y-4">
-        <TabsList className="h-9">
-          <TabsTrigger value="account" className="text-xs">
+        <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
+            <TabsTrigger value="account" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <User className="h-3.5 w-3.5 mr-1.5" />
             Account
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="text-xs">
+          <TabsTrigger value="notifications" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Bell className="h-3.5 w-3.5 mr-1.5" />
             Notifications
           </TabsTrigger>
-          <TabsTrigger value="privacy" className="text-xs">
+          <TabsTrigger value="privacy" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Shield className="h-3.5 w-3.5 mr-1.5" />
             Privacy & Security
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="text-xs">
+          <TabsTrigger value="appearance" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Palette className="h-3.5 w-3.5 mr-1.5" />
             Appearance
           </TabsTrigger>
-          <TabsTrigger value="advanced" className="text-xs">
+          <TabsTrigger value="advanced" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Zap className="h-3.5 w-3.5 mr-1.5" />
             Advanced
           </TabsTrigger>
@@ -443,27 +443,27 @@ export function SettingsContent() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName" className="mb-2">First Name</Label>
                     <Input id="firstName" defaultValue="Nasser" />
                   </div>
                   <div>
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName" className="mb-2">Last Name</Label>
                     <Input id="lastName" defaultValue="Baylah" />
                   </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="mb-2">Email</Label>
                   <Input id="email" type="email" defaultValue="info@nbcon.app" />
                 </div>
                 
                 <div>
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="phone" className="mb-2">Phone</Label>
                   <Input id="phone" defaultValue="+966 55 123 4567" />
                 </div>
                 
                 <div>
-                  <Label htmlFor="bio">Bio</Label>
+                  <Label htmlFor="bio" className="mb-2">Bio</Label>
                   <Textarea 
                     id="bio" 
                     placeholder="Tell us about yourself..."
@@ -501,19 +501,19 @@ export function SettingsContent() {
               </CardHeader>
               <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div>
-                  <Label htmlFor="title">Job Title</Label>
+                  <Label htmlFor="title" className="mb-2">Job Title</Label>
                   <Input id="title" defaultValue="Senior Structural Engineer" />
                 </div>
                 
                 <div>
-                  <Label htmlFor="company">Company</Label>
+                  <Label htmlFor="company" className="mb-2">Company</Label>
                   <Input id="company" defaultValue="Independent Consultant" />
                 </div>
                 
                 <div>
-                  <Label htmlFor="experience">Years of Experience</Label>
+                  <Label htmlFor="experience" className="mb-2">Years of Experience</Label>
                   <Select defaultValue="12+">
-                    <SelectTrigger className="bg-secondary text-secondary-foreground hover:bg-secondary/80 [&_svg]:!text-secondary-foreground">
+                    <SelectTrigger className="bg-accent text-accent-foreground hover:bg-accent/80 [&_svg]:!text-accent-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -527,12 +527,12 @@ export function SettingsContent() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="specialization">Specialization</Label>
+                  <Label htmlFor="specialization" className="mb-2">Specialization</Label>
                   <Input id="specialization" defaultValue="Structural Engineering, Seismic Design" />
                 </div>
                 
                 <div>
-                  <Label htmlFor="sceNumber">SCE License Number</Label>
+                  <Label htmlFor="sceNumber" className="mb-2">SCE License Number</Label>
                   <Input id="sceNumber" defaultValue="SCE-SE-2024-789456" />
                 </div>
                 
@@ -573,19 +573,19 @@ export function SettingsContent() {
             </CardHeader>
             <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button variant="outline" className="justify-start h-8 text-xs">
+                <Button variant="outline" className="justify-start h-[36px] text-xs">
                   <Key className="h-3.5 w-3.5 mr-1.5" />
                   Change Password
                 </Button>
-                <Button variant="outline" className="justify-start h-8 text-xs">
+                <Button variant="outline" className="justify-start h-[36px] text-xs">
                   <Download className="h-3.5 w-3.5 mr-1.5" />
                   Download Data
                 </Button>
-                <Button variant="outline" className="justify-start h-8 text-xs text-destructive">
+                <Button variant="outline" className="justify-start h-[36px] text-xs text-destructive">
                   <Trash2 className="h-3.5 w-3.5 mr-1.5" />
                   Delete Account
                 </Button>
-                <Button variant="outline" className="justify-start h-8 text-xs text-destructive">
+                <Button variant="outline" className="justify-start h-[36px] text-xs text-destructive">
                   <LogOut className="h-3.5 w-3.5 mr-1.5" />
                   Sign Out All Devices
                 </Button>

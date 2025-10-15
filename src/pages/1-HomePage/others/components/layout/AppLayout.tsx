@@ -97,15 +97,16 @@ export function AppLayout({
                 
                 {/* AI Button - Only show on dashboard routes */}
                 {isDashboardRoute && (
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <button
                     onClick={() => setIsAiDrawerOpen(!isAiDrawerOpen)}
-                    className="flex items-center gap-2"
+                    className="relative inline-flex h-9 overflow-hidden rounded-md p-[1px] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
                   >
-                    <Bot className="w-4 h-4" />
-                    AI
-                  </Button>
+                    <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--primary)/0.3)_50%,hsl(var(--primary))_100%)]" />
+                    <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-background px-3 py-1 text-sm font-medium text-foreground backdrop-blur-3xl gap-2">
+                      <Bot className="w-4 h-4" />
+                      AI
+                    </span>
+                  </button>
                 )}
               </div>
             </div>
