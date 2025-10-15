@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, BarChart3, Clock, Shield, MessageSquare, ArrowRight, Brain } from 'lucide-react';
+import { Bot, BarChart3, Clock, Shield, MessageSquare, ArrowRight, Brain, Plus, Settings2, Mic, ArrowUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -14,14 +14,14 @@ export const AIChatAssistant: React.FC = () => {
   const [typedPlaceholder, setTypedPlaceholder] = useState('');
 
   useEffect(() => {
-    const placeholderText = t('aiAssistant.chat.placeholder');
+    const placeholderText = 'Ask about engineering projects, costs, or find engineers...';
     let index = 0;
     
     const typeText = () => {
       if (index < placeholderText.length) {
         setTypedPlaceholder(placeholderText.slice(0, index + 1));
         index++;
-        setTimeout(typeText, 100);
+        setTimeout(typeText, 50);
       } else {
         // Reset after a delay
         setTimeout(() => {
@@ -33,7 +33,7 @@ export const AIChatAssistant: React.FC = () => {
     };
 
     typeText();
-  }, [t]);
+  }, []);
 
   return (
     <section className="py-[100px] px-6 md:py-[100px] md:px-0 bg-muted/30">
@@ -52,7 +52,7 @@ export const AIChatAssistant: React.FC = () => {
               </div>
             }
           >
-            <div className="relative rounded-2xl p-[2px] h-[600px] overflow-hidden bg-card shadow-2xl">
+            <div className="relative rounded-2xl p-[2px] pb-[17px] h-[600px] overflow-hidden bg-background shadow-2xl backdrop-blur-xl">
               {/* Laser Flow animated border */}
               <div className="pointer-events-none absolute inset-0 z-0 animate-[spin_8s_linear_infinite] bg-[conic-gradient(hsl(var(--primary))_0%,hsl(var(--accent))_25%,hsl(var(--secondary))_50%,hsl(var(--destructive))_75%,hsl(var(--primary))_100%)] opacity-60" />
               
@@ -96,11 +96,11 @@ export const AIChatAssistant: React.FC = () => {
               </div>
 
               {/* Dashboard Content */}
-              <div className="flex-1 p-6 overflow-hidden">
+              <div className="flex-1 p-0 overflow-hidden bg-background">
                 {activeTab === 'chat' && (
                   <div className="h-full flex flex-col">
                     {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+                    <div className="flex-1 overflow-y-auto space-y-4 pt-4 pl-4">
                       {/* AI Welcome Message */}
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -115,7 +115,7 @@ export const AIChatAssistant: React.FC = () => {
                       </div>
                         
                       {/* Sample User Message */}
-                      <div className="flex items-start space-x-3 justify-end">
+                      <div className="flex items-start space-x-3 justify-end pr-4">
                         <div className="bg-primary rounded-lg p-3 max-w-md">
                           <p className="text-sm text-primary-foreground">
                             {t('aiAssistant.chat.userMessage')}
@@ -151,23 +151,61 @@ export const AIChatAssistant: React.FC = () => {
                       </div>
                     </div>
                     
-                    {/* Chat Input */}
-                    <div className="border-t border-sidebar-border pt-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex-1 relative">
-                          <input
-                            type="text"
-                            placeholder={typedPlaceholder}
-                            className="w-full p-3 pr-12 border border-sidebar-border rounded-lg bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                          />
-                          <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary">
-                            <MessageSquare className="w-4 h-4" />
-                          </button>
-                        </div>
-                        <Button className="px-6">
-                          <span className="hidden sm:inline">{t('aiAssistant.chat.send')}</span>
-                          <ArrowRight className="w-4 h-4 sm:ml-2" />
-                        </Button>
+                    {/* Chat Input - Modern Design */}
+                    <div className="p-4 pb-[17px] border-t border-sidebar-border bg-card">
+                      <div className="w-full">
+                        <form onSubmit={(e) => e.preventDefault()}>
+                          <div className="flex flex-col rounded-[28px] p-2 shadow-sm transition-colors bg-background border border-border cursor-text">
+                                <input type="file" className="hidden" accept="image/*" />
+                                <textarea
+                                  rows={1}
+                                  placeholder={typedPlaceholder}
+                                  className="custom-scrollbar w-full resize-none border-0 bg-transparent p-3 text-foreground placeholder:text-muted-foreground focus:ring-0 focus-visible:outline-none min-h-12"
+                                  style={{ height: '48px' }}
+                                />
+                                <div className="mt-0.5 p-1 pt-0">
+                                  <div className="flex items-center gap-2">
+                                    {/* Attach Image Button */}
+                                    <button
+                                      type="button"
+                                      className="flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none"
+                                    >
+                                      <Plus className="h-6 w-6" />
+                                      <span className="sr-only">Attach image</span>
+                                    </button>
+                                    
+                                    {/* Tools Button */}
+                                    <button
+                                      type="button"
+                                      className="flex h-8 items-center gap-2 rounded-full p-2 text-sm text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-ring"
+                                    >
+                                      <Settings2 className="h-4 w-4" />
+                                      Tools
+                                    </button>
+
+                                    <div className="ml-auto flex items-center gap-2">
+                                      {/* Voice Record Button */}
+                                      <button
+                                        type="button"
+                                        className="flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none"
+                                      >
+                                        <Mic className="h-5 w-5" />
+                                        <span className="sr-only">Record voice</span>
+                                      </button>
+                                      
+                                      {/* Send Button */}
+                                      <button
+                                        type="submit"
+                                        className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-primary/40"
+                                      >
+                                        <ArrowUp className="h-6 w-6" />
+                                        <span className="sr-only">Send message</span>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                          </div>
+                        </form>
                       </div>
                     </div>
                   </div>

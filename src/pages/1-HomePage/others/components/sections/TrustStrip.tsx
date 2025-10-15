@@ -7,7 +7,7 @@ interface TrustStripProps {
 
 export const TrustStrip: React.FC<TrustStripProps> = ({ title }) => {
   return (
-    <section className="py-[100px] px-6 md:px-0 bg-background">
+    <section className="pt-[100px] pb-0 px-6 md:px-0 bg-background">
       <div className="container mx-auto px-0 text-center">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">
           <TypewriterText 
@@ -92,6 +92,17 @@ export const TrustStrip: React.FC<TrustStripProps> = ({ title }) => {
             <img src="/clintes-logos/wsp.png" alt="WSP" className="h-48 w-48 object-contain flex-shrink-0 transition-all duration-300 hover:scale-110 hover:brightness-110 hover:drop-shadow-lg" />
           </div>
         </div>
+      </div>
+      
+      {/* Laser Flow Animation */}
+      <div className="relative h-[3px] overflow-hidden mt-12">
+        <div 
+          className="absolute inset-0 animate-laser-flow"
+          style={{
+            background: 'linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.6) 50%, transparent 100%)',
+            backgroundSize: '200% 100%',
+          }}
+        />
       </div>
     </section>
   );
