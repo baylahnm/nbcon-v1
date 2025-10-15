@@ -188,23 +188,25 @@ export default function PostJobPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto px-6 py-8 space-y-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Plus className="h-6 w-6 text-primary" />
-            Post New Job
-          </h1>
-          <p className="text-muted-foreground">Find the perfect engineer for your project</p>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
+            <Plus className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-base font-bold tracking-tight">Post New Job</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">Find the perfect engineer for your project</p>
+          </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Eye className="h-4 w-4 mr-2" />
+          <Button variant="outline" className="h-8 text-xs">
+            <Eye className="h-3.5 w-3.5 mr-1.5" />
             Preview
           </Button>
-          <Button size="sm" disabled={!isFormValid()}>
-            <Send className="h-4 w-4 mr-2" />
+          <Button className="h-8 text-xs" disabled={!isFormValid()}>
+            <Send className="h-3.5 w-3.5 mr-1.5" />
             Post Job
           </Button>
         </div>
@@ -213,45 +215,45 @@ export default function PostJobPage() {
       {/* Progress Indicator */}
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
             activeTab === 'basic' ? 'bg-primary text-primary-foreground' : 'bg-muted'
           }`}>
             1
           </div>
-          <span className={`text-sm ${activeTab === 'basic' ? 'font-medium' : 'text-muted-foreground'}`}>
+          <span className={`text-xs ${activeTab === 'basic' ? 'font-medium' : 'text-muted-foreground'}`}>
             Basic Info
           </span>
         </div>
         <div className="w-8 h-px bg-muted" />
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
             activeTab === 'details' ? 'bg-primary text-primary-foreground' : 'bg-muted'
           }`}>
             2
           </div>
-          <span className={`text-sm ${activeTab === 'details' ? 'font-medium' : 'text-muted-foreground'}`}>
+          <span className={`text-xs ${activeTab === 'details' ? 'font-medium' : 'text-muted-foreground'}`}>
             Details
           </span>
         </div>
         <div className="w-8 h-px bg-muted" />
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
             activeTab === 'requirements' ? 'bg-primary text-primary-foreground' : 'bg-muted'
           }`}>
             3
           </div>
-          <span className={`text-sm ${activeTab === 'requirements' ? 'font-medium' : 'text-muted-foreground'}`}>
+          <span className={`text-xs ${activeTab === 'requirements' ? 'font-medium' : 'text-muted-foreground'}`}>
             Requirements
           </span>
         </div>
         <div className="w-8 h-px bg-muted" />
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
             activeTab === 'review' ? 'bg-primary text-primary-foreground' : 'bg-muted'
           }`}>
             4
           </div>
-          <span className={`text-sm ${activeTab === 'review' ? 'font-medium' : 'text-muted-foreground'}`}>
+          <span className={`text-xs ${activeTab === 'review' ? 'font-medium' : 'text-muted-foreground'}`}>
             Review
           </span>
         </div>
@@ -270,13 +272,13 @@ export default function PostJobPage() {
         <TabsContent value="basic" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Job Title & Category</CardTitle>
-                <CardDescription>Basic information about your job posting</CardDescription>
+              <CardHeader className="p-5 pb-3">
+                <CardTitle className="text-base font-bold tracking-tight">Job Title & Category</CardTitle>
+                <CardDescription className="text-xs">Basic information about your job posting</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Job Title *</label>
+                  <label className="text-xs font-medium mb-2 block">Job Title *</label>
                   <Input
                     placeholder="e.g., Senior Structural Engineer"
                     value={formData.title}
@@ -284,7 +286,7 @@ export default function PostJobPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Category *</label>
+                  <label className="text-xs font-medium mb-2 block">Category *</label>
                   <select
                     value={formData.category}
                     onChange={(e) => handleInputChange('category', e.target.value)}
@@ -297,7 +299,7 @@ export default function PostJobPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Location *</label>
+                  <label className="text-xs font-medium mb-2 block">Location *</label>
                   <select
                     value={formData.location}
                     onChange={(e) => handleInputChange('location', e.target.value)}
@@ -313,13 +315,13 @@ export default function PostJobPage() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Budget & Timeline</CardTitle>
-                <CardDescription>Set your budget range and project timeline</CardDescription>
+              <CardHeader className="p-5 pb-3">
+                <CardTitle className="text-base font-bold tracking-tight">Budget & Timeline</CardTitle>
+                <CardDescription className="text-xs">Set your budget range and project timeline</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Budget Range *</label>
+                  <label className="text-xs font-medium mb-2 block">Budget Range *</label>
                   <div className="grid grid-cols-3 gap-2">
                     <Input
                       type="number"
@@ -345,7 +347,7 @@ export default function PostJobPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Project Timeline *</label>
+                  <label className="text-xs font-medium mb-2 block">Project Timeline *</label>
                   <select
                     value={formData.timeline}
                     onChange={(e) => handleInputChange('timeline', e.target.value)}
@@ -358,7 +360,7 @@ export default function PostJobPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Experience Level *</label>
+                  <label className="text-xs font-medium mb-2 block">Experience Level *</label>
                   <select
                     value={formData.experience}
                     onChange={(e) => handleInputChange('experience', e.target.value)}
@@ -384,13 +386,13 @@ export default function PostJobPage() {
         {/* Project Details Tab */}
         <TabsContent value="details" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Project Description</CardTitle>
-              <CardDescription>Describe your project in detail</CardDescription>
+            <CardHeader className="p-5 pb-3">
+              <CardTitle className="text-base font-bold tracking-tight">Project Description</CardTitle>
+              <CardDescription className="text-xs">Describe your project in detail</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-5 space-y-4">
               <div>
-                <label className="text-sm font-medium mb-2 block">Project Description *</label>
+                <label className="text-xs font-medium mb-2 block">Project Description *</label>
                 <textarea
                   rows={6}
                   placeholder="Describe your project, objectives, and what you're looking for..."
@@ -416,11 +418,11 @@ export default function PostJobPage() {
         <TabsContent value="requirements" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Required Skills</CardTitle>
-                <CardDescription>Technical skills needed</CardDescription>
+              <CardHeader className="p-5 pb-3">
+                <CardTitle className="text-base font-bold tracking-tight">Required Skills</CardTitle>
+                <CardDescription className="text-xs">Technical skills needed</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4">
                 <div className="flex gap-2">
                   <Input
                     placeholder="Add skill"
@@ -444,11 +446,11 @@ export default function PostJobPage() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Requirements</CardTitle>
-                <CardDescription>Must-have requirements</CardDescription>
+              <CardHeader className="p-5 pb-3">
+                <CardTitle className="text-base font-bold tracking-tight">Requirements</CardTitle>
+                <CardDescription className="text-xs">Must-have requirements</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4">
                 <div className="flex gap-2">
                   <Input
                     placeholder="Add requirement"
@@ -472,11 +474,11 @@ export default function PostJobPage() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Deliverables</CardTitle>
-                <CardDescription>Expected project outputs</CardDescription>
+              <CardHeader className="p-5 pb-3">
+                <CardTitle className="text-base font-bold tracking-tight">Deliverables</CardTitle>
+                <CardDescription className="text-xs">Expected project outputs</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4">
                 <div className="flex gap-2">
                   <Input
                     placeholder="Add deliverable"
@@ -513,14 +515,14 @@ export default function PostJobPage() {
         {/* Review Tab */}
         <TabsContent value="review" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Review Your Job Posting</CardTitle>
-              <CardDescription>Check all details before publishing</CardDescription>
+            <CardHeader className="p-5 pb-3">
+              <CardTitle className="text-base font-bold tracking-tight">Review Your Job Posting</CardTitle>
+              <CardDescription className="text-xs">Check all details before publishing</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="p-5 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-semibold mb-2">Basic Information</h3>
+                  <h3 className="text-base font-bold tracking-tight mb-2">Basic Information</h3>
                   <div className="space-y-2 text-sm">
                     <p><strong>Title:</strong> {formData.title}</p>
                     <p><strong>Category:</strong> {formData.category}</p>
@@ -530,7 +532,7 @@ export default function PostJobPage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Budget</h3>
+                  <h3 className="text-base font-bold tracking-tight mb-2">Budget</h3>
                   <div className="space-y-2 text-sm">
                     <p><strong>Range:</strong> {formData.budget.min.toLocaleString()} - {formData.budget.max.toLocaleString()} {formData.budget.currency}</p>
                   </div>
@@ -538,13 +540,13 @@ export default function PostJobPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-2">Project Description</h3>
+                <h3 className="text-base font-bold tracking-tight mb-2">Project Description</h3>
                 <p className="text-sm text-muted-foreground">{formData.description}</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Skills ({formData.skills.length})</h3>
+                  <h3 className="text-base font-bold tracking-tight mb-2">Skills ({formData.skills.length})</h3>
                   <div className="flex flex-wrap gap-1">
                     {formData.skills.map((skill) => (
                       <Badge key={skill} variant="secondary" className="text-xs">
@@ -554,7 +556,7 @@ export default function PostJobPage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Requirements ({formData.requirements.length})</h3>
+                  <h3 className="text-base font-bold tracking-tight mb-2">Requirements ({formData.requirements.length})</h3>
                   <ul className="text-sm space-y-1">
                     {formData.requirements.map((req) => (
                       <li key={req} className="flex items-start gap-2">
@@ -565,7 +567,7 @@ export default function PostJobPage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Deliverables ({formData.deliverables.length})</h3>
+                  <h3 className="text-base font-bold tracking-tight mb-2">Deliverables ({formData.deliverables.length})</h3>
                   <ul className="text-sm space-y-1">
                     {formData.deliverables.map((del) => (
                       <li key={del} className="flex items-start gap-2">
