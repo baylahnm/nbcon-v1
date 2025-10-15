@@ -188,7 +188,8 @@ export default function PostJobPage() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-8 space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="container mx-auto px-6 py-8 space-y-8">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
         <div className="flex items-center gap-3">
@@ -592,6 +593,7 @@ export default function PostJobPage() {
           </div>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
