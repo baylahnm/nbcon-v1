@@ -144,43 +144,56 @@ export function ClientRecentActivityFeed({
       </CardHeader>
 
       {!isCollapsed && (
-        <CardContent className="p-5 space-y-3 bg-background rounded-b-xl">
-          {displayedActivities.map((activity) => {
-            const { Icon, color, bgColor, ringColor } = getActivityIcon(activity.type);
-            
-            return (
-              <div 
-                key={activity.id}
-                className="flex items-start gap-3 p-3 bg-muted/20 rounded-lg hover:bg-muted/40 transition-colors"
-              >
-                <div className={`${bgColor} p-2.5 rounded-lg ring-1 ${ringColor} shrink-0`}>
-                  <Icon className={`h-4 w-4 ${color}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium leading-relaxed line-clamp-1">
-                    {activity.description}
-                  </p>
-                  <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>{activity.relativeTime}</span>
+        <>
+          <CardContent className="p-5 space-y-3 bg-background">
+            {displayedActivities.map((activity) => {
+              const { Icon, color, bgColor, ringColor } = getActivityIcon(activity.type);
+              
+              return (
+                <div 
+                  key={activity.id}
+                  className="flex items-start gap-3 p-3 bg-muted/20 rounded-lg hover:bg-muted/40 transition-colors"
+                >
+                  <div className={`${bgColor} p-2.5 rounded-lg ring-1 ${ringColor} shrink-0`}>
+                    <Icon className={`h-4 w-4 ${color}`} />
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium leading-relaxed line-clamp-1">
+                      {activity.description}
+                    </p>
+                    <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      <span>{activity.relativeTime}</span>
+                    </div>
+                  </div>
+                  {activity.link && (
+                    <Button 
+                      asChild
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-7 w-7 p-0 shrink-0"
+                    >
+                      <Link to={activity.link}>
+                        <Eye className="h-3.5 w-3.5" />
+                      </Link>
+                    </Button>
+                  )}
                 </div>
-                {activity.link && (
-                  <Button 
-                    asChild
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-7 w-7 p-0 shrink-0"
-                  >
-                    <Link to={activity.link}>
-                      <Eye className="h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            );
-          })}
-        </CardContent>
+              );
+            })}
+          </CardContent>
+          
+          {/* Laser Flow Animation */}
+          <div className="relative h-[3px] overflow-hidden rounded-b-xl">
+            <div 
+              className="absolute inset-0 animate-laser-flow"
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.6) 50%, transparent 100%)',
+                backgroundSize: '200% 100%',
+              }}
+            />
+          </div>
+        </>
       )}
     </Card>
   );

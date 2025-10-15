@@ -99,6 +99,20 @@
   animation-play-state: paused;
 }
 
+/* Laser Flow Animation */
+@keyframes laser-flow {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-laser-flow {
+  animation: laser-flow 4s linear infinite;
+}
+
 /* Hide scrollbars for horizontal scroll containers */
 .hide-scrollbar {
   -ms-overflow-style: none;  /* Internet Explorer 10+ */
