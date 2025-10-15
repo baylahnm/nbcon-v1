@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
 import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
@@ -122,6 +122,44 @@ export default function HelpPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
+  // Refs for animated gradient cards
+  const quickAction1Ref = useRef<HTMLDivElement>(null);
+  const quickAction2Ref = useRef<HTMLDivElement>(null);
+  const quickAction3Ref = useRef<HTMLDivElement>(null);
+  const quickAction4Ref = useRef<HTMLDivElement>(null);
+
+  // Add mouse tracking for animated gradient on quick action cards
+  useEffect(() => {
+    const cards = [quickAction1Ref, quickAction2Ref, quickAction3Ref, quickAction4Ref];
+    
+    const handlers = cards.map(ref => {
+      const card = ref.current;
+      if (!card) return null;
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const angle = Math.atan2(y - centerY, x - centerX);
+        card.style.setProperty('--rotation', `${angle}rad`);
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      return { card, handleMouseMove };
+    });
+
+    return () => {
+      handlers.forEach(handler => {
+        if (handler) {
+          handler.card.removeEventListener('mousemove', handler.handleMouseMove);
+        }
+      });
+    };
+  }, []);
+
   const filteredArticles = mockArticles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          article.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
@@ -161,34 +199,109 @@ export default function HelpPage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <MessageSquare className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-            <h3 className="font-semibold text-sm mb-1">Live Chat</h3>
-            <p className="text-xs text-muted-foreground">Get instant help</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <Phone className="h-8 w-8 mx-auto mb-2 text-green-600" />
-            <h3 className="font-semibold text-sm mb-1">Phone Support</h3>
-            <p className="text-xs text-muted-foreground">Call us directly</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <Mail className="h-8 w-8 mx-auto mb-2 text-purple-600" />
-            <h3 className="font-semibold text-sm mb-1">Email Support</h3>
-            <p className="text-xs text-muted-foreground">Send us a message</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-          <CardContent className="p-4 text-center">
-            <Video className="h-8 w-8 mx-auto mb-2 text-red-600" />
-            <h3 className="font-semibold text-sm mb-1">Video Tutorials</h3>
-            <p className="text-xs text-muted-foreground">Watch guides</p>
-          </CardContent>
-        </Card>
+        <div
+          ref={quickAction1Ref}
+          className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+          style={{
+            '--rotation': '4.2rad',
+            border: '2px solid transparent',
+            borderRadius: '0.5rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+          } as React.CSSProperties}
+        >
+          <Card className="bg-transparent border-0">
+            <CardContent className="p-4 text-center">
+              <div className="bg-blue-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-blue-500/20">
+                <MessageSquare className="h-6 w-6 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-base mb-1">Live Chat</h3>
+              <p className="text-xs text-muted-foreground">Get instant help</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div
+          ref={quickAction2Ref}
+          className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+          style={{
+            '--rotation': '4.2rad',
+            border: '2px solid transparent',
+            borderRadius: '0.5rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+          } as React.CSSProperties}
+        >
+          <Card className="bg-transparent border-0">
+            <CardContent className="p-4 text-center">
+              <div className="bg-green-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-green-500/20">
+                <Phone className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="font-bold text-base mb-1">Phone Support</h3>
+              <p className="text-xs text-muted-foreground">Call us directly</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div
+          ref={quickAction3Ref}
+          className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+          style={{
+            '--rotation': '4.2rad',
+            border: '2px solid transparent',
+            borderRadius: '0.5rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+          } as React.CSSProperties}
+        >
+          <Card className="bg-transparent border-0">
+            <CardContent className="p-4 text-center">
+              <div className="bg-purple-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-purple-500/20">
+                <Mail className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="font-bold text-base mb-1">Email Support</h3>
+              <p className="text-xs text-muted-foreground">Send us a message</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div
+          ref={quickAction4Ref}
+          className="relative overflow-hidden transition-all duration-300 cursor-pointer"
+          style={{
+            '--rotation': '4.2rad',
+            border: '2px solid transparent',
+            borderRadius: '0.5rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+          } as React.CSSProperties}
+        >
+          <Card className="bg-transparent border-0">
+            <CardContent className="p-4 text-center">
+              <div className="bg-red-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-red-500/20">
+                <Video className="h-6 w-6 text-red-600" />
+              </div>
+              <h3 className="font-bold text-base mb-1">Video Tutorials</h3>
+              <p className="text-xs text-muted-foreground">Watch guides</p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Search and Filters */}
@@ -227,9 +340,38 @@ export default function HelpPage() {
 
         {/* Help Articles Tab */}
         <TabsContent value="articles" className="space-y-4">
-          <div className="space-y-4">
-            {filteredArticles.map((article) => (
-              <Card key={article.id} className="hover:shadow-md transition-shadow">
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <BookOpen className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Help Articles</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Browse our knowledge base</p>
+                  </div>
+                </div>
+                <Badge className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">
+                  {filteredArticles.length}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              {filteredArticles.map((article) => (
+                <Card key={article.id} className="hover:shadow-md transition-shadow border-border/50">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -263,16 +405,46 @@ export default function HelpPage() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
+            </Card>
+          ))}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* FAQ Tab */}
         <TabsContent value="faq" className="space-y-4">
-          <div className="space-y-4">
-            {filteredFAQs.map((faq) => (
-              <Card key={faq.id} className="hover:shadow-md transition-shadow">
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <HelpCircle className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Frequently Asked Questions</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Quick answers to common questions</p>
+                  </div>
+                </div>
+                <Badge className="h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">
+                  {filteredFAQs.length}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              {filteredFAQs.map((faq) => (
+                <Card key={faq.id} className="hover:shadow-md transition-shadow border-border/50">
                 <CardContent className="p-6">
                   <div className="space-y-3">
                     <div className="flex items-start justify-between">
@@ -295,60 +467,105 @@ export default function HelpPage() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
+            </Card>
+          ))}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Contact Support Tab */}
         <TabsContent value="contact" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Contact Methods */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Get in Touch</CardTitle>
-                <CardDescription>Choose your preferred way to contact us</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted cursor-pointer">
-                  <MessageSquare className="h-5 w-5 text-blue-600" />
-                  <div className="flex-1">
-                    <h3 className="font-semibold">Live Chat</h3>
-                    <p className="text-sm text-muted-foreground">Get instant help from our support team</p>
-                    <p className="text-xs text-green-600">Available now</p>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <MessageSquare className="h-6 w-6 text-white" />
                   </div>
-                  <Button size="sm">Start Chat</Button>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Get in Touch</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Choose your preferred way to contact us</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+                <div className="flex items-center gap-3 p-3 border border-border/50 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className="bg-blue-500/10 h-10 w-10 flex items-center justify-center rounded-lg ring-1 ring-blue-500/20 flex-shrink-0">
+                    <MessageSquare className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-sm">Live Chat</h3>
+                    <p className="text-xs text-muted-foreground">Get instant help from our support team</p>
+                    <p className="text-xs text-green-600 font-medium">Available now</p>
+                  </div>
+                  <Button className="h-7 text-xs">Start Chat</Button>
                 </div>
 
-                <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted cursor-pointer">
-                  <Phone className="h-5 w-5 text-green-600" />
-                  <div className="flex-1">
-                    <h3 className="font-semibold">Phone Support</h3>
-                    <p className="text-sm text-muted-foreground">Call us for immediate assistance</p>
+                <div className="flex items-center gap-3 p-3 border border-border/50 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className="bg-green-500/10 h-10 w-10 flex items-center justify-center rounded-lg ring-1 ring-green-500/20 flex-shrink-0">
+                    <Phone className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-sm">Phone Support</h3>
+                    <p className="text-xs text-muted-foreground">Call us for immediate assistance</p>
                     <p className="text-xs text-muted-foreground">+966 11 123 4567</p>
                   </div>
-                  <Button size="sm" variant="outline">Call Now</Button>
+                  <Button variant="outline" className="h-7 text-xs">Call Now</Button>
                 </div>
 
-                <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted cursor-pointer">
-                  <Mail className="h-5 w-5 text-purple-600" />
-                  <div className="flex-1">
-                    <h3 className="font-semibold">Email Support</h3>
-                    <p className="text-sm text-muted-foreground">Send us a detailed message</p>
+                <div className="flex items-center gap-3 p-3 border border-border/50 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className="bg-purple-500/10 h-10 w-10 flex items-center justify-center rounded-lg ring-1 ring-purple-500/20 flex-shrink-0">
+                    <Mail className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-sm">Email Support</h3>
+                    <p className="text-xs text-muted-foreground">Send us a detailed message</p>
                     <p className="text-xs text-muted-foreground">support@nbcon.app</p>
                   </div>
-                  <Button size="sm" variant="outline">Send Email</Button>
+                  <Button variant="outline" className="h-7 text-xs">Send Email</Button>
                 </div>
               </CardContent>
             </Card>
 
             {/* Support Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Send us a Message</CardTitle>
-                <CardDescription>Describe your issue and we'll get back to you</CardDescription>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <Mail className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Send us a Message</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Describe your issue and we'll get back to you</p>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-5 bg-background rounded-b-xl">
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium mb-2 block">Subject</label>
@@ -392,28 +609,53 @@ export default function HelpPage() {
           </div>
 
           {/* Support Hours */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Support Hours</CardTitle>
-              <CardDescription>When you can reach our support team</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 border rounded-lg">
-                  <Clock className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                  <h3 className="font-semibold mb-1">Live Chat</h3>
-                  <p className="text-sm text-muted-foreground">24/7 Available</p>
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+            >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <Clock className="h-6 w-6 text-white" />
                 </div>
-                <div className="text-center p-4 border rounded-lg">
-                  <Phone className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                  <h3 className="font-semibold mb-1">Phone Support</h3>
-                  <p className="text-sm text-muted-foreground">Sun-Thu: 9AM-6PM</p>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">Support Hours</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">When you can reach our support team</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5 bg-background rounded-b-xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 border border-border/50 rounded-lg">
+                  <div className="bg-blue-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-blue-500/20">
+                    <Clock className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="font-bold text-base mb-1">Live Chat</h3>
+                  <p className="text-xs text-muted-foreground">24/7 Available</p>
+                </div>
+                <div className="text-center p-4 border border-border/50 rounded-lg">
+                  <div className="bg-green-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-green-500/20">
+                    <Phone className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="font-bold text-base mb-1">Phone Support</h3>
+                  <p className="text-xs text-muted-foreground">Sun-Thu: 9AM-6PM</p>
                   <p className="text-xs text-muted-foreground">Fri-Sat: 10AM-4PM</p>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
-                  <Mail className="h-8 w-8 mx-auto mb-2 text-purple-600" />
-                  <h3 className="font-semibold mb-1">Email Support</h3>
-                  <p className="text-sm text-muted-foreground">Response within 24h</p>
+                <div className="text-center p-4 border border-border/50 rounded-lg">
+                  <div className="bg-purple-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-purple-500/20">
+                    <Mail className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <h3 className="font-bold text-base mb-1">Email Support</h3>
+                  <p className="text-xs text-muted-foreground">Response within 24h</p>
                 </div>
               </div>
             </CardContent>

@@ -32,7 +32,7 @@ export function AppLayout({
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false);
 
   // Check if current route is a dashboard route
-  const isDashboardRoute = ['/e', '/c', '/x', '/admin'].some(route => 
+  const isDashboardRoute = ['/e', '/c', '/x', '/admin', '/free'].some(route => 
     location.pathname.startsWith(route)
   );
 

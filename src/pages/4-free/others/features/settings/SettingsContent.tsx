@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../../stores/auth";
 import { getUserDisplayName } from "../../../../1-HomePage/others/lib/userUtils";
+import { useThemeStore, THEME_METADATA, THEME_TOKENS } from "../../../../../shared/stores/theme";
 import { 
   User,
   Settings as SettingsIcon,
@@ -191,26 +192,6 @@ interface SecurityLog {
   success: boolean;
 }
 
-interface ThemePreset {
-  id: string;
-  name: string;
-  description: string;
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    background: string;
-    foreground: string;
-  };
-}
-
-interface Token {
-  key: string;
-  description: string;
-  value: string;
-  category: string;
-}
-
 const notificationSettings: NotificationSetting[] = [
   {
     id: "1",
@@ -307,80 +288,14 @@ const securityLogs: SecurityLog[] = [
   }
 ];
 
-const themePresets: ThemePreset[] = [
-  {
-    id: "default",
-    name: "Default",
-    description: "Clean and professional theme",
-    colors: {
-      primary: "hsl(222.2 84% 4.9%)",
-      secondary: "hsl(210 40% 98%)",
-      accent: "hsl(210 40% 98%)",
-      background: "hsl(0 0% 100%)",
-      foreground: "hsl(222.2 84% 4.9%)"
-    }
-  },
-  {
-    id: "dark",
-    name: "Dark Mode",
-    description: "Easy on the eyes for low-light environments",
-    colors: {
-      primary: "hsl(210 40% 98%)",
-      secondary: "hsl(222.2 84% 4.9%)",
-      accent: "hsl(222.2 84% 4.9%)",
-      background: "hsl(222.2 84% 4.9%)",
-      foreground: "hsl(210 40% 98%)"
-    }
-  },
-  {
-    id: "warm",
-    name: "Warm",
-    description: "Cozy and inviting color scheme",
-    colors: {
-      primary: "hsl(24 70% 50%)",
-      secondary: "hsl(60 9% 98%)",
-      accent: "hsl(60 9% 98%)",
-      background: "hsl(60 9% 98%)",
-      foreground: "hsl(20 14.3% 4.1%)"
-    }
-  },
-  {
-    id: "cool",
-    name: "Cool",
-    description: "Calm and professional blue tones",
-    colors: {
-      primary: "hsl(221.2 83.2% 53.3%)",
-      secondary: "hsl(210 40% 98%)",
-      accent: "hsl(210 40% 98%)",
-      background: "hsl(0 0% 100%)",
-      foreground: "hsl(222.2 84% 4.9%)"
-    }
-  }
-];
-
-const designTokens: Token[] = [
-  { key: "primary", description: "Primary brand color", value: "hsl(222.2 84% 4.9%)", category: "colors" },
-  { key: "secondary", description: "Secondary brand color", value: "hsl(210 40% 98%)", category: "colors" },
-  { key: "accent", description: "Accent color for highlights", value: "hsl(210 40% 98%)", category: "colors" },
-  { key: "background", description: "Main background color", value: "hsl(0 0% 100%)", category: "colors" },
-  { key: "foreground", description: "Main text color", value: "hsl(222.2 84% 4.9%)", category: "colors" },
-  { key: "muted", description: "Muted text color", value: "hsl(215.4 16.3% 46.9%)", category: "colors" },
-  { key: "border", description: "Border color", value: "hsl(214.3 31.8% 91.4%)", category: "colors" },
-  { key: "radius", description: "Border radius", value: "0.5rem", category: "spacing" },
-  { key: "spacing", description: "Base spacing unit", value: "1rem", category: "spacing" },
-  { key: "font-family", description: "Primary font family", value: "Inter, sans-serif", category: "typography" },
-  { key: "font-size", description: "Base font size", value: "16px", category: "typography" },
-  { key: "line-height", description: "Base line height", value: "1.5", category: "typography" }
-];
-
 export function SettingsContent() {
   const { profile, updateUser } = useAuthStore();
   const currentUserName = getUserDisplayName(profile);
   
+  // Theme store
+  const { preset, applyPreset, exportTheme, importTheme, resetAll } = useThemeStore();
+  
   const [notifications, setNotifications] = useState(notificationSettings);
-  const [currentPreset, setCurrentPreset] = useState<ThemePreset>(themePresets[0]);
-  const [customTokens, setCustomTokens] = useState<Token[]>(designTokens);
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importData, setImportData] = useState("");
@@ -396,40 +311,11 @@ export function SettingsContent() {
     );
   };
 
-  const handlePresetChange = (newPreset: ThemePreset) => {
-    setCurrentPreset(newPreset);
-    // Apply preset colors to custom tokens
-    setCustomTokens(prev => 
-      prev.map(token => {
-        if (token.category === 'colors' && newPreset.colors[token.key as keyof typeof newPreset.colors]) {
-          return { ...token, value: newPreset.colors[token.key as keyof typeof newPreset.colors] };
-        }
-        return token;
-      })
-    );
-  };
-
-  const handleTokenChange = (key: string, value: string) => {
-    setCustomTokens(prev => 
-      prev.map(token => 
-        token.key === key ? { ...token, value } : token
-      )
-    );
-  };
-
   const handleImport = () => {
     setIsImporting(true);
     try {
       const data = JSON.parse(importData);
-      if (data.tokens) {
-        setCustomTokens(data.tokens);
-      }
-      if (data.preset) {
-        const preset = themePresets.find(p => p.id === data.preset);
-        if (preset) {
-          setCurrentPreset(preset);
-        }
-      }
+      importTheme(data);
       setShowImportDialog(false);
       setImportData("");
     } catch (error) {
@@ -441,17 +327,13 @@ export function SettingsContent() {
 
   const handleExport = () => {
     setIsExporting(true);
-    const exportData = {
-      tokens: customTokens,
-      preset: currentPreset.id,
-      timestamp: new Date().toISOString()
-    };
+    const exportData = exportTheme();
     
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `nbcon-theme-${currentPreset.name.toLowerCase()}-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `nbcon-theme-${preset}-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -466,66 +348,82 @@ export function SettingsContent() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="border-b pb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold flex items-center gap-2">
-              <SettingsIcon className="h-5 w-5 text-primary" />
-              Settings
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Manage your account preferences and platform settings
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+      <div className="px-6 py-4 space-y-4">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+              <SettingsIcon className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold tracking-tight">Settings</h1>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Manage your account preferences and platform settings
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={handleSave}>
-              <Save className="w-4 h-4 mr-2" />
+          <div className="flex gap-2">
+            <Button variant="outline" className="h-8 text-xs" onClick={handleSave}>
+              <Save className="h-3.5 w-3.5 mr-1.5" />
               Save Changes
             </Button>
           </div>
         </div>
-      </div>
 
-      <Tabs defaultValue="account" className="space-y-6">
-        <TabsList className="h-auto bg-transparent p-0 border-b border-sidebar-border rounded-none w-full">
-          <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
-            <TabsTrigger value="account" className="flex items-center gap-2 px-4 py-3 min-w-fit">
-              <User className="w-4 h-4" />
-              <span className="hidden sm:inline">Account</span>
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2 px-4 py-3 min-w-fit">
-              <Bell className="w-4 h-4" />
-              <span className="hidden sm:inline">Notifications</span>
-            </TabsTrigger>
-            <TabsTrigger value="privacy" className="flex items-center gap-2 px-4 py-3 min-w-fit">
-              <Shield className="w-4 h-4" />
-              <span className="hidden sm:inline">Privacy & Security</span>
-            </TabsTrigger>
-            <TabsTrigger value="appearance" className="flex items-center gap-2 px-4 py-3 min-w-fit">
-              <Palette className="w-4 h-4" />
-              <span className="hidden sm:inline">Appearance</span>
-            </TabsTrigger>
-            <TabsTrigger value="advanced" className="flex items-center gap-2 px-4 py-3 min-w-fit">
-              <Zap className="w-4 h-4" />
-              <span className="hidden sm:inline">Advanced</span>
-            </TabsTrigger>
-          </div>
+      <Tabs defaultValue="account" className="space-y-4">
+        <TabsList className="h-9">
+          <TabsTrigger value="account" className="text-xs">
+            <User className="h-3.5 w-3.5 mr-1.5" />
+            Account
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="text-xs">
+            <Bell className="h-3.5 w-3.5 mr-1.5" />
+            Notifications
+          </TabsTrigger>
+          <TabsTrigger value="privacy" className="text-xs">
+            <Shield className="h-3.5 w-3.5 mr-1.5" />
+            Privacy & Security
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="text-xs">
+            <Palette className="h-3.5 w-3.5 mr-1.5" />
+            Appearance
+          </TabsTrigger>
+          <TabsTrigger value="advanced" className="text-xs">
+            <Zap className="h-3.5 w-3.5 mr-1.5" />
+            Advanced
+          </TabsTrigger>
         </TabsList>
 
         {/* Account Settings */}
-        <TabsContent value="account" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TabsContent value="account" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Profile Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Profile Information
-                </CardTitle>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <User className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Profile Information</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Your personal details</p>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center gap-4">
                   <Avatar className="w-16 h-16">
                     <AvatarFallback className="bg-primary text-primary-foreground text-lg">
@@ -533,11 +431,11 @@ export function SettingsContent() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="space-y-2">
-                    <Button variant="outline" size="sm">
-                      <Camera className="w-4 h-4 mr-2" />
+                    <Button variant="outline" className="h-8 text-xs">
+                      <Camera className="h-3.5 w-3.5 mr-1.5" />
                       Change Photo
                     </Button>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       JPG, PNG or GIF. Max size 2MB.
                     </p>
                   </div>
@@ -577,14 +475,31 @@ export function SettingsContent() {
             </Card>
 
             {/* Professional Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building className="w-5 h-5" />
-                  Professional Information
-                </CardTitle>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <Building className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Professional Information</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Your business details</p>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div>
                   <Label htmlFor="title">Job Title</Label>
                   <Input id="title" defaultValue="Senior Structural Engineer" />
@@ -598,7 +513,7 @@ export function SettingsContent() {
                 <div>
                   <Label htmlFor="experience">Years of Experience</Label>
                   <Select defaultValue="12+">
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-secondary text-secondary-foreground hover:bg-secondary/80 [&_svg]:!text-secondary-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -632,29 +547,46 @@ export function SettingsContent() {
           </div>
 
           {/* Account Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <SettingsIcon className="w-5 h-5" />
-                Account Actions
-              </CardTitle>
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <SettingsIcon className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">Account Actions</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">Manage your account settings</p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button variant="outline" className="justify-start">
-                  <Key className="w-4 h-4 mr-2" />
+                <Button variant="outline" className="justify-start h-8 text-xs">
+                  <Key className="h-3.5 w-3.5 mr-1.5" />
                   Change Password
                 </Button>
-                <Button variant="outline" className="justify-start">
-                  <Download className="w-4 h-4 mr-2" />
+                <Button variant="outline" className="justify-start h-8 text-xs">
+                  <Download className="h-3.5 w-3.5 mr-1.5" />
                   Download Data
                 </Button>
-                <Button variant="outline" className="justify-start text-destructive">
-                  <Trash2 className="w-4 h-4 mr-2" />
+                <Button variant="outline" className="justify-start h-8 text-xs text-destructive">
+                  <Trash2 className="h-3.5 w-3.5 mr-1.5" />
                   Delete Account
                 </Button>
-                <Button variant="outline" className="justify-start text-destructive">
-                  <LogOut className="w-4 h-4 mr-2" />
+                <Button variant="outline" className="justify-start h-8 text-xs text-destructive">
+                  <LogOut className="h-3.5 w-3.5 mr-1.5" />
                   Sign Out All Devices
                 </Button>
               </div>
@@ -663,15 +595,32 @@ export function SettingsContent() {
         </TabsContent>
 
         {/* Notifications Settings */}
-        <TabsContent value="notifications" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="w-5 h-5" />
-                Notification Preferences
-              </CardTitle>
+        <TabsContent value="notifications" className="space-y-4">
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <Bell className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">Notification Preferences</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">Control how you receive updates</p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="p-5 space-y-6 bg-background rounded-b-xl">
               {notifications.map((notification) => (
                 <div key={notification.id} className="space-y-4">
                   <div className="flex items-start justify-between">
@@ -689,7 +638,7 @@ export function SettingsContent() {
                         onCheckedChange={() => toggleNotification(notification.id, 'email')}
                       />
                       <Label htmlFor={`${notification.id}-email`} className="text-sm">
-                        <Mail className="w-4 h-4 mr-1 inline" />
+                        <Mail className="h-3 w-3 mr-1 inline" />
                         Email
                       </Label>
                     </div>
@@ -701,7 +650,7 @@ export function SettingsContent() {
                         onCheckedChange={() => toggleNotification(notification.id, 'push')}
                       />
                       <Label htmlFor={`${notification.id}-push`} className="text-sm">
-                        <Bell className="w-4 h-4 mr-1 inline" />
+                        <Bell className="h-3 w-3 mr-1 inline" />
                         Push
                       </Label>
                     </div>
@@ -713,7 +662,7 @@ export function SettingsContent() {
                         onCheckedChange={() => toggleNotification(notification.id, 'sms')}
                       />
                       <Label htmlFor={`${notification.id}-sms`} className="text-sm">
-                        <Smartphone className="w-4 h-4 mr-1 inline" />
+                        <Smartphone className="h-3 w-3 mr-1 inline" />
                         SMS
                       </Label>
                     </div>
@@ -727,24 +676,41 @@ export function SettingsContent() {
         </TabsContent>
 
         {/* Privacy & Security */}
-        <TabsContent value="privacy" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TabsContent value="privacy" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Privacy Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Eye className="w-5 h-5" />
-                  Privacy Settings
-                </CardTitle>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <Eye className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Privacy Settings</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Control your visibility</p>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-sm font-medium">Profile Visibility</Label>
                     <p className="text-xs text-muted-foreground">Who can see your profile</p>
                   </div>
                   <Select defaultValue="professional">
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-32 bg-secondary text-secondary-foreground hover:bg-secondary/80 [&_svg]:!text-secondary-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -782,21 +748,38 @@ export function SettingsContent() {
             </Card>
 
             {/* Security Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  Security Settings
-                </CardTitle>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <Shield className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Security Settings</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Protect your account</p>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-sm font-medium">Two-Factor Authentication</Label>
                     <p className="text-xs text-muted-foreground">Add an extra layer of security</p>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
+                  <Button variant="outline" className="h-7 text-xs">
+                    <Plus className="h-3 w-3 mr-1" />
                     Enable
                   </Button>
                 </div>
@@ -815,7 +798,7 @@ export function SettingsContent() {
                     <p className="text-xs text-muted-foreground">Auto-logout after inactivity</p>
                   </div>
                   <Select defaultValue="30">
-                    <SelectTrigger className="w-24">
+                    <SelectTrigger className="w-24 bg-secondary text-secondary-foreground hover:bg-secondary/80 [&_svg]:!text-secondary-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -831,14 +814,31 @@ export function SettingsContent() {
           </div>
 
           {/* Security Log */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5" />
-                Recent Security Activity
-              </CardTitle>
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <Activity className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">Recent Security Activity</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">Monitor your account access</p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-5 bg-background rounded-b-xl">
               <div className="space-y-3">
                 {securityLogs.map((log) => (
                   <div key={log.id} className="flex items-center justify-between p-3 border rounded-lg">
@@ -862,45 +862,53 @@ export function SettingsContent() {
         </TabsContent>
 
         {/* Appearance Settings */}
-        <TabsContent value="appearance" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TabsContent value="appearance" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Theme Selection */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="w-5 h-5" />
-                  Theme Selection
-                </CardTitle>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <Palette className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Theme Selection</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Choose your preferred theme</p>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  {themePresets.map((preset) => (
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {Object.entries(THEME_METADATA).map(([presetKey, metadata]) => (
                     <div
-                      key={preset.id}
-                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                        currentPreset.id === preset.id 
-                          ? 'border-primary bg-primary/5' 
-                          : 'border-sidebar-border hover:border-muted-foreground'
+                      key={presetKey}
+                      className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 ${
+                        preset === presetKey 
+                          ? 'border-primary bg-primary/10 shadow-md' 
+                          : 'border-border/50 hover:border-primary/30 hover:shadow-sm'
                       }`}
-                      onClick={() => handlePresetChange(preset)}
+                      onClick={() => applyPreset(presetKey as any)}
                     >
                       <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div 
-                            className="w-4 h-4 rounded-full border"
-                            style={{ backgroundColor: preset.colors.primary }}
-                          />
-                          <div 
-                            className="w-4 h-4 rounded-full border"
-                            style={{ backgroundColor: preset.colors.secondary }}
-                          />
-                          <div 
-                            className="w-4 h-4 rounded-full border"
-                            style={{ backgroundColor: preset.colors.accent }}
-                          />
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-bold text-sm">{metadata.name}</h4>
+                          {preset === presetKey && (
+                            <CheckCircle className="h-4 w-4 text-primary" />
+                          )}
                         </div>
-                        <h4 className="font-medium text-sm">{preset.name}</h4>
-                        <p className="text-xs text-muted-foreground">{preset.description}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{metadata.description}</p>
                       </div>
                     </div>
                   ))}
@@ -909,14 +917,31 @@ export function SettingsContent() {
             </Card>
 
             {/* Display Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Monitor className="w-5 h-5" />
-                  Display Settings
-                </CardTitle>
+            <Card 
+              className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.75rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <Monitor className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Display Settings</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-0.5">Customize your view</p>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Font Size</Label>
                   <Slider
@@ -962,49 +987,75 @@ export function SettingsContent() {
           </div>
 
           {/* Theme Customization */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Palette className="w-5 h-5" />
-                Customize Theme
-              </CardTitle>
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <Palette className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">Customize Theme</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">Personalize your colors</p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {customTokens
-                  .filter(token => token.category === 'colors')
-                  .map((token) => (
-                    <div key={token.key} className="space-y-2">
-                      <Label className="text-sm font-medium">{token.description}</Label>
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-8 h-8 rounded border"
-                          style={{ backgroundColor: token.value }}
-                        />
-                        <Input
-                          value={token.value}
-                          onChange={(e) => handleTokenChange(token.key, e.target.value)}
-                          className="flex-1"
-                        />
-                      </div>
-                    </div>
-                  ))}
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <Alert className="mb-4">
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-xs">
+                  Advanced theme customization with token editing. Export your theme to share with your team or import custom configurations.
+                </AlertDescription>
+              </Alert>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm font-medium">Current Theme</Label>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {THEME_METADATA[preset as keyof typeof THEME_METADATA]?.name || preset}
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {THEME_TOKENS.length} tokens
+                  </Badge>
+                </div>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-8 text-xs w-full"
+                  onClick={() => resetAll()}
+                >
+                  <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                  Reset to Default Theme
+                </Button>
               </div>
               
-              <div className="flex items-center gap-2 pt-4">
-                <Button variant="outline" onClick={handleExport} disabled={isExporting}>
+              <div className="flex items-center gap-2 pt-4 border-t border-border/40">
+                <Button variant="outline" className="h-8 text-xs" onClick={handleExport} disabled={isExporting}>
                   {isExporting ? (
-                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    <RefreshCw className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                   ) : (
-                    <Download className="w-4 h-4 mr-2" />
+                    <Download className="h-3.5 w-3.5 mr-1.5" />
                   )}
                   Export Theme
                 </Button>
                 
                 <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
                   <DialogTrigger asChild>
-                    <Button variant="outline">
-                      <Upload className="w-4 h-4 mr-2" />
+                    <Button variant="outline" className="h-8 text-xs">
+                      <Upload className="h-3.5 w-3.5 mr-1.5" />
                       Import Theme
                     </Button>
                   </DialogTrigger>
@@ -1025,11 +1076,11 @@ export function SettingsContent() {
                       <Button variant="outline" onClick={() => setShowImportDialog(false)}>
                         Cancel
                       </Button>
-                      <Button onClick={handleImport} disabled={isImporting}>
+                      <Button className="h-8 text-xs" onClick={handleImport} disabled={isImporting}>
                         {isImporting ? (
-                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          <RefreshCw className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                         ) : (
-                          <Upload className="w-4 h-4 mr-2" />
+                          <Upload className="h-3.5 w-3.5 mr-1.5" />
                         )}
                         Import
                       </Button>
@@ -1042,15 +1093,32 @@ export function SettingsContent() {
         </TabsContent>
 
         {/* Advanced Settings */}
-        <TabsContent value="advanced" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5" />
-                Advanced Settings
-              </CardTitle>
+        <TabsContent value="advanced" className="space-y-4">
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">Advanced Settings</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">Developer and system options</p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-sm font-medium">Developer Mode</Label>
@@ -1086,14 +1154,31 @@ export function SettingsContent() {
           </Card>
 
           {/* System Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Monitor className="w-5 h-5" />
-                System Information
-              </CardTitle>
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <Monitor className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">System Information</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">Platform and version details</p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-5 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm text-muted-foreground">Platform</Label>
@@ -1116,67 +1201,6 @@ export function SettingsContent() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
-  );
-}
-
-// Token Editor Component
-function TokenEditor({
-  token,
-  value,
-  onChange
-}: {
-  token: { key: string; description: string };
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  // Convert HSL to RGB for display
-  const hslToRgb = (hsl: string) => {
-    const match = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
-    if (!match) return { r: 0, g: 0, b: 0 };
-    
-    const h = parseInt(match[1]) / 360;
-    const s = parseInt(match[2]) / 100;
-    const l = parseInt(match[3]) / 100;
-    
-    const hue2rgb = (p: number, q: number, t: number) => {
-      if (t < 0) t += 1;
-      if (t > 1) t -= 1;
-      if (t < 1/6) return p + (q - p) * 6 * t;
-      if (t < 1/2) return q;
-      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-      return p;
-    };
-    
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
-    
-    return {
-      r: Math.round(hue2rgb(p, q, h + 1/3) * 255),
-      g: Math.round(hue2rgb(p, q, h) * 255),
-      b: Math.round(hue2rgb(p, q, h - 1/3) * 255)
-    };
-  };
-
-  const rgb = hslToRgb(value);
-  const hex = `#${rgb.r.toString(16).padStart(2, '0')}${rgb.g.toString(16).padStart(2, '0')}${rgb.b.toString(16).padStart(2, '0')}`;
-
-  return (
-    <div className="space-y-2">
-      <Label className="text-sm font-medium">{token.description}</Label>
-      <div className="flex items-center gap-2">
-        <div 
-          className="w-8 h-8 rounded border"
-          style={{ backgroundColor: value }}
-        />
-        <Input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="flex-1"
-        />
-        <Badge variant="outline" className="text-xs">
-          {hex.toUpperCase()}
-        </Badge>
       </div>
     </div>
   );
