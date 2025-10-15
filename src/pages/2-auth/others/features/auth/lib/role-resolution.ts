@@ -68,7 +68,7 @@ export function getLandingPage(role: Role, subscriptions: Subscription[] = []): 
     case 'engineer':
       return '/engineer/dashboard';
     case 'client':
-      return '/client/dashboard';
+      return '/free/dashboard';
     default:
       return '/auth/account-type';
   }

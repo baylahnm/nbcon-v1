@@ -26,14 +26,14 @@ const defaultActivities: ActivityItem[] = [
     title: 'New Quote Received',
     description: 'Ahmed Al-Rashid submitted quote for Al-Khobar project',
     relativeTime: '30 min ago',
-    link: '/client/quotes'
+    link: '/free/quotes'
   },
   {
     id: '2',
     type: 'payment',
     description: 'Milestone payment released: 125,000 SAR for NEOM project',
     relativeTime: '2 hours ago',
-    link: '/client/payments'
+    link: '/free/payments'
   },
   {
     id: '3',
@@ -41,7 +41,7 @@ const defaultActivities: ActivityItem[] = [
     title: 'Milestone Completed',
     description: 'Foundation Review completed for Riyadh Metro Extension',
     relativeTime: '4 hours ago',
-    link: '/client/projects'
+    link: '/free/myprojects'
   },
   {
     id: '4',
@@ -49,7 +49,7 @@ const defaultActivities: ActivityItem[] = [
     title: 'Engineer Applications',
     description: '3 new engineers applied for Al-Khobar Commercial Center',
     relativeTime: '6 hours ago',
-    link: '/client/browse-engineers'
+    link: '/free/browse'
   },
   {
     id: '5',
@@ -57,7 +57,7 @@ const defaultActivities: ActivityItem[] = [
     title: 'New Message',
     description: 'From Eng. Mohammed regarding structural revisions',
     relativeTime: '1 day ago',
-    link: '/client/messages'
+    link: '/free/messages'
   },
   {
     id: '6',
@@ -65,7 +65,7 @@ const defaultActivities: ActivityItem[] = [
     title: 'Upcoming Deadline',
     description: 'NEOM Phase 2 - Site Survey due in 3 days',
     relativeTime: '1 day ago',
-    link: '/client/projects'
+    link: '/free/myprojects'
   },
 ];
 

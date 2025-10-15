@@ -605,7 +605,7 @@ export default function BrowseEngineersPage() {
                         variant="outline"
                         size="sm"
                         className="h-8 w-8 p-0"
-                        onClick={() => navigate(`/client/engineer/${engineer.id}`)}
+                        onClick={() => navigate(`/free/engineer/${engineer.id}`)}
                       >
                         <Eye className="h-3.5 w-3.5" />
                       </Button>

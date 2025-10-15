@@ -23,16 +23,16 @@ export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickAction
 
   // Quick action items for client
   const clientActions = [
-    { id: 'post-job', label: 'Post New Job', icon: Briefcase, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/post-job' },
-    { id: 'browse', label: 'Find Engineers', icon: Users, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/browse-engineers' },
-    { id: 'projects', label: 'My Projects', icon: Building2, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/projects' },
-    { id: 'quotes', label: 'View Quotes', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/quotes' },
-    { id: 'payments', label: 'Payments', icon: DollarSign, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/payments' },
-    { id: 'messages', label: 'Messages', icon: MessageSquare, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/messages' },
-    { id: 'calendar', label: 'Calendar', icon: Calendar, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/calendar' },
-    { id: 'tracking', label: 'Track Progress', icon: MapPin, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/projects' },
-    { id: 'search', label: 'Search Jobs', icon: Search, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/jobs' },
-    { id: 'settings', label: 'Settings', icon: Settings, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/client/settings' },
+    { id: 'post-job', label: 'Post New Job', icon: Briefcase, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/job/new' },
+    { id: 'browse', label: 'Find Engineers', icon: Users, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/browse' },
+    { id: 'projects', label: 'My Projects', icon: Building2, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/myprojects' },
+    { id: 'quotes', label: 'View Quotes', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/quotes' },
+    { id: 'payments', label: 'Payments', icon: DollarSign, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/payments' },
+    { id: 'messages', label: 'Messages', icon: MessageSquare, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/messages' },
+    { id: 'calendar', label: 'Calendar', icon: Calendar, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/calendar' },
+    { id: 'tracking', label: 'Track Progress', icon: MapPin, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/myprojects' },
+    { id: 'search', label: 'Search Jobs', icon: Search, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/jobs' },
+    { id: 'settings', label: 'Settings', icon: Settings, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/settings' },
   ];
 
   // Handle scroll event to update arrow visibility

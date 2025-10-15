@@ -101,7 +101,7 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
           </div>
           <div className="flex items-center gap-2">
             <Button asChild variant="outline" size="sm" className="h-8 text-xs">
-              <Link to="/client/projects">
+              <Link to="/free/myprojects">
                 <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
                 View All
               </Link>
@@ -184,7 +184,7 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
                       size="sm" 
                       className="flex-1 h-7 text-[11px]"
                     >
-                      <Link to={`/client/projects/${project.id}`}>
+                      <Link to={`/free/myprojects/${project.id}`}>
                         <Eye className="h-3 w-3 mr-1" />
                         View
                       </Link>
