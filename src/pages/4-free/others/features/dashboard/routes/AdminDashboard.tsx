@@ -12,7 +12,7 @@ export default function AdminDashboard() {
   if (error)   return <div className="p-6"><div className="mb-2">Failed to load</div><button className="border border-[var(--border)] rounded-lg px-3 py-1" onClick={refresh}>Retry</button></div>;
 
   return (
-    <main className="container mx-auto px-4 py-6 text-[var(--fg)]">
+    <main className="px-6 py-6 text-[var(--fg)]">
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
       <KpiStrip items={kpis} />

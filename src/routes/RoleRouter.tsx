@@ -21,8 +21,11 @@ import ClientSettingsPage from "@/pages/4-free/12-SettingsPage";
 import ClientProfilePage from "@/pages/4-free/2-ProfilePage";
 import HelpPage from "@/pages/5-engineer/10-HelpPage";
 import MyNetwork from "@/pages/5-engineer/6-NetworkPage";
+import ClientNetworkPage from "@/pages/4-free/6-NetworkPage";
 import CalendarPage from "@/pages/5-engineer/3-CalendarPage";
 import LearningPage from "@/pages/5-engineer/7-LearningPage";
+import ClientLearningPage from "@/pages/4-free/7-LearningPage";
+import ClientFinancePage from "@/pages/4-free/10-FinancePage";
 import { NewCoursePage } from "@/pages/5-engineer/others/features/learning/pages/NewCoursePage";
 import { ChatPage } from "@/pages/5-engineer/others/features/ai/ChatPage";
 import { PaymentsContent } from "@/pages/6-enterprise/others/features/finance/components/PaymentsContent";
@@ -144,18 +147,20 @@ export default function RoleRouter() {
           </Route>
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="calendar/event/:eventId" element={<CalendarPage />} />
-          <Route path="payments" element={<PaymentsContent />} />
-          <Route path="payments/:paymentId" element={<PaymentsContent />} />
+          <Route path="finance" element={<ClientFinancePage />} />
+          <Route path="finance/:paymentId" element={<ClientFinancePage />} />
+          <Route path="payments" element={<ClientFinancePage />} />
+          <Route path="payments/:paymentId" element={<ClientFinancePage />} />
           <Route path="messages" element={<ClientMessagesPage />} />
           <Route path="messages/:threadId" element={<ClientMessagesPage />} />
           <Route path="ai" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="ai/thread/:threadId" element={<ChatPage onBack={() => window.history.back()} />} />
           <Route path="profile" element={<ClientProfilePage />} />
-          <Route path="network" element={<MyNetwork />} />
-          <Route path="network/:userId" element={<MyNetwork />} />
-          <Route path="learning" element={<LearningPage />} />
+          <Route path="network" element={<ClientNetworkPage />} />
+          <Route path="network/:userId" element={<ClientNetworkPage />} />
+          <Route path="learning" element={<ClientLearningPage />} />
           <Route path="learning/course/:courseId" element={<NewCoursePage />} />
-          <Route path="learning/certificates/:certificateId" element={<LearningPage />} />
+          <Route path="learning/certificates/:certificateId" element={<ClientLearningPage />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<ClientSettingsPage />} />
         </Route>

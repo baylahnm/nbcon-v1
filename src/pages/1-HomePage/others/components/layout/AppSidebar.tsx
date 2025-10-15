@@ -50,7 +50,7 @@ const makeTopMenu = (role?: string): MenuItem[] => {
         { title: 'Profile', url: R.client.profile, icon: User },
         { title: 'Network', url: R.client.network, icon: Users },
         { title: 'Learning', url: R.client.learning, icon: BookOpen },
-        { title: 'Payments', url: R.client.payments, icon: DollarSign },
+        { title: 'Finance', url: R.client.finance, icon: DollarSign },
         { title: 'Help', url: R.client.help, icon: HelpCircle },
         { title: 'Settings', url: R.client.settings, icon: Settings }
       ];

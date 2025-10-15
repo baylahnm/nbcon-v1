@@ -190,7 +190,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
       )}
 
       {/* Composer */}
-      <Card className={`p-4 ${isCompact ? 'p-2' : ''}`}>
+      <Card className="p-2">
         <div className="space-y-3">
           {/* Attachments */}
           {composer.files.length > 0 && (

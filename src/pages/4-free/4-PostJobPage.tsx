@@ -101,7 +101,7 @@ export default function PostJobPage() {
   const [newRequirement, setNewRequirement] = useState('');
   const [newDeliverable, setNewDeliverable] = useState('');
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: keyof JobForm, value: string | boolean | string[] | JobForm['budget']) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -192,7 +192,7 @@ export default function PostJobPage() {
       <div className="container mx-auto p-4 space-y-4">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
             <Plus className="h-5 w-5 text-primary" />
           </div>
@@ -201,7 +201,7 @@ export default function PostJobPage() {
             <p className="text-xs text-muted-foreground mt-0.5">Find the perfect engineer for your project</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-4">
           <Button variant="outline" className="h-8 text-xs">
             <Eye className="h-3.5 w-3.5 mr-1.5" />
             Preview
@@ -214,10 +214,12 @@ export default function PostJobPage() {
       </div>
 
       {/* Progress Indicator */}
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-            activeTab === 'basic' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
+            activeTab === 'basic' 
+              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
+              : 'bg-muted ring-border/50'
           }`}>
             1
           </div>
@@ -226,9 +228,11 @@ export default function PostJobPage() {
           </span>
         </div>
         <div className="w-8 h-px bg-muted" />
-        <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-            activeTab === 'details' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+        <div className="flex items-center gap-4">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
+            activeTab === 'details' 
+              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
+              : 'bg-muted ring-border/50'
           }`}>
             2
           </div>
@@ -237,9 +241,11 @@ export default function PostJobPage() {
           </span>
         </div>
         <div className="w-8 h-px bg-muted" />
-        <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-            activeTab === 'requirements' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+        <div className="flex items-center gap-4">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
+            activeTab === 'requirements' 
+              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
+              : 'bg-muted ring-border/50'
           }`}>
             3
           </div>
@@ -248,9 +254,11 @@ export default function PostJobPage() {
           </span>
         </div>
         <div className="w-8 h-px bg-muted" />
-        <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-            activeTab === 'review' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+        <div className="flex items-center gap-4">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
+            activeTab === 'review' 
+              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
+              : 'bg-muted ring-border/50'
           }`}>
             4
           </div>
@@ -272,12 +280,32 @@ export default function PostJobPage() {
         {/* Basic Information Tab */}
         <TabsContent value="basic" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card className="border-border/50">
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
-                <CardTitle className="text-base font-bold tracking-tight">Job Title & Category</CardTitle>
-                <CardDescription className="text-xs">Basic information about your job posting</CardDescription>
-              </CardHeader>
-              <CardContent className="p-5 space-y-4">
+            <div
+              className="relative overflow-hidden transition-all duration-300"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <Card className="bg-transparent border-0">
+                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                      <Briefcase className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-bold tracking-tight">Job Title & Category</CardTitle>
+                      <CardDescription className="text-xs">Basic information about your job posting</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div>
                   <label className="text-xs font-medium mb-2 block">Job Title *</label>
                   <Input
@@ -313,17 +341,38 @@ export default function PostJobPage() {
                   </select>
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            </div>
 
-            <Card className="border-border/50">
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
-                <CardTitle className="text-base font-bold tracking-tight">Budget & Timeline</CardTitle>
-                <CardDescription className="text-xs">Set your budget range and project timeline</CardDescription>
-              </CardHeader>
-              <CardContent className="p-5 space-y-4">
+            <div
+              className="relative overflow-hidden transition-all duration-300"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <Card className="bg-transparent border-0">
+                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                      <DollarSign className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-bold tracking-tight">Budget & Timeline</CardTitle>
+                      <CardDescription className="text-xs">Set your budget range and project timeline</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
                 <div>
                   <label className="text-xs font-medium mb-2 block">Budget Range *</label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-4">
                     <Input
                       type="number"
                       placeholder="Min"
@@ -374,7 +423,8 @@ export default function PostJobPage() {
                   </select>
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            </div>
           </div>
 
           <div className="flex justify-end">
@@ -386,12 +436,32 @@ export default function PostJobPage() {
 
         {/* Project Details Tab */}
         <TabsContent value="details" className="space-y-4">
-          <Card className="border-border/50">
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
-              <CardTitle className="text-base font-bold tracking-tight">Project Description</CardTitle>
-              <CardDescription className="text-xs">Describe your project in detail</CardDescription>
-            </CardHeader>
-            <CardContent className="p-5 space-y-4">
+          <div
+            className="relative overflow-hidden transition-all duration-300"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.5rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <Card className="bg-transparent border-0">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <FileText className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Project Description</CardTitle>
+                    <CardDescription className="text-xs">Describe your project in detail</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
               <div>
                 <label className="text-xs font-medium mb-2 block">Project Description *</label>
                 <textarea
@@ -403,7 +473,8 @@ export default function PostJobPage() {
                 />
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
 
           <div className="flex justify-between">
             <Button variant="outline" onClick={() => setActiveTab('basic')}>
@@ -418,13 +489,33 @@ export default function PostJobPage() {
         {/* Requirements Tab */}
         <TabsContent value="requirements" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card className="border-border/50">
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
-                <CardTitle className="text-base font-bold tracking-tight">Required Skills</CardTitle>
-                <CardDescription className="text-xs">Technical skills needed</CardDescription>
-              </CardHeader>
-              <CardContent className="p-5 space-y-4">
-                <div className="flex gap-2">
+            <div
+              className="relative overflow-hidden transition-all duration-300"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <Card className="bg-transparent border-0">
+                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                      <Users className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-bold tracking-tight">Required Skills</CardTitle>
+                      <CardDescription className="text-xs">Technical skills needed</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+                <div className="flex gap-4">
                   <Input
                     placeholder="Add skill"
                     value={newSkill}
@@ -435,24 +526,45 @@ export default function PostJobPage() {
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-4">
                   {formData.skills.map((skill) => (
-                    <Badge key={skill} variant="secondary" className="flex items-center gap-1">
+                    <Badge key={skill} variant="secondary" className="flex items-center gap-4">
                       {skill}
                       <button onClick={() => removeSkill(skill)} className="ml-1">×</button>
                     </Badge>
                   ))}
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            </div>
 
-            <Card className="border-border/50">
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
-                <CardTitle className="text-base font-bold tracking-tight">Requirements</CardTitle>
-                <CardDescription className="text-xs">Must-have requirements</CardDescription>
-              </CardHeader>
-              <CardContent className="p-5 space-y-4">
-                <div className="flex gap-2">
+            <div
+              className="relative overflow-hidden transition-all duration-300"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <Card className="bg-transparent border-0">
+                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                      <CheckCircle2 className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-bold tracking-tight">Requirements</CardTitle>
+                      <CardDescription className="text-xs">Must-have requirements</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+                <div className="flex gap-4">
                   <Input
                     placeholder="Add requirement"
                     value={newRequirement}
@@ -472,15 +584,36 @@ export default function PostJobPage() {
                   ))}
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            </div>
 
-            <Card className="border-border/50">
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
-                <CardTitle className="text-base font-bold tracking-tight">Deliverables</CardTitle>
-                <CardDescription className="text-xs">Expected project outputs</CardDescription>
-              </CardHeader>
-              <CardContent className="p-5 space-y-4">
-                <div className="flex gap-2">
+            <div
+              className="relative overflow-hidden transition-all duration-300"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <Card className="bg-transparent border-0">
+                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                      <FileText className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-bold tracking-tight">Deliverables</CardTitle>
+                      <CardDescription className="text-xs">Expected project outputs</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+                <div className="flex gap-4">
                   <Input
                     placeholder="Add deliverable"
                     value={newDeliverable}
@@ -500,7 +633,8 @@ export default function PostJobPage() {
                   ))}
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            </div>
           </div>
 
           <div className="flex justify-between">
@@ -515,12 +649,32 @@ export default function PostJobPage() {
 
         {/* Review Tab */}
         <TabsContent value="review" className="space-y-4">
-          <Card className="border-border/50">
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
-              <CardTitle className="text-base font-bold tracking-tight">Review Your Job Posting</CardTitle>
-              <CardDescription className="text-xs">Check all details before publishing</CardDescription>
-            </CardHeader>
-            <CardContent className="p-5 space-y-6">
+          <div
+            className="relative overflow-hidden transition-all duration-300"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.5rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <Card className="bg-transparent border-0">
+              <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <Eye className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold tracking-tight">Review Your Job Posting</CardTitle>
+                    <CardDescription className="text-xs">Check all details before publishing</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-base font-bold tracking-tight mb-2">Basic Information</h3>
@@ -548,7 +702,7 @@ export default function PostJobPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <h3 className="text-base font-bold tracking-tight mb-2">Skills ({formData.skills.length})</h3>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-4">
                     {formData.skills.map((skill) => (
                       <Badge key={skill} variant="secondary" className="text-xs">
                         {skill}
@@ -560,7 +714,7 @@ export default function PostJobPage() {
                   <h3 className="text-base font-bold tracking-tight mb-2">Requirements ({formData.requirements.length})</h3>
                   <ul className="text-sm space-y-1">
                     {formData.requirements.map((req) => (
-                      <li key={req} className="flex items-start gap-2">
+                      <li key={req} className="flex items-start gap-4">
                         <CheckCircle2 className="h-3 w-3 mt-0.5 text-green-600" />
                         {req}
                       </li>
@@ -571,7 +725,7 @@ export default function PostJobPage() {
                   <h3 className="text-base font-bold tracking-tight mb-2">Deliverables ({formData.deliverables.length})</h3>
                   <ul className="text-sm space-y-1">
                     {formData.deliverables.map((del) => (
-                      <li key={del} className="flex items-start gap-2">
+                      <li key={del} className="flex items-start gap-4">
                         <FileText className="h-3 w-3 mt-0.5 text-blue-600" />
                         {del}
                       </li>
@@ -580,7 +734,8 @@ export default function PostJobPage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
 
           <div className="flex justify-between">
             <Button variant="outline" onClick={() => setActiveTab('requirements')}>

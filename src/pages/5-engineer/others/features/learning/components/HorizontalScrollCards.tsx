@@ -152,7 +152,7 @@ export const HorizontalScrollCards: React.FC<HorizontalScrollCardsProps> = ({
       {/* Scrollable Container */}
       <div 
         ref={scrollContainerRef}
-        className="horizontal-scroll-container flex gap-4 p-4 snap-x snap-mandatory scrollbar-hide"
+        className="horizontal-scroll-container flex gap-4 snap-x snap-mandatory scrollbar-hide"
         style={{
           gap: gap,
         }}

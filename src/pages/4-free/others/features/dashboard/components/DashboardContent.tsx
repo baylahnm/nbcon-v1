@@ -40,7 +40,7 @@ export function DashboardContent() {
         navigate('/free/quotes');
         break;
       case 'finance':
-        navigate('/free/payments');
+        navigate('/free/finance');
         break;
       default:
         break;
@@ -59,7 +59,7 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto px-4 py-4 space-y-4">
+      <div className="px-6 py-4 space-y-4">
         
         {/* Header */}
         <div className="pb-6 border-b border-border/40">

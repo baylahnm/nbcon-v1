@@ -303,102 +303,104 @@ export function ClientProfile() {
   };
 
   return (
-    <div className="flex-1 p-6 overflow-auto">
-      <div className="w-full space-y-6">
-        {/* Header */}
-        <div className="space-y-2">
-          <h1 className="flex items-center gap-2">
-            <User className="w-6 h-6 text-primary" />
-            Profile
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your public profile and professional information
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+      <div className="container mx-auto p-4 space-y-4">
+        {/* Page Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-border/40">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+              <User className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold tracking-tight">Profile</h1>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Manage your public profile and professional information
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setIsEditing(!isEditing)}
+            variant={isEditing ? "default" : "outline"}
+            className="h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+          >
+            {isEditing ? (
+              <>
+                <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
+                Save Changes
+              </>
+            ) : (
+              <>
+                <Edit className="h-3.5 w-3.5 mr-1.5" />
+                Edit Profile
+              </>
+            )}
+          </Button>
         </div>
 
         {/* Profile Overview Card */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start gap-6">
+        <Card className="border-border/50">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-4">
               <div className="relative">
-                <Avatar className="w-24 h-24">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                <Avatar className="w-20 h-20 ring-2 ring-primary/20">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xl">
                     {profileData.personalInfo.firstName[0]}{profileData.personalInfo.lastName[0]}
                   </AvatarFallback>
                 </Avatar>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="absolute -bottom-2 -right-2 w-8 h-8 p-0 rounded-full"
+                  className="absolute -bottom-1 -right-1 h-7 w-7 p-0 rounded-full shadow-md"
                 >
-                  <Camera className="w-4 h-4" />
+                  <Camera className="h-3.5 w-3.5" />
                 </Button>
               </div>
 
-              <div className="flex-1 space-y-4">
+              <div className="flex-1 space-y-3">
                 <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h2>{profileData.personalInfo.firstName} {profileData.personalInfo.lastName}</h2>
-                    <Badge className={getStatusColor(profileData.professionalInfo.sceStatus)}>
-                      <Shield className="w-3 h-3 mr-1" />
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-base font-bold">{profileData.personalInfo.firstName} {profileData.personalInfo.lastName}</h2>
+                    <Badge className={`text-xs ${getStatusColor(profileData.professionalInfo.sceStatus)}`}>
+                      <Shield className="h-3 w-3 mr-1" />
                       SCE {profileData.professionalInfo.sceStatus === "verified" ? "Verified" : "Pending"}
                     </Badge>
                   </div>
-                  <p className="text-muted-foreground">{profileData.professionalInfo.title}</p>
+                  <p className="text-xs text-muted-foreground">{profileData.professionalInfo.title}</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-muted-foreground" />
+                    <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                     <span>{profileData.personalInfo.city}, {profileData.personalInfo.province}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-muted-foreground" />
+                    <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
                     <span>{profileData.professionalInfo.experience}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Building className="w-4 h-4 text-muted-foreground" />
+                    <Building className="h-3.5 w-3.5 text-muted-foreground" />
                     <span>{profileData.professionalInfo.company}</span>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                   {profileData.professionalInfo.specialization.slice(0, 4).map((spec, index) => (
-                    <Badge key={index} variant="secondary">
+                    <Badge key={index} variant="secondary" className="text-xs">
                       {spec}
                     </Badge>
                   ))}
                   {profileData.professionalInfo.specialization.length > 4 && (
-                    <Badge variant="outline">
+                    <Badge variant="outline" className="text-xs">
                       +{profileData.professionalInfo.specialization.length - 4} more
                     </Badge>
                   )}
                 </div>
               </div>
 
-              <div className="text-right space-y-2">
-                <Button
-                  onClick={() => setIsEditing(!isEditing)}
-                  variant={isEditing ? "default" : "outline"}
-                  className={isEditing ? "bg-primary hover:bg-primary/90" : ""}
-                >
-                  {isEditing ? (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Save Changes
-                    </>
-                  ) : (
-                    <>
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit Profile
-                    </>
-                  )}
-                </Button>
-                <div className="text-sm text-muted-foreground">
-                  Profile: {profileData.settings.profileVisibility}
-                  {profileData.settings.profileVisibility === "public" && <Eye className="w-4 h-4 inline ml-1" />}
-                  {profileData.settings.profileVisibility === "private" && <EyeOff className="w-4 h-4 inline ml-1" />}
-                </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                {profileData.settings.profileVisibility === "public" && <Eye className="h-3.5 w-3.5" />}
+                {profileData.settings.profileVisibility === "private" && <EyeOff className="h-3.5 w-3.5" />}
+                <span className="capitalize">{profileData.settings.profileVisibility}</span>
               </div>
             </div>
           </CardContent>
@@ -406,28 +408,29 @@ export function ClientProfile() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="border-b border-sidebar-border mb-6">
-            <TabsList className="h-auto bg-transparent p-0 border-0 rounded-none w-full">
-              <div className="flex items-center w-full overflow-x-auto scrollbar-thin scrollbar-thumb-primary scrollbar-track-card hover:scrollbar-thumb-primary/80">
-                <TabsTrigger value="basic" className="flex items-center gap-2 px-4 py-3 min-w-fit">Basic Information</TabsTrigger>
-              <TabsTrigger value="professional" className="flex items-center gap-2 px-4 py-3 min-w-fit">Professional Details</TabsTrigger>
-              <TabsTrigger value="portfolio" className="flex items-center gap-2 px-4 py-3 min-w-fit">Portfolio & Skills</TabsTrigger>
-              </div>
-            </TabsList>
-          </div>
+          <TabsList className="w-full grid grid-cols-3 gap-0 h-9 mb-0">
+            <TabsTrigger value="basic" className="text-xs">Basic Information</TabsTrigger>
+            <TabsTrigger value="professional" className="text-xs">Professional Details</TabsTrigger>
+            <TabsTrigger value="portfolio" className="text-xs">Portfolio & Skills</TabsTrigger>
+          </TabsList>
 
           {/* Basic Information Tab */}
-          <TabsContent value="basic" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="basic" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Personal Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Personal Information</CardTitle>
+              <Card className="border-border/50">
+                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <User className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Personal Information</CardTitle>
+                  </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-4 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName">First Name</Label>
+                      <Label htmlFor="firstName" className="text-xs">First Name</Label>
                       <Input
                         id="firstName"
                         value={profileData.personalInfo.firstName}
@@ -439,7 +442,7 @@ export function ClientProfile() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">Last Name</Label>
+                      <Label htmlFor="lastName" className="text-xs">Last Name</Label>
                       <Input
                         id="lastName"
                         value={profileData.personalInfo.lastName}
@@ -497,16 +500,21 @@ export function ClientProfile() {
               </Card>
 
               {/* Privacy Settings */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Privacy Settings</CardTitle>
+              <Card className="border-border/50">
+                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <Shield className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Privacy Settings</CardTitle>
+                  </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-4 space-y-4">
                   <div className="space-y-2">
                     <Label>Profile Visibility</Label>
                     <Select
                       value={profileData.settings.profileVisibility}
-                      onValueChange={(value: any) => setProfileData(prev => ({
+                      onValueChange={(value: "public" | "professional" | "private") => setProfileData(prev => ({
                         ...prev,
                         settings: { ...prev.settings, profileVisibility: value }
                       }))}
@@ -562,14 +570,19 @@ export function ClientProfile() {
           </TabsContent>
 
           {/* Professional Details Tab */}
-          <TabsContent value="professional" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="professional" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Professional Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Professional Information</CardTitle>
+              <Card className="border-border/50">
+                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <Briefcase className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Professional Information</CardTitle>
+                  </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-4 space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="title">Professional Title</Label>
                     <Input
@@ -641,8 +654,8 @@ export function ClientProfile() {
                         </Badge>
                       ))}
                       {isEditing && (
-                        <Button size="sm" variant="outline">
-                          <Plus className="w-4 h-4 mr-1" />
+                        <Button size="sm" variant="outline" className="h-7 text-xs">
+                          <Plus className="h-3.5 w-3.5 mr-1" />
                           Add
                         </Button>
                       )}
@@ -652,11 +665,16 @@ export function ClientProfile() {
               </Card>
 
               {/* Languages */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Languages</CardTitle>
+              <Card className="border-border/50">
+                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <Globe className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Languages</CardTitle>
+                  </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4">
                   <div className="space-y-3">
                     {profileData.professionalInfo.languages.map((lang, index) => (
                       <div key={index} className="flex items-center justify-between">
@@ -667,8 +685,8 @@ export function ClientProfile() {
                       </div>
                     ))}
                     {isEditing && (
-                      <Button size="sm" variant="outline" className="w-full">
-                        <Plus className="w-4 h-4 mr-2" />
+                      <Button size="sm" variant="outline" className="w-full h-8 text-xs">
+                        <Plus className="h-3.5 w-3.5 mr-1.5" />
                         Add Language
                       </Button>
                     )}
@@ -679,21 +697,26 @@ export function ClientProfile() {
           </TabsContent>
 
           {/* Portfolio & Skills Tab */}
-          <TabsContent value="portfolio" className="space-y-6">
+          <TabsContent value="portfolio" className="space-y-4">
             {/* Skills */}
-            <Card>
-              <CardHeader>
+            <Card className="border-border/50">
+              <CardHeader className="p-4 pb-3 border-b border-border/40">
                 <div className="flex items-center justify-between">
-                  <CardTitle>Professional Skills</CardTitle>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <Target className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Professional Skills</CardTitle>
+                  </div>
                   {isEditing && (
-                    <Button size="sm" variant="outline">
-                      <Plus className="w-4 h-4 mr-2" />
+                    <Button size="sm" variant="outline" className="h-7 text-xs">
+                      <Plus className="h-3.5 w-3.5 mr-1.5" />
                       Add Skill
                     </Button>
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {Object.entries(
                     profileData.portfolio.skills.reduce((acc, skill) => {
@@ -727,19 +750,24 @@ export function ClientProfile() {
             </Card>
 
             {/* Portfolio Projects */}
-            <Card>
-              <CardHeader>
+            <Card className="border-border/50">
+              <CardHeader className="p-4 pb-3 border-b border-border/40">
                 <div className="flex items-center justify-between">
-                  <CardTitle>Portfolio Projects</CardTitle>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <Briefcase className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Portfolio Projects</CardTitle>
+                  </div>
                   {isEditing && (
-                    <Button size="sm" variant="outline">
-                      <Plus className="w-4 h-4 mr-2" />
+                    <Button size="sm" variant="outline" className="h-7 text-xs">
+                      <Plus className="h-3.5 w-3.5 mr-1.5" />
                       Add Project
                     </Button>
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4">
                 <div className="space-y-6">
                   {profileData.portfolio.projects.map((project) => (
                     <div key={project.id} className="p-6 border rounded-lg">
@@ -775,13 +803,18 @@ export function ClientProfile() {
             </Card>
 
             {/* Reviews & Achievements */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Client Reviews */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Client Reviews</CardTitle>
+              <Card className="border-border/50">
+                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <Star className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Client Reviews</CardTitle>
+                  </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4">
                   <div className="space-y-4">
                     {profileData.portfolio.reviews.map((review) => (
                       <div key={review.id} className="p-4 border rounded-lg">
@@ -805,11 +838,16 @@ export function ClientProfile() {
               </Card>
 
               {/* Achievements */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Achievements & Awards</CardTitle>
+              <Card className="border-border/50">
+                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                      <Award className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-base font-bold">Achievements & Awards</CardTitle>
+                  </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-4">
                   <div className="space-y-4">
                     {profileData.portfolio.achievements.map((achievement) => (
                       <div key={achievement.id} className="flex gap-3">

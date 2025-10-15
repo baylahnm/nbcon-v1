@@ -65,7 +65,7 @@ export function NetworkConnectionCard({
   return (
     <Card className="gap-0 group hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border-border/50">
       {/* Header Section */}
-      <CardHeader className="p-5 pb-3 border-b border-border/40">
+      <CardHeader className="p-4 pb-3 border-b border-border/40">
         <div className="flex items-start justify-between gap-4">
           {/* Left: Avatar + Info */}
           <div className="flex items-start gap-4 flex-1 min-w-0">
@@ -133,7 +133,7 @@ export function NetworkConnectionCard({
       </CardHeader>
 
       {/* Content Section */}
-      <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+      <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
         {/* Metadata Grid - 3 Columns */}
         <div className="grid grid-cols-3 gap-4 py-3 border-y border-border/40">
           <div className="space-y-1">

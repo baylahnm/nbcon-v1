@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -102,16 +102,11 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps)
             const isHovered = hoveredDate && isSameDay(hoveredDate, date);
 
             return (
-              <Card
+              <DateCardWrapper
                 key={index}
-                className={`min-h-[120px] transition-all duration-300 cursor-pointer ${
-                  !isInCurrentMonth ? 'opacity-40' : ''
-                } ${isHovered ? 'ring-2 ring-primary' : ''} ${
-                  isCurrentDay ? 'ring-2 ring-primary/40' : 'border-border/50'
-                }`}
-                style={{
-                  boxShadow: isHovered || isCurrentDay ? '0 4px 15px rgba(0, 0, 0, 0.1)' : '0 1px 3px rgba(0, 0, 0, 0.05)',
-                }}
+                isCurrentDay={isCurrentDay}
+                isInCurrentMonth={isInCurrentMonth}
+                isHovered={isHovered}
                 onMouseEnter={() => setHoveredDate(date)}
                 onMouseLeave={() => setHoveredDate(null)}
                 onDoubleClick={() => onCreateEvent?.(date)}
@@ -172,11 +167,81 @@ export default function CalendarContent({ onCreateEvent }: CalendarContentProps)
                     </Button>
                   )}
                 </CardContent>
-              </Card>
+              </DateCardWrapper>
             );
           })}
         </div>
       </div>
+    </div>
+  );
+}
+
+// Animated hover wrapper component for date cards
+interface DateCardWrapperProps {
+  children: React.ReactNode;
+  isCurrentDay: boolean;
+  isInCurrentMonth: boolean;
+  isHovered: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onDoubleClick: () => void;
+}
+
+function DateCardWrapper({
+  children,
+  isCurrentDay,
+  isInCurrentMonth,
+  isHovered,
+  onMouseEnter,
+  onMouseLeave,
+  onDoubleClick
+}: DateCardWrapperProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const angleX = (y - centerY) / centerY;
+    const angleY = (centerX - x) / centerX;
+    const angle = Math.atan2(angleY, angleX) * (180 / Math.PI);
+    cardRef.current.style.setProperty('--rotation', `${angle}deg`);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      className="relative overflow-hidden transition-all duration-300"
+      style={{
+        border: '2px solid transparent',
+        borderRadius: '0.5rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(var(--rotation, 135deg), hsl(var(--primary) / 0.15) 0%, transparent 60%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onDoubleClick={onDoubleClick}
+    >
+      <Card
+        className={`bg-transparent border-0 min-h-[120px] transition-all duration-300 cursor-pointer ${
+          !isInCurrentMonth ? 'opacity-40' : ''
+        } ${isHovered ? 'ring-2 ring-primary' : ''} ${
+          isCurrentDay ? 'ring-2 ring-primary/40' : ''
+        }`}
+        style={{
+          boxShadow: isHovered || isCurrentDay ? '0 4px 15px rgba(0, 0, 0, 0.1)' : '0 1px 3px rgba(0, 0, 0, 0.05)',
+        }}
+      >
+        {children}
+      </Card>
     </div>
   );
 }

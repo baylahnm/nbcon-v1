@@ -1318,9 +1318,9 @@ export default function LearningPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="container mx-auto p-4 space-y-4">
       {/* Header - Udemy Style */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b">
         <div className="flex items-center gap-3">
           <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
             <BookOpen className="h-5 w-5 text-white" />
@@ -1507,7 +1507,7 @@ export default function LearningPage() {
         </TabsList>
 
         {/* My Courses Tab */}
-        <TabsContent value="courses" className="mt-6 space-y-4">
+        <TabsContent value="courses" className="mt-4 space-y-4">
           {/* Course Progress Tracking */}
           <CourseProgress
             courses={mockCourseProgress}
@@ -1528,7 +1528,7 @@ export default function LearningPage() {
 
         {/* Certifications Tab */}
         <TabsContent value="certifications" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {mockCertifications.map((cert) => (
               <Card key={cert.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
@@ -1579,7 +1579,7 @@ export default function LearningPage() {
 
         {/* Browse All Tab */}
         <TabsContent value="browse" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
             {filteredCourses.map((course) => (
               <CourseCard
                 key={course.id}

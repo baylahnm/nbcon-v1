@@ -26,7 +26,7 @@ import CalendarContent from '../1-HomePage/others/components/calendar/CalendarCo
 import CalendarMini from '../1-HomePage/others/components/calendar/CalendarMini';
 import CalendarFilters from '../1-HomePage/others/components/calendar/CalendarFilters';
 import CreateEventDialog from '../1-HomePage/others/components/calendar/CreateEventDialog';
-import { useCalendarStore, CalendarView, UserRole } from "./others/stores/useCalendarStore";
+import { useCalendarStore } from "./others/stores/useCalendarStore";
 import type { CalendarEvent } from "./others/stores/useCalendarStore";
 import { useTeamStore } from '../2-auth/others/hooks/useTeamStore';
 import { useThemeStore } from "./others/stores/theme";
@@ -43,13 +43,9 @@ export default function CalendarPage() {
     currentDate,
     setCurrentDate,
     events,
-    isHijri,
-    userRole,
     setSelectedEvent,
     view,
     setView,
-    setUserRole,
-    setIsHijri,
     updateFilters,
     addEvent
   } = useCalendarStore();
@@ -299,45 +295,6 @@ export default function CalendarPage() {
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0 snap-start">
-            <div className="flex items-center gap-2">
-              <Switch id="hijri-switch" checked={isHijri} onCheckedChange={setIsHijri} />
-              <Label htmlFor="hijri-switch" className="text-sm">Hijri</Label>
-            </div>
-            <Select value={userRole} onValueChange={(value) => setUserRole(value as UserRole)}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="client">Client</SelectItem>
-                <SelectItem value="engineer">Engineer</SelectItem>
-                <SelectItem value="enterprise">Enterprise</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={view} onValueChange={(value) => setView(value as CalendarView)}>
-              <SelectTrigger className="w-[100px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="month">Month</SelectItem>
-                <SelectItem value="week">Week</SelectItem>
-                <SelectItem value="day">Day</SelectItem>
-                <SelectItem value="agenda">Agenda</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" aria-label="Export calendar" onClick={exportICS}>
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              aria-label="Sync calendar"
-              onClick={() => toast({ title: 'Connect Calendar', description: 'Calendar sync requires connecting Google or Microsoft. Coming soon.' })}
-            >
-              <Globe className="h-4 w-4 mr-2" />
-              Sync
-            </Button>
             <Button 
               size="sm" 
               className="bg-gradient-primary"
@@ -395,43 +352,6 @@ export default function CalendarPage() {
           </div>
           
           <div className="flex gap-2">
-            <Select defaultValue="mine">
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="mine">My Projects</SelectItem>
-                <SelectItem value="team">Team</SelectItem>
-                <SelectItem value="company">Company</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <Select value={selectedProjectId} onValueChange={handleProjectSelect}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Projects" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Projects</SelectItem>
-                {projectOptions.map(project => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select defaultValue="all">
-              <SelectTrigger className="w-[120px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Cities</SelectItem>
-                <SelectItem value="riyadh">Riyadh</SelectItem>
-                <SelectItem value="jeddah">Jeddah</SelectItem>
-                <SelectItem value="dammam">Dammam</SelectItem>
-              </SelectContent>
-            </Select>
-            
             <Button variant="outline" size="sm" onClick={() => setShowFilters(true)}>
               <Filter className="h-4 w-4 mr-2" />
               Filters
@@ -464,8 +384,7 @@ export default function CalendarPage() {
             currentDate={currentDate}
             onDateSelect={handleDateSelect}
             events={events}
-            isHijri={isHijri}
-            userRole={userRole}
+            isHijri={false} // Removed isHijri and userRole as they are not in useCalendarStore
             onEventSelect={handleEventSelect}
           />
         </div>
@@ -495,8 +414,7 @@ export default function CalendarPage() {
             currentDate={currentDate}
             onDateSelect={(d) => { handleDateSelect(d); setShowSidebarMobile(false); }}
             events={events}
-            isHijri={isHijri}
-            userRole={userRole}
+            isHijri={false} // Removed isHijri and userRole as they are not in useCalendarStore
             onEventSelect={(e) => { handleEventSelect(e); setShowSidebarMobile(false); }}
           />
         </DialogContent>

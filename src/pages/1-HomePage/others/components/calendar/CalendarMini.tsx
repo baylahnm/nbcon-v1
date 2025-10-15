@@ -11,7 +11,7 @@ interface CalendarMiniProps {
   onDateSelect: (date: Date) => void;
   events: CalendarEvent[];
   isHijri: boolean;
-  userRole: UserRole;
+  userRole?: UserRole;
   onEventSelect: (event: CalendarEvent) => void;
 }
 

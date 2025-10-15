@@ -17,7 +17,7 @@ export default function EnterpriseDashboard() {
   if (error)   return <div className="p-6"><div className="mb-2">Failed to load</div><button className="border border-[var(--border)] rounded-lg px-3 py-1" onClick={refresh}>Retry</button></div>;
 
   return (
-    <main className="container mx-auto px-4 py-6 text-[var(--fg)]">
+    <main className="px-6 py-6 text-[var(--fg)]">
       <header className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <nav className="flex gap-3 text-sm"><a href="/enterprise/messages">Messages</a></nav>

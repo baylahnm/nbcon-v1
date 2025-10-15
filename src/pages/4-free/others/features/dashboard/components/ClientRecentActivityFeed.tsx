@@ -33,7 +33,7 @@ const defaultActivities: ActivityItem[] = [
     type: 'payment',
     description: 'Milestone payment released: 125,000 SAR for NEOM project',
     relativeTime: '2 hours ago',
-    link: '/free/payments'
+    link: '/free/finance'
   },
   {
     id: '3',

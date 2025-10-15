@@ -27,7 +27,7 @@ export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickAction
     { id: 'browse', label: 'Find Engineers', icon: Users, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/browse' },
     { id: 'projects', label: 'My Projects', icon: Building2, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/myprojects' },
     { id: 'quotes', label: 'View Quotes', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/quotes' },
-    { id: 'payments', label: 'Payments', icon: DollarSign, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/payments' },
+    { id: 'payments', label: 'Finance', icon: DollarSign, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/finance' },
     { id: 'messages', label: 'Messages', icon: MessageSquare, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/messages' },
     { id: 'calendar', label: 'Calendar', icon: Calendar, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/calendar' },
     { id: 'tracking', label: 'Track Progress', icon: MapPin, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/myprojects' },

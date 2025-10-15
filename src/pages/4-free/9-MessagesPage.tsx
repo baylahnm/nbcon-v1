@@ -449,8 +449,8 @@ export default function MessagesPage() {
                       setNewMessage('');
                     }
                   }}
-                />
-              </div>
+        />
+      </div>
               <Button 
                 size="sm" 
                 className="h-9 text-xs shadow-md hover:shadow-xl transition-all"

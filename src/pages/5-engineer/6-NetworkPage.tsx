@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from './others/stores/auth';
 import { getUserDisplayName, getUserInitials } from '../1-HomePage/others/lib/userUtils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
@@ -257,6 +257,93 @@ const mockStats: NetworkStats = {
   endorsements: 34
 };
 
+// ============================================================================
+// STAT CARD COMPONENT - MOUSE-TRACKING ANIMATION
+// ============================================================================
+
+interface StatCardProps {
+  stat: {
+    icon: React.ElementType;
+    label: string;
+    value: number;
+    colors: {
+      bg: string;
+      icon: string;
+      ring: string;
+    };
+    trend?: number;
+  };
+  StatIcon: React.ElementType;
+}
+
+function StatCardWithAnimation({ stat, StatIcon }: StatCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const angle = Math.atan2(y - centerY, x - centerX);
+      card.style.setProperty('--rotation', `${angle}rad`);
+    };
+
+    card.addEventListener('mousemove', handleMouseMove);
+    return () => card.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className="relative overflow-hidden transition-all duration-300"
+      style={{
+        '--rotation': '4.2rad',
+        border: '2px solid transparent',
+        borderRadius: '0.75rem',
+        backgroundImage: `
+          linear-gradient(hsl(var(--card)), hsl(var(--card))),
+          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box',
+      } as React.CSSProperties}
+    >
+      <Card className="bg-transparent border-0 group">
+        <CardContent className="p-4">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md group-hover:scale-110 transition-transform">
+                <StatIcon className="h-5 w-5 text-white" />
+              </div>
+              <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold tracking-tight">{stat.value}</p>
+              {stat.trend ? (
+                <div className="flex items-center gap-1 text-xs mt-1.5 font-medium text-green-600">
+                  <TrendingUp className="h-3 w-3" />
+                  <span>+{stat.trend}%</span>
+                </div>
+              ) : (
+                <div className="h-[20px] mt-1.5" />
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// ============================================================================
+// MAIN NETWORK PAGE COMPONENT
+// ============================================================================
+
 export default function NetworkPage() {
   const { user } = useAuthStore();
   const [activeTab, setActiveTab] = useState('connections');
@@ -309,7 +396,7 @@ export default function NetworkPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="container mx-auto p-4 space-y-4">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
@@ -343,93 +430,31 @@ export default function NetworkPage() {
         ].map((stat, index) => {
           const StatIcon = stat.icon;
           return (
-            <div
-              key={index}
-              className="relative overflow-hidden transition-all duration-300"
-              style={{
-                border: '2px solid transparent',
-                borderRadius: '0.75rem',
-                backgroundImage: `
-                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
-                `,
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box',
-              }}
-            >
-              <Card className="bg-transparent border-0 gap-0">
-                <CardContent className="p-4 bg-background rounded-xl">
-                  <div className="space-y-2">
-                    <div className={`${stat.colors.bg} p-2 rounded-lg ring-1 ${stat.colors.ring} w-fit`}>
-                      <StatIcon className={`h-4 w-4 ${stat.colors.icon}`} />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
-                      <p className="text-xs text-muted-foreground">{stat.label}</p>
-                      {stat.trend && (
-                        <div className="flex items-center gap-1 text-[10px] font-medium text-green-600 mt-1">
-                          <TrendingUp className="h-3 w-3" />
-                          <span>+{stat.trend}%</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <StatCardWithAnimation 
+              key={index} 
+              stat={stat} 
+              StatIcon={StatIcon} 
+            />
           );
         })}
       </div>
 
-      {/* Main Content */}
-      <Card
-        className="gap-0"
-        style={{
-          border: '2px solid transparent',
-          borderRadius: '0.75rem',
-          backgroundImage: `
-            linear-gradient(hsl(var(--card)), hsl(var(--card))),
-            linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
-          `,
-          backgroundOrigin: 'border-box',
-          backgroundClip: 'padding-box, border-box',
-        }}
-      >
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-0">
-          <CardHeader className="p-5 pb-3 border-b border-border/40">
-            <TabsList className="w-full grid grid-cols-3">
-              <TabsTrigger value="connections">Connections ({mockConnections.length})</TabsTrigger>
-              <TabsTrigger value="requests">
-                Requests ({mockConnectionRequests.length})
-                {mockConnectionRequests.length > 0 && (
-                  <Badge variant="destructive" className="ml-2 h-4 w-4 rounded-full p-0 text-xs">
-                    {mockConnectionRequests.length}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
-            </TabsList>
-          </CardHeader>
-
-          {/* Connections Tab */}
-          <TabsContent value="connections" className="m-0">
-            <CardContent className="p-5 space-y-5 bg-background rounded-b-xl">
-          {/* Search and Filters */}
+      {/* Search and Filters */}
+      <Card className="border-border/50">
+        <CardContent className="p-2">
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search connections..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, company, specialty..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-9 text-sm"
+              />
             </div>
             <div className="flex gap-2">
               <Select value={filterSpecialty} onValueChange={setFilterSpecialty}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px] h-9 text-xs">
                   <SelectValue placeholder="Filter by specialty" />
                 </SelectTrigger>
                 <SelectContent>
@@ -440,7 +465,7 @@ export default function NetworkPage() {
                 </SelectContent>
               </Select>
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className="w-[140px] h-9 text-xs">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -452,9 +477,33 @@ export default function NetworkPage() {
               </Select>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="w-full grid grid-cols-3 gap-0 h-9">
+          <TabsTrigger value="connections" className="text-xs">
+            Connections ({mockConnections.length})
+          </TabsTrigger>
+          <TabsTrigger value="requests" className="text-xs">
+            Requests ({mockConnectionRequests.length})
+            {mockConnectionRequests.length > 0 && (
+              <Badge className="ml-1.5 h-4 min-w-4 rounded-full px-1 text-[10px] bg-amber-500 text-white border-0">
+                {mockConnectionRequests.length}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="activity" className="text-xs">
+            Activity
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Connections Tab */}
+        <TabsContent value="connections" className="space-y-4 mt-4">
 
           {/* Connections Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredConnections.map((connection) => (
               <NetworkConnectionCard
                 key={connection.id}
@@ -465,22 +514,26 @@ export default function NetworkPage() {
               />
             ))}
           </div>
-            </CardContent>
-          </TabsContent>
+        </TabsContent>
 
-          {/* Connection Requests Tab */}
-          <TabsContent value="requests" className="m-0">
-            <CardContent className="p-5 space-y-5 bg-background rounded-b-xl">
+        {/* Connection Requests Tab */}
+        <TabsContent value="requests" className="space-y-4 mt-4">
           {mockConnectionRequests.length === 0 ? (
-            <div className="text-center py-16 px-4">
-              <div className="bg-muted/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bell className="h-10 w-10 text-muted-foreground" />
-              </div>
-              <h3 className="text-base font-bold mb-2">No pending requests</h3>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                You're all caught up! Check back later for new connection requests
-              </p>
-            </div>
+            <Card className="border-border/50">
+              <CardContent className="p-12 text-center">
+                <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                  <Bell className="h-10 w-10 text-muted-foreground" />
+                </div>
+                <h3 className="text-base font-bold mb-2">No pending requests</h3>
+                <p className="text-xs text-muted-foreground mb-6">
+                  You're all caught up! When someone wants to connect, you'll see their request here.
+                </p>
+                <Button className="h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                  <UserPlus className="h-3.5 w-3.5 mr-1.5" />
+                  Find People to Connect
+                </Button>
+              </CardContent>
+            </Card>
           ) : (
             <div className="space-y-4">
               {mockConnectionRequests.map((request) => (
@@ -494,13 +547,11 @@ export default function NetworkPage() {
               ))}
             </div>
           )}
-            </CardContent>
-          </TabsContent>
+        </TabsContent>
 
-          {/* Activity Tab */}
-          <TabsContent value="activity" className="m-0">
-            <CardContent className="p-5 space-y-5 bg-background rounded-b-xl">
-          <div className="space-y-2">
+        {/* Activity Tab */}
+        <TabsContent value="activity" className="space-y-4 mt-4">
+          <div className="space-y-3">
             {mockNetworkActivity.map((activity) => (
               <ActivityFeedItem
                 key={activity.id}
@@ -509,10 +560,8 @@ export default function NetworkPage() {
               />
             ))}
           </div>
-            </CardContent>
-          </TabsContent>
-        </Tabs>
-      </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

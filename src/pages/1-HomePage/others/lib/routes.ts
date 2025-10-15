@@ -32,7 +32,8 @@ export const R = {
     profile: "/free/profile",
     network: "/free/network",
     learning: "/free/learning",
-    payments: "/free/payments",
+    payments: "/free/finance",
+    finance: "/free/finance",
     help: "/free/help",
     settings: "/free/settings",
   },
@@ -87,7 +88,7 @@ export const RH = {
     learningCourse: (courseId: string) => `/free/learning/${courseId}`,
     learningCertificate: (certificateId: string) => `/free/learning/certificates/${certificateId}`,
     networkProfile: (userId: string) => `/free/network/${userId}`,
-    payment: (paymentId: string) => `/free/payments/${paymentId}`,
+    payment: (paymentId: string) => `/free/finance/${paymentId}`,
   },
   enterprise: {
     teamProject: (projectId: string) => `/enterprise/team-projects/${projectId}`,

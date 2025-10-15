@@ -189,6 +189,44 @@ export default function BrowseEngineersPage() {
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
   const [engineers, setEngineers] = useState(mockEngineers);
+  
+  // Refs for animated gradient cards
+  const stat1Ref = useRef<HTMLDivElement>(null);
+  const stat2Ref = useRef<HTMLDivElement>(null);
+  const stat3Ref = useRef<HTMLDivElement>(null);
+  const stat4Ref = useRef<HTMLDivElement>(null);
+
+  // Add mouse tracking for animated gradient on all stat cards
+  useEffect(() => {
+    const statRefs = [stat1Ref, stat2Ref, stat3Ref, stat4Ref];
+    
+    const handlers = statRefs.map(ref => {
+      const card = ref.current;
+      if (!card) return null;
+
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const angle = Math.atan2(y - centerY, x - centerX);
+        card.style.setProperty('--rotation', `${angle}rad`);
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      return { card, handleMouseMove };
+    });
+
+    return () => {
+      handlers.forEach(handler => {
+        if (handler) {
+          handler.card.removeEventListener('mousemove', handler.handleMouseMove);
+        }
+      });
+    };
+  }, []);
 
   // Filter engineers
   const filteredEngineers = engineers.filter(engineer => {
@@ -217,10 +255,10 @@ export default function BrowseEngineersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-6 py-8 space-y-8">
+      <div className="container mx-auto p-4 space-y-4">
         
         {/* Page Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
               <Users className="h-7 w-7 text-primary" />
@@ -232,7 +270,7 @@ export default function BrowseEngineersPage() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'outline'}
               size="sm"
@@ -255,23 +293,25 @@ export default function BrowseEngineersPage() {
         </div>
 
         {/* Overview Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div
+            ref={stat1Ref}
             className="relative overflow-hidden transition-all duration-300"
             style={{
+              '--rotation': '4.2rad',
               border: '2px solid transparent',
               borderRadius: '0.5rem',
               backgroundImage: `
                 linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
               `,
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
-            }}
+            } as React.CSSProperties}
           >
             <Card className="bg-transparent border-0">
-              <CardContent className="p-5">
-                <div className="space-y-3">
+              <CardContent className="p-4">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
                       <Users className="h-5 w-5 text-white" />
@@ -288,24 +328,26 @@ export default function BrowseEngineersPage() {
           </div>
 
           <div
+            ref={stat2Ref}
             className="relative overflow-hidden transition-all duration-300"
             style={{
+              '--rotation': '4.2rad',
               border: '2px solid transparent',
               borderRadius: '0.5rem',
               backgroundImage: `
                 linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                linear-gradient(135deg, hsl(142 65% 47% / 0.15) 0%, transparent 60%)
+                linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
               `,
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
-            }}
+            } as React.CSSProperties}
           >
             <Card className="bg-transparent border-0">
-              <CardContent className="p-5">
-                <div className="space-y-3">
+              <CardContent className="p-4">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-green-500/10 h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md ring-1 ring-green-500/20">
-                      <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                      <CheckCircle2 className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">SCE Verified</p>
                   </div>
@@ -319,24 +361,26 @@ export default function BrowseEngineersPage() {
           </div>
 
           <div
+            ref={stat3Ref}
             className="relative overflow-hidden transition-all duration-300"
             style={{
+              '--rotation': '4.2rad',
               border: '2px solid transparent',
               borderRadius: '0.5rem',
               backgroundImage: `
                 linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                linear-gradient(135deg, hsl(251 91% 60% / 0.15) 0%, transparent 60%)
+                linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
               `,
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
-            }}
+            } as React.CSSProperties}
           >
             <Card className="bg-transparent border-0">
-              <CardContent className="p-5">
-                <div className="space-y-3">
+              <CardContent className="p-4">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-blue-500/10 h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md ring-1 ring-blue-500/20">
-                      <Clock className="h-5 w-5 text-blue-600" />
+                    <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                      <Clock className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Available Now</p>
                   </div>
@@ -350,24 +394,26 @@ export default function BrowseEngineersPage() {
           </div>
 
           <div
+            ref={stat4Ref}
             className="relative overflow-hidden transition-all duration-300"
             style={{
+              '--rotation': '4.2rad',
               border: '2px solid transparent',
               borderRadius: '0.5rem',
               backgroundImage: `
                 linear-gradient(hsl(var(--card)), hsl(var(--card))),
-                linear-gradient(135deg, hsl(48 96% 53% / 0.15) 0%, transparent 60%)
+                linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
               `,
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
-            }}
+            } as React.CSSProperties}
           >
             <Card className="bg-transparent border-0">
-              <CardContent className="p-5">
-                <div className="space-y-3">
+              <CardContent className="p-4">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-yellow-500/10 h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md ring-1 ring-yellow-500/20">
-                      <Star className="h-5 w-5 text-yellow-600" />
+                    <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                      <Star className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Avg Rating</p>
                   </div>
@@ -396,7 +442,7 @@ export default function BrowseEngineersPage() {
               className="pl-10 h-10"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-4">
             <select 
               value={selectedSpecialty} 
               onChange={(e) => setSelectedSpecialty(e.target.value)}
@@ -430,7 +476,7 @@ export default function BrowseEngineersPage() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="grid w-full grid-cols-4 h-12">
             <TabsTrigger value="all" className="text-xs">
               All Engineers ({mockEngineers.length})
@@ -449,7 +495,7 @@ export default function BrowseEngineersPage() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value={activeTab} className="space-y-6">
+          <TabsContent value={activeTab} className="space-y-4">
             {/* Results count */}
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
@@ -462,7 +508,7 @@ export default function BrowseEngineersPage() {
             </div>
 
             {/* Engineer Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sortedEngineers.map((engineer) => (
                 <Card 
                   key={engineer.id}
@@ -471,7 +517,7 @@ export default function BrowseEngineersPage() {
                   {/* Header with Match Score */}
                   <div className="relative bg-gradient-to-br from-muted to-muted/50 p-4">
                     {engineer.matchScore && (
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-4 right-4">
                         <Badge className="bg-primary text-primary-foreground text-xs font-bold">
                           <Target className="h-3 w-3 mr-1" />
                           {engineer.matchScore}% Match
@@ -479,7 +525,7 @@ export default function BrowseEngineersPage() {
                       </div>
                     )}
                     
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-4">
                       <Avatar className="h-16 w-16 ring-4 ring-background">
                         <AvatarImage src={engineer.avatar} />
                         <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
@@ -509,7 +555,7 @@ export default function BrowseEngineersPage() {
                   {/* Content */}
                   <CardContent className="p-4 space-y-4">
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-3 gap-3 py-3 border-y border-border/40">
+                    <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-0.5 mb-1">
                           <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
@@ -530,7 +576,7 @@ export default function BrowseEngineersPage() {
                     {/* Skills */}
                     <div>
                       <p className="text-xs font-medium text-muted-foreground mb-2">Top Skills</p>
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-4">
                         {engineer.skills.slice(0, 3).map((skill) => (
                           <Badge key={skill} variant="outline" className="text-xs bg-primary/5 text-primary border-primary/20">
                             {skill}
@@ -550,7 +596,7 @@ export default function BrowseEngineersPage() {
                     </p>
 
                     {/* Rate and Response Time */}
-                    <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
                       <div>
                         <p className="font-bold text-sm text-primary">{engineer.hourlyRate} SAR/hr</p>
                         <p className="text-xs text-muted-foreground">Responds in {engineer.responseTime}</p>
@@ -565,7 +611,7 @@ export default function BrowseEngineersPage() {
                     </div>
 
                     {/* Quick Insights Buttons */}
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-4">
                       <Button 
                         variant="outline" 
                         size="sm" 
@@ -585,7 +631,7 @@ export default function BrowseEngineersPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-4">
                       <Button
                         size="sm"
                         className="flex-1 h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
