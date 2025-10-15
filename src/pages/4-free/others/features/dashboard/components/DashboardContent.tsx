@@ -81,10 +81,6 @@ export function DashboardContent() {
                   </p>
                 </div>
               </div>
-              <Badge variant="outline" className="h-8 px-3 text-xs flex items-center gap-2">
-                <Home className="h-4 w-4" />
-                Dashboard
-              </Badge>
             </CardContent>
           </Card>
         </div>

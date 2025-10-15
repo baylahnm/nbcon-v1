@@ -1,94 +1,198 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
 import { Briefcase, Users, Clock, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 
-// Liquid Wave Animation Component
-const LiquidWaveAnimation = () => {
+// Visual3 Component - Aceternity UI Animated Chart
+interface Visual3Props {
+  mainColor?: string;
+  secondaryColor?: string;
+  gridColor?: string;
+}
+
+function Visual3({
+  mainColor = "hsl(var(--primary))",
+  secondaryColor = "hsl(var(--accent))",
+  gridColor = "hsl(var(--muted-foreground) / 0.1)",
+}: Visual3Props) {
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Wave 1 - Primary (Front) */}
-      <svg 
-        className="absolute bottom-0 w-[200%] h-full animate-wave" 
-        viewBox="0 0 1200 120" 
-        preserveAspectRatio="none"
-        style={{ 
-          animationDuration: '8s',
-          animationTimingFunction: 'ease-in-out'
-        }}
-      >
-        <path 
-          fill="hsl(var(--primary) / 0.12)" 
-          d="M0,60 C150,80 350,40 600,60 C850,80 1050,40 1200,60 L1200,120 L0,120 Z"
-        >
-          <animate
-            attributeName="d"
-            dur="8s"
-            repeatCount="indefinite"
-            values="
-              M0,60 C150,80 350,40 600,60 C850,80 1050,40 1200,60 L1200,120 L0,120 Z;
-              M0,60 C150,40 350,80 600,60 C850,40 1050,80 1200,60 L1200,120 L0,120 Z;
-              M0,60 C150,80 350,40 600,60 C850,80 1050,40 1200,60 L1200,120 L0,120 Z
-            "
-          />
-        </path>
-      </svg>
+    <>
+      <div
+        className="absolute inset-0 z-20"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={
+          {
+            "--color": mainColor,
+            "--secondary-color": secondaryColor,
+          } as React.CSSProperties
+        }
+      />
 
-      {/* Wave 2 - Secondary (Middle) */}
-      <svg 
-        className="absolute bottom-0 w-[200%] h-full animate-wave-delayed" 
-        viewBox="0 0 1200 120" 
-        preserveAspectRatio="none"
-        style={{ 
-          animationDuration: '10s',
-          animationTimingFunction: 'ease-in-out'
-        }}
-      >
-        <path 
-          fill="hsl(var(--primary) / 0.08)" 
-          d="M0,40 C200,60 400,20 600,40 C800,60 1000,20 1200,40 L1200,120 L0,120 Z"
-        >
-          <animate
-            attributeName="d"
-            dur="10s"
-            repeatCount="indefinite"
-            values="
-              M0,40 C200,60 400,20 600,40 C800,60 1000,20 1200,40 L1200,120 L0,120 Z;
-              M0,40 C200,20 400,60 600,40 C800,20 1000,60 1200,40 L1200,120 L0,120 Z;
-              M0,40 C200,60 400,20 600,40 C800,60 1000,20 1200,40 L1200,120 L0,120 Z
-            "
-          />
-        </path>
-      </svg>
+      <div className="relative h-full w-full overflow-hidden">
+        <Layer4 color={mainColor} secondaryColor={secondaryColor} hovered={hovered} />
+        <Layer3 color={mainColor} />
+        <Layer2 color={mainColor} />
+        <Layer1 color={mainColor} secondaryColor={secondaryColor} />
+        <EllipseGradient color={mainColor} />
+        <GridLayer color={gridColor} />
+      </div>
+    </>
+  );
+}
 
-      {/* Wave 3 - Tertiary (Back) */}
-      <svg 
-        className="absolute bottom-0 w-[200%] h-full animate-wave-slow" 
-        viewBox="0 0 1200 120" 
-        preserveAspectRatio="none"
-        style={{ 
-          animationDuration: '12s',
-          animationTimingFunction: 'ease-in-out'
-        }}
-      >
-        <path 
-          fill="hsl(var(--primary) / 0.05)" 
-          d="M0,80 C250,100 450,60 600,80 C750,100 950,60 1200,80 L1200,120 L0,120 Z"
-        >
-          <animate
-            attributeName="d"
-            dur="12s"
-            repeatCount="indefinite"
-            values="
-              M0,80 C250,100 450,60 600,80 C750,100 950,60 1200,80 L1200,120 L0,120 Z;
-              M0,80 C250,60 450,100 600,80 C750,60 950,100 1200,80 L1200,120 L0,120 Z;
-              M0,80 C250,100 450,60 600,80 C750,100 950,60 1200,80 L1200,120 L0,120 Z
-            "
-          />
-        </path>
-      </svg>
+interface LayerProps {
+  color: string;
+  secondaryColor?: string;
+  hovered?: boolean;
+}
 
-      {/* Subtle gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-primary/5" />
+const GridLayer: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div
+      style={{ "--grid-color": color } as React.CSSProperties}
+      className="pointer-events-none absolute inset-0 z-[4] h-full w-full bg-transparent bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px] bg-center opacity-70 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"
+    />
+  );
+};
+
+const EllipseGradient: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div className="absolute inset-0 z-[5] flex h-full w-full items-center justify-center">
+      <svg
+        width="356"
+        height="180"
+        viewBox="0 0 356 180"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="356" height="180" fill="url(#paint0_radial_12_207)" />
+        <defs>
+          <radialGradient
+            id="paint0_radial_12_207"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(178 98) rotate(90) scale(98 178)"
+          >
+            <stop stopColor={color} stopOpacity="0.25" />
+            <stop offset="0.34" stopColor={color} stopOpacity="0.15" />
+            <stop offset="1" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
+const Layer1: React.FC<LayerProps> = ({ color, secondaryColor }) => {
+  return (
+    <div
+      className="absolute top-4 left-4 z-[8] flex items-center gap-1"
+      style={
+        {
+          "--color": color,
+          "--secondary-color": secondaryColor,
+        } as React.CSSProperties
+      }
+    >
+      <div className="flex shrink-0 items-center rounded-full border border-border bg-card/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0">
+        <div className="h-1.5 w-1.5 rounded-full bg-[var(--color)]" />
+        <span className="ml-1 text-[10px] text-card-foreground">+15.2%</span>
+      </div>
+      <div className="flex shrink-0 items-center rounded-full border border-border bg-card/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0">
+        <div className="h-1.5 w-1.5 rounded-full bg-[var(--secondary-color)]" />
+        <span className="ml-1 text-[10px] text-card-foreground">+18.7%</span>
+      </div>
+    </div>
+  );
+};
+
+const Layer2: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div
+      className="group relative h-full w-full"
+      style={{ "--color": color } as React.CSSProperties}
+    >
+      <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[7] flex w-full translate-y-full items-start justify-center bg-transparent p-4 transition-transform duration-500 group-hover/animated-card:translate-y-0">
+        <div className="ease-[cubic-bezier(0.6, 0, 1)] rounded-md border border-border bg-card/25 p-1.5 opacity-0 backdrop-blur-sm transition-opacity duration-500 group-hover/animated-card:opacity-100">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 shrink-0 rounded-full bg-[var(--color)]" />
+            <p className="text-xs text-card-foreground">Live Stats</p>
+          </div>
+          <p className="text-xs text-muted-foreground">Real-time updates</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Layer3: React.FC<{ color: string }> = ({ color }) => {
+  return (
+    <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[6] flex translate-y-full items-center justify-center opacity-0 transition-all duration-500 group-hover/animated-card:translate-y-0 group-hover/animated-card:opacity-100">
+      <svg
+        width="356"
+        height="180"
+        viewBox="0 0 356 180"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect width="356" height="180" fill="url(#paint0_linear_29_3)" />
+        <defs>
+          <linearGradient
+            id="paint0_linear_29_3"
+            x1="178"
+            y1="0"
+            x2="178"
+            y2="180"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.35" stopColor={color} stopOpacity="0" />
+            <stop offset="1" stopColor={color} stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
+const Layer4: React.FC<LayerProps> = ({ color, secondaryColor, hovered }) => {
+  const rectsData = [
+    { width: 15, height: 20, y: 110, hoverHeight: 20, hoverY: 130, x: 40, fill: "currentColor", hoverFill: secondaryColor },
+    { width: 15, height: 20, y: 90, hoverHeight: 20, hoverY: 130, x: 60, fill: color, hoverFill: color },
+    { width: 15, height: 40, y: 70, hoverHeight: 30, hoverY: 120, x: 80, fill: color, hoverFill: color },
+    { width: 15, height: 30, y: 80, hoverHeight: 50, hoverY: 100, x: 100, fill: color, hoverFill: color },
+    { width: 15, height: 30, y: 110, hoverHeight: 40, hoverY: 110, x: 120, fill: "currentColor", hoverFill: secondaryColor },
+    { width: 15, height: 50, y: 110, hoverHeight: 20, hoverY: 130, x: 140, fill: "currentColor", hoverFill: secondaryColor },
+    { width: 15, height: 50, y: 60, hoverHeight: 30, hoverY: 120, x: 160, fill: color, hoverFill: color },
+    { width: 15, height: 30, y: 80, hoverHeight: 20, hoverY: 130, x: 180, fill: color, hoverFill: color },
+    { width: 15, height: 20, y: 110, hoverHeight: 40, hoverY: 110, x: 200, fill: "currentColor", hoverFill: secondaryColor },
+    { width: 15, height: 40, y: 70, hoverHeight: 60, hoverY: 90, x: 220, fill: color, hoverFill: color },
+    { width: 15, height: 30, y: 110, hoverHeight: 70, hoverY: 80, x: 240, fill: "currentColor", hoverFill: secondaryColor },
+    { width: 15, height: 50, y: 110, hoverHeight: 50, hoverY: 100, x: 260, fill: "currentColor", hoverFill: secondaryColor },
+    { width: 15, height: 20, y: 110, hoverHeight: 80, hoverY: 70, x: 280, fill: "currentColor", hoverFill: secondaryColor },
+    { width: 15, height: 30, y: 80, hoverHeight: 90, hoverY: 60, x: 300, fill: color, hoverFill: color },
+  ];
+
+  return (
+    <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[8] flex h-full w-full items-center justify-center text-muted-foreground/10 transition-transform duration-500 group-hover/animated-card:scale-150">
+      <svg width="356" height="180" xmlns="http://www.w3.org/2000/svg">
+        {rectsData.map((rect, index) => (
+          <rect
+            key={index}
+            width={rect.width}
+            height={hovered ? rect.hoverHeight : rect.height}
+            x={rect.x}
+            y={hovered ? rect.hoverY : rect.y}
+            fill={hovered ? rect.hoverFill : rect.fill}
+            rx="2"
+            ry="2"
+            className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] transition-all duration-500"
+          />
+        ))}
+      </svg>
     </div>
   );
 };
@@ -151,50 +255,43 @@ function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: 
   return (
     <div
       ref={cardRef}
-      className="group relative overflow-hidden transition-all duration-300"
-      style={{
-        '--rotation': '4.2rad',
-        border: '2px solid transparent',
-        borderRadius: '0.5rem',
-        backgroundImage: `
-          linear-gradient(hsl(var(--card)), hsl(var(--card))),
-          linear-gradient(calc(var(--rotation, 4.2rad)), hsl(var(--primary)) 0%, hsl(var(--card)) 30%, transparent 80%)
-        `,
-        backgroundOrigin: 'border-box',
-        backgroundClip: 'padding-box, border-box',
-      } as React.CSSProperties}
+      role="region"
+      aria-labelledby="card-title"
+      aria-describedby="card-description"
+      className="group/animated-card relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300"
+      onClick={onClick}
     >
-      {/* Liquid Wave Animation - Behind Content */}
-      <LiquidWaveAnimation />
-      
-      <Card 
-        className="cursor-pointer bg-transparent border-0 relative z-10"
-        onClick={onClick}
-      >
-        <CardContent className="p-5 relative z-20">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className={`${colors[color].bg} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md group-hover:scale-110 transition-transform`}>
-                <Icon className={`h-5 w-5 ${colors[color].icon}`} />
-              </div>
-              <p className="text-xs font-medium text-muted-foreground">{label}</p>
-            </div>
-            <div>
-              <p className="text-xl font-bold tracking-tight">{value}</p>
-              {trend && (
-                <div className={`flex items-center gap-1 text-xs mt-1.5 font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-                  {trend.isPositive ? (
-                    <TrendingUp className="h-3 w-3" />
-                  ) : (
-                    <TrendingDown className="h-3 w-3" />
-                  )}
-                  <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
-                </div>
-              )}
-            </div>
+      {/* Animated Chart Visualization */}
+      <div className="h-[180px] w-full overflow-hidden">
+        <Visual3 
+          mainColor="hsl(var(--primary))"
+          secondaryColor="hsl(var(--accent))"
+          gridColor="hsl(var(--muted-foreground) / 0.1)"
+        />
+      </div>
+
+      {/* Card Content */}
+      <div className="flex flex-col space-y-1.5 border-t border-border p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className={`${colors[color].bg} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md`}>
+            <Icon className={`h-5 w-5 ${colors[color].icon}`} />
           </div>
-        </CardContent>
-      </Card>
+          <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        </div>
+        <div>
+          <p className="text-xl font-bold tracking-tight">{value}</p>
+          {trend && (
+            <div className={`flex items-center gap-1 text-xs mt-1.5 font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {trend.isPositive ? (
+                <TrendingUp className="h-3 w-3" />
+              ) : (
+                <TrendingDown className="h-3 w-3" />
+              )}
+              <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
