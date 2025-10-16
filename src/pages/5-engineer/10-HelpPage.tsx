@@ -175,22 +175,25 @@ export default function HelpPage() {
   });
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+      <div className="p-4 space-y-6">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <HelpCircle className="h-5 w-5 text-primary" />
-            Help & Support
-          </h1>
-          <p className="text-xs text-muted-foreground">Find answers and get support for your engineering work</p>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
+            <HelpCircle className="h-5 w-5 text-white" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-[18px] font-bold tracking-tight">Help & Support</h1>
+            <p className="text-[14px] text-muted-foreground">Find answers and get support for your engineering work</p>
+          </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="h-[36px] text-xs">
             <MessageSquare className="h-4 w-4 mr-2" />
             Live Chat
           </Button>
-          <Button size="sm">
+          <Button size="sm" className="h-[36px] text-xs">
             <Phone className="h-4 w-4 mr-2" />
             Contact Support
           </Button>
@@ -332,10 +335,10 @@ export default function HelpPage() {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="articles">Help Articles</TabsTrigger>
-          <TabsTrigger value="faq">FAQ</TabsTrigger>
-          <TabsTrigger value="contact">Contact Support</TabsTrigger>
+        <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
+          <TabsTrigger value="articles" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Help Articles</TabsTrigger>
+          <TabsTrigger value="faq" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">FAQ</TabsTrigger>
+          <TabsTrigger value="contact" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Contact Support</TabsTrigger>
         </TabsList>
 
         {/* Help Articles Tab */}
@@ -662,6 +665,7 @@ export default function HelpPage() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }

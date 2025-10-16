@@ -175,7 +175,7 @@ const QuotationTable: React.FC = () => {
         <Select value={filters.status || 'all'} onValueChange={(value) => 
           setFilters(prev => ({ ...prev, status: value === 'all' ? undefined : value }))
         }>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-40 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -189,7 +189,7 @@ const QuotationTable: React.FC = () => {
         </Select>
 
         <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-40 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>

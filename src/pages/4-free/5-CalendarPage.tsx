@@ -26,8 +26,8 @@ import CalendarContent from '../1-HomePage/others/components/calendar/CalendarCo
 import CalendarMini from '../1-HomePage/others/components/calendar/CalendarMini';
 import CalendarFilters from '../1-HomePage/others/components/calendar/CalendarFilters';
 import CreateEventDialog from '../1-HomePage/others/components/calendar/CreateEventDialog';
-import { useCalendarStore } from "./others/stores/useCalendarStore";
-import type { CalendarEvent } from "./others/stores/useCalendarStore";
+import { useCalendarStore, CalendarView } from './others/stores/useCalendarStore';
+import type { CalendarEvent } from './others/stores/useCalendarStore';
 import { useTeamStore } from '../2-auth/others/hooks/useTeamStore';
 import { useThemeStore } from "./others/stores/theme";
 import { useToast } from '@/pages/1-HomePage/others/components/ui/use-toast';
@@ -43,9 +43,11 @@ export default function CalendarPage() {
     currentDate,
     setCurrentDate,
     events,
+    isHijri,
     setSelectedEvent,
     view,
     setView,
+    setIsHijri,
     updateFilters,
     addEvent
   } = useCalendarStore();
@@ -249,55 +251,43 @@ export default function CalendarPage() {
     >
       {/* Header Section */}
       <div 
-        className="p-6 mb-4 border-b"
+        className="p-4 mb-0 border-b"
         style={{
           backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b">
-          <div>
-            <h1 className="text-xl font-bold flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              Project Calendar
-            </h1>
-            <p className="text-muted-foreground">Manage your project timelines and milestones</p>
-          </div>
-        </div>
-        
-        <div className="flex items-center sm:justify-between mt-4 mb-4">
-          {/* Mobile left arrow */}
-          <Button
-            variant="outline"
-            size="icon"
-            className={`sm:hidden mr-2 ${isAtStart ? 'invisible' : 'visible'}`}
-            aria-label="Scroll left"
-            onClick={() => scrollToSnap('left')}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-
-          <div ref={toolbarRef} className="flex items-center overflow-x-auto snap-x snap-mandatory flex-nowrap gap-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-1">
-          <div className="flex items-center gap-4 shrink-0 snap-start">
-            <div className="text-lg font-medium">
-              {formatDate(currentDate)}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
+              <Calendar className="h-5 w-5 text-white" />
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigateDate('prev')} aria-label={`Previous ${view}`}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={goToToday} aria-label="Go to today">
-                Today
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => navigateDate('next')} aria-label={`Next ${view}`}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+            <div className="min-w-0">
+              <h1 className="text-[18px] font-bold tracking-tight">Calendar</h1>
+              <p className="text-[14px] text-muted-foreground">
+                Manage your engineering projects and milestones
+              </p>
             </div>
           </div>
+          
           <div className="flex items-center gap-2 shrink-0 snap-start">
+            <Button variant="outline" size="sm" aria-label="Export calendar" onClick={exportICS} className="h-8 text-xs">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              aria-label="Sync calendar"
+              onClick={() => toast({ title: 'Connect Calendar', description: 'Calendar sync requires connecting Google or Microsoft. Coming soon.' })}
+              className="h-8 text-xs"
+            >
+              <Globe className="h-4 w-4 mr-2" />
+              Sync
+            </Button>
             <Button 
               size="sm" 
-              className="bg-gradient-primary"
+              className="bg-gradient-primary h-8 text-xs"
               onClick={() => setShowCreateDialog(true)}
               aria-label="Create event"
             >
@@ -315,6 +305,57 @@ export default function CalendarPage() {
               Details
             </Button>
           </div>
+        </div>
+        
+        <div className="flex items-center sm:justify-between mt-4 mb-4">
+          {/* Mobile left arrow */}
+          <Button
+            variant="outline"
+            size="icon"
+            className={`sm:hidden mr-2 ${isAtStart ? 'invisible' : 'visible'}`}
+            aria-label="Scroll left"
+            onClick={() => scrollToSnap('left')}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+
+          <div ref={toolbarRef} className="flex items-center overflow-x-auto snap-x snap-mandatory flex-nowrap gap-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-1">
+            {/* Date Navigation Group */}
+            <div className="flex items-center gap-4 shrink-0 snap-start">
+              <div className="text-base font-semibold">
+                {formatDate(currentDate)}
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => navigateDate('prev')} aria-label={`Previous ${view}`} className="h-[36px] text-xs">
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm" onClick={goToToday} aria-label="Go to today" className="h-[36px] text-xs">
+                  Today
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => navigateDate('next')} aria-label={`Next ${view}`} className="h-[36px] text-xs">
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* View Selector Group */}
+            <div className="flex items-center gap-2 shrink-0 snap-start">
+              <Select value={view} onValueChange={(value) => setView(value as CalendarView)}>
+                <SelectTrigger className="w-[100px] h-[36px] bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="day">Day</SelectItem>
+                  <SelectItem value="week">Week</SelectItem>
+                  <SelectItem value="month">Month</SelectItem>
+                  <SelectItem value="agenda">Agenda</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="flex items-center gap-2 h-[36px] px-3 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors shadow-inner">
+                <Switch id="hijri-switch" checked={isHijri} onCheckedChange={setIsHijri} className="border-input" />
+                <Label htmlFor="hijri-switch" className="text-xs cursor-pointer">Hijri</Label>
+              </div>
+            </div>
           </div>
 
           {/* Mobile right arrow */}
@@ -338,12 +379,12 @@ export default function CalendarPage() {
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <div className="flex flex-col lg:flex-row gap-4 mb-4 p-6">
+        <div className="flex flex-col lg:flex-row gap-4 mb-0 p-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search projects, engineers, milestones..."
+                placeholder="Search projects, clients, locations..."
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-10"
@@ -352,7 +393,21 @@ export default function CalendarPage() {
           </div>
           
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setShowFilters(true)}>
+            <Select value={selectedProjectId} onValueChange={handleProjectSelect}>
+              <SelectTrigger className="w-[180px] h-[36px] bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+                <SelectValue placeholder="All Projects" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Projects</SelectItem>
+                {projectOptions.map(project => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Button variant="outline" size="sm" onClick={() => setShowFilters(true)} className="h-[36px] text-xs">
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </Button>
@@ -374,7 +429,7 @@ export default function CalendarPage() {
         
         {/* Right Sidebar - Mini Calendar (hidden on mobile) */}
         <div 
-          className="hidden lg:block w-80 p-6 overflow-y-auto border-l"
+          className="hidden lg:block w-80 p-4 overflow-y-auto border-l"
           style={{
             backgroundColor: `hsl(${themeTokens['--background'] || '0 0% 100%'})`,
             borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
@@ -384,7 +439,8 @@ export default function CalendarPage() {
             currentDate={currentDate}
             onDateSelect={handleDateSelect}
             events={events}
-            isHijri={false} // Removed isHijri and userRole as they are not in useCalendarStore
+            isHijri={isHijri}
+            userRole="client"
             onEventSelect={handleEventSelect}
           />
         </div>
@@ -414,7 +470,8 @@ export default function CalendarPage() {
             currentDate={currentDate}
             onDateSelect={(d) => { handleDateSelect(d); setShowSidebarMobile(false); }}
             events={events}
-            isHijri={false} // Removed isHijri and userRole as they are not in useCalendarStore
+            isHijri={isHijri}
+            userRole="client"
             onEventSelect={(e) => { handleEventSelect(e); setShowSidebarMobile(false); }}
           />
         </DialogContent>
@@ -422,4 +479,3 @@ export default function CalendarPage() {
     </div>
   );
 }
-

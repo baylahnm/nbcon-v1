@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
 import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../1-HomePage/others/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
 import { Badge } from '../1-HomePage/others/components/ui/badge';
 import { 
@@ -189,16 +190,16 @@ export default function PostJobPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto p-4 space-y-4">
+      <div className="p-4 space-y-4">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
-        <div className="flex items-center gap-4">
-          <div className="bg-primary/10 p-2.5 rounded-xl ring-1 ring-primary/20">
-            <Plus className="h-5 w-5 text-primary" />
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
+            <Plus className="h-5 w-5 text-white" />
           </div>
-          <div>
-            <h1 className="text-base font-bold tracking-tight">Post New Job</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">Find the perfect engineer for your project</p>
+          <div className="min-w-0">
+            <h1 className="text-[18px] font-bold tracking-tight">Post New Job</h1>
+            <p className="text-[14px] text-muted-foreground">Find the perfect engineer for your project</p>
           </div>
         </div>
         <div className="flex gap-4">
@@ -294,7 +295,7 @@ export default function PostJobPage() {
               }}
             >
               <Card className="bg-transparent border-0">
-                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
                       <Briefcase className="h-6 w-6 text-white" />
@@ -316,29 +317,29 @@ export default function PostJobPage() {
                 </div>
                 <div>
                   <label className="text-xs font-medium mb-2 block">Category *</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
-                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  >
-                    <option value="">Select a category</option>
-                    {jobCategories.map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
+                   <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                     <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+                       <SelectValue placeholder="Select a category" />
+                     </SelectTrigger>
+                    <SelectContent>
+                      {jobCategories.map(category => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <label className="text-xs font-medium mb-2 block">Location *</label>
-                  <select
-                    value={formData.location}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
-                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  >
-                    <option value="">Select a location</option>
-                    {locations.map(location => (
-                      <option key={location} value={location}>{location}</option>
-                    ))}
-                  </select>
+                   <Select value={formData.location} onValueChange={(value) => handleInputChange('location', value)}>
+                     <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+                       <SelectValue placeholder="Select a location" />
+                     </SelectTrigger>
+                    <SelectContent>
+                      {locations.map(location => (
+                        <SelectItem key={location} value={location}>{location}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
               </Card>
@@ -358,7 +359,7 @@ export default function PostJobPage() {
               }}
             >
               <Card className="bg-transparent border-0">
-                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
                       <DollarSign className="h-6 w-6 text-white" />
@@ -385,42 +386,46 @@ export default function PostJobPage() {
                       value={formData.budget.max || ''}
                       onChange={(e) => handleBudgetChange('max', Number(e.target.value))}
                     />
-                    <select
-                      value={formData.budget.currency}
-                      onChange={(e) => handleInputChange('budget', { ...formData.budget, currency: e.target.value })}
-                      className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-                    >
-                      <option value="SAR">SAR</option>
-                      <option value="USD">USD</option>
-                      <option value="EUR">EUR</option>
-                    </select>
+                     <Select 
+                       value={formData.budget.currency} 
+                       onValueChange={(value) => handleInputChange('budget', { ...formData.budget, currency: value })}
+                     >
+                       <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+                         <SelectValue />
+                       </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAR">SAR</SelectItem>
+                        <SelectItem value="USD">USD</SelectItem>
+                        <SelectItem value="EUR">EUR</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div>
                   <label className="text-xs font-medium mb-2 block">Project Timeline *</label>
-                  <select
-                    value={formData.timeline}
-                    onChange={(e) => handleInputChange('timeline', e.target.value)}
-                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  >
-                    <option value="">Select timeline</option>
-                    {timelineOptions.map(timeline => (
-                      <option key={timeline} value={timeline}>{timeline}</option>
-                    ))}
-                  </select>
+                   <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
+                     <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+                       <SelectValue placeholder="Select timeline" />
+                     </SelectTrigger>
+                    <SelectContent>
+                      {timelineOptions.map(timeline => (
+                        <SelectItem key={timeline} value={timeline}>{timeline}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <label className="text-xs font-medium mb-2 block">Experience Level *</label>
-                  <select
-                    value={formData.experience}
-                    onChange={(e) => handleInputChange('experience', e.target.value)}
-                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  >
-                    <option value="">Select experience level</option>
-                    {experienceLevels.map(level => (
-                      <option key={level} value={level}>{level}</option>
-                    ))}
-                  </select>
+                   <Select value={formData.experience} onValueChange={(value) => handleInputChange('experience', value)}>
+                     <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+                       <SelectValue placeholder="Select experience level" />
+                     </SelectTrigger>
+                    <SelectContent>
+                      {experienceLevels.map(level => (
+                        <SelectItem key={level} value={level}>{level}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
               </Card>
@@ -450,7 +455,7 @@ export default function PostJobPage() {
             }}
           >
             <Card className="bg-transparent border-0">
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
                     <FileText className="h-6 w-6 text-white" />
@@ -503,7 +508,7 @@ export default function PostJobPage() {
               }}
             >
               <Card className="bg-transparent border-0">
-                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
                       <Users className="h-6 w-6 text-white" />
@@ -552,7 +557,7 @@ export default function PostJobPage() {
               }}
             >
               <Card className="bg-transparent border-0">
-                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
                       <CheckCircle2 className="h-6 w-6 text-white" />
@@ -601,7 +606,7 @@ export default function PostJobPage() {
               }}
             >
               <Card className="bg-transparent border-0">
-                <CardHeader className="p-5 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
                       <FileText className="h-6 w-6 text-white" />
@@ -663,7 +668,7 @@ export default function PostJobPage() {
             }}
           >
             <Card className="bg-transparent border-0">
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
                     <Eye className="h-6 w-6 text-white" />

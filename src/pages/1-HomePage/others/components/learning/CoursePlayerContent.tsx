@@ -315,7 +315,7 @@ export function CoursePlayerContent({ courseId, courseTitle, progress, onBack }:
                 <div className="flex items-center gap-4">
                   {/* Playback Speed */}
                   <Select value={playbackSpeed.toString()} onValueChange={(value) => setPlaybackSpeed(parseFloat(value))}>
-                    <SelectTrigger className="w-20 h-8 bg-transparent border-sidebar-border text-primary-foreground">
+                    <SelectTrigger className="w-20 h-8 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

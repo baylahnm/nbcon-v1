@@ -202,7 +202,7 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
             filteredThreads.map((thread) => (
               <Card
                 key={thread.id}
-                className={`cursor-pointer transition-colors hover:bg-muted/50 ${
+                className={`w-full cursor-pointer transition-colors hover:bg-muted/50 ${
                   activeThreadId === thread.id ? 'bg-muted border-sidebar-border' : ''
                 } ${isCompact ? 'p-2' : 'p-3'}`}
                 onClick={() => handleThreadSelect(thread)}
@@ -227,8 +227,11 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-sm truncate">
-                              {thread.title}
+                            <h3 className="font-medium text-sm">
+                              {thread.title.length > 10 
+                                ? `${thread.title.substring(0, 10)}...` 
+                                : thread.title
+                              }
                             </h3>
                             {thread.lastMessage && (
                               <p className="text-xs text-muted-foreground mt-1 line-clamp-2">

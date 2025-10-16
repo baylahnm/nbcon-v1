@@ -255,8 +255,8 @@ export default function LearningPage() {
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-xl font-bold tracking-tight">Learning Center</h1>
-            <p className="text-xs text-muted-foreground">Master project management and client skills</p>
+            <h1 className="text-[18px] font-bold tracking-tight">Learning Center</h1>
+            <p className="text-[14px] text-muted-foreground">Master project management and client skills</p>
           </div>
         </div>
         <div className="flex gap-2 flex-shrink-0">

@@ -15,7 +15,7 @@ export function LanguageSwitcher() {
 
   return (
     <Select defaultValue={currentLanguage} onValueChange={handleLanguageChange}>
-      <SelectTrigger className="w-32 gap-2">
+      <SelectTrigger className="w-32 gap-2 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
         <Globe className="h-4 w-4" />
         <SelectValue />
       </SelectTrigger>

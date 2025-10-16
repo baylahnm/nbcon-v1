@@ -396,27 +396,30 @@ export default function NetworkPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-4">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            My Network
-          </h1>
-          <p className="text-xs text-muted-foreground">Build and manage your professional connections</p>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+      <div className="p-4 space-y-4">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+              <Users className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-[18px] font-bold tracking-tight">My Network</h1>
+              <p className="text-[14px] text-muted-foreground mt-0.5">Build and manage your professional connections</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" className="h-8 text-xs">
+              <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+              Refresh
+            </Button>
+            <Button className="h-8 text-xs">
+              <UserPlus className="h-3.5 w-3.5 mr-1.5" />
+              Find Connections
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="h-8 text-xs">
-            <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-            Refresh
-          </Button>
-          <Button size="sm" className="h-8 text-xs">
-            <UserPlus className="h-3.5 w-3.5 mr-1.5" />
-            Find Connections
-          </Button>
-        </div>
-      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -562,6 +565,7 @@ export default function NetworkPage() {
           </div>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }

@@ -740,7 +740,7 @@ export function SettingsContent() {
                     <p className="text-xs text-muted-foreground">Who can see your profile</p>
                   </div>
                   <Select defaultValue="professional">
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-32 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -811,7 +811,7 @@ export function SettingsContent() {
                     <p className="text-xs text-muted-foreground">Auto-logout after inactivity</p>
                   </div>
                   <Select defaultValue="30">
-                    <SelectTrigger className="w-24">
+                    <SelectTrigger className="w-24 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

@@ -1,7 +1,7 @@
 # 🎨 nbcon - UI Design System
 
-**Last Updated:** October 12, 2025  
-**Version:** 2.0  
+**Last Updated:** December 19, 2024  
+**Version:** 2.1  
 **Status:** Production Standard
 
 ---
@@ -1116,6 +1116,8 @@ import { Input } from '@/pages/1-HomePage/others/components/ui/input';
 import { Dialog, DialogContent, DialogHeader } from '@/pages/1-HomePage/others/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/pages/1-HomePage/others/components/ui/select';
+import { Switch } from '@/pages/1-HomePage/others/components/ui/switch';
+import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea';
 import { toast } from '@/pages/1-HomePage/others/components/ui/sonner';
 
 // Icons
@@ -1126,6 +1128,61 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 // Animation
 import { motion } from 'framer-motion';
+```
+
+## 🔧 Form Component Updates (v2.1)
+
+### SelectTrigger Default Styling
+**Updated:** `src/pages/1-HomePage/others/components/ui/select.tsx`
+
+```tsx
+// Default styling now includes theme consistency
+<SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+  <SelectValue placeholder="Select option" />
+</SelectTrigger>
+
+// No need to add className manually - defaults are now theme-aware
+<SelectTrigger>
+  <SelectValue placeholder="Select option" />
+</SelectTrigger>
+```
+
+### Switch Component Border
+**Updated:** `src/pages/1-HomePage/others/components/ui/switch.tsx`
+
+```tsx
+// Switch now has proper border for visual definition
+<Switch className="border-input" />
+
+// Border automatically applied in default styling
+<Switch />
+```
+
+### Textarea Theme Background
+**Updated:** `src/pages/1-HomePage/others/components/ui/textarea.tsx`
+
+```tsx
+// Textarea now uses theme background
+<Textarea className="bg-background" />
+
+// Automatically applied in default styling
+<Textarea />
+```
+
+### ThreadList Text Truncation Pattern
+**Location:** `src/pages/5-engineer/others/features/ai/components/ThreadList.tsx`
+
+```tsx
+// Fixed-width text truncation (10 characters + ellipsis)
+<h3 className="font-medium text-sm">
+  {thread.title.length > 10 
+    ? `${thread.title.substring(0, 10)}...` 
+    : thread.title
+  }
+</h3>
+
+// Full-width card container
+<Card className="w-full cursor-pointer transition-colors hover:bg-muted/50">
 ```
 
 ---
@@ -1357,7 +1414,7 @@ function MyComponent() {
 
 ---
 
-**Version:** 2.0  
+**Version:** 2.1  
 **Maintained By:** Development Team  
-**Last Review:** October 12, 2025
+**Last Review:** December 19, 2024
 

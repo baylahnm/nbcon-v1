@@ -1,8 +1,8 @@
 # 🏗️ nbcon - Architecture Guide
 
-**Last Updated:** October 12, 2025  
+**Last Updated:** December 19, 2024  
 **Status:** Production Ready  
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -102,6 +102,9 @@ src/pages/
 │   ├── 15-ProfilePage.tsx           # LinkedIn-style profile
 │   └── others/                      # Engineer-specific features
 │       ├── ai/                      # AI components
+│       │   ├── components/
+│       │   │   ├── ThreadList.tsx   # Conversation list (v2.1: width fix + truncation)
+│       │   │   └── AIAssistantDrawer.tsx
 │       ├── checkin/                 # Check-in features
 │       ├── dashboard/               # Dashboard widgets
 │       ├── deliverables/            # Upload features
@@ -1101,6 +1104,38 @@ Your structure is **excellent** if:
 - **Getting Started** → 1-GETTING_STARTED.md
 - **UI/UX Design Patterns** → 3-UI_DESIGN_SYSTEM.md
 - **Production & Bug Fixing** → 4-PRODUCTION_GUIDE.md
+
+---
+
+## 🔧 Recent Component Updates (v2.1)
+
+### ThreadList Component Improvements
+**Location:** `src/pages/5-engineer/others/features/ai/components/ThreadList.tsx`
+
+**Updates:**
+- ✅ **Width Fix** - Added `w-full` class to conversation cards for proper container fitting
+- ✅ **Name Truncation** - Limited conversation names to 10 characters with ellipsis (`...`)
+- ✅ **Layout Stability** - Prevents long names from pushing action buttons out of view
+
+**Code Pattern:**
+```tsx
+// Conversation name truncation
+<h3 className="font-medium text-sm">
+  {thread.title.length > 10 
+    ? `${thread.title.substring(0, 10)}...` 
+    : thread.title
+  }
+</h3>
+
+// Full-width card
+<Card className="w-full cursor-pointer transition-colors hover:bg-muted/50">
+```
+
+### Form Component Standardization
+**Updated Components:**
+- ✅ **SelectTrigger** - Default styling updated for theme consistency
+- ✅ **Switch** - Added `border-input` for proper visual definition
+- ✅ **Textarea** - Updated background to `bg-background` for theme compatibility
 
 ---
 

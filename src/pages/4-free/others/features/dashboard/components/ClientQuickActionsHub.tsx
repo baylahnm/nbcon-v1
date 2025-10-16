@@ -105,7 +105,7 @@ export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickAction
       } as React.CSSProperties}
     >
       <Card className="bg-transparent border-0 gap-0">
-        <CardHeader className="p-5 pb-3 border-b border-border/40">
+        <CardHeader className="p-4 border-b border-border/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md group-hover:scale-110 transition-transform">
@@ -187,9 +187,9 @@ export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickAction
                       <Button 
                         variant="ghost"
                         size="sm"
-                        className="h-auto min-w-[100px] p-3 flex flex-col items-center gap-2 bg-background hover:bg-background"
+                        className="h-auto min-w-[100px] p-3 flex flex-col items-center gap-2 bg-background hover:bg-background hover:scale-105 transition-transform"
                       >
-                        <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor}`}>
+                        <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor} transition-transform`}>
                           <action.icon className={`h-4 w-4 ${action.color}`} />
                         </div>
                         <span className="text-xs font-medium text-foreground leading-tight">

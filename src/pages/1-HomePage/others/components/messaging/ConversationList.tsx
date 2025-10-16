@@ -228,7 +228,7 @@ export function ConversationList({
             {!isCollapsed && (
               <div className="flex gap-2">
                 <Select value={filterType} onValueChange={(value) => setFilterType(value as ConversationFilter)}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

@@ -7,12 +7,14 @@ interface Visual3Props {
   mainColor?: string;
   secondaryColor?: string;
   gridColor?: string;
+  trendValue?: number;
 }
 
 function Visual3({
   mainColor = "hsl(var(--primary))",
   secondaryColor = "hsl(var(--accent))",
   gridColor = "hsl(var(--muted-foreground) / 0.1)",
+  trendValue,
 }: Visual3Props) {
   const [hovered, setHovered] = useState(false);
 
@@ -34,7 +36,7 @@ function Visual3({
         <Layer4 color={mainColor} secondaryColor={secondaryColor} hovered={hovered} />
         <Layer3 color={mainColor} />
         <Layer2 color={mainColor} />
-        <Layer1 color={mainColor} secondaryColor={secondaryColor} />
+        <Layer1 color={mainColor} secondaryColor={secondaryColor} trendValue={trendValue} />
         <EllipseGradient color={mainColor} />
         <GridLayer color={gridColor} />
       </div>
@@ -46,6 +48,7 @@ interface LayerProps {
   color: string;
   secondaryColor?: string;
   hovered?: boolean;
+  trendValue?: number;
 }
 
 const GridLayer: React.FC<{ color: string }> = ({ color }) => {
@@ -87,25 +90,22 @@ const EllipseGradient: React.FC<{ color: string }> = ({ color }) => {
   );
 };
 
-const Layer1: React.FC<LayerProps> = ({ color, secondaryColor }) => {
+const Layer1: React.FC<LayerProps> = ({ color, trendValue }) => {
   return (
     <div
       className="absolute top-4 left-4 z-[8] flex items-center gap-1"
       style={
         {
           "--color": color,
-          "--secondary-color": secondaryColor,
         } as React.CSSProperties
       }
     >
-      <div className="flex shrink-0 items-center rounded-full border border-border bg-card/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0">
-        <div className="h-1.5 w-1.5 rounded-full bg-[var(--color)]" />
-        <span className="ml-1 text-[10px] text-card-foreground">+15.2%</span>
-      </div>
-      <div className="flex shrink-0 items-center rounded-full border border-border bg-card/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0">
-        <div className="h-1.5 w-1.5 rounded-full bg-[var(--secondary-color)]" />
-        <span className="ml-1 text-[10px] text-card-foreground">+18.7%</span>
-      </div>
+      {trendValue !== undefined && (
+        <div className="flex shrink-0 items-center rounded-full border border-border bg-card/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0">
+          <div className="h-1.5 w-1.5 rounded-full bg-[var(--color)]" />
+          <span className="ml-1 text-[10px] text-card-foreground">+{trendValue}%</span>
+        </div>
+      )}
     </div>
   );
 };
@@ -258,6 +258,7 @@ function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: 
           mainColor="hsl(var(--primary))"
           secondaryColor="hsl(var(--accent))"
           gridColor="hsl(var(--muted-foreground) / 0.1)"
+          trendValue={trend?.value}
         />
       </div>
 
@@ -273,16 +274,6 @@ function StatCard({ icon: Icon, label, value, trend, color = 'blue', onClick }: 
             </div>
             <div>
               <p className="text-xl font-bold tracking-tight">{value}</p>
-              {trend && (
-                <div className={`flex items-center gap-1 text-xs mt-1.5 font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-                  {trend.isPositive ? (
-                    <TrendingUp className="h-3 w-3" />
-                  ) : (
-                    <TrendingDown className="h-3 w-3" />
-                  )}
-                  <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
-                </div>
-              )}
             </div>
           </div>
         </CardContent>

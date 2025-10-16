@@ -143,7 +143,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label>Availability</Label>
                 <Select value={availabilityFilter} onValueChange={(value: 'all' | 'free' | 'busy') => setAvailabilityFilter(value)}>
-                  <SelectTrigger className="h-9">
+                  <SelectTrigger className="h-9 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -158,7 +158,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label>Specialty</Label>
                 <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
-                  <SelectTrigger className="h-9">
+                  <SelectTrigger className="h-9 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -348,7 +348,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label htmlFor="project">Select Project</Label>
                 <Select value={selectedProject} onValueChange={setSelectedProject}>
-                  <SelectTrigger className="h-9">
+                  <SelectTrigger className="h-9 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                     <SelectValue placeholder="Choose a project" />
                   </SelectTrigger>
                   <SelectContent>
@@ -365,7 +365,7 @@ export function TeamMembersList() {
               <div className="space-y-2">
                 <Label htmlFor="role">Assign Role</Label>
                 <Select value={selectedRole} onValueChange={(role: ProjectRole) => setSelectedRole(role)}>
-                  <SelectTrigger className="h-9">
+                  <SelectTrigger className="h-9 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

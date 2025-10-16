@@ -1,8 +1,8 @@
 # 📚 nbcon Documentation
 
-**Last Updated:** October 12, 2025  
+**Last Updated:** December 19, 2024  
 **Status:** Production Ready  
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -101,6 +101,13 @@ http://localhost:8080/auth
 Email: info@nbcon.org
 Password: Qazwsx1234@
 ```
+
+### Recent Updates (v2.1)
+- ✅ **UI Component Fixes** - All form components now use consistent theme colors
+- ✅ **Switch Component** - Added proper borders for better visual definition
+- ✅ **ThreadList Component** - Fixed conversation name truncation (10 chars + ellipsis)
+- ✅ **SelectTrigger Styling** - Updated default styling for theme consistency
+- ✅ **Card Width Fixes** - ThreadList cards now properly fit container width
 
 ---
 
@@ -287,10 +294,10 @@ A: See 3-UI_DESIGN_SYSTEM.md → Component Examples
 
 ---
 
-**Documentation Version:** 3.0  
+**Documentation Version:** 2.1  
 **Consolidated:** From 10 files to 5 essential guides  
 **Maintained By:** Development Team  
-**Last Review:** January 15, 2025
+**Last Review:** December 19, 2024
 
 **Quality:** Production-grade, comprehensive, organized ✅
 

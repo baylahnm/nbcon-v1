@@ -244,20 +244,21 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto px-4 py-4 space-y-4">
+      <div className="p-4 space-y-4">
         {/* Header */}
-        <div className="border-b pb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-primary" />
-                Engineering Jobs
-              </h1>
-              <p className="text-xs text-muted-foreground">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
+              <Briefcase className="h-5 w-5 text-white" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-[18px] font-bold tracking-tight">Engineering Jobs</h1>
+              <p className="text-[14px] text-muted-foreground">
                 Find your next engineering opportunity in Saudi Arabia
               </p>
             </div>
-            <div className="flex flex-wrap gap-2.5">
+          </div>
+          <div className="flex flex-wrap gap-2.5">
             <Button 
               variant={viewMode === 'list' ? 'default' : 'outline'} 
               size="sm"
@@ -284,7 +285,6 @@ export default function JobsPage() {
               <Briefcase className="h-3.5 w-3.5 mr-1.5" />
               Job Alerts
             </Button>
-            </div>
           </div>
         </div>
 
@@ -360,11 +360,11 @@ export default function JobsPage() {
       {/* Main Content - Full Width */}
       <div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="w-full grid grid-cols-4">
-              <TabsTrigger value="available">Available Jobs ({mockJobs.filter(j => j.status === 'open').length})</TabsTrigger>
-              <TabsTrigger value="applied">Applied ({mockJobs.filter(j => j.status === 'applied').length})</TabsTrigger>
-              <TabsTrigger value="shortlisted">Shortlisted ({mockJobs.filter(j => j.status === 'shortlisted').length})</TabsTrigger>
-              <TabsTrigger value="bookmarked">Bookmarked ({mockJobs.filter(j => j.isBookmarked).length})</TabsTrigger>
+            <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
+              <TabsTrigger value="available" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Available Jobs ({mockJobs.filter(j => j.status === 'open').length})</TabsTrigger>
+              <TabsTrigger value="applied" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Applied ({mockJobs.filter(j => j.status === 'applied').length})</TabsTrigger>
+              <TabsTrigger value="shortlisted" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Shortlisted ({mockJobs.filter(j => j.status === 'shortlisted').length})</TabsTrigger>
+              <TabsTrigger value="bookmarked" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Bookmarked ({mockJobs.filter(j => j.isBookmarked).length})</TabsTrigger>
             </TabsList>
 
         {/* Available Jobs Tab */}

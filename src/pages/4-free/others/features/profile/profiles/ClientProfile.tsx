@@ -304,16 +304,16 @@ export function ClientProfile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto p-4 space-y-4">
+      <div className="p-4 space-y-4">
         {/* Page Header */}
         <div className="flex items-center justify-between pb-4 border-b border-border/40">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
               <User className="h-5 w-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-base font-bold tracking-tight">Profile</h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
+            <div className="min-w-0">
+              <h1 className="text-[18px] font-bold tracking-tight">Profile</h1>
+              <p className="text-[14px] text-muted-foreground">
                 Manage your public profile and professional information
               </p>
             </div>
@@ -520,7 +520,7 @@ export function ClientProfile() {
                       }))}
                       disabled={!isEditing}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -619,7 +619,7 @@ export function ClientProfile() {
                       }))}
                       disabled={!isEditing}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

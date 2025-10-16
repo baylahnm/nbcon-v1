@@ -324,7 +324,7 @@ export default function EnterpriseSignup() {
             <span className="text-destructive ml-1">*</span>
           </Label>
           <Select value={companySize} onValueChange={setCompanySize}>
-            <SelectTrigger id="company-size">
+            <SelectTrigger id="company-size" className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
               <SelectValue placeholder={t('registration:enterprise.fields.companySizePlaceholder')} />
             </SelectTrigger>
             <SelectContent>
@@ -343,7 +343,7 @@ export default function EnterpriseSignup() {
             <span className="text-destructive ml-1">*</span>
           </Label>
           <Select value={industry} onValueChange={setIndustry}>
-            <SelectTrigger id="industry">
+            <SelectTrigger id="industry" className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
               <SelectValue placeholder={t('registration:enterprise.fields.industryPlaceholder')} />
             </SelectTrigger>
             <SelectContent>

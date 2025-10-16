@@ -349,7 +349,7 @@ export function SettingsContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="px-6 py-4 space-y-4">
+      <div className="p-4 space-y-4">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
@@ -513,7 +513,7 @@ export function SettingsContent() {
                 <div>
                   <Label htmlFor="experience" className="mb-2">Years of Experience</Label>
                   <Select defaultValue="12+">
-                    <SelectTrigger className="bg-accent text-accent-foreground hover:bg-accent/80 [&_svg]:!text-accent-foreground">
+                    <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -710,7 +710,7 @@ export function SettingsContent() {
                     <p className="text-xs text-muted-foreground">Who can see your profile</p>
                   </div>
                   <Select defaultValue="professional">
-                    <SelectTrigger className="w-32 bg-secondary text-secondary-foreground hover:bg-secondary/80 [&_svg]:!text-secondary-foreground">
+                    <SelectTrigger className="w-32 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -798,7 +798,7 @@ export function SettingsContent() {
                     <p className="text-xs text-muted-foreground">Auto-logout after inactivity</p>
                   </div>
                   <Select defaultValue="30">
-                    <SelectTrigger className="w-24 bg-secondary text-secondary-foreground hover:bg-secondary/80 [&_svg]:!text-secondary-foreground">
+                    <SelectTrigger className="w-24 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

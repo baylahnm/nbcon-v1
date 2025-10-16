@@ -394,7 +394,7 @@ export function PaymentsSettings() {
                 <div className="text-sm text-muted-foreground">Auto-logout after inactivity</div>
               </div>
               <Select defaultValue="30">
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-32 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

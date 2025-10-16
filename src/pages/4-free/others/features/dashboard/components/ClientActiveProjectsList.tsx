@@ -86,7 +86,7 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
         backgroundClip: 'padding-box, border-box',
       }}
     >
-      <CardHeader className="p-5 pb-3 border-b border-border/40">
+      <CardHeader className="p-4 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">

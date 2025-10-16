@@ -512,7 +512,7 @@ export function ClientProfile() {
                       }))}
                       disabled={!isEditing}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -606,7 +606,7 @@ export function ClientProfile() {
                       }))}
                       disabled={!isEditing}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

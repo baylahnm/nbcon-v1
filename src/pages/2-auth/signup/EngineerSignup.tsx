@@ -263,7 +263,7 @@ export default function EngineerSignup() {
           value={specializations[0] || ''} 
           onValueChange={(value) => setSpecializations([value])}
         >
-          <SelectTrigger id="specialization">
+          <SelectTrigger id="specialization" className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
             <SelectValue placeholder={t('registration:engineer.fields.specializationPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
@@ -285,7 +285,7 @@ export default function EngineerSignup() {
           <span className="text-destructive ml-1">{t('registration:common.required')}</span>
         </Label>
         <Select value={yearsExperience} onValueChange={setYearsExperience}>
-          <SelectTrigger id="years-experience">
+          <SelectTrigger id="years-experience" className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
             <SelectValue placeholder={t('registration:engineer.fields.yearsExperiencePlaceholder')} />
           </SelectTrigger>
           <SelectContent>
@@ -314,7 +314,7 @@ export default function EngineerSignup() {
             <span className="text-destructive ml-1">{t('registration:common.required')}</span>
           </Label>
           <Select value={city} onValueChange={setCity}>
-            <SelectTrigger id="city">
+            <SelectTrigger id="city" className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
               <SelectValue placeholder={t('registration:engineer.fields.cityPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
@@ -334,7 +334,7 @@ export default function EngineerSignup() {
             <span className="text-destructive ml-1">{t('registration:common.required')}</span>
           </Label>
           <Select value={region} onValueChange={setRegion}>
-            <SelectTrigger id="region">
+            <SelectTrigger id="region" className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
               <SelectValue placeholder={t('registration:engineer.fields.regionPlaceholder')} />
             </SelectTrigger>
             <SelectContent>

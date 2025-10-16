@@ -1,8 +1,8 @@
 # 🚀 nbcon - Getting Started Guide
 
-**Last Updated:** October 12, 2025  
+**Last Updated:** December 19, 2024  
 **Status:** Production Ready  
-**Version:** 2.0
+**Version:** 2.1
 
 ---
 
@@ -361,6 +361,21 @@ text-3xl (30px) or text-xl (20px) font-bold
 </Button>
 ```
 
+### Form Component Updates (v2.1)
+
+```tsx
+// SelectTrigger with consistent theme styling
+<SelectTrigger className="bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
+  <SelectValue placeholder="Select option" />
+</SelectTrigger>
+
+// Switch with proper border
+<Switch className="border-input" />
+
+// Textarea with theme background
+<Textarea className="bg-background" />
+```
+
 **For complete UI patterns:** See `2-ARCHITECTURE_GUIDE.md` → UI Component Patterns
 
 ---
@@ -598,7 +613,7 @@ You now have everything you need to start developing. Next steps:
 
 ---
 
-**Documentation Version:** 2.0  
-**Last Review:** October 12, 2025  
+**Documentation Version:** 2.1  
+**Last Review:** December 19, 2024  
 **Maintained By:** Development Team
 

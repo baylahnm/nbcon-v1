@@ -59,24 +59,24 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="px-6 py-4 space-y-4">
+      <div className="p-4 space-y-4">
         
         {/* Header */}
-        <div className="pb-6 border-b border-border/40">
+        <div className="pb-4 border-b border-border/40">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-12 w-12 ring-2 ring-primary/20">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <Avatar className="h-10 w-10 ring-2 ring-primary/20 flex-shrink-0">
                   <AvatarImage src={profile?.avatar_url || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
+                  <AvatarFallback className="bg-primary text-white text-xl font-bold">
                     {displayName.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <div>
-                  <h1 className="text-base font-bold tracking-tight">
+                <div className="min-w-0">
+                  <h1 className="text-[18px] font-bold tracking-tight">
                     Welcome back, {displayName}
                   </h1>
-                  <p className="text-muted-foreground text-xs mt-0.5">
+                  <p className="text-muted-foreground text-[14px]">
                     {getCurrentDate()} • {getRoleDisplay()}
                   </p>
                 </div>

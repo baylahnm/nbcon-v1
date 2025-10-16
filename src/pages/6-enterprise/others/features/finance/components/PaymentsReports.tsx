@@ -75,7 +75,7 @@ export function PaymentsReports() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-48 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -88,7 +88,7 @@ export function PaymentsReports() {
           </Select>
 
           <Select value={reportType} onValueChange={setReportType}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-48 bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

@@ -196,16 +196,16 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="px-6 py-4 space-y-4">
+      <div className="p-4 space-y-4">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
               <HelpCircle className="h-5 w-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-base font-bold tracking-tight">Help & Support</h1>
-              <p className="text-xs text-muted-foreground mt-0.5">Find answers and get support for your projects</p>
+            <div className="min-w-0">
+              <h1 className="text-[18px] font-bold tracking-tight">Help & Support</h1>
+              <p className="text-[14px] text-muted-foreground mt-0.5">Find answers and get support for your projects</p>
             </div>
           </div>
           <div className="flex gap-2">

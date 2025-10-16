@@ -43,7 +43,7 @@ export function PhoneInput({
       )}
       <div className="flex gap-2">
         <Select value={countryCode} onValueChange={onCountryCodeChange}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px] bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
