@@ -1,4 +1,8 @@
-# Database Restoration Guide for nbocn
+# Database Restoration Guide for nbcon
+
+**Last Updated:** December 19, 2024  
+**Version:** 2.1  
+**Status:** Production Ready
 
 ## 🚨 Issue
 Your Supabase database files were deleted and you need to restore your dashboard and database schema.

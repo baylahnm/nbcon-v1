@@ -6,7 +6,7 @@ Automated code quality checker for production-ready software.
 
 The Code Quality Bot automatically scans your codebase for common issues and anti-patterns:
 
-### 10 Automated Checks:
+### 13 Automated Checks:
 
 1. **Hardcoded Locales** - Finds hard-coded `'en-US'` breaking i18n
 2. **Full Page Reloads** - Detects `window.location` breaking SPA
@@ -18,6 +18,9 @@ The Code Quality Bot automatically scans your codebase for common issues and ant
 8. **Missing Null Checks** - Suggests optional chaining
 9. **TypeScript Compilation** - Runs `tsc --noEmit`
 10. **ESLint** - Runs linter checks
+11. **ThreadList Text Truncation** - Checks for proper 10-char truncation with ellipsis (v2.1)
+12. **Form Component Theme** - Validates theme consistency (SelectTrigger, Switch, Textarea) (v2.1)
+13. **Card Width Issues** - Checks for w-full in ThreadList contexts (v2.1)
 
 ## 🚀 Usage
 
@@ -28,7 +31,7 @@ The Code Quality Bot automatically scans your codebase for common issues and ant
 npm run quality-check
 
 # Or directly
-node scripts/code-quality-bot.js
+node scripts/code-quality-bot.cjs
 ```
 
 ### CI/CD Integration
@@ -95,7 +98,7 @@ echo "npm run quality-check" > .husky/pre-commit
 
 ### Add Custom Checks
 
-Edit `scripts/code-quality-bot.js`:
+Edit `scripts/code-quality-bot.cjs`:
 
 ```javascript
 class CodeQualityBot {
@@ -243,7 +246,7 @@ const vulnerable = files.filter(file => {
 
 ```bash
 # 1. Ensure you have the bot script
-ls scripts/code-quality-bot.js
+ls scripts/code-quality-bot.cjs
 
 # 2. Run it
 npm run quality-check
@@ -258,6 +261,14 @@ npm run quality-check
 ---
 
 **Made with ❤️ for the nbcon team**  
-**Version:** 1.0.0  
-**Last Updated:** January 15, 2025
+**Version:** 2.1.0  
+**Last Updated:** December 19, 2024
+
+## 🆕 What's New in v2.1
+
+- ✅ **ThreadList Text Truncation Check** - Ensures conversation names don't break layouts
+- ✅ **Form Component Theme Validation** - Verifies SelectTrigger, Switch, Textarea use proper theme colors
+- ✅ **Card Width Issue Detection** - Catches missing w-full classes in ThreadList contexts
+- ✅ **Enhanced CI/CD** - TypeScript and ESLint checks integrated into GitHub Actions
+- ✅ **PR Comments** - Automatic quality feedback on pull requests
 

@@ -117,7 +117,7 @@
 ---
 
 ### Code Quality Checklist
-- [ ] **No UI/UX changes**
+- [ ] **No UI/UX changes** (or UI fixes documented below)
 - [ ] **No new deps** (or justified below with security audit)
 - [ ] **Backward compatible APIs** (or deprecation shim + migration guide provided)
 - [ ] **i18n/RTL unaffected**; no hard-coded locales
@@ -126,6 +126,14 @@
 - [ ] **Code reviewed** by senior engineer
 - [ ] **CHANGELOG updated** with issue link and risk level
 - [ ] **Documentation updated** (if API/behavior changed)
+
+### UI/UX Fixes Checklist (if applicable)
+- [ ] **Theme consistency:** All form components use theme colors (SelectTrigger, Switch, Textarea)
+- [ ] **Text truncation:** Long text properly truncated with ellipsis
+- [ ] **Layout stability:** Cards fit container width (w-full), no layout breaking
+- [ ] **Responsive:** Tested on mobile, tablet, and desktop
+- [ ] **All themes tested:** Light, dark, and custom themes
+- [ ] **Before/after behavior documented** in description above
 
 ---
 
