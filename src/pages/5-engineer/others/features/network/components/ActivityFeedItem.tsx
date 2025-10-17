@@ -52,7 +52,7 @@ export function ActivityFeedItem({ activity, onClickRelated }: ActivityFeedItemP
   const ActivityIcon = config.icon;
 
   return (
-    <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-muted/30 transition-colors">
+    <div className="flex items-start gap-4 p-4 rounded-lg border border-border/50 bg-card hover:bg-muted/30 transition-colors">
       {/* Activity Icon (Color-coded) */}
       <div className={`${config.colors.bg} p-2.5 rounded-full ring-1 ${config.colors.ring}`}>
         <ActivityIcon className={`h-4 w-4 ${config.colors.icon}`} />

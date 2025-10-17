@@ -239,8 +239,8 @@ export default function HelpPage() {
         >
           <Card className="bg-transparent border border-border/50">
             <CardContent className="p-4 text-center">
-              <div className="bg-blue-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-blue-500/20">
-                <MessageSquare className="h-6 w-6 text-blue-600" />
+              <div className="bg-primary/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-primary/20">
+                <MessageSquare className="h-6 w-6 text-primary" />
               </div>
               <h3 className="font-bold text-base mb-1">Live Chat</h3>
               <p className="text-xs text-muted-foreground">Get instant help</p>
@@ -526,8 +526,8 @@ export default function HelpPage() {
               </CardHeader>
               <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center gap-3 p-3 border border-border/50 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                  <div className="bg-blue-500/10 h-12 w-12 flex items-center justify-center rounded-xl ring-1 ring-blue-500/20 flex-shrink-0">
-                    <MessageSquare className="h-6 w-6 text-blue-600" />
+                  <div className="bg-primary/10 h-12 w-12 flex items-center justify-center rounded-xl ring-1 ring-primary/20 flex-shrink-0">
+                    <MessageSquare className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-sm">Live Chat</h3>
@@ -659,8 +659,8 @@ export default function HelpPage() {
             <CardContent className="p-4 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 border border-border/50 rounded-lg">
-                  <div className="bg-blue-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-blue-500/20">
-                    <Clock className="h-6 w-6 text-blue-600" />
+                  <div className="bg-primary/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-primary/20">
+                    <Clock className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-bold text-base mb-1">Live Chat</h3>
                   <p className="text-xs text-muted-foreground">24/7 Available</p>

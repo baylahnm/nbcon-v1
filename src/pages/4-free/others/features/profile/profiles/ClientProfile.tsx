@@ -308,7 +308,7 @@ export function ClientProfile() {
         {/* Page Header */}
         <div className="flex items-center justify-between pb-4 border-b border-border/40">
           <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
+            <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
               <User className="h-5 w-5 text-white" />
             </div>
             <div className="min-w-0">
@@ -320,8 +320,7 @@ export function ClientProfile() {
           </div>
           <Button
             onClick={() => setIsEditing(!isEditing)}
-            variant={isEditing ? "default" : "outline"}
-            className="h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+            className="h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all bg-gradient-to-t from-primary to-primary-dark text-primary-foreground border-0"
           >
             {isEditing ? (
               <>
@@ -338,7 +337,7 @@ export function ClientProfile() {
         </div>
 
         {/* Profile Overview Card */}
-        <Card className="border-border/50">
+        <Card className="border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-start gap-4">
               <div className="relative">
@@ -408,26 +407,54 @@ export function ClientProfile() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full grid grid-cols-3 gap-0 h-9 mb-0">
-            <TabsTrigger value="basic" className="text-xs">Basic Information</TabsTrigger>
-            <TabsTrigger value="professional" className="text-xs">Professional Details</TabsTrigger>
-            <TabsTrigger value="portfolio" className="text-xs">Portfolio & Skills</TabsTrigger>
+          <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border p-1 gap-1 shadow-lg">
+            <TabsTrigger 
+              value="basic" 
+              className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 text-xs"
+            >
+              Basic Information
+            </TabsTrigger>
+            <TabsTrigger 
+              value="professional" 
+              className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 text-xs"
+            >
+              Professional Details
+            </TabsTrigger>
+            <TabsTrigger 
+              value="portfolio" 
+              className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 text-xs"
+            >
+              Portfolio & Skills
+            </TabsTrigger>
           </TabsList>
 
           {/* Basic Information Tab */}
           <TabsContent value="basic" className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Personal Information */}
-              <Card className="border-border/50">
+              <div
+                className="relative overflow-hidden transition-all duration-300"
+                style={{
+                  border: '2px solid transparent',
+                  borderRadius: '0.5rem',
+                  backgroundImage: `
+                    linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                    linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                  `,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                }}
+              >
+                <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <User className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Personal Information</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 space-y-4">
+                <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-xs">First Name</Label>
@@ -498,18 +525,32 @@ export function ClientProfile() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
 
               {/* Privacy Settings */}
-              <Card className="border-border/50">
+              <div
+                className="relative overflow-hidden transition-all duration-300"
+                style={{
+                  border: '2px solid transparent',
+                  borderRadius: '0.5rem',
+                  backgroundImage: `
+                    linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                    linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                  `,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                }}
+              >
+                <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Shield className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Privacy Settings</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 space-y-4">
+                <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                   <div className="space-y-2">
                     <Label>Profile Visibility</Label>
                     <Select
@@ -566,6 +607,7 @@ export function ClientProfile() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
             </div>
           </TabsContent>
 
@@ -573,16 +615,29 @@ export function ClientProfile() {
           <TabsContent value="professional" className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Professional Information */}
-              <Card className="border-border/50">
+              <div
+                className="relative overflow-hidden transition-all duration-300"
+                style={{
+                  border: '2px solid transparent',
+                  borderRadius: '0.5rem',
+                  backgroundImage: `
+                    linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                    linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                  `,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                }}
+              >
+                <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Briefcase className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Professional Information</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 space-y-4">
+                <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                   <div className="space-y-2">
                     <Label htmlFor="title">Professional Title</Label>
                     <Input
@@ -663,18 +718,32 @@ export function ClientProfile() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
 
               {/* Languages */}
-              <Card className="border-border/50">
+              <div
+                className="relative overflow-hidden transition-all duration-300"
+                style={{
+                  border: '2px solid transparent',
+                  borderRadius: '0.5rem',
+                  backgroundImage: `
+                    linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                    linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                  `,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                }}
+              >
+                <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Globe className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Languages</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4">
+                <CardContent className="p-4 bg-background rounded-b-xl">
                   <div className="space-y-3">
                     {profileData.professionalInfo.languages.map((lang, index) => (
                       <div key={index} className="flex items-center justify-between">
@@ -693,17 +762,31 @@ export function ClientProfile() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
             </div>
           </TabsContent>
 
           {/* Portfolio & Skills Tab */}
           <TabsContent value="portfolio" className="space-y-4">
             {/* Skills */}
-            <Card className="border-border/50">
-              <CardHeader className="p-4 pb-3 border-b border-border/40">
+            <div
+              className="relative overflow-hidden transition-all duration-300"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Target className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Professional Skills</CardTitle>
@@ -716,7 +799,7 @@ export function ClientProfile() {
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="p-4">
+              <CardContent className="p-4 bg-background rounded-b-xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {Object.entries(
                     profileData.portfolio.skills.reduce((acc, skill) => {
@@ -748,13 +831,27 @@ export function ClientProfile() {
                 </div>
               </CardContent>
             </Card>
+            </div>
 
             {/* Portfolio Projects */}
-            <Card className="border-border/50">
-              <CardHeader className="p-4 pb-3 border-b border-border/40">
+            <div
+              className="relative overflow-hidden transition-all duration-300"
+              style={{
+                border: '2px solid transparent',
+                borderRadius: '0.5rem',
+                backgroundImage: `
+                  linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                  linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                `,
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Briefcase className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Portfolio Projects</CardTitle>
@@ -767,7 +864,7 @@ export function ClientProfile() {
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="p-4">
+              <CardContent className="p-4 bg-background rounded-b-xl">
                 <div className="space-y-6">
                   {profileData.portfolio.projects.map((project) => (
                     <div key={project.id} className="p-6 border rounded-lg">
@@ -801,20 +898,34 @@ export function ClientProfile() {
                 </div>
               </CardContent>
             </Card>
+            </div>
 
             {/* Reviews & Achievements */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Client Reviews */}
-              <Card className="border-border/50">
+              <div
+                className="relative overflow-hidden transition-all duration-300"
+                style={{
+                  border: '2px solid transparent',
+                  borderRadius: '0.5rem',
+                  backgroundImage: `
+                    linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                    linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                  `,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                }}
+              >
+                <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Star className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Client Reviews</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4">
+                <CardContent className="p-4 bg-background rounded-b-xl">
                   <div className="space-y-4">
                     {profileData.portfolio.reviews.map((review) => (
                       <div key={review.id} className="p-4 border rounded-lg">
@@ -836,18 +947,32 @@ export function ClientProfile() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
 
               {/* Achievements */}
-              <Card className="border-border/50">
+              <div
+                className="relative overflow-hidden transition-all duration-300"
+                style={{
+                  border: '2px solid transparent',
+                  borderRadius: '0.5rem',
+                  backgroundImage: `
+                    linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                    linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+                  `,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                }}
+              >
+                <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Award className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Achievements & Awards</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4">
+                <CardContent className="p-4 bg-background rounded-b-xl">
                   <div className="space-y-4">
                     {profileData.portfolio.achievements.map((achievement) => (
                       <div key={achievement.id} className="flex gap-3">
@@ -867,6 +992,7 @@ export function ClientProfile() {
                   </div>
                 </CardContent>
               </Card>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

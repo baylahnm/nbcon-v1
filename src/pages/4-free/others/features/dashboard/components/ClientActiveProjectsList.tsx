@@ -60,7 +60,7 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'in-progress':
-        return { bg: 'bg-blue-500/10', text: 'text-blue-600', label: 'In Progress' };
+        return { bg: 'bg-primary/10', text: 'text-primary', label: 'In Progress' };
       case 'planning':
         return { bg: 'bg-amber-500/10', text: 'text-amber-600', label: 'Planning' };
       case 'review':

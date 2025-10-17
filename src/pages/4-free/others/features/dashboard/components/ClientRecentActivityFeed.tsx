@@ -147,7 +147,7 @@ export function ClientRecentActivityFeed({
       case 'payment':
         return { Icon: DollarSign, color: 'text-emerald-600', bgColor: 'bg-emerald-500/10', ringColor: 'ring-emerald-500/20' };
       case 'project':
-        return { Icon: Briefcase, color: 'text-blue-600', bgColor: 'bg-blue-500/10', ringColor: 'ring-blue-500/20' };
+        return { Icon: Briefcase, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20' };
       case 'engineer':
         return { Icon: Users, color: 'text-purple-600', bgColor: 'bg-purple-500/10', ringColor: 'ring-purple-500/20' };
       case 'message':
@@ -374,12 +374,12 @@ export function ClientRecentActivityFeed({
                                 )}
 
                                 {activity.details?.engineer && (
-                                  <div className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-blue-500/5 to-blue-500/10 border border-blue-500/20">
-                                    <div className="bg-blue-500/10 p-2.5 rounded-lg">
-                                      <User className="h-5 w-5 text-blue-600" />
+                                  <div className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+                                    <div className="bg-primary/10 p-2.5 rounded-lg">
+                                      <User className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                      <p className="text-xs font-semibold text-blue-600 mb-1">Engineer</p>
+                                      <p className="text-xs font-semibold text-primary mb-1">Engineer</p>
                                       <p className="text-sm font-bold line-clamp-2">{activity.details.engineer}</p>
                                     </div>
                                   </div>
@@ -425,7 +425,7 @@ export function ClientRecentActivityFeed({
                                       ? 'bg-green-500/10 text-green-600 border border-green-500/30'
                                       : activity.details.status.includes('Pending')
                                       ? 'bg-amber-500/10 text-amber-600 border border-amber-500/30'
-                                      : 'bg-blue-500/10 text-blue-600 border border-blue-500/30'
+                                      : 'bg-primary/10 text-primary border border-primary/30'
                                   }`}>
                                     {activity.details.status}
                                   </Badge>

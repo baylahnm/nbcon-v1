@@ -852,7 +852,7 @@ export default function NetworkPage() {
                           </AvatarFallback>
                         </Avatar>
                         <div className={`absolute -bottom-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center shadow-md ${
-                          activity.type === 'connection' ? 'bg-blue-500' :
+                          activity.type === 'connection' ? 'bg-primary' :
                           activity.type === 'project' ? 'bg-green-500' :
                           activity.type === 'certification' ? 'bg-purple-500' :
                           activity.type === 'endorsement' ? 'bg-amber-500' :

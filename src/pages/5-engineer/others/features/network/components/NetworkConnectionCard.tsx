@@ -88,7 +88,7 @@ export function NetworkConnectionCard({
               </div>
 
               {/* Title */}
-              <p className="text-sm text-foreground/80 truncate mb-0.5">
+              <p className="text-sm text-muted-foreground truncate mb-0.5">
                 {connection.title}
               </p>
 

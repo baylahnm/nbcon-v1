@@ -400,7 +400,7 @@ export default function FinancePage() {
       case 'refund':
         return <TrendingUp className="h-4 w-4 text-green-600" />;
       case 'fee':
-        return <DollarSign className="h-4 w-4 text-blue-600" />;
+        return <DollarSign className="h-4 w-4 text-primary" />;
       default:
         return <DollarSign className="h-4 w-4" />;
     }
@@ -752,7 +752,7 @@ export default function FinancePage() {
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-start gap-4 flex-1 min-w-0">
                             <div className="bg-muted/50 p-3 rounded-lg flex-shrink-0">
-                              <Receipt className="h-4 w-4 text-blue-600" />
+                              <Receipt className="h-4 w-4 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -830,7 +830,7 @@ export default function FinancePage() {
                                 <h3 className="font-bold text-base line-clamp-1">{milestone.name}</h3>
                                 <Badge className={`${
                                   milestone.status === 'completed' ? 'bg-green-500/10 text-green-600 border-0' :
-                                  milestone.status === 'approved' ? 'bg-blue-500/10 text-blue-600 border-0' :
+                                  milestone.status === 'approved' ? 'bg-primary/10 text-primary border-0' :
                                   milestone.status === 'in_progress' ? 'bg-amber-500/10 text-amber-600 border-0' :
                                   'bg-gray-500/10 text-gray-600 border-0'
                                 } text-xs h-5`}>

@@ -8,6 +8,8 @@ import { AnimatedGroup } from './animated-group'
 import { ThemeToggle } from './theme-toggle'
 import { RainbowButton } from './rainbow-button'
 import { cn } from '../../lib/utils'
+import NbconLogo from './nbcon-logo'
+import NbLogo from './nb-logo'
 
 const transitionVariants = {
     item: {
@@ -167,9 +169,7 @@ export function HeroSection() {
                                     <div className="aspect-15/8 relative rounded-2xl bg-card shadow-2xl flex">
                                         {/* Sidebar */}
                                         <div className="w-16 bg-sidebar-background border-r border-sidebar-border flex flex-col items-center py-4 space-y-3">
-                                            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                                                <span className="text-primary-foreground font-bold text-xs">nb</span>
-                                            </div>
+                                            <NbLogo />
                                             <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-house w-4 h-4 text-primary">
                                                     <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
@@ -318,23 +318,11 @@ const HeroHeader = () => {
                 data-state={menuState && 'active'}
                 className="fixed z-20 w-full px-2 group">
                 <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5')}>
-                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-                        <div className="flex w-full justify-between lg:w-auto">
-                            <Link
-                                to="/"
-                                aria-label="home"
-                                className="flex items-center space-x-2">
-                                <Logo />
-                            </Link>
-
-                            <button
-                                onClick={() => setMenuState(!menuState)}
-                                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
-                                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
-                                <Menu className="in-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
-                            </button>
-                        </div>
+                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4 z-50">
+                        <NbconLogo 
+                            showMobileMenu={true}
+                            onMobileMenuClick={() => setMenuState(!menuState)}
+                        />
 
                         <div className="absolute inset-0 m-auto hidden size-fit lg:block">
                             <ul className="flex gap-8 text-sm">
@@ -386,11 +374,13 @@ const HeroHeader = () => {
                                 </div>
 
                                 {/* Auth Button - Smaller on mobile */}
-                                <Link to="/auth" className="hidden sm:block">
-                                    <Button size="sm">
-                                        {i18n.language === 'en' ? 'Sign In' : 'تسجيل الدخول'}
-                                    </Button>
-                                </Link>
+                                <div className="hidden sm:block bg-foreground/10 rounded-[14px] border p-0.5">
+                                    <Link to="/auth" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-gradient-to-t from-primary to-primary-dark text-primary-foreground shadow-sm shadow-primary/50 hover:opacity-90 transition-opacity h-11 rounded-xl px-5 text-base">
+                                        <span className="text-nowrap">
+                                            {i18n.language === 'en' ? 'Sign In' : 'تسجيل الدخول'}
+                                        </span>
+                                    </Link>
+                                </div>
 
                                 {/* Mobile Menu Button */}
                                 <Button
@@ -410,13 +400,3 @@ const HeroHeader = () => {
     )
 }
 
-const Logo = ({ className }: { className?: string }) => {
-    return (
-        <div className={cn('flex items-center space-x-2', className)}>
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">nb</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">nbcon</span>
-        </div>
-    )
-}

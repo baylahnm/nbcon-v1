@@ -5,6 +5,7 @@ import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
 import { Badge } from '../1-HomePage/others/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../1-HomePage/others/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '../1-HomePage/others/components/ui/avatar';
 import { Progress } from '../1-HomePage/others/components/ui/progress';
 import { 
@@ -443,31 +444,33 @@ export default function BrowseEngineersPage() {
             />
           </div>
           <div className="flex gap-4">
-            <select 
-              value={selectedSpecialty} 
-              onChange={(e) => setSelectedSpecialty(e.target.value)}
-              className="px-3 py-2 border border-input bg-background rounded-md text-xs h-10"
-            >
-              <option value="All">All Specialties</option>
-              <option value="Structural">Structural Engineering</option>
-              <option value="Project">Project Management</option>
-              <option value="Electrical">Electrical Engineering</option>
-              <option value="Mechanical">Mechanical Engineering</option>
-              <option value="Civil">Civil Engineering</option>
-              <option value="Environmental">Environmental Engineering</option>
-            </select>
-            <select 
-              value={selectedLocation} 
-              onChange={(e) => setSelectedLocation(e.target.value)}
-              className="px-3 py-2 border border-input bg-background rounded-md text-xs h-10"
-            >
-              <option value="All">All Locations</option>
-              <option value="Riyadh">Riyadh</option>
-              <option value="Jeddah">Jeddah</option>
-              <option value="Dammam">Dammam</option>
-              <option value="Mecca">Mecca</option>
-              <option value="Jubail">Jubail</option>
-            </select>
+            <Select value={selectedSpecialty} onValueChange={setSelectedSpecialty}>
+              <SelectTrigger className="h-10 text-xs">
+                <SelectValue placeholder="All Specialties" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Specialties</SelectItem>
+                <SelectItem value="Structural">Structural Engineering</SelectItem>
+                <SelectItem value="Project">Project Management</SelectItem>
+                <SelectItem value="Electrical">Electrical Engineering</SelectItem>
+                <SelectItem value="Mechanical">Mechanical Engineering</SelectItem>
+                <SelectItem value="Civil">Civil Engineering</SelectItem>
+                <SelectItem value="Environmental">Environmental Engineering</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+              <SelectTrigger className="h-10 text-xs">
+                <SelectValue placeholder="All Locations" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Locations</SelectItem>
+                <SelectItem value="Riyadh">Riyadh</SelectItem>
+                <SelectItem value="Jeddah">Jeddah</SelectItem>
+                <SelectItem value="Dammam">Dammam</SelectItem>
+                <SelectItem value="Mecca">Mecca</SelectItem>
+                <SelectItem value="Jubail">Jubail</SelectItem>
+              </SelectContent>
+            </Select>
             <Button variant="outline" size="sm" className="h-10 text-xs">
               <Filter className="h-3.5 w-3.5 mr-1.5" />
               More Filters
@@ -615,7 +618,7 @@ export default function BrowseEngineersPage() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-8 text-xs border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10"
+                        className="h-8 text-xs border-primary/20 bg-primary/5 hover:bg-primary/10"
                       >
                         <Calculator className="h-3 w-3 mr-1" />
                         Cost Estimate

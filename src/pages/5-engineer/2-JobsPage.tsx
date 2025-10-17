@@ -6,6 +6,7 @@ import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
 import { Badge } from '../1-HomePage/others/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../1-HomePage/others/components/ui/select';
 import { 
   Briefcase, 
   MapPin, 
@@ -223,7 +224,7 @@ export default function JobsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'applied': return 'bg-blue-100 text-blue-800';
+      case 'applied': return 'bg-primary/10 text-primary';
       case 'shortlisted': return 'bg-green-100 text-green-800';
       case 'rejected': return 'bg-red-100 text-red-800';
       case 'closed': return 'bg-gray-100 text-gray-800';
@@ -383,26 +384,28 @@ export default function JobsPage() {
               </div>
             </div>
             <div className="flex gap-2">
-              <select 
-                value={selectedCategory} 
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                {jobCategories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-              <select 
-                value={selectedType} 
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="all">All Types</option>
-                <option value="full-time">Full-time</option>
-                <option value="part-time">Part-time</option>
-                <option value="contract">Contract</option>
-                <option value="freelance">Freelance</option>
-              </select>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="text-sm">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  {jobCategories.map(category => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={selectedType} onValueChange={setSelectedType}>
+                <SelectTrigger className="text-sm">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="full-time">Full-time</SelectItem>
+                  <SelectItem value="part-time">Part-time</SelectItem>
+                  <SelectItem value="contract">Contract</SelectItem>
+                  <SelectItem value="freelance">Freelance</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

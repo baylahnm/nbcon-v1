@@ -731,7 +731,7 @@ export default function PostJobPage() {
                   <ul className="text-sm space-y-1">
                     {formData.deliverables.map((del) => (
                       <li key={del} className="flex items-start gap-4">
-                        <FileText className="h-3 w-3 mt-0.5 text-blue-600" />
+                        <FileText className="h-3 w-3 mt-0.5 text-primary" />
                         {del}
                       </li>
                     ))}

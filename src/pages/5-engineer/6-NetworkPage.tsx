@@ -444,7 +444,7 @@ export default function NetworkPage() {
 
       {/* Search and Filters */}
       <Card className="border-border/50">
-        <CardContent className="p-2">
+        <CardContent className="p-0">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -578,7 +578,7 @@ export default function NetworkPage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-4 space-y-3 bg-background rounded-b-xl">
+            <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               {mockNetworkActivity.map((activity) => (
                 <ActivityFeedItem
                   key={activity.id}

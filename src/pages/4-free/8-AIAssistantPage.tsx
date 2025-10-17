@@ -325,7 +325,7 @@ export default function AIAssistantPage() {
             <Card className="hover:shadow-md transition-shadow cursor-pointer">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Briefcase className="h-5 w-5 text-blue-600" />
+                  <Briefcase className="h-5 w-5 text-primary" />
                   <h3 className="font-semibold">Office Building</h3>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">

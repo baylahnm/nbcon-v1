@@ -590,7 +590,7 @@ export default function LearningPage() {
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Briefcase className="h-8 w-8 text-blue-600" />
+                    <Briefcase className="h-8 w-8 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">

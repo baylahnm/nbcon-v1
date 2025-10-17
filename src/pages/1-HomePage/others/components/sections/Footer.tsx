@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Linkedin, Instagram, Globe, MessageSquare, Users } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useTranslation } from 'react-i18next';
+import NbconLogo from '../ui/nbcon-logo';
 
 interface FooterProps {
   footerData?: {
@@ -30,11 +31,8 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-6 border-b border-sidebar-border pb-6">
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 rounded bg-primary-foreground flex items-center justify-center">
-                <span className="text-primary font-bold text-sm">nb</span>
-              </div>
-              <span className="font-bold text-xl text-primary-foreground">nbcon</span>
+            <div className="mb-4">
+              <NbconLogo className="[&_h1]:text-primary-foreground [&_p]:text-primary-foreground [&_span]:text-primary-foreground/70" />
             </div>
             <p className="text-primary-foreground/80 mb-6 max-w-md">
               {t('footer.description')}

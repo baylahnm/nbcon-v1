@@ -1107,9 +1107,9 @@ export function SettingsContent() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <Zap className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -1118,7 +1118,7 @@ export function SettingsContent() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+            <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-sm font-medium">Developer Mode</Label>
@@ -1167,9 +1167,9 @@ export function SettingsContent() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <Monitor className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -1178,7 +1178,7 @@ export function SettingsContent() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-5 bg-background rounded-b-xl">
+            <CardContent className="p-4 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm text-muted-foreground">Platform</Label>
