@@ -109,7 +109,7 @@ export function QuickActionsHub({ userRole = 'engineer' }: QuickActionsHubProps)
       <CardHeader className="p-5 pb-3 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md group-hover:scale-110 transition-transform">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
               <Zap className="h-6 w-6 text-white" />
             </div>
             <div>

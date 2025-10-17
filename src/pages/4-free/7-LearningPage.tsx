@@ -251,7 +251,7 @@ export default function LearningPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b min-w-0">
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
+          <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <div className="min-w-0">
@@ -278,28 +278,24 @@ export default function LearningPage() {
             icon: BookOpen,
             label: 'Enrolled Courses',
             value: mockCourses.length,
-            bgColor: 'bg-blue-500',
             trend: '+12%'
           },
           {
             icon: CheckCircle2,
             label: 'Completed',
             value: mockCourses.filter(c => c.completed).length,
-            bgColor: 'bg-green-500',
             trend: '+8%'
           },
           {
             icon: Award,
             label: 'Certifications',
             value: '2',
-            bgColor: 'bg-amber-500',
             trend: '+5%'
           },
           {
             icon: TrendingUp,
             label: 'Avg. Progress',
             value: '72%',
-            bgColor: 'bg-purple-500',
             trend: '+3%'
           }
         ].map((stat, index) => (
@@ -321,7 +317,7 @@ export default function LearningPage() {
               <CardContent className="p-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className={`${stat.bgColor} p-2.5 rounded-lg shadow-md`}>
+                    <div className="bg-gradient-to-t from-primary to-primary-dark p-2.5 rounded-lg shadow-sm shadow-primary/50">
                       <stat.icon className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex items-center gap-1 text-xs font-medium text-green-600">
@@ -425,10 +421,10 @@ export default function LearningPage() {
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-0">
         <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-          <TabsTrigger value="courses" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">My Courses</TabsTrigger>
-          <TabsTrigger value="paths" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Learning Paths</TabsTrigger>
-          <TabsTrigger value="certifications" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Certifications</TabsTrigger>
-          <TabsTrigger value="browse" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Browse All</TabsTrigger>
+          <TabsTrigger value="courses" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">My Courses</TabsTrigger>
+          <TabsTrigger value="paths" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Learning Paths</TabsTrigger>
+          <TabsTrigger value="certifications" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Certifications</TabsTrigger>
+          <TabsTrigger value="browse" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Browse All</TabsTrigger>
         </TabsList>
 
         {/* My Courses Tab */}

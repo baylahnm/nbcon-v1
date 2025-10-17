@@ -218,7 +218,7 @@ export function HeroSection() {
                                                     </div>
                                                 </div>
                                                 <div className="flex space-x-1 mt-3">
-                                                    <button className="px-3 py-1 bg-primary text-primary-foreground rounded text-xs font-medium">{t('footer.engineers.title')}</button>
+                                                    <button className="px-3 py-1 bg-gradient-to-t from-primary to-primary-dark text-primary-foreground shadow-sm shadow-primary/50 rounded text-xs font-medium">{t('footer.engineers.title')}</button>
                                                     <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">{t('footer.clients.title')}</button>
                                                     <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">{t('footer.clients.enterprise')}</button>
                                                 </div>

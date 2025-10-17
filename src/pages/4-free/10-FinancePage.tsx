@@ -318,11 +318,11 @@ function StatCard({ icon: Icon, label, value, trend, trendDown }: StatCardProps)
         backgroundClip: 'padding-box, border-box',
       } as React.CSSProperties}
     >
-      <Card className="cursor-pointer bg-transparent border-0">
-        <CardContent className="p-5">
+      <Card className="cursor-pointer bg-transparent border border-border/50">
+        <CardContent className="p-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md group-hover:scale-110 transition-transform">
+              <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
                 <Icon className="h-5 w-5 text-primary-foreground" />
               </div>
               <p className="text-xs font-medium text-muted-foreground">{label}</p>
@@ -425,7 +425,7 @@ export default function FinancePage() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b min-w-0">
           <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md flex-shrink-0">
+            <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
               <Wallet className="h-5 w-5 text-white" />
             </div>
             <div className="min-w-0">
@@ -489,11 +489,11 @@ export default function FinancePage() {
           <Card className="border-border/50">
             <div className="p-4 pb-3 border-b border-border/40">
               <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-                <TabsTrigger value="overview" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Overview</TabsTrigger>
-                <TabsTrigger value="payments" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Payments</TabsTrigger>
-                <TabsTrigger value="invoices" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Invoices</TabsTrigger>
-                <TabsTrigger value="quotations" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Quotations</TabsTrigger>
-                <TabsTrigger value="milestones" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Milestones</TabsTrigger>
+                <TabsTrigger value="overview" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Overview</TabsTrigger>
+                <TabsTrigger value="payments" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Payments</TabsTrigger>
+                <TabsTrigger value="invoices" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Invoices</TabsTrigger>
+                <TabsTrigger value="quotations" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Quotations</TabsTrigger>
+                <TabsTrigger value="milestones" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Milestones</TabsTrigger>
               </TabsList>
             </div>
 

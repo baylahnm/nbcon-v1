@@ -145,7 +145,7 @@ export function PaymentsMilestone() {
 
             <div className="flex items-center gap-2">
               {milestone.status === 'pending' && (
-                <Button size="sm" className="bg-primary hover:bg-primary/90">
+                <Button size="sm">
                   <Play className="w-4 h-4 mr-2" />
                   Start Work
                 </Button>

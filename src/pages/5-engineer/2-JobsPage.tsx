@@ -281,7 +281,7 @@ export default function JobsPage() {
               <Filter className="h-3.5 w-3.5 mr-1.5" />
               Advanced Filters
             </Button>
-            <Button size="sm" className="h-8 text-xs bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg transition-all">
+            <Button size="sm" className="h-8 text-xs hover:shadow-lg transition-all">
               <Briefcase className="h-3.5 w-3.5 mr-1.5" />
               Job Alerts
             </Button>
@@ -291,10 +291,10 @@ export default function JobsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { icon: Eye, label: 'Available Jobs', count: mockJobs.filter(j => j.status === 'open').length, bgColor: 'bg-primary' },
-          { icon: Send, label: 'Applied', count: mockJobs.filter(j => j.status === 'applied').length, bgColor: 'bg-blue-500' },
-          { icon: CheckCircle2, label: 'Shortlisted', count: mockJobs.filter(j => j.status === 'shortlisted').length, bgColor: 'bg-green-500' },
-          { icon: Bookmark, label: 'Bookmarked', count: mockJobs.filter(j => j.isBookmarked).length, bgColor: 'bg-amber-500' }
+          { icon: Eye, label: 'Available Jobs', count: mockJobs.filter(j => j.status === 'open').length },
+          { icon: Send, label: 'Applied', count: mockJobs.filter(j => j.status === 'applied').length },
+          { icon: CheckCircle2, label: 'Shortlisted', count: mockJobs.filter(j => j.status === 'shortlisted').length },
+          { icon: Bookmark, label: 'Bookmarked', count: mockJobs.filter(j => j.isBookmarked).length }
         ].map((stat, index) => {
           const cardRef = useRef<HTMLDivElement>(null);
 
@@ -334,11 +334,11 @@ export default function JobsPage() {
               backgroundClip: 'padding-box, border-box',
               } as React.CSSProperties}
             >
-              <Card className="bg-transparent border-0">
-            <CardContent className="p-5">
+              <Card className="bg-transparent border border-border/50">
+            <CardContent className="p-4">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className={`${stat.bgColor} h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md`}>
+                      <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                         <stat.icon className="h-5 w-5 text-white" />
                 </div>
                       <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
@@ -361,10 +361,10 @@ export default function JobsPage() {
       <div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
             <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-              <TabsTrigger value="available" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Available Jobs ({mockJobs.filter(j => j.status === 'open').length})</TabsTrigger>
-              <TabsTrigger value="applied" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Applied ({mockJobs.filter(j => j.status === 'applied').length})</TabsTrigger>
-              <TabsTrigger value="shortlisted" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Shortlisted ({mockJobs.filter(j => j.status === 'shortlisted').length})</TabsTrigger>
-              <TabsTrigger value="bookmarked" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Bookmarked ({mockJobs.filter(j => j.isBookmarked).length})</TabsTrigger>
+              <TabsTrigger value="available" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Available Jobs ({mockJobs.filter(j => j.status === 'open').length})</TabsTrigger>
+              <TabsTrigger value="applied" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Applied ({mockJobs.filter(j => j.status === 'applied').length})</TabsTrigger>
+              <TabsTrigger value="shortlisted" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Shortlisted ({mockJobs.filter(j => j.status === 'shortlisted').length})</TabsTrigger>
+              <TabsTrigger value="bookmarked" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Bookmarked ({mockJobs.filter(j => j.isBookmarked).length})</TabsTrigger>
             </TabsList>
 
         {/* Available Jobs Tab */}
@@ -443,14 +443,14 @@ export default function JobsPage() {
                         
                         {/* Badges */}
                         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                          <Badge className="bg-blue-500 hover:bg-blue-500/90 text-white border-0 shadow-lg">
+                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50">
                             New
                           </Badge>
-                          <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 shadow-lg">
+                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50">
                             Recommended
                           </Badge>
                           {job.clientRating && (
-                            <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                            <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                               <Star className="h-3 w-3 fill-white" />
                               {job.clientRating}
                             </Badge>
@@ -492,7 +492,7 @@ export default function JobsPage() {
                         </div>
 
                       {/* Content */}
-                      <CardContent className="p-5">
+                      <CardContent className="p-4">
                         <div className="space-y-4">
                           {/* Job Type & Metadata */}
                           <div className="flex items-center justify-between gap-3">
@@ -509,7 +509,7 @@ export default function JobsPage() {
                               <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
                                 Deadline: {job.deadline}
                               </span>
-                              <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 text-[10px] px-2 py-0.5">
+                              <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 text-[10px] px-2 py-0.5 shadow-sm shadow-primary/50">
                                 Apply Soon
                               </Badge>
                             </div>
@@ -681,7 +681,7 @@ export default function JobsPage() {
                           <span className="capitalize">{job.status}</span>
                       </Badge>
                         {job.clientRating && (
-                          <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                             <Star className="h-3 w-3 fill-white" />
                             {job.clientRating}
                           </Badge>
@@ -876,7 +876,7 @@ export default function JobsPage() {
                       <Button 
                         variant="outline"
                         size="default"
-                        className="flex-1 font-semibold border-2 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-500/5 transition-all"
+                        className="flex-1 font-semibold border-2 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
                       >
                         <Send className="h-4 w-4 mr-2" />
                         View Application
@@ -920,7 +920,7 @@ export default function JobsPage() {
                           <span className="capitalize">{job.status}</span>
                             </Badge>
                         {job.clientRating && (
-                          <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                             <Star className="h-3 w-3 fill-white" />
                             {job.clientRating}
                           </Badge>
@@ -1104,7 +1104,7 @@ export default function JobsPage() {
                       </Button>
                       <Button 
                         size="default"
-                        className="flex-1 font-semibold bg-green-600 hover:bg-green-700 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                        className="flex-1 font-semibold shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
                       >
                         <Users className="h-4 w-4 mr-2" />
                         Contact Client
@@ -1143,12 +1143,12 @@ export default function JobsPage() {
                       
                       {/* Badges - Bookmarked */}
                       <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                        <Badge className="bg-amber-500 hover:bg-amber-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                        <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                           <Bookmark className="h-3 w-3 fill-white" />
                               Bookmarked
                             </Badge>
                         {job.clientRating && (
-                          <Badge className="bg-emerald-500 hover:bg-emerald-500/90 text-white border-0 shadow-lg flex items-center gap-1">
+                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                             <Star className="h-3 w-3 fill-white" />
                             {job.clientRating}
                           </Badge>

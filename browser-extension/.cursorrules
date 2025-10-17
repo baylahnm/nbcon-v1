@@ -1,0 +1,210 @@
+# Cursor Rules for NBCON Browser Extension Development
+
+## Extension Development Guidelines
+
+### File Structure
+- `manifest.json` - Chrome Extension Manifest v3 configuration
+- `background.js` - Service worker (background tasks, message hub)
+- `content.js` - Injected into web pages (console/network interception)
+- `popup.html/js` - Extension popup UI and logic
+- `devtools.html/js` - DevTools integration entry point
+- `devtools-panel.html/js` - Custom DevTools panel
+- `styles.css` - Global styles for popup and panels
+
+### Chrome Extension Best Practices
+
+1. **Manifest v3 Compliance**
+   - Use service workers instead of background pages
+   - Avoid eval() and inline scripts
+   - Use chrome.* APIs (chrome.runtime, chrome.storage, chrome.tabs)
+   - Declare all permissions explicitly
+
+2. **Message Passing**
+   - Always use chrome.runtime.sendMessage for communication
+   - Handle async responses with promises
+   - Add .catch() to prevent unhandled rejections
+   - Use sendResponse callback for synchronous responses
+
+3. **Storage Management**
+   - Use chrome.storage.local for settings and logs
+   - Implement size limits (max 100 items per array)
+   - Clean up old data automatically (1-hour retention)
+   - Check storage quota regularly
+
+4. **Content Script Injection**
+   - Inject only when needed (matches patterns)
+   - Avoid conflicts with page scripts
+   - Use unique message identifiers
+   - Handle missing content scripts gracefully
+
+5. **Error Handling**
+   - Wrap chrome.tabs.sendMessage in try-catch
+   - Use .catch() on all promises
+   - Log errors with context
+   - Fail gracefully without breaking functionality
+
+### Code Standards
+
+1. **JavaScript**
+   - Use modern ES6+ syntax
+   - Prefer async/await over callbacks
+   - Add JSDoc comments for functions
+   - Use descriptive variable names
+
+2. **Performance**
+   - Limit log array sizes
+   - Use throttling for frequent events
+   - Avoid memory leaks in listeners
+   - Clean up timers and intervals
+
+3. **Security**
+   - Sanitize all user inputs
+   - Use Content Security Policy
+   - Avoid eval() and innerHTML
+   - Validate message sources
+
+4. **Debugging**
+   - Use console.log with [NBCON DevTools] prefix
+   - Add detailed error messages
+   - Include context in logs (tabId, url, timestamp)
+   - Test with multiple tabs and windows
+
+### Development Workflow
+
+1. **Making Changes**
+   - Edit files in browser-extension/ folder
+   - Save changes
+   - Go to chrome://extensions/
+   - Click reload button for NBCON extension
+   - Test changes immediately
+
+2. **Testing**
+   - Test in multiple tabs
+   - Test with different websites
+   - Test with network offline
+   - Test with errors and edge cases
+   - Check console for extension errors
+
+3. **Debugging**
+   - Service Worker: chrome://extensions/ → NBCON → Service worker
+   - Content Script: F12 in web page
+   - Popup: Right-click icon → Inspect popup
+   - DevTools Panel: F12 → NBCON tab → Right-click → Inspect
+
+4. **Before Committing**
+   - Test all features
+   - Check for console errors
+   - Verify icons exist
+   - Test reload functionality
+   - Check storage usage
+
+### Common Patterns
+
+#### Message Sending (from content script)
+```javascript
+chrome.runtime.sendMessage({
+  action: 'captureConsole',
+  data: { level: 'log', message: 'Hello' }
+}).catch(() => {
+  // Extension context invalidated, ignore
+});
+```
+
+#### Message Receiving (in background)
+```javascript
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'something') {
+    handleSomething().then(sendResponse);
+    return true; // Keep channel open for async
+  }
+  return false; // Synchronous response
+});
+```
+
+#### Storage Operations
+```javascript
+// Get
+const data = await chrome.storage.local.get(['key1', 'key2']);
+
+// Set
+await chrome.storage.local.set({ key1: value1 });
+
+// Listen for changes
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.debugMode) {
+    // Handle debugMode change
+  }
+});
+```
+
+#### Tab Communication
+```javascript
+// Send to specific tab
+chrome.tabs.sendMessage(tabId, { action: 'update' })
+  .catch(() => {}); // Tab might not have content script
+
+// Broadcast to all tabs
+const tabs = await chrome.tabs.query({});
+tabs.forEach(tab => {
+  chrome.tabs.sendMessage(tab.id, { action: 'broadcast' })
+    .catch(() => {});
+});
+```
+
+### Known Issues & Workarounds
+
+1. **Service Worker Lifecycle**
+   - Service worker can be terminated by Chrome
+   - Store critical state in chrome.storage
+   - Reinitialize on next message
+
+2. **Content Script Injection Timing**
+   - Content script may inject after page load
+   - Use document_end in manifest
+   - Check document.readyState
+
+3. **Cross-Origin Issues**
+   - DevTools can't access all APIs
+   - Use chrome.devtools.inspectedWindow.eval for page context
+   - Handle CORS restrictions
+
+4. **Storage Limits**
+   - chrome.storage.local has 10MB limit
+   - Implement automatic cleanup
+   - Trim arrays before storing
+
+### Icon Requirements
+
+- icon16.png (16x16) - Toolbar icon
+- icon48.png (48x48) - Extension management page
+- icon128.png (128x128) - Chrome Web Store
+- Use transparent background
+- Use NBCON brand colors (#0066cc primary)
+- Add green status indicator dot
+
+### Permissions Justification
+
+- **storage**: Store settings and logs
+- **tabs**: Access tab information
+- **activeTab**: Interact with current tab
+- **scripting**: Inject content scripts dynamically
+- **debugger**: Advanced debugging features
+- **devtools**: Create custom DevTools panels
+- **host_permissions**: Monitor all websites
+
+### Release Checklist
+
+- [ ] All features tested
+- [ ] No console errors
+- [ ] Icons exist (16, 48, 128)
+- [ ] README updated
+- [ ] Version bumped in manifest.json
+- [ ] Storage cleanup working
+- [ ] Multi-tab support verified
+- [ ] Extension reloads correctly
+- [ ] Packaged and tested as ZIP
+
+---
+
+**Note:** This extension is for development and debugging purposes only.
+

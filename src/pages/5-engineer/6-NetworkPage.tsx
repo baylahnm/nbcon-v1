@@ -317,7 +317,7 @@ function StatCardWithAnimation({ stat, StatIcon }: StatCardProps) {
         <CardContent className="p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md group-hover:scale-110 transition-transform">
+              <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
                 <StatIcon className="h-5 w-5 text-white" />
               </div>
               <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
@@ -485,11 +485,11 @@ export default function NetworkPage() {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="w-full grid grid-cols-3 gap-0 h-9">
-          <TabsTrigger value="connections" className="text-xs">
+        <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border p-1 gap-1 shadow-lg">
+          <TabsTrigger value="connections" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
             Connections ({mockConnections.length})
           </TabsTrigger>
-          <TabsTrigger value="requests" className="text-xs">
+          <TabsTrigger value="requests" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
             Requests ({mockConnectionRequests.length})
             {mockConnectionRequests.length > 0 && (
               <Badge className="ml-1.5 h-4 min-w-4 rounded-full px-1 text-[10px] bg-amber-500 text-white border-0">
@@ -497,7 +497,7 @@ export default function NetworkPage() {
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="activity" className="text-xs">
+          <TabsTrigger value="activity" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
             Activity
           </TabsTrigger>
         </TabsList>
@@ -505,8 +505,8 @@ export default function NetworkPage() {
         {/* Connections Tab */}
         <TabsContent value="connections" className="space-y-4 mt-4">
 
-          {/* Connections Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Connections List */}
+          <div className="flex flex-col gap-4">
             {filteredConnections.map((connection) => (
               <NetworkConnectionCard
                 key={connection.id}
@@ -554,15 +554,40 @@ export default function NetworkPage() {
 
         {/* Activity Tab */}
         <TabsContent value="activity" className="space-y-4 mt-4">
-          <div className="space-y-3">
-            {mockNetworkActivity.map((activity) => (
-              <ActivityFeedItem
-                key={activity.id}
-                activity={activity}
-                onClickRelated={(id) => console.log('Related clicked:', id)}
-              />
-            ))}
-          </div>
+          <Card 
+            className="group hover:shadow-lg transition-all duration-300 border-border/50 gap-0"
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '0.75rem',
+              backgroundImage: `
+                linear-gradient(hsl(var(--card)), hsl(var(--card))),
+                linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, transparent 60%)
+              `,
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+            }}
+          >
+            <CardHeader className="p-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <Activity className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold tracking-tight">Recent Activity</CardTitle>
+                  <p className="text-xs text-muted-foreground mt-0.5">Stay updated with your network</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-3 bg-background rounded-b-xl">
+              {mockNetworkActivity.map((activity) => (
+                <ActivityFeedItem
+                  key={activity.id}
+                  activity={activity}
+                  onClickRelated={(id) => console.log('Related clicked:', id)}
+                />
+              ))}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
       </div>

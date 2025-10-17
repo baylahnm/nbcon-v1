@@ -86,10 +86,10 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
         backgroundClip: 'padding-box, border-box',
       }}
     >
-      <CardHeader className="p-4 pb-3 border-b border-border/40">
+      <CardHeader className="p-4 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
               <FolderOpen className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -123,7 +123,7 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
       </CardHeader>
 
       {!isCollapsed && (
-        <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+        <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
           {projects.map((project) => {
             const statusColor = getStatusColor(project.status);
             

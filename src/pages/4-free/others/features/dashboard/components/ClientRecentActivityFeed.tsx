@@ -176,7 +176,7 @@ export function ClientRecentActivityFeed({
       <CardHeader className="p-4 border-b border-border/40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+            <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
               <Activity className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -208,7 +208,7 @@ export function ClientRecentActivityFeed({
 
       {!isCollapsed && (
         <>
-          <CardContent className="p-5 space-y-3 bg-background relative">
+          <CardContent className="p-4 space-y-3 bg-background relative">
             {/* Backdrop Overlay - Aceternity Style */}
             <AnimatePresence>
               {expandedActivityId && (

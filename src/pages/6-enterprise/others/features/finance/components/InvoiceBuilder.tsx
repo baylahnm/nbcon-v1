@@ -325,7 +325,7 @@ export function InvoiceBuilder({ onClose }: InvoiceBuilderProps) {
             <Download className="h-4 w-4 mr-2" />
             Export PDF
           </Button>
-          <Button onClick={handleSave} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={handleSave} size="sm">
             <Save className="h-4 w-4 mr-2" />
             Save
           </Button>

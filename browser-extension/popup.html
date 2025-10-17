@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBCON Cursor Dev Tools</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="title">🛠️ NBCON DevTools</h1>
+      <p class="subtitle">Cursor Extension Debugger</p>
+    </header>
+
+    <!-- Status Section -->
+    <section class="section">
+      <h2 class="section-title">Status</h2>
+      <div class="status-grid">
+        <div class="status-item">
+          <span class="status-label">Debug Mode:</span>
+          <span id="debugModeStatus" class="status-value">Loading...</span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Active Tab:</span>
+          <span id="activeTabStatus" class="status-value">Loading...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Section -->
+    <section class="section">
+      <h2 class="section-title">Controls</h2>
+      <div class="controls">
+        <button id="toggleDebugBtn" class="btn btn-primary">
+          Toggle Debug Mode
+        </button>
+        <button id="clearLogsBtn" class="btn btn-secondary">
+          Clear Logs
+        </button>
+        <button id="exportLogsBtn" class="btn btn-secondary">
+          Export Logs
+        </button>
+        <button id="openDevToolsBtn" class="btn btn-accent">
+          Open DevTools Panel
+        </button>
+      </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section class="section">
+      <h2 class="section-title">Settings</h2>
+      <div class="settings">
+        <label class="checkbox-label">
+          <input type="checkbox" id="consoleLogging">
+          <span>Console Logging</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="networkMonitoring">
+          <span>Network Monitoring</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="performanceTracking">
+          <span>Performance Tracking</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Recent Logs Section -->
+    <section class="section">
+      <h2 class="section-title">Recent Activity</h2>
+      <div class="tabs">
+        <button class="tab active" data-tab="console">Console</button>
+        <button class="tab" data-tab="errors">Errors</button>
+        <button class="tab" data-tab="network">Network</button>
+        <button class="tab" data-tab="performance">Performance</button>
+      </div>
+      <div class="tab-content">
+        <div id="consoleTab" class="tab-panel active">
+          <div id="consoleLogsList" class="log-list">
+            <p class="empty-state">No console logs yet</p>
+          </div>
+        </div>
+        <div id="errorsTab" class="tab-panel">
+          <div id="errorsList" class="log-list">
+            <p class="empty-state">No errors yet</p>
+          </div>
+        </div>
+        <div id="networkTab" class="tab-panel">
+          <div id="networkList" class="log-list">
+            <p class="empty-state">No network requests yet</p>
+          </div>
+        </div>
+        <div id="performanceTab" class="tab-panel">
+          <div id="performanceList" class="log-list">
+            <p class="empty-state">No performance data yet</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Version 1.0.0 | NBCON © 2025</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+

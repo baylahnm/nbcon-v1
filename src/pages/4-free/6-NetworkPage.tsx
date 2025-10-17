@@ -349,11 +349,11 @@ function StatCard({
         backgroundClip: 'padding-box, border-box',
       }}
     >
-      <Card className="bg-transparent border-0">
+      <Card className="bg-transparent border border-border/50">
         <CardContent className="p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+              <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                 <Icon className="h-5 w-5 text-white" />
               </div>
               <p className="text-xs font-medium text-muted-foreground">{label}</p>
@@ -497,10 +497,10 @@ export default function NetworkPage() {
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-            <TabsTrigger value="all" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+            <TabsTrigger value="all" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               All Connections ({mockConnections.length})
             </TabsTrigger>
-            <TabsTrigger value="requests" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+            <TabsTrigger value="requests" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               Requests ({mockConnectionRequests.length})
               {mockConnectionRequests.length > 0 && (
                 <Badge className="ml-1.5 h-4 min-w-4 rounded-full px-1 text-[10px] bg-amber-500 text-white border-0">
@@ -508,7 +508,7 @@ export default function NetworkPage() {
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="activity" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+            <TabsTrigger value="activity" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               Activity
             </TabsTrigger>
           </TabsList>
@@ -724,7 +724,7 @@ export default function NetworkPage() {
                     key={request.id} 
                     className="border-border/50 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                   >
-                    <CardContent className="p-5 space-y-4">
+                    <CardContent className="p-4 space-y-4">
                       {/* Requester Info */}
                       <div className="flex items-start gap-4">
                         <Avatar className="h-16 w-16 ring-4 ring-primary/10">
@@ -821,7 +821,7 @@ export default function NetworkPage() {
           <TabsContent value="activity" className="space-y-4 mt-4">
             {/* Activity Header Card */}
             <Card className="border-border/50">
-              <CardHeader className="p-4 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
                     <Sparkles className="h-4 w-4 text-white" />

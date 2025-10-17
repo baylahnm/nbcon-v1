@@ -226,7 +226,7 @@ export function NewTaskDialog({
 
   // Default trigger button
   const defaultTrigger = (
-    <Button className="bg-primary hover:bg-primary/90 h-9">
+    <Button className="h-9">
       <Plus className="w-4 h-4 mr-2" />
       New Task
     </Button>

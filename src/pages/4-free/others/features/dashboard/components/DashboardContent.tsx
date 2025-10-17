@@ -98,7 +98,7 @@ export function DashboardContent() {
         <ClientQuickActionsHub userRole={profile?.role} />
 
         {/* Section 3 & 4: Projects and Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-4">
           {/* Active Projects */}
           <ClientActiveProjectsList />
           

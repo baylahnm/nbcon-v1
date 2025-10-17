@@ -217,7 +217,7 @@ export default function HelpPage() {
             backgroundClip: 'padding-box, border-box',
           } as React.CSSProperties}
         >
-          <Card className="bg-transparent border-0">
+          <Card className="bg-transparent border border-border/50">
             <CardContent className="p-4 text-center">
               <div className="bg-blue-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-blue-500/20">
                 <MessageSquare className="h-6 w-6 text-blue-600" />
@@ -243,7 +243,7 @@ export default function HelpPage() {
             backgroundClip: 'padding-box, border-box',
           } as React.CSSProperties}
         >
-          <Card className="bg-transparent border-0">
+          <Card className="bg-transparent border border-border/50">
             <CardContent className="p-4 text-center">
               <div className="bg-green-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-green-500/20">
                 <Phone className="h-6 w-6 text-green-600" />
@@ -269,7 +269,7 @@ export default function HelpPage() {
             backgroundClip: 'padding-box, border-box',
           } as React.CSSProperties}
         >
-          <Card className="bg-transparent border-0">
+          <Card className="bg-transparent border border-border/50">
             <CardContent className="p-4 text-center">
               <div className="bg-purple-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-purple-500/20">
                 <Mail className="h-6 w-6 text-purple-600" />
@@ -295,7 +295,7 @@ export default function HelpPage() {
             backgroundClip: 'padding-box, border-box',
           } as React.CSSProperties}
         >
-          <Card className="bg-transparent border-0">
+          <Card className="bg-transparent border border-border/50">
             <CardContent className="p-4 text-center">
               <div className="bg-red-500/10 h-12 w-12 mx-auto mb-3 flex items-center justify-center rounded-xl ring-1 ring-red-500/20">
                 <Video className="h-6 w-6 text-red-600" />
@@ -336,9 +336,9 @@ export default function HelpPage() {
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-          <TabsTrigger value="articles" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Help Articles</TabsTrigger>
-          <TabsTrigger value="faq" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">FAQ</TabsTrigger>
-          <TabsTrigger value="contact" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Contact Support</TabsTrigger>
+          <TabsTrigger value="articles" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Help Articles</TabsTrigger>
+          <TabsTrigger value="faq" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">FAQ</TabsTrigger>
+          <TabsTrigger value="contact" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">Contact Support</TabsTrigger>
         </TabsList>
 
         {/* Help Articles Tab */}
@@ -356,10 +356,10 @@ export default function HelpPage() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <BookOpen className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -372,10 +372,10 @@ export default function HelpPage() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+            <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               {filteredArticles.map((article) => (
                 <Card key={article.id} className="hover:shadow-md transition-shadow border-border/50">
-                <CardContent className="p-6">
+                <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
@@ -429,10 +429,10 @@ export default function HelpPage() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <HelpCircle className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -445,10 +445,10 @@ export default function HelpPage() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+            <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               {filteredFAQs.map((faq) => (
                 <Card key={faq.id} className="hover:shadow-md transition-shadow border-border/50">
-                <CardContent className="p-6">
+                <CardContent className="p-4">
                   <div className="space-y-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -493,9 +493,9 @@ export default function HelpPage() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <MessageSquare className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -504,7 +504,7 @@ export default function HelpPage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center gap-3 p-3 border border-border/50 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
                   <div className="bg-blue-500/10 h-10 w-10 flex items-center justify-center rounded-lg ring-1 ring-blue-500/20 flex-shrink-0">
                     <MessageSquare className="h-5 w-5 text-blue-600" />
@@ -557,9 +557,9 @@ export default function HelpPage() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Mail className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -568,7 +568,7 @@ export default function HelpPage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 bg-background rounded-b-xl">
+              <CardContent className="p-4 bg-background rounded-b-xl">
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium mb-2 block">Subject</label>
@@ -625,9 +625,9 @@ export default function HelpPage() {
               backgroundClip: 'padding-box, border-box',
             }}
             >
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <Clock className="h-6 w-6 text-white" />
                 </div>
                 <div>

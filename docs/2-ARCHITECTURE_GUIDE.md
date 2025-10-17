@@ -1017,7 +1017,8 @@ try {
 
 | Metric | Current | Max Capacity | Status |
 |--------|---------|--------------|--------|
-| **Roles** | 6 | 10-12 | ✅ Good |
+| **User Roles** | 4 | 10-12 | ✅ Good |
+| **Page Folders** | 6 (includes HomePage + auth) | 10-12 | ✅ Good |
 | **Pages per Role** | 8-14 | 20-25 | ✅ Good |
 | **Shared Components** | 74 | 100-150 | ✅ Good |
 | **Theme Presets** | 10 | 15-20 | ✅ Good |
@@ -1088,7 +1089,8 @@ try {
 
 Your structure is **excellent** if:
 
-- [x] **< 12 roles** - Current: 6 ✅
+- [x] **< 12 user roles** - Current: 4 roles (admin, client, engineer, enterprise) ✅
+- [x] **< 6 page folders** - Current: 6 folders (includes HomePage + auth) ✅
 - [x] **< 25 pages per role** - Current: 8-14 ✅
 - [x] **Clear role boundaries** - Yes ✅
 - [x] **Team can work in parallel** - Yes ✅

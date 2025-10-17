@@ -294,10 +294,10 @@ export default function PostJobPage() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <Card className="bg-transparent border-0">
+              <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <Briefcase className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -306,7 +306,7 @@ export default function PostJobPage() {
                     </div>
                   </div>
                 </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div>
                   <label className="text-xs font-medium mb-2 block">Job Title *</label>
                   <Input
@@ -358,10 +358,10 @@ export default function PostJobPage() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <Card className="bg-transparent border-0">
+              <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <DollarSign className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -370,7 +370,7 @@ export default function PostJobPage() {
                     </div>
                   </div>
                 </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div>
                   <label className="text-xs font-medium mb-2 block">Budget Range *</label>
                   <div className="grid grid-cols-3 gap-4">
@@ -454,7 +454,7 @@ export default function PostJobPage() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <Card className="bg-transparent border-0">
+            <Card className="bg-transparent border border-border/50">
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
@@ -466,7 +466,7 @@ export default function PostJobPage() {
                   </div>
                 </div>
               </CardHeader>
-            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+            <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               <div>
                 <label className="text-xs font-medium mb-2 block">Project Description *</label>
                 <textarea
@@ -507,10 +507,10 @@ export default function PostJobPage() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <Card className="bg-transparent border-0">
+              <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <Users className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -519,7 +519,7 @@ export default function PostJobPage() {
                     </div>
                   </div>
                 </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex gap-4">
                   <Input
                     placeholder="Add skill"
@@ -556,10 +556,10 @@ export default function PostJobPage() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <Card className="bg-transparent border-0">
+              <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <CheckCircle2 className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -568,7 +568,7 @@ export default function PostJobPage() {
                     </div>
                   </div>
                 </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex gap-4">
                   <Input
                     placeholder="Add requirement"
@@ -605,10 +605,10 @@ export default function PostJobPage() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <Card className="bg-transparent border-0">
+              <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <FileText className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -617,7 +617,7 @@ export default function PostJobPage() {
                     </div>
                   </div>
                 </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex gap-4">
                   <Input
                     placeholder="Add deliverable"
@@ -667,7 +667,7 @@ export default function PostJobPage() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <Card className="bg-transparent border-0">
+            <Card className="bg-transparent border border-border/50">
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
@@ -679,7 +679,7 @@ export default function PostJobPage() {
                   </div>
                 </div>
               </CardHeader>
-            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+            <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-base font-bold tracking-tight mb-2">Basic Information</h3>

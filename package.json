@@ -12,7 +12,11 @@
     "serve:ai": "npx --yes supabase@latest functions serve ai --env-file .env",
     "serve:ai-service": "npx --yes supabase@latest functions serve ai-service --env-file .env",
     "quality-check": "node scripts/code-quality-bot.cjs",
-    "quality-check:ci": "node scripts/code-quality-bot.cjs --ci"
+    "quality-check:ci": "node scripts/code-quality-bot.cjs --ci",
+    "ext:dev": "cd browser-extension && echo 'Load unpacked extension from browser-extension folder'",
+    "ext:watch": "cd browser-extension && echo 'Extension files ready for development'",
+    "ext:icons": "node scripts/generate-extension-icons.js",
+    "ext:package": "cd browser-extension && node ../scripts/package-extension.js"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -309,11 +309,11 @@ export default function BrowseEngineersPage() {
               backgroundClip: 'padding-box, border-box',
             } as React.CSSProperties}
           >
-            <Card className="bg-transparent border-0">
+            <Card className="bg-transparent border border-border/50">
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Users className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Total Engineers</p>
@@ -342,11 +342,11 @@ export default function BrowseEngineersPage() {
               backgroundClip: 'padding-box, border-box',
             } as React.CSSProperties}
           >
-            <Card className="bg-transparent border-0">
+            <Card className="bg-transparent border border-border/50">
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <CheckCircle2 className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">SCE Verified</p>
@@ -375,11 +375,11 @@ export default function BrowseEngineersPage() {
               backgroundClip: 'padding-box, border-box',
             } as React.CSSProperties}
           >
-            <Card className="bg-transparent border-0">
+            <Card className="bg-transparent border border-border/50">
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Clock className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Available Now</p>
@@ -408,11 +408,11 @@ export default function BrowseEngineersPage() {
               backgroundClip: 'padding-box, border-box',
             } as React.CSSProperties}
           >
-            <Card className="bg-transparent border-0">
+            <Card className="bg-transparent border border-border/50">
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Star className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Avg Rating</p>
@@ -478,18 +478,18 @@ export default function BrowseEngineersPage() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-            <TabsTrigger value="all" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+            <TabsTrigger value="all" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               All Engineers ({mockEngineers.length})
             </TabsTrigger>
-            <TabsTrigger value="verified" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+            <TabsTrigger value="verified" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
               SCE Verified ({mockEngineers.filter(e => e.verified).length})
             </TabsTrigger>
-            <TabsTrigger value="available" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+            <TabsTrigger value="available" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               <Clock className="h-3.5 w-3.5 mr-1.5" />
               Available ({mockEngineers.filter(e => e.availability === 'available').length})
             </TabsTrigger>
-            <TabsTrigger value="bookmarked" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+            <TabsTrigger value="bookmarked" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               <Bookmark className="h-3.5 w-3.5 mr-1.5" />
               Saved ({mockEngineers.filter(e => e.isBookmarked).length})
             </TabsTrigger>

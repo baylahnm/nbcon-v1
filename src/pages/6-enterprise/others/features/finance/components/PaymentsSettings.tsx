@@ -412,7 +412,7 @@ export function PaymentsSettings() {
       {/* Save Settings */}
       <div className="flex justify-end gap-4">
         <Button variant="outline">Reset to Defaults</Button>
-        <Button className="bg-primary hover:bg-primary/90">
+        <Button>
           <Save className="w-4 h-4 mr-2" />
           Save Settings
         </Button>

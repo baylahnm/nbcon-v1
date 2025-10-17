@@ -419,7 +419,7 @@ export function ClientProfile() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Personal Information */}
               <Card className="border-border/50">
-                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
                       <User className="h-4 w-4 text-white" />
@@ -501,7 +501,7 @@ export function ClientProfile() {
 
               {/* Privacy Settings */}
               <Card className="border-border/50">
-                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
                       <Shield className="h-4 w-4 text-white" />
@@ -574,7 +574,7 @@ export function ClientProfile() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Professional Information */}
               <Card className="border-border/50">
-                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
                       <Briefcase className="h-4 w-4 text-white" />
@@ -666,7 +666,7 @@ export function ClientProfile() {
 
               {/* Languages */}
               <Card className="border-border/50">
-                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
                       <Globe className="h-4 w-4 text-white" />
@@ -806,7 +806,7 @@ export function ClientProfile() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Client Reviews */}
               <Card className="border-border/50">
-                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
                       <Star className="h-4 w-4 text-white" />
@@ -839,7 +839,7 @@ export function ClientProfile() {
 
               {/* Achievements */}
               <Card className="border-border/50">
-                <CardHeader className="p-4 pb-3 border-b border-border/40">
+                <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary h-8 w-8 flex items-center justify-center rounded-lg shadow-sm">
                       <Award className="h-4 w-4 text-white" />

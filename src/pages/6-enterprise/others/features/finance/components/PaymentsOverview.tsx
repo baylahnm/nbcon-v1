@@ -221,7 +221,7 @@ export function PaymentsOverview() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full justify-start bg-primary hover:bg-primary/90">
+              <Button className="w-full justify-start">
                 <DollarSign className="w-4 h-4 mr-2" />
                 Request Payout
               </Button>

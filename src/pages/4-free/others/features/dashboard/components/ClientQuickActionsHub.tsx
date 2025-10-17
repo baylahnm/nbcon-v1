@@ -104,11 +104,11 @@ export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickAction
         backgroundClip: 'padding-box, border-box',
       } as React.CSSProperties}
     >
-      <Card className="bg-transparent border-0 gap-0">
+      <Card className="bg-transparent border border-border/50 gap-0">
         <CardHeader className="p-4 border-b border-border/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md group-hover:scale-110 transition-transform">
+                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
                 <Zap className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -137,7 +137,7 @@ export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickAction
         </CardHeader>
 
         {!isCollapsed && (
-          <CardContent className="py-5 px-0 bg-background rounded-b-xl">
+          <CardContent className="p-4 bg-background rounded-b-xl">
             <div className="relative">
               {/* Left fade/blur effect */}
               <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />

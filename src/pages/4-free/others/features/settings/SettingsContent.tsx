@@ -353,7 +353,7 @@ export function SettingsContent() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
-            <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+            <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
               <SettingsIcon className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -373,23 +373,23 @@ export function SettingsContent() {
 
       <Tabs defaultValue="account" className="space-y-4">
         <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-            <TabsTrigger value="account" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
+            <TabsTrigger value="account" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <User className="h-3.5 w-3.5 mr-1.5" />
             Account
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
+          <TabsTrigger value="notifications" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Bell className="h-3.5 w-3.5 mr-1.5" />
             Notifications
           </TabsTrigger>
-          <TabsTrigger value="privacy" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
+          <TabsTrigger value="privacy" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Shield className="h-3.5 w-3.5 mr-1.5" />
             Privacy & Security
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
+          <TabsTrigger value="appearance" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Palette className="h-3.5 w-3.5 mr-1.5" />
             Appearance
           </TabsTrigger>
-          <TabsTrigger value="advanced" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-accent/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
+          <TabsTrigger value="advanced" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground">
             <Zap className="h-3.5 w-3.5 mr-1.5" />
             Advanced
           </TabsTrigger>
@@ -412,9 +412,9 @@ export function SettingsContent() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <User className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -423,7 +423,7 @@ export function SettingsContent() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center gap-4">
                   <Avatar className="w-16 h-16">
                     <AvatarFallback className="bg-primary text-primary-foreground text-lg">
@@ -488,9 +488,9 @@ export function SettingsContent() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Building className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -499,7 +499,7 @@ export function SettingsContent() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div>
                   <Label htmlFor="title" className="mb-2">Job Title</Label>
                   <Input id="title" defaultValue="Senior Structural Engineer" />
@@ -560,9 +560,9 @@ export function SettingsContent() {
               backgroundClip: 'padding-box, border-box',
             }}
           >
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <SettingsIcon className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -571,7 +571,7 @@ export function SettingsContent() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+            <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Button variant="outline" className="justify-start h-[36px] text-xs">
                   <Key className="h-3.5 w-3.5 mr-1.5" />
@@ -692,9 +692,9 @@ export function SettingsContent() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Eye className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -703,7 +703,7 @@ export function SettingsContent() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-sm font-medium">Profile Visibility</Label>
@@ -761,9 +761,9 @@ export function SettingsContent() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Shield className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -772,7 +772,7 @@ export function SettingsContent() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-sm font-medium">Two-Factor Authentication</Label>
@@ -878,9 +878,9 @@ export function SettingsContent() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Palette className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -889,7 +889,7 @@ export function SettingsContent() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {Object.entries(THEME_METADATA).map(([presetKey, metadata]) => (
                     <div
@@ -930,9 +930,9 @@ export function SettingsContent() {
                 backgroundClip: 'padding-box, border-box',
               }}
             >
-              <CardHeader className="p-5 pb-3 border-b border-border/40">
+              <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-primary h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-md">
+                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Monitor className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -941,7 +941,7 @@ export function SettingsContent() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Font Size</Label>
                   <Slider
@@ -1011,7 +1011,7 @@ export function SettingsContent() {
                 </div>
               </div>
             </CardHeader>
-              <CardContent className="p-5 space-y-4 bg-background rounded-b-xl">
+              <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
               <Alert className="mb-4">
                 <Info className="h-4 w-4" />
                 <AlertDescription className="text-xs">

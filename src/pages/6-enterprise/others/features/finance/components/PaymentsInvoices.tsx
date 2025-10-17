@@ -254,7 +254,7 @@ export function PaymentsInvoices() {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => setIsInvoiceBuilderOpen(true)}>
+          <Button size="sm" onClick={() => setIsInvoiceBuilderOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Create Invoice
           </Button>

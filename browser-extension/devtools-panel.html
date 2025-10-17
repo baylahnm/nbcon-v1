@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBCON DevTools Panel</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    
+    .devtools-container {
+      max-width: 100%;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    
+    .panel-header {
+      padding: 16px 0;
+      border-bottom: 1px solid #3c3c3c;
+      margin-bottom: 16px;
+    }
+    
+    .panel-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+    
+    .panel-subtitle {
+      font-size: 14px;
+      color: #858585;
+      margin: 0;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .info-card {
+      background: #252526;
+      border: 1px solid #3c3c3c;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    
+    .info-card h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #cccccc;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .info-card p {
+      margin: 4px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    
+    .info-label {
+      color: #858585;
+      display: inline-block;
+      min-width: 100px;
+    }
+    
+    .info-value {
+      color: #4ec9b0;
+      font-weight: 500;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    
+    .btn-devtools {
+      padding: 8px 16px;
+      background: #0e639c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    
+    .btn-devtools:hover {
+      background: #1177bb;
+    }
+    
+    .btn-devtools:active {
+      background: #0d5687;
+    }
+    
+    .log-viewer {
+      background: #1e1e1e;
+      border: 1px solid #3c3c3c;
+      border-radius: 8px;
+      padding: 16px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+    }
+    
+    .log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid #2d2d2d;
+    }
+    
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    
+    .log-time {
+      color: #858585;
+      margin-right: 8px;
+    }
+    
+    .log-level {
+      margin-right: 8px;
+      font-weight: 600;
+    }
+    
+    .log-level.info { color: #4ec9b0; }
+    .log-level.warn { color: #dcdcaa; }
+    .log-level.error { color: #f48771; }
+    .log-level.debug { color: #569cd6; }
+  </style>
+</head>
+<body>
+  <div class="devtools-container">
+    <div class="panel-header">
+      <h1 class="panel-title">🛠️ NBCON DevTools Panel</h1>
+      <p class="panel-subtitle">Advanced debugging and inspection tools</p>
+    </div>
+    
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Page Info</h3>
+        <p><span class="info-label">URL:</span> <span class="info-value" id="pageUrl">Loading...</span></p>
+        <p><span class="info-label">Title:</span> <span class="info-value" id="pageTitle">Loading...</span></p>
+        <p><span class="info-label">Protocol:</span> <span class="info-value" id="pageProtocol">Loading...</span></p>
+      </div>
+      
+      <div class="info-card">
+        <h3>Performance</h3>
+        <p><span class="info-label">Load Time:</span> <span class="info-value" id="loadTime">-</span></p>
+        <p><span class="info-label">DOM Ready:</span> <span class="info-value" id="domReady">-</span></p>
+        <p><span class="info-label">Resources:</span> <span class="info-value" id="resourceCount">-</span></p>
+      </div>
+      
+      <div class="info-card">
+        <h3>Extension Status</h3>
+        <p><span class="info-label">Debug Mode:</span> <span class="info-value" id="debugMode">Unknown</span></p>
+        <p><span class="info-label">Monitoring:</span> <span class="info-value" id="monitoring">Active</span></p>
+        <p><span class="info-label">Version:</span> <span class="info-value">1.0.0</span></p>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn-devtools" id="reloadPageBtn">🔄 Reload Page</button>
+      <button class="btn-devtools" id="clearCacheBtn">🗑️ Clear Cache</button>
+      <button class="btn-devtools" id="analyzePageBtn">🔍 Analyze Page</button>
+      <button class="btn-devtools" id="captureScreenshotBtn">📸 Screenshot</button>
+      <button class="btn-devtools" id="exportDataBtn">💾 Export Data</button>
+    </div>
+    
+    <div class="info-card">
+      <h3>Console Output</h3>
+      <div class="log-viewer" id="consoleOutput">
+        <div class="log-entry">
+          <span class="log-time">00:00:00</span>
+          <span class="log-level info">INFO</span>
+          <span>DevTools panel initialized</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="devtools-panel.js"></script>
+</body>
+</html>
+

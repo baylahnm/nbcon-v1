@@ -1,0 +1,35 @@
+# NBCON Cursor Dev Tools - Git Ignore
+
+# Node modules
+node_modules/
+
+# Icons (generated)
+*.png
+*.jpg
+*.jpeg
+
+# Keep SVG icons
+!*.svg
+
+# Package files
+*.zip
+*.crx
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Keep required files
+!.gitkeep
+
