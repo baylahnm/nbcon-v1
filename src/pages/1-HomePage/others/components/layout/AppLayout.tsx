@@ -79,7 +79,7 @@ export function AppLayout({
         <SidebarInset className="flex-1 flex flex-col">
           {/* Header */}
           <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-sidebar-border">
-            <div className="flex items-center justify-between px-6 py-[12px]">
+            <div className="flex items-center justify-between px-4 py-[12px]">
               <div className="flex items-center gap-3">
                 <SidebarTrigger />
                 <div>

@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '../1-HomePage/others/components/ui/card';
 import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
@@ -8,6 +9,7 @@ import { Badge } from '../1-HomePage/others/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../1-HomePage/others/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '../1-HomePage/others/components/ui/avatar';
 import { Progress } from '../1-HomePage/others/components/ui/progress';
+import { useOutsideClick } from '../1-HomePage/others/hooks/use-outside-click';
 import { 
   Users, 
   Search, 
@@ -28,7 +30,12 @@ import {
   Target,
   Calculator,
   Map as MapIcon,
-  List
+  List,
+  X,
+  Phone,
+  Mail,
+  GraduationCap,
+  FileText
 } from 'lucide-react';
 
 interface Engineer {
@@ -52,6 +59,11 @@ interface Engineer {
   bio: string;
   isBookmarked: boolean;
   matchScore?: number; // 0-100
+  phone?: string;
+  email?: string;
+  certifications?: string[];
+  education?: string;
+  languages?: string[];
 }
 
 // Mock data - enhanced with more engineers
@@ -75,7 +87,12 @@ const mockEngineers: Engineer[] = [
     skills: ['STAAD.Pro', 'ETABS', 'AutoCAD', 'Revit', 'SAP2000'],
     bio: 'Experienced structural engineer with expertise in high-rise buildings and infrastructure projects.',
     isBookmarked: false,
-    matchScore: 95
+    matchScore: 95,
+    phone: '+966 50 123 4567',
+    email: 'ahmed.rashid@aramco.com',
+    certifications: ['SCE Licensed', 'P.E. (USA)', 'Chartered Engineer (UK)'],
+    education: 'Ph.D. Structural Engineering - King Fahd University',
+    languages: ['Arabic', 'English', 'French']
   },
   {
     id: '2',
@@ -190,12 +207,36 @@ export default function BrowseEngineersPage() {
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
   const [engineers, setEngineers] = useState(mockEngineers);
+  const [expandedEngineer, setExpandedEngineer] = useState<Engineer | null>(null);
+  
+  const expandedRef = useRef<HTMLDivElement>(null);
+  const id = useId();
   
   // Refs for animated gradient cards
   const stat1Ref = useRef<HTMLDivElement>(null);
   const stat2Ref = useRef<HTMLDivElement>(null);
   const stat3Ref = useRef<HTMLDivElement>(null);
   const stat4Ref = useRef<HTMLDivElement>(null);
+
+  // Handle expandable card interactions
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setExpandedEngineer(null);
+      }
+    }
+
+    if (expandedEngineer) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [expandedEngineer]);
+
+  useOutsideClick(expandedRef, () => setExpandedEngineer(null));
 
   // Add mouse tracking for animated gradient on all stat cards
   useEffect(() => {
@@ -255,8 +296,270 @@ export default function BrowseEngineersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="p-4 space-y-4">
+    <>
+      {/* Expanded Engineer Modal */}
+      <AnimatePresence>
+        {expandedEngineer && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            />
+            
+            {/* Expanded Card */}
+            <div className="fixed inset-0 grid place-items-center z-[60] p-4">
+              <motion.div
+                layoutId={`engineer-card-${expandedEngineer.id}-${id}`}
+                ref={expandedRef}
+                className="w-full max-w-4xl max-h-[95vh] flex flex-col bg-card border-2 border-primary/30 rounded-2xl overflow-hidden shadow-2xl"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Close Button */}
+                <motion.button
+                  className="absolute top-4 right-4 z-10 h-10 w-10 rounded-full bg-background/95 backdrop-blur-sm border-2 border-border/50 flex items-center justify-center hover:bg-destructive hover:text-destructive-foreground transition-colors shadow-xl"
+                  onClick={() => setExpandedEngineer(null)}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <X className="h-5 w-5" />
+                </motion.button>
+
+                {/* Header with Avatar and Basic Info */}
+                <div className="p-8 border-b border-border/40 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent">
+                  <div className="flex items-start gap-6">
+                    <motion.div layoutId={`engineer-avatar-${expandedEngineer.id}-${id}`}>
+                      <Avatar className="h-24 w-24 ring-4 ring-primary/20 shadow-xl">
+                        <AvatarImage src={expandedEngineer.avatar || '/placeholder.svg'} />
+                        <AvatarFallback className="bg-primary/10 text-primary text-2xl font-bold">
+                          {expandedEngineer.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </motion.div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <div className="flex-1">
+                          <motion.h2
+                            layoutId={`engineer-name-${expandedEngineer.id}-${id}`}
+                            className="text-xl font-bold tracking-tight mb-1 flex items-center gap-2"
+                          >
+                            {expandedEngineer.name}
+                            {expandedEngineer.verified && (
+                              <CheckCircle2 className="h-5 w-5 text-green-600" />
+                            )}
+                          </motion.h2>
+                          <p className="text-base text-muted-foreground mb-2">{expandedEngineer.title}</p>
+                          {expandedEngineer.company && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Building2 className="h-4 w-4" />
+                              <span>{expandedEngineer.company}</span>
+                            </div>
+                          )}
+                        </div>
+                        {expandedEngineer.matchScore && (
+                          <Badge className="bg-primary text-primary-foreground text-sm font-bold px-3 py-1">
+                            <Target className="h-4 w-4 mr-1.5" />
+                            {expandedEngineer.matchScore}% Match
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Quick Stats */}
+                      <div className="grid grid-cols-4 gap-3">
+                        <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3 border border-border/40">
+                          <div className="flex items-center gap-2 text-xs text-yellow-600 font-medium mb-1">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span>Rating</span>
+                          </div>
+                          <p className="text-base font-bold">{expandedEngineer.rating} ({expandedEngineer.reviews})</p>
+                        </div>
+                        <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3 border border-border/40">
+                          <div className="flex items-center gap-2 text-xs text-primary font-medium mb-1">
+                            <Briefcase className="h-3 w-3" />
+                            <span>Projects</span>
+                          </div>
+                          <p className="text-base font-bold">{expandedEngineer.completedProjects}</p>
+                        </div>
+                        <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3 border border-border/40">
+                          <div className="flex items-center gap-2 text-xs text-purple-600 font-medium mb-1">
+                            <Award className="h-3 w-3" />
+                            <span>Experience</span>
+                          </div>
+                          <p className="text-base font-bold">{expandedEngineer.experience} years</p>
+                        </div>
+                        <div className="bg-background/60 backdrop-blur-sm rounded-lg p-3 border border-border/40">
+                          <div className="flex items-center gap-2 text-xs text-emerald-600 font-medium mb-1">
+                            <DollarSign className="h-3 w-3" />
+                            <span>Rate</span>
+                          </div>
+                          <p className="text-base font-bold">{expandedEngineer.hourlyRate} SAR/hr</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                  {/* About */}
+                  <div className="space-y-3">
+                    <h3 className="text-base font-bold tracking-tight flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-primary" />
+                      About
+                    </h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {expandedEngineer.bio}
+                    </p>
+                  </div>
+
+                  {/* Contact Information */}
+                  {(expandedEngineer.phone || expandedEngineer.email) && (
+                    <div className="space-y-3">
+                      <h3 className="text-base font-bold tracking-tight">Contact Information</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {expandedEngineer.phone && (
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/40">
+                            <div className="bg-primary/10 p-2 rounded-lg">
+                              <Phone className="h-4 w-4 text-primary" />
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Phone</p>
+                              <p className="text-sm font-medium">{expandedEngineer.phone}</p>
+                            </div>
+                          </div>
+                        )}
+                        {expandedEngineer.email && (
+                          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/40">
+                            <div className="bg-cyan-500/10 p-2 rounded-lg">
+                              <Mail className="h-4 w-4 text-cyan-600" />
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Email</p>
+                              <p className="text-sm font-medium line-clamp-1">{expandedEngineer.email}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* All Skills */}
+                  <div className="space-y-3">
+                    <h3 className="text-base font-bold tracking-tight">All Skills</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {expandedEngineer.skills.map((skill, idx) => (
+                        <motion.div
+                          key={skill}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: idx * 0.05 }}
+                        >
+                          <Badge className="text-xs bg-primary/10 text-primary border-primary/30">
+                            {skill}
+                          </Badge>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Certifications */}
+                  {expandedEngineer.certifications && expandedEngineer.certifications.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-base font-bold tracking-tight flex items-center gap-2">
+                        <Award className="h-4 w-4 text-primary" />
+                        Certifications & Licenses
+                      </h3>
+                      <div className="space-y-2">
+                        {expandedEngineer.certifications.map((cert, idx) => (
+                          <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-green-500/5 border border-green-500/20"
+                          >
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            <span className="text-sm font-medium">{cert}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Education */}
+                  {expandedEngineer.education && (
+                    <div className="space-y-3">
+                      <h3 className="text-base font-bold tracking-tight flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4 text-primary" />
+                        Education
+                      </h3>
+                      <div className="p-4 rounded-lg bg-purple-500/5 border border-purple-500/20">
+                        <p className="text-sm font-medium">{expandedEngineer.education}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Languages */}
+                  {expandedEngineer.languages && expandedEngineer.languages.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-base font-bold tracking-tight">Languages</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {expandedEngineer.languages.map((lang) => (
+                          <Badge key={lang} variant="outline" className="text-xs">
+                            {lang}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Availability */}
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-xs text-primary font-medium mb-2">
+                      <Clock className="h-3 w-3" />
+                      <span>AVAILABILITY</span>
+                    </div>
+                    <p className="text-sm font-bold capitalize">{expandedEngineer.availability}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Responds in {expandedEngineer.responseTime}</p>
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="p-6 border-t border-border/40 bg-muted/30 flex gap-3">
+                  <Button className="flex-1 h-10 text-xs shadow-lg">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Send Message
+                  </Button>
+                  <Button variant="outline" className="flex-1 h-10 text-xs">
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Full Profile
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-10 w-10 p-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookmark(expandedEngineer.id);
+                    }}
+                  >
+                    <Bookmark className={`h-4 w-4 ${expandedEngineer.isBookmarked ? 'fill-current text-primary' : ''}`} />
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="p-4 space-y-4">
         
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
@@ -513,50 +816,62 @@ export default function BrowseEngineersPage() {
             {/* Engineer Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sortedEngineers.map((engineer) => (
-                <Card 
+                <motion.div
                   key={engineer.id}
-                  className="group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0"
+                  layoutId={`engineer-card-${engineer.id}-${id}`}
+                  onClick={() => setExpandedEngineer(engineer)}
+                  className="cursor-pointer"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  {/* Header with Match Score */}
-                  <div className="relative bg-gradient-to-br from-muted to-muted/50 p-4">
-                    {engineer.matchScore && (
-                      <div className="absolute top-4 right-4">
-                        <Badge className="bg-primary text-primary-foreground text-xs font-bold">
-                          <Target className="h-3 w-3 mr-1" />
-                          {engineer.matchScore}% Match
-                        </Badge>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-start gap-4">
-                      <Avatar className="h-16 w-16 ring-4 ring-background">
-                        <AvatarImage src={engineer.avatar || '/placeholder.svg'} />
-                        <AvatarFallback className="bg-muted">
-                          <img src="/placeholder.svg" alt="Engineer" className="w-full h-full object-cover" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base line-clamp-1">{engineer.name}</h3>
-                          {engineer.verified && (
-                            <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
-                          )}
+                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0">
+                    {/* Header with Match Score */}
+                    <div className="relative bg-gradient-to-br from-muted to-muted/50 p-4">
+                      {engineer.matchScore && (
+                        <div className="absolute top-4 right-4">
+                          <Badge className="bg-primary text-primary-foreground text-xs font-bold">
+                            <Target className="h-3 w-3 mr-1" />
+                            {engineer.matchScore}% Match
+                          </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground line-clamp-1">{engineer.title}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div className={`w-2 h-2 rounded-full ${
-                            engineer.availability === 'available' ? 'bg-green-500' :
-                            engineer.availability === 'busy' ? 'bg-amber-500' :
-                            'bg-gray-500'
-                          }`} />
-                          <span className="text-xs text-muted-foreground">{engineer.location}</span>
+                      )}
+                      
+                      <div className="flex items-start gap-4">
+                        <motion.div layoutId={`engineer-avatar-${engineer.id}-${id}`}>
+                          <Avatar className="h-16 w-16 ring-4 ring-background">
+                            <AvatarImage src={engineer.avatar || '/placeholder.svg'} />
+                            <AvatarFallback className="bg-muted">
+                              <img src="/placeholder.svg" alt="Engineer" className="w-full h-full object-cover" />
+                            </AvatarFallback>
+                          </Avatar>
+                        </motion.div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <motion.h3 
+                              layoutId={`engineer-name-${engineer.id}-${id}`}
+                              className="font-bold text-base line-clamp-1"
+                            >
+                              {engineer.name}
+                            </motion.h3>
+                            {engineer.verified && (
+                              <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground line-clamp-1">{engineer.title}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <div className={`w-2 h-2 rounded-full ${
+                              engineer.availability === 'available' ? 'bg-green-500' :
+                              engineer.availability === 'busy' ? 'bg-amber-500' :
+                              'bg-gray-500'
+                            }`} />
+                            <span className="text-xs text-muted-foreground">{engineer.location}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Content */}
-                  <CardContent className="p-4 space-y-4">
+                    {/* Content */}
+                    <CardContent className="p-4 space-y-4">
                     {/* Stats Grid */}
                     <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/40">
                       <div className="text-center">
@@ -638,6 +953,10 @@ export default function BrowseEngineersPage() {
                       <Button
                         size="sm"
                         className="flex-1 h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Handle contact
+                        }}
                       >
                         <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
                         Contact
@@ -646,7 +965,10 @@ export default function BrowseEngineersPage() {
                         variant="outline"
                         size="sm"
                         className="h-8 w-8 p-0"
-                        onClick={() => handleBookmark(engineer.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBookmark(engineer.id);
+                        }}
                       >
                         <Bookmark className={`h-3.5 w-3.5 ${engineer.isBookmarked ? 'fill-current text-primary' : ''}`} />
                       </Button>
@@ -654,13 +976,24 @@ export default function BrowseEngineersPage() {
                         variant="outline"
                         size="sm"
                         className="h-8 w-8 p-0"
-                        onClick={() => navigate(`/free/engineer/${engineer.id}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/free/engineer/${engineer.id}`);
+                        }}
                       >
                         <Eye className="h-3.5 w-3.5" />
                       </Button>
                     </div>
+
+                    {/* Click to Expand Hint */}
+                    <div className="pt-2 text-center border-t border-border/40">
+                      <p className="text-[10px] text-muted-foreground">
+                        Click card to view full profile
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
+                </motion.div>
               ))}
             </div>
 
@@ -693,5 +1026,6 @@ export default function BrowseEngineersPage() {
 
       </div>
     </div>
+    </>
   );
 }

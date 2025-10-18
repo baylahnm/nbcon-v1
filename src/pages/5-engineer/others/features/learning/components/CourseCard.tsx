@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Progress } from '../../../../../1-HomePage/others/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { 
   Star, 
@@ -14,7 +16,8 @@ import {
   CheckCircle2,
   TrendingUp,
   DollarSign,
-  Eye
+  Eye,
+  BookmarkCheck
 } from 'lucide-react';
 
 interface Instructor {
@@ -54,6 +57,8 @@ interface CourseCardProps {
 
 export function CourseCard({ course, onEnroll, onView, width, layout = 'default' }: CourseCardProps) {
   const navigate = useNavigate();
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isEnrolling, setIsEnrolling] = useState(false);
   
   const discountPercentage = course.originalPrice 
     ? Math.round(((course.originalPrice - course.price) / course.originalPrice) * 100)
@@ -76,8 +81,34 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
     }
   };
 
+  const handleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    if (isBookmarked) {
+      toast.info(`Removed "${course.title}" from bookmarks`);
+    } else {
+      toast.success(`Saved "${course.title}" to bookmarks`);
+    }
+  };
+
+  const handleEnroll = async () => {
+    if (onEnroll) {
+      onEnroll(course.id);
+      toast.success(`Enrolling in "${course.title}"...`);
+    } else {
+      setIsEnrolling(true);
+      // Simulate enrollment process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsEnrolling(false);
+      
+      toast.success(`Successfully enrolled in "${course.title}"!`);
+    }
+  };
+
   const Thumbnail = (
-      <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+      <div 
+        className="relative aspect-video overflow-hidden bg-gradient-to-br from-muted to-muted/50 cursor-pointer"
+        onClick={handleViewCourse}
+      >
         <img 
           src={course.thumbnail} 
           alt={course.title}
@@ -85,8 +116,11 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
         />
         
         {/* Play Button Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="bg-black/70 backdrop-blur-sm rounded-full p-4">
+        <div 
+          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          onClick={handleViewCourse}
+        >
+          <div className="bg-black/70 backdrop-blur-sm rounded-full p-4 hover:scale-110 transition-transform">
             <Play className="h-8 w-8 text-white fill-white" />
           </div>
         </div>
@@ -223,20 +257,26 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
           <div className="flex items-center gap-1">
             {course.isEnrolled ? (
               <>
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  className="h-7 w-7 p-0"
-                  onClick={handleViewCourse}
-                >
-                  <Eye className="h-3 w-3" />
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="h-7 text-[10px] px-2"
-                  onClick={handleViewCourse}
-                >
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="h-7 w-7 p-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewCourse();
+              }}
+            >
+              <Eye className="h-3 w-3" />
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="h-7 text-[10px] px-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewCourse();
+              }}
+            >
                   Continue
                 </Button>
               </>
@@ -246,7 +286,10 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
                   size="sm" 
                   variant="ghost" 
                   className="h-7 w-7 p-0"
-                  onClick={handleViewCourse}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewCourse();
+                  }}
                 >
                   <Eye className="h-3 w-3" />
                 </Button>
@@ -254,15 +297,27 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
                   size="sm" 
                   variant="ghost" 
                   className="h-7 w-7 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleBookmark();
+                  }}
                 >
-                  <Bookmark className="h-3 w-3" />
+                  {isBookmarked ? (
+                    <BookmarkCheck className="h-3 w-3 fill-primary text-primary" />
+                  ) : (
+                    <Bookmark className="h-3 w-3" />
+                  )}
                 </Button>
                 <Button 
                   size="sm" 
                   className="h-7 text-[10px] px-2 bg-gradient-primary"
-                  onClick={() => onEnroll?.(course.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEnroll();
+                  }}
+                  disabled={isEnrolling}
                 >
-                  Enroll
+                  {isEnrolling ? 'Enrolling...' : 'Enroll'}
                 </Button>
               </>
             )}
@@ -291,7 +346,10 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
               size="sm" 
               variant="ghost" 
               className="h-7 w-7 p-0"
-              onClick={handleViewCourse}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewCourse();
+              }}
             >
               <Eye className="h-3 w-3" />
             </Button>
@@ -299,7 +357,10 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
               size="sm" 
               variant="outline" 
               className="h-7 text-[10px] px-2"
-              onClick={handleViewCourse}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewCourse();
+              }}
             >
               Continue
             </Button>
@@ -310,7 +371,10 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
               size="sm" 
               variant="ghost" 
               className="h-7 w-7 p-0"
-              onClick={handleViewCourse}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewCourse();
+              }}
             >
               <Eye className="h-3 w-3" />
             </Button>
@@ -318,15 +382,27 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
               size="sm" 
               variant="ghost" 
               className="h-7 w-7 p-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBookmark();
+              }}
             >
-              <Bookmark className="h-3 w-3" />
+              {isBookmarked ? (
+                <BookmarkCheck className="h-3 w-3 fill-primary text-primary" />
+              ) : (
+                <Bookmark className="h-3 w-3" />
+              )}
             </Button>
             <Button 
               size="sm" 
               className="h-7 text-[10px] px-2 bg-gradient-primary"
-              onClick={() => onEnroll?.(course.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEnroll();
+              }}
+              disabled={isEnrolling}
             >
-              Enroll
+              {isEnrolling ? 'Enrolling...' : 'Enroll'}
             </Button>
           </>
         )}
@@ -336,16 +412,24 @@ export function CourseCard({ course, onEnroll, onView, width, layout = 'default'
 
   return (
     <Card 
-      className={`group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0 flex-shrink-0 snap-center ${
+      className={`group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0 flex-shrink-0 snap-center cursor-pointer ${
         layout === 'threeRow' ? 'flex flex-col h-full' : ''
       }`}
       style={{ width: width || '320px' }}
+      onClick={handleViewCourse}
     >
       {Thumbnail}
       <div className={layout === 'threeRow' ? 'flex-1 flex flex-col' : ''}>
         {Content}
       </div>
       {layout === 'threeRow' && BottomBar}
+      
+      {/* Visual hint */}
+      <div className="absolute bottom-2 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+        <span className="text-[10px] text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded-full border border-border/50">
+          Click to view details
+        </span>
+      </div>
     </Card>
   );
 }

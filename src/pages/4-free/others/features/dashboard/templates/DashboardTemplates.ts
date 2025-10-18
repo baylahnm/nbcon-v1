@@ -19,8 +19,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           label: 'Active Projects',
           trend: '+12%',
           trendDirection: 'up',
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -33,8 +33,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
         config: {
           title: 'AI Assistant',
           isCompact: false,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -52,8 +52,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
             { label: 'Upload', icon: 'Upload', link: '/engineer/upload', color: 'text-purple-600' },
             { label: 'Messages', icon: 'MessageSquare', link: '/engineer/messages', color: 'text-orange-600' }
           ],
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -68,8 +68,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           maxItems: 5,
           showFilters: true,
           showSearch: true,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -83,8 +83,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           title: 'Financial Overview',
           showCharts: true,
           showBreakdown: true,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -100,8 +100,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           showFilters: true,
           showPriority: true,
           showDueDate: true,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -118,8 +118,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           yAxisLabel: 'Revenue (SAR)',
           showLegend: true,
           showGrid: true,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -152,8 +152,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
         config: {
           title: 'AI Assistant',
           isCompact: false,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -171,8 +171,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
             { label: 'Upload', icon: 'Upload', link: '/engineer/upload', color: 'text-purple-600' },
             { label: 'Messages', icon: 'MessageSquare', link: '/engineer/messages', color: 'text-orange-600' }
           ],
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -208,8 +208,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           label: 'This Month',
           trend: '+22%',
           trendDirection: 'up',
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -225,8 +225,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           label: 'In Progress',
           trend: '+1',
           trendDirection: 'up',
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -242,8 +242,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           label: 'This Week',
           trend: '+8',
           trendDirection: 'up',
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -259,8 +259,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           label: 'Average',
           trend: '+3%',
           trendDirection: 'up',
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -277,8 +277,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           yAxisLabel: 'Revenue (SAR)',
           showLegend: true,
           showGrid: true,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()
@@ -292,8 +292,8 @@ export const DASHBOARD_TEMPLATES: DashboardLayout[] = [
           title: 'Financial Breakdown',
           showCharts: true,
           showBreakdown: true,
-          backgroundColor: '#ffffff',
-          borderColor: '#e5e7eb'
+          backgroundColor: 'hsl(var(--background))',
+          borderColor: 'hsl(var(--border))'
         },
         createdAt: new Date(),
         updatedAt: new Date()

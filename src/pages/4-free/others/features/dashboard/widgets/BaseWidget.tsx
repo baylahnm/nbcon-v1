@@ -102,8 +102,8 @@ export const BaseWidget: React.FC<BaseWidgetProps> = ({
         ${className}
       `}
       style={{
-        backgroundColor: widget.config.backgroundColor || '#ffffff',
-        borderColor: widget.config.borderColor || '#e5e7eb',
+        backgroundColor: widget.config.backgroundColor || 'hsl(var(--background))',
+        borderColor: widget.config.borderColor || 'hsl(var(--border))',
         borderRadius: widget.config.borderRadius || 8,
         padding: widget.config.padding || 16
       }}

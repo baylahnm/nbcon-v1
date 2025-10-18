@@ -9,6 +9,7 @@ import { R } from '../../lib/routes';
 import { getUserDisplayName, getUserInitials, getUserProfileImage } from '../../lib/userUtils';
 import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield, Crown, BarChart } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import NbLogo from '../ui/nb-logo';
 
 interface MenuItem {
   title: string;
@@ -51,6 +52,7 @@ const makeTopMenu = (role?: string): MenuItem[] => {
         { title: 'Network', url: R.client.network, icon: Users },
         { title: 'Learning', url: R.client.learning, icon: BookOpen },
         { title: 'Finance', url: R.client.finance, icon: DollarSign },
+        { title: 'Subscription', url: R.client.subscription, icon: Crown },
         { title: 'Help', url: R.client.help, icon: HelpCircle },
         { title: 'Settings', url: R.client.settings, icon: Settings }
       ];
@@ -136,8 +138,8 @@ export function AppSidebar() {
          {/* Logo Section */}
          <div className={`border-b border-sidebar-border ${collapsed ? 'px-4 py-1' : 'px-4 py-3'}`}>
           <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
-            <div className={`flex-shrink-0 ${collapsed ? 'w-8 h-8' : 'w-8 h-8'} bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft`}>
-              <span className={`font-bold text-primary-foreground ${collapsed ? 'text-sm' : 'text-base'}`}>nb</span>
+            <div className="flex-shrink-0 w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center shadow-md">
+              <NbLogo className="w-6 h-6 !flex" />
             </div>
             <div className={cn("transition-opacity duration-200", collapsed && "opacity-0 w-0 overflow-hidden")}>
               <h2 className="text-lg font-bold text-sidebar-foreground sidebar-logo-title">nbcon</h2>

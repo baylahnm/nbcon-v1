@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Input } from '@/pages/1-HomePage/others/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
+import { Avatar, AvatarImage, AvatarFallback } from '@/pages/1-HomePage/others/components/ui/avatar';
+import { toast } from 'sonner';
 import { CourseCard } from '@/pages/5-engineer/others/features/learning/components/CourseCard';
 import { HorizontalScrollCards } from '@/pages/5-engineer/others/features/learning/components/HorizontalScrollCards';
+import { useOutsideClick } from '@/pages/1-HomePage/others/hooks/use-outside-click';
 import { 
   BookOpen, 
   Play, 
@@ -23,7 +27,11 @@ import {
   Target,
   Calendar,
   DollarSign,
-  Briefcase
+  Briefcase,
+  X,
+  Video,
+  FileText,
+  BarChart3
 } from 'lucide-react';
 
 interface Instructor {
@@ -228,6 +236,13 @@ export default function LearningPage() {
   const [activeTab, setActiveTab] = useState('courses');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [expandedCourse, setExpandedCourse] = useState<Course | null>(null);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [expandedStat, setExpandedStat] = useState<string | null>(null);
+  const expandedRef = useRef<HTMLDivElement>(null);
+  const expandedStatRef = useRef<HTMLDivElement>(null);
+  const id = useId();
+  const statId = useId();
 
   const categories = ['all', 'Project Management', 'Engineering Basics', 'Finance', 'Quality Management', 'Safety'];
 
@@ -238,12 +253,65 @@ export default function LearningPage() {
     return matchesSearch && matchesCategory;
   });
 
+  // Handle expanded course interactions
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setExpandedCourse(null);
+        setExpandedStat(null);
+      }
+    }
+
+    if (expandedCourse || expandedStat) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [expandedCourse, expandedStat]);
+
+  useOutsideClick(expandedRef, () => {
+    setExpandedCourse(null);
+  });
+
+  useOutsideClick(expandedStatRef, () => {
+    setExpandedStat(null);
+  });
+
   const handleCourseView = (courseId: string) => {
-    console.log('View course:', courseId);
+    const course = mockCourses.find(c => c.id === courseId);
+    if (course) {
+      setExpandedCourse(course);
+    }
   };
 
-  const handleCourseEnroll = (courseId: string) => {
-    console.log('Enroll in course:', courseId);
+  const handlePreview = (courseId: string) => {
+    // Navigate to full course page for preview
+    navigate(`/free/learning/course/${courseId}`);
+    setExpandedCourse(null);
+  };
+
+  const handleCourseEnroll = async (courseId: string) => {
+    const course = mockCourses.find(c => c.id === courseId);
+    if (!course) return;
+
+    setIsEnrolling(true);
+    
+    // Simulate enrollment process (API call)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setIsEnrolling(false);
+    
+    // Show success toast
+    toast.success(`Successfully enrolled in "${course.title}"!`);
+    
+    // Navigate to course page to start learning immediately
+    navigate(`/free/learning/course/${courseId}`);
+    
+    // Close modal
+    setExpandedCourse(null);
   };
 
   return (
@@ -275,33 +343,39 @@ export default function LearningPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           {
+            id: 'enrolled',
             icon: BookOpen,
             label: 'Enrolled Courses',
             value: mockCourses.length,
             trend: '+12%'
           },
           {
+            id: 'completed',
             icon: CheckCircle2,
             label: 'Completed',
             value: mockCourses.filter(c => c.completed).length,
             trend: '+8%'
           },
           {
+            id: 'certifications',
             icon: Award,
             label: 'Certifications',
             value: '2',
             trend: '+5%'
           },
           {
+            id: 'progress',
             icon: TrendingUp,
             label: 'Avg. Progress',
             value: '72%',
             trend: '+3%'
           }
-        ].map((stat, index) => (
-          <div
-            key={index}
-            className="relative overflow-hidden transition-all duration-300"
+        ].map((stat) => (
+          <motion.div
+            key={stat.id}
+            layoutId={`stat-${stat.id}-${statId}`}
+            onClick={() => setExpandedStat(stat.id)}
+            className="relative overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5"
             style={{
               border: '2px solid transparent',
               borderRadius: '0.5rem',
@@ -332,7 +406,7 @@ export default function LearningPage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -658,6 +732,569 @@ export default function LearningPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Expanded Course Modal */}
+      <AnimatePresence>
+        {expandedCourse && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            />
+            <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 md:p-8">
+              <motion.div
+                ref={expandedRef}
+                layoutId={`course-${expandedCourse.id}-${id}`}
+                className="w-full max-w-5xl bg-card rounded-xl shadow-2xl my-8 overflow-hidden"
+              >
+                {/* Modal Header */}
+                <div className="relative">
+                  {/* Course Thumbnail */}
+                  <div className="relative aspect-[21/9] overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                    <img
+                      src={expandedCourse.thumbnail}
+                      alt={expandedCourse.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    
+                    {/* Close Button */}
+                    <button
+                      onClick={() => setExpandedCourse(null)}
+                      className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-lg transition-colors backdrop-blur-sm"
+                      aria-label="Close"
+                    >
+                      <X className="h-5 w-5 text-white" />
+                    </button>
+
+                    {/* Course Badges */}
+                    <div className="absolute top-4 left-4 flex flex-col gap-2">
+                      {expandedCourse.isBestSeller && (
+                        <Badge className="bg-red-500 text-white text-xs px-2.5 py-1">
+                          <Award className="h-3 w-3 mr-1" />
+                          Best Seller
+                        </Badge>
+                      )}
+                      {expandedCourse.isTrending && (
+                        <Badge className="bg-orange-500 text-white text-xs px-2.5 py-1">
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                          Trending
+                        </Badge>
+                      )}
+                      {expandedCourse.isNew && (
+                        <Badge className="bg-blue-500 text-white text-xs px-2.5 py-1">
+                          New
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Course Info Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <h1 className="text-3xl font-bold text-white mb-2">
+                        {expandedCourse.title}
+                      </h1>
+                      <p className="text-sm text-white/90 mb-4 line-clamp-2">
+                        {expandedCourse.description}
+                      </p>
+
+                      {/* Instructor */}
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10 ring-2 ring-white/30">
+                          <AvatarImage src={expandedCourse.instructor.avatar} />
+                          <AvatarFallback className="bg-primary text-white text-sm">
+                            {expandedCourse.instructor.name.substring(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold text-white text-sm">
+                            {expandedCourse.instructor.name}
+                          </p>
+                          <p className="text-xs text-white/80">
+                            {expandedCourse.instructor.title}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modal Body */}
+                <div className="p-6 space-y-6 bg-background/80 max-h-[60vh] overflow-y-auto">
+                  {/* Course Stats */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mx-auto mb-2" />
+                      <p className="text-2xl font-bold">{expandedCourse.rating}</p>
+                      <p className="text-xs text-muted-foreground">Course Rating</p>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <Users className="h-5 w-5 text-primary mx-auto mb-2" />
+                      <p className="text-2xl font-bold">{expandedCourse.students.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">Students</p>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <Clock className="h-5 w-5 text-primary mx-auto mb-2" />
+                      <p className="text-2xl font-bold">{expandedCourse.duration}</p>
+                      <p className="text-xs text-muted-foreground">Duration</p>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <BarChart3 className="h-5 w-5 text-primary mx-auto mb-2" />
+                      <p className="text-2xl font-bold">{expandedCourse.level}</p>
+                      <p className="text-xs text-muted-foreground">Level</p>
+                    </div>
+                  </div>
+
+                  {/* Course Description */}
+                  <div className="space-y-3">
+                    <h3 className="font-bold text-base flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-primary" />
+                      About This Course
+                    </h3>
+                    <p className="text-sm text-foreground/80 leading-relaxed">
+                      {expandedCourse.description}
+                    </p>
+                  </div>
+
+                  {/* What You'll Learn */}
+                  <div className="space-y-3">
+                    <h3 className="font-bold text-base flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                      What You'll Learn
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {[
+                        'Master key concepts and methodologies',
+                        'Apply practical techniques to real projects',
+                        'Understand industry best practices',
+                        'Develop professional skills and expertise',
+                        'Gain hands-on experience through exercises',
+                        'Prepare for industry certifications'
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm text-foreground/80">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Course Tags */}
+                  <div className="space-y-2">
+                    <h3 className="font-bold text-sm">Course Topics</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {expandedCourse.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Pricing & Actions */}
+                  <div className="border-t border-border/40 pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        {expandedCourse.originalPrice && (
+                          <span className="text-sm text-muted-foreground line-through mr-2">
+                            ${expandedCourse.originalPrice}
+                          </span>
+                        )}
+                        <span className="text-3xl font-bold text-primary">
+                          ${expandedCourse.price}
+                        </span>
+                        {expandedCourse.originalPrice && (
+                          <Badge className="ml-2 bg-primary/10 text-primary border-0">
+                            Save ${expandedCourse.originalPrice - expandedCourse.price}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePreview(expandedCourse.id);
+                          }}
+                          disabled={isEnrolling}
+                        >
+                          <Video className="h-4 w-4 mr-2" />
+                          Preview
+                        </Button>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCourseEnroll(expandedCourse.id);
+                          }}
+                          disabled={isEnrolling}
+                        >
+                          <BookOpen className="h-4 w-4 mr-2" />
+                          {isEnrolling ? 'Enrolling...' : 'Enroll Now'}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Expanded Stat Modals */}
+      <AnimatePresence>
+        {expandedStat && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            />
+            <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 md:p-8">
+              <motion.div
+                ref={expandedStatRef}
+                layoutId={`stat-${expandedStat}-${statId}`}
+                className="w-full max-w-3xl bg-card rounded-xl shadow-2xl my-8"
+              >
+                {/* Enrolled Courses Modal */}
+                {expandedStat === 'enrolled' && (
+                  <div>
+                    {/* Modal Header */}
+                    <div className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 rounded-t-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                            <BookOpen className="h-8 w-8" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold">Enrolled Courses</h2>
+                            <p className="text-blue-100 mt-1">Your active learning journey</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setExpandedStat(null)}
+                          className="text-white hover:bg-white/20"
+                        >
+                          <X className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Modal Content */}
+                    <div className="p-6 space-y-6">
+                      {/* Summary Stats */}
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="text-center p-4 bg-blue-50 rounded-lg">
+                          <p className="text-2xl font-bold text-blue-600">{mockCourses.length}</p>
+                          <p className="text-xs text-muted-foreground mt-1">Total Courses</p>
+                        </div>
+                        <div className="text-center p-4 bg-green-50 rounded-lg">
+                          <p className="text-2xl font-bold text-green-600">{mockCourses.filter(c => c.completed).length}</p>
+                          <p className="text-xs text-muted-foreground mt-1">Completed</p>
+                        </div>
+                        <div className="text-center p-4 bg-amber-50 rounded-lg">
+                          <p className="text-2xl font-bold text-amber-600">{mockCourses.filter(c => !c.completed).length}</p>
+                          <p className="text-xs text-muted-foreground mt-1">In Progress</p>
+                        </div>
+                      </div>
+
+                      {/* Course List */}
+                      <div>
+                        <h3 className="font-bold text-base mb-4">Your Courses</h3>
+                        <div className="space-y-3">
+                          {mockCourses.slice(0, 6).map((course) => (
+                            <div
+                              key={course.id}
+                              className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                              onClick={() => {
+                                setExpandedStat(null);
+                                navigate(`/free/learning/course/${course.id}`);
+                              }}
+                            >
+                              <img
+                                src={course.thumbnail}
+                                alt={course.title}
+                                className="w-16 h-16 rounded-lg object-cover"
+                              />
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-sm line-clamp-1">{course.title}</h4>
+                                <p className="text-xs text-muted-foreground mt-0.5">{course.instructor.name}</p>
+                                {course.progress !== undefined && (
+                                  <div className="flex items-center gap-2 mt-2">
+                                    <Progress value={course.progress} className="h-1.5 flex-1" />
+                                    <span className="text-xs font-medium text-primary">{course.progress}%</span>
+                                  </div>
+                                )}
+                              </div>
+                              <Badge className={course.completed ? "bg-green-500/10 text-green-600 border-0" : "bg-blue-500/10 text-blue-600 border-0"}>
+                                {course.completed ? 'Complete' : 'In Progress'}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="flex justify-end pt-4 border-t">
+                        <Button onClick={() => setExpandedStat(null)}>
+                          Close
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Completed Courses Modal */}
+                {expandedStat === 'completed' && (
+                  <div>
+                    {/* Modal Header */}
+                    <div className="sticky top-0 z-10 bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-t-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                            <CheckCircle2 className="h-8 w-8" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold">Completed Courses</h2>
+                            <p className="text-green-100 mt-1">Achievements & certificates</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setExpandedStat(null)}
+                          className="text-white hover:bg-white/20"
+                        >
+                          <X className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Modal Content */}
+                    <div className="p-6 space-y-6">
+                      {/* Completed Course List */}
+                      <div className="space-y-3">
+                        {mockCourses.filter(c => c.completed).map((course) => (
+                          <div
+                            key={course.id}
+                            className="flex items-center gap-4 p-4 bg-green-50 rounded-lg border border-green-200"
+                          >
+                            <div className="bg-green-500/10 p-3 rounded-xl">
+                              <CheckCircle2 className="h-6 w-6 text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-sm">{course.title}</h4>
+                              <p className="text-xs text-muted-foreground mt-0.5">{course.instructor.name}</p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Award className="h-3 w-3 text-amber-600" />
+                                <span className="text-xs text-muted-foreground">Certificate earned</span>
+                              </div>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setExpandedStat(null);
+                              }}
+                            >
+                              <Download className="h-3 w-3 mr-1" />
+                              Download
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="flex justify-end pt-4 border-t">
+                        <Button onClick={() => setExpandedStat(null)}>
+                          Close
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Certifications Modal */}
+                {expandedStat === 'certifications' && (
+                  <div>
+                    {/* Modal Header */}
+                    <div className="sticky top-0 z-10 bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-t-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                            <Award className="h-8 w-8" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold">Certifications</h2>
+                            <p className="text-purple-100 mt-1">Your professional achievements</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setExpandedStat(null)}
+                          className="text-white hover:bg-white/20"
+                        >
+                          <X className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Modal Content */}
+                    <div className="p-6 space-y-6">
+                      {/* Certification List */}
+                      <div className="space-y-4">
+                        {/* Certificate 1 */}
+                        <Card className="border-purple-200">
+                          <CardContent className="p-5">
+                            <div className="flex items-start gap-4">
+                              <div className="bg-purple-500/10 p-3 rounded-xl shrink-0">
+                                <Award className="h-8 w-8 text-purple-600" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-bold text-base">Project Management Professional (PMP)</h4>
+                                <p className="text-sm text-muted-foreground mt-1">Issued by: PMI • Earned: Jan 2024</p>
+                                <div className="flex items-center gap-2 mt-3">
+                                  <Badge className="bg-green-500/10 text-green-600 border-0">
+                                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                                    Verified
+                                  </Badge>
+                                  <span className="text-xs text-muted-foreground">Credential ID: PMP-2024-001234</span>
+                                </div>
+                              </div>
+                              <Button size="sm" variant="outline">
+                                <Download className="h-3 w-3 mr-1" />
+                                Download
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {/* Certificate 2 */}
+                        <Card className="border-purple-200">
+                          <CardContent className="p-5">
+                            <div className="flex items-start gap-4">
+                              <div className="bg-purple-500/10 p-3 rounded-xl shrink-0">
+                                <Award className="h-8 w-8 text-purple-600" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-bold text-base">Renewable Energy Systems</h4>
+                                <p className="text-sm text-muted-foreground mt-1">Issued by: NBCON Learning • Earned: Feb 2024</p>
+                                <div className="flex items-center gap-2 mt-3">
+                                  <Badge className="bg-green-500/10 text-green-600 border-0">
+                                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                                    Verified
+                                  </Badge>
+                                  <span className="text-xs text-muted-foreground">Credential ID: NBC-REN-2024-5678</span>
+                                </div>
+                              </div>
+                              <Button size="sm" variant="outline">
+                                <Download className="h-3 w-3 mr-1" />
+                                Download
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="flex justify-end pt-4 border-t">
+                        <Button onClick={() => setExpandedStat(null)}>
+                          Close
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Avg. Progress Modal */}
+                {expandedStat === 'progress' && (
+                  <div>
+                    {/* Modal Header */}
+                    <div className="sticky top-0 z-10 bg-gradient-to-r from-amber-600 to-orange-600 text-white p-6 rounded-t-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                            <TrendingUp className="h-8 w-8" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold">Learning Progress</h2>
+                            <p className="text-amber-100 mt-1">Track your course completion</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setExpandedStat(null)}
+                          className="text-white hover:bg-white/20"
+                        >
+                          <X className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Modal Content */}
+                    <div className="p-6 space-y-6">
+                      {/* Overall Progress */}
+                      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+                        <CardContent className="p-5">
+                          <div className="text-center space-y-3">
+                            <p className="text-4xl font-bold text-amber-600">72%</p>
+                            <p className="text-sm text-muted-foreground">Average Course Progress</p>
+                            <Progress value={72} className="h-2" />
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Progress Breakdown */}
+                      <div>
+                        <h3 className="font-bold text-base mb-4">Course Progress Breakdown</h3>
+                        <div className="space-y-3">
+                          {mockCourses.slice(0, 6).map((course) => (
+                            <div
+                              key={course.id}
+                              className="p-4 bg-muted/30 rounded-lg"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-sm line-clamp-1 flex-1">{course.title}</h4>
+                                <span className="text-sm font-bold text-primary ml-2">{course.progress || 0}%</span>
+                              </div>
+                              <Progress value={course.progress || 0} className="h-2" />
+                              <div className="flex items-center justify-between mt-2">
+                                <span className="text-xs text-muted-foreground">
+                                  {course.progress === 100 ? 'Completed' : `${Math.round((course.progress || 0) / 10)} of 10 lessons`}
+                                </span>
+                                {course.progress === 100 && (
+                                  <Badge className="bg-green-500/10 text-green-600 border-0 text-[10px]">
+                                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                                    Done
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="flex justify-end pt-4 border-t">
+                        <Button onClick={() => setExpandedStat(null)}>
+                          Close
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

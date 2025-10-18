@@ -34,6 +34,7 @@ export const R = {
     learning: "/free/learning",
     payments: "/free/finance",
     finance: "/free/finance",
+    subscription: "/free/subscription",
     help: "/free/help",
     settings: "/free/settings",
   },

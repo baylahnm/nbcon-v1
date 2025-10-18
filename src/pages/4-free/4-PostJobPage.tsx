@@ -6,6 +6,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
 import { Badge } from '../1-HomePage/others/components/ui/badge';
 import { 
+  Stepper, 
+  StepperItem, 
+  StepperTrigger, 
+  StepperIndicator, 
+  StepperSeparator, 
+  StepperTitle, 
+  StepperNav,
+  StepperContent 
+} from '../1-HomePage/others/components/ui/stepper';
+import { 
   Plus, 
   Briefcase, 
   MapPin, 
@@ -79,6 +89,28 @@ const locations = [
 
 export default function PostJobPage() {
   const [activeTab, setActiveTab] = useState('basic');
+  
+  // Helper functions for step navigation
+  const getStepNumber = (tab: string): number => {
+    const stepMap: { [key: string]: number } = {
+      'basic': 1,
+      'details': 2,
+      'requirements': 3,
+      'review': 4
+    };
+    return stepMap[tab] || 1;
+  };
+
+  const getStepName = (step: number): string => {
+    const nameMap: { [key: number]: string } = {
+      1: 'basic',
+      2: 'details',
+      3: 'requirements',
+      4: 'review'
+    };
+    return nameMap[step] || 'basic';
+  };
+
   const [formData, setFormData] = useState<JobForm>({
     title: '',
     description: '',
@@ -214,73 +246,54 @@ export default function PostJobPage() {
         </div>
       </div>
 
-      {/* Progress Indicator */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
-            activeTab === 'basic' 
-              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
-              : 'bg-muted ring-border/50'
-          }`}>
-            1
-          </div>
-          <span className={`text-xs ${activeTab === 'basic' ? 'font-medium' : 'text-muted-foreground'}`}>
-            Basic Info
-          </span>
-        </div>
-        <div className="w-8 h-px bg-muted" />
-        <div className="flex items-center gap-4">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
-            activeTab === 'details' 
-              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
-              : 'bg-muted ring-border/50'
-          }`}>
-            2
-          </div>
-          <span className={`text-xs ${activeTab === 'details' ? 'font-medium' : 'text-muted-foreground'}`}>
-            Details
-          </span>
-        </div>
-        <div className="w-8 h-px bg-muted" />
-        <div className="flex items-center gap-4">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
-            activeTab === 'requirements' 
-              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
-              : 'bg-muted ring-border/50'
-          }`}>
-            3
-          </div>
-          <span className={`text-xs ${activeTab === 'requirements' ? 'font-medium' : 'text-muted-foreground'}`}>
-            Requirements
-          </span>
-        </div>
-        <div className="w-8 h-px bg-muted" />
-        <div className="flex items-center gap-4">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ring-2 transition-all ${
-            activeTab === 'review' 
-              ? 'bg-primary text-primary-foreground ring-primary/30 shadow-md' 
-              : 'bg-muted ring-border/50'
-          }`}>
-            4
-          </div>
-          <span className={`text-xs ${activeTab === 'review' ? 'font-medium' : 'text-muted-foreground'}`}>
-            Review
-          </span>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="hidden">
-          <TabsTrigger value="basic">Basic Information</TabsTrigger>
-          <TabsTrigger value="details">Project Details</TabsTrigger>
-          <TabsTrigger value="requirements">Requirements</TabsTrigger>
-          <TabsTrigger value="review">Review & Submit</TabsTrigger>
-        </TabsList>
-
-        {/* Basic Information Tab */}
-        <TabsContent value="basic" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Progress Stepper */}
+      <Stepper 
+        value={getStepNumber(activeTab)} 
+        onValueChange={(step) => setActiveTab(getStepName(step))}
+        className="w-full"
+      >
+        <StepperNav className="w-full">
+          <StepperItem step={1} completed={getStepNumber(activeTab) > 1}>
+            <StepperTrigger className="flex items-center gap-4">
+              <StepperIndicator className="w-8 h-8 text-xs font-medium ring-2 transition-all data-[state=active]:ring-primary/30 data-[state=active]:shadow-md data-[state=completed]:ring-primary/30 data-[state=completed]:shadow-md data-[state=inactive]:ring-border/50">
+                1
+              </StepperIndicator>
+              <StepperTitle className="text-xs">Basic Info</StepperTitle>
+            </StepperTrigger>
+            <StepperSeparator />
+          </StepperItem>
+          <StepperItem step={2} completed={getStepNumber(activeTab) > 2}>
+            <StepperTrigger className="flex items-center gap-4">
+              <StepperIndicator className="w-8 h-8 text-xs font-medium ring-2 transition-all data-[state=active]:ring-primary/30 data-[state=active]:shadow-md data-[state=completed]:ring-primary/30 data-[state=completed]:shadow-md data-[state=inactive]:ring-border/50">
+                2
+              </StepperIndicator>
+              <StepperTitle className="text-xs">Details</StepperTitle>
+            </StepperTrigger>
+            <StepperSeparator />
+          </StepperItem>
+          <StepperItem step={3} completed={getStepNumber(activeTab) > 3}>
+            <StepperTrigger className="flex items-center gap-4">
+              <StepperIndicator className="w-8 h-8 text-xs font-medium ring-2 transition-all data-[state=active]:ring-primary/30 data-[state=active]:shadow-md data-[state=completed]:ring-primary/30 data-[state=completed]:shadow-md data-[state=inactive]:ring-border/50">
+                3
+              </StepperIndicator>
+              <StepperTitle className="text-xs">Requirements</StepperTitle>
+            </StepperTrigger>
+            <StepperSeparator />
+          </StepperItem>
+          <StepperItem step={4}>
+            <StepperTrigger className="flex items-center gap-4">
+              <StepperIndicator className="w-8 h-8 text-xs font-medium ring-2 transition-all data-[state=active]:ring-primary/30 data-[state=active]:shadow-md data-[state=completed]:ring-primary/30 data-[state=completed]:shadow-md data-[state=inactive]:ring-border/50">
+                4
+              </StepperIndicator>
+              <StepperTitle className="text-xs">Review</StepperTitle>
+            </StepperTrigger>
+          </StepperItem>
+        </StepperNav>
+        {/* Main Content */}
+        <div className="space-y-4">
+          {/* Basic Information Step */}
+          <StepperContent value={1} className="space-y-4 mt-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
             <div
               className="relative overflow-hidden transition-all duration-300"
               style={{
@@ -437,10 +450,10 @@ export default function PostJobPage() {
               Next: Project Details
             </Button>
           </div>
-        </TabsContent>
+        </StepperContent>
 
         {/* Project Details Tab */}
-        <TabsContent value="details" className="space-y-4">
+        <StepperContent value={2} className="space-y-4 mt-0">
           <div
             className="relative overflow-hidden transition-all duration-300"
             style={{
@@ -489,10 +502,10 @@ export default function PostJobPage() {
               Next: Requirements
             </Button>
           </div>
-        </TabsContent>
+        </StepperContent>
 
         {/* Requirements Tab */}
-        <TabsContent value="requirements" className="space-y-4">
+        <StepperContent value={3} className="space-y-4 mt-0">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div
               className="relative overflow-hidden transition-all duration-300"
@@ -650,10 +663,10 @@ export default function PostJobPage() {
               Next: Review
             </Button>
           </div>
-        </TabsContent>
+        </StepperContent>
 
         {/* Review Tab */}
-        <TabsContent value="review" className="space-y-4">
+        <StepperContent value={4} className="space-y-4 mt-0">
           <div
             className="relative overflow-hidden transition-all duration-300"
             style={{
@@ -751,8 +764,9 @@ export default function PostJobPage() {
               Post Job
             </Button>
           </div>
-        </TabsContent>
-      </Tabs>
+          </StepperContent>
+        </div>
+      </Stepper>
       </div>
     </div>
   );

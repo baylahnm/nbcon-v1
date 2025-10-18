@@ -5,12 +5,15 @@ interface NbLogoProps {
 }
 
 const NbLogo = ({ className }: NbLogoProps) => {
+  // Determine if it's a small size based on className
+  const isSmall = className?.includes('w-6') || className?.includes('w-8');
+  
   return (
-    <div className={`w-12 h-12 flex items-center justify-center ${className || ''}`}>
-      <span className="text-primary-foreground font-bold text-xl relative inline-block">
+    <div className={`flex items-center justify-center ${className || 'w-12 h-12'}`}>
+      <span className={`text-primary-foreground font-bold relative inline-block ${isSmall ? 'text-sm' : 'text-xl'}`}>
         n.
         <span 
-          className="absolute -top-2 left-2 text-[9px] italic font-bold transform -rotate-12" 
+          className={`absolute italic font-bold transform -rotate-12 ${isSmall ? '-top-1 left-1 text-[5px]' : '-top-2 left-2 text-[9px]'}`}
           style={{ fontFamily: 'Quintessential, cursive' }}
         >
           pro

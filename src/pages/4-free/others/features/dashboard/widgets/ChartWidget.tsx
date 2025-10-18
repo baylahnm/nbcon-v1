@@ -49,7 +49,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
                   y1={`${ratio * 100}%`}
                   x2="100%"
                   y2={`${ratio * 100}%`}
-                  stroke="#e5e7eb"
+                  stroke="hsl(var(--border))"
                   strokeWidth="1"
                 />
               ))}
@@ -60,7 +60,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
                   y1="0"
                   x2={`${ratio * 100}%`}
                   y2="100%"
-                  stroke="#e5e7eb"
+                  stroke="hsl(var(--border))"
                   strokeWidth="1"
                 />
               ))}
@@ -70,7 +70,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
           {/* Data Line */}
           <polyline
             fill="none"
-            stroke="#3b82f6"
+            stroke="hsl(var(--primary))"
             strokeWidth="2"
             points={chartData.map((d, i) => {
               const x = (i / (chartData.length - 1)) * 100;
@@ -82,7 +82,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
           {/* Target Line */}
           <polyline
             fill="none"
-            stroke="#10b981"
+            stroke="hsl(var(--success))"
             strokeWidth="2"
             strokeDasharray="5,5"
             points={chartData.map((d, i) => {
@@ -102,7 +102,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
                 cx={x}
                 cy={y}
                 r="3"
-                fill="#3b82f6"
+                fill="hsl(var(--primary))"
                 className="hover:r-4 transition-all"
               />
             );
@@ -159,7 +159,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
             cy="50%"
             r="40%"
             fill="none"
-            stroke="#e5e7eb"
+            stroke="hsl(var(--border))"
             strokeWidth="8"
           />
           <circle
@@ -167,7 +167,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({
             cy="50%"
             r="40%"
             fill="none"
-            stroke="#3b82f6"
+            stroke="hsl(var(--primary))"
             strokeWidth="8"
             strokeDasharray={`${2 * Math.PI * 40 * 0.7} ${2 * Math.PI * 40}`}
             strokeDashoffset="0"

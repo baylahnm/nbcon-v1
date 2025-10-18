@@ -18,6 +18,7 @@ import { MessagesPage } from "@/pages/5-engineer/4-MessagesPage";
 import ClientMessagesPage from "@/pages/4-free/9-MessagesPage";
 import ProfilePage from "@/pages/5-engineer/15-ProfilePage";
 import ClientSettingsPage from "@/pages/4-free/12-SettingsPage";
+import ClientSubscriptionPage from "@/pages/4-free/14-SubscriptionPage";
 import ClientProfilePage from "@/pages/4-free/2-ProfilePage";
 import HelpPage from "@/pages/5-engineer/10-HelpPage";
 import MyNetwork from "@/pages/5-engineer/6-NetworkPage";
@@ -162,6 +163,7 @@ export default function RoleRouter() {
           <Route path="learning/course/:courseId" element={<NewCoursePage />} />
           <Route path="learning/certificates/:certificateId" element={<ClientLearningPage />} />
           <Route path="help" element={<HelpPage />} />
+          <Route path="subscription" element={<ClientSubscriptionPage />} />
           <Route path="settings" element={<ClientSettingsPage />} />
         </Route>
 

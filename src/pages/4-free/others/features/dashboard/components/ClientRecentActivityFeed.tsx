@@ -51,6 +51,7 @@ const defaultActivities: ActivityItem[] = [
   {
     id: '2',
     type: 'payment',
+    title: 'Payment Released',
     description: 'Milestone payment released: 125,000 SAR for NEOM project',
     relativeTime: '2 hours ago',
     link: '/free/finance',
@@ -182,7 +183,7 @@ export function ClientRecentActivityFeed({
             <div>
               <CardTitle className="text-base font-bold tracking-tight">Recent Activity</CardTitle>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Latest updates from your projects
+                Click any activity to expand details
               </p>
             </div>
           </div>
