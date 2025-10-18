@@ -9,7 +9,7 @@ import {
   Lock, 
   User, 
   Phone, 
-  Building, 
+  Building,
   MapPin, 
   Globe,
   Shield,
@@ -18,6 +18,7 @@ import {
   Languages,
   Briefcase
 } from "lucide-react";
+import NbLogo from "../ui/nb-logo";
 import { supabase } from "@/shared/supabase/client";
 import { useToast } from "../ui/use-toast";
 import { Button } from "../ui/button";
@@ -554,8 +555,8 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
         {/* Main Auth Card */}
         <Card className="shadow-xl border-border/20">
           <CardHeader className="text-center pb-4">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
-              <Building className="w-8 h-8 text-primary-foreground" />
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 border border-primary/10">
+              <NbLogo />
             </div>
             <CardTitle className="text-2xl text-foreground">
               {language === 'ar' ? 'مرحباً بك في nbcon' : 'Welcome to nbcon'}
@@ -1140,7 +1141,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
             <div className="p-6 space-y-4">
               {/* Stats Cards */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-primary/5 rounded-xl p-4">
+                <div className="bg-card rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-muted-foreground">
                       {language === 'ar' ? 'الإنتاجية' : 'Productive Time'}
@@ -1160,7 +1161,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
                   </div>
                 </div>
 
-                <div className="bg-accent/5 rounded-xl p-4">
+                <div className="bg-card rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-muted-foreground">
                       {language === 'ar' ? 'المشاريع' : 'Projects'}
@@ -1178,7 +1179,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
               </div>
 
               {/* Team List */}
-              <div className="bg-muted/30 rounded-xl p-4">
+              <div className="bg-card rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-semibold text-foreground">
                     {language === 'ar' ? 'الفريق' : 'Team Utilization'}

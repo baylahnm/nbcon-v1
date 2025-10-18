@@ -69,7 +69,6 @@ export function CalendarPage() {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(() => searchParams.get('project') ?? 'all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
-  const [selectedTeam, setSelectedTeam] = useState('all');
 
   // Mobile toolbar horizontal scroll controls
   const toolbarRef = useRef<HTMLDivElement | null>(null);
@@ -264,16 +263,6 @@ export function CalendarPage() {
     { id: 'hr', name: 'Human Resources' }
   ];
 
-  const teams = [
-    { id: 'all', name: 'All Teams' },
-    { id: 'structural', name: 'Structural Engineering' },
-    { id: 'mechanical', name: 'Mechanical Engineering' },
-    { id: 'electrical', name: 'Electrical Engineering' },
-    { id: 'civil', name: 'Civil Engineering' },
-    { id: 'project-managers', name: 'Project Managers' },
-    { id: 'quality-team', name: 'Quality Team' }
-  ];
-
   return (
     <div 
       className="h-full flex flex-col"
@@ -425,18 +414,6 @@ export function CalendarPage() {
           </div>
           
           <div className="flex gap-2">
-            <Select defaultValue="enterprise">
-              <SelectTrigger className="w-[140px] bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="enterprise">Enterprise</SelectItem>
-                <SelectItem value="department">Department</SelectItem>
-                <SelectItem value="team">Team</SelectItem>
-                <SelectItem value="personal">Personal</SelectItem>
-              </SelectContent>
-            </Select>
-            
             <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
               <SelectTrigger className="w-[160px] bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
                 <SelectValue placeholder="All Departments" />
@@ -445,19 +422,6 @@ export function CalendarPage() {
                 {departments.map(dept => (
                   <SelectItem key={dept.id} value={dept.id}>
                     {dept.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedTeam} onValueChange={setSelectedTeam}>
-              <SelectTrigger className="w-[180px] bg-accent hover:bg-accent hover:text-accent-foreground text-foreground">
-                <SelectValue placeholder="All Teams" />
-              </SelectTrigger>
-              <SelectContent>
-                {teams.map(team => (
-                  <SelectItem key={team.id} value={team.id}>
-                    {team.name}
                   </SelectItem>
                 ))}
               </SelectContent>
