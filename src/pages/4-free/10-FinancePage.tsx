@@ -539,24 +539,24 @@ export default function FinancePage() {
                   <X className="h-4 w-4" />
                 </motion.button>
 
-                <div className="p-6 border-b border-border/40 bg-gradient-to-br from-success/5 to-transparent">
+                <div className="p-6 border-b border-primary/20 bg-gradient-to-r from-primary via-primary-dark to-primary shadow-sm shadow-primary/50">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="bg-success/10 p-3 rounded-xl">
-                      <DollarSign className="h-6 w-6 text-success" />
+                    <div className="bg-primary-foreground/20 p-3 rounded-xl">
+                      <DollarSign className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <div className="flex-1">
                       <motion.h2
                         layoutId={`payment-title-${expandedPayment.id}-${id}`}
-                        className="text-base font-bold tracking-tight mb-2"
+                        className="text-base font-bold tracking-tight mb-2 text-primary-foreground"
                       >
                         {expandedPayment.description}
                       </motion.h2>
                       <div className="flex items-center gap-2">
-                        <Badge className={getStatusColor(expandedPayment.status) + ' text-xs'}>
+                        <Badge className="bg-primary-foreground/20 text-primary-foreground border-0 text-xs">
                           {getStatusIcon(expandedPayment.status)}
                           <span className="ml-1 capitalize">{expandedPayment.status}</span>
                         </Badge>
-                        <span className="text-sm font-bold text-success">{expandedPayment.amount.toLocaleString()} {expandedPayment.currency}</span>
+                        <span className="text-sm font-bold text-primary-foreground">{expandedPayment.amount.toLocaleString()} {expandedPayment.currency}</span>
                       </div>
                     </div>
                   </div>
@@ -667,29 +667,23 @@ export default function FinancePage() {
                   <X className="h-4 w-4" />
                 </motion.button>
 
-                <div className="p-6 border-b border-border/40 bg-gradient-to-br from-warning/5 to-transparent">
+                <div className="p-6 border-b border-primary/20 bg-gradient-to-r from-primary via-primary-dark to-primary shadow-sm shadow-primary/50">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="bg-warning/10 p-3 rounded-xl">
-                      <Receipt className="h-6 w-6 text-warning" />
+                    <div className="bg-primary-foreground/20 p-3 rounded-xl">
+                      <Receipt className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <div className="flex-1">
                       <motion.h2
                         layoutId={`invoice-title-${expandedInvoice.id}-${id}`}
-                        className="text-base font-bold tracking-tight mb-2"
+                        className="text-base font-bold tracking-tight mb-2 text-primary-foreground"
                       >
                         {expandedInvoice.project}
                       </motion.h2>
                       <div className="flex items-center gap-2">
-                        <Badge className={
-                          expandedInvoice.status === 'overdue' 
-                            ? 'bg-red-500/10 text-red-600 border-0 text-xs'
-                            : expandedInvoice.status === 'paid'
-                            ? 'bg-green-500/10 text-green-600 border-0 text-xs'
-                            : 'bg-amber-500/10 text-amber-600 border-0 text-xs'
-                        }>
+                        <Badge className="bg-primary-foreground/20 text-primary-foreground border-0 text-xs">
                           <span className="capitalize">{expandedInvoice.status}</span>
                         </Badge>
-                        <span className="text-sm font-bold text-warning">{expandedInvoice.amount.toLocaleString()} {expandedInvoice.currency}</span>
+                        <span className="text-sm font-bold text-primary-foreground">{expandedInvoice.amount.toLocaleString()} {expandedInvoice.currency}</span>
                       </div>
                     </div>
                   </div>
@@ -793,31 +787,23 @@ export default function FinancePage() {
                   <X className="h-4 w-4" />
                 </motion.button>
 
-                <div className="p-6 border-b border-border/40 bg-gradient-to-br from-primary/5 to-transparent">
+                <div className="p-6 border-b border-primary/20 bg-gradient-to-r from-primary via-primary-dark to-primary shadow-sm shadow-primary/50">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="bg-primary/10 p-3 rounded-xl">
-                      <FileText className="h-6 w-6 text-primary" />
+                    <div className="bg-primary-foreground/20 p-3 rounded-xl">
+                      <FileText className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <div className="flex-1">
                       <motion.h2
                         layoutId={`quotation-title-${expandedQuotation.id}-${id}`}
-                        className="text-base font-bold tracking-tight mb-2"
+                        className="text-base font-bold tracking-tight mb-2 text-primary-foreground"
                       >
                         {expandedQuotation.quoteNumber}
                       </motion.h2>
                       <div className="flex items-center gap-2">
-                        <Badge className={
-                          expandedQuotation.status === 'accepted' 
-                            ? 'bg-green-500/10 text-green-600 border-0 text-xs'
-                            : expandedQuotation.status === 'pending'
-                            ? 'bg-amber-500/10 text-amber-600 border-0 text-xs'
-                            : expandedQuotation.status === 'rejected'
-                            ? 'bg-red-500/10 text-red-600 border-0 text-xs'
-                            : 'bg-gray-500/10 text-gray-600 border-0 text-xs'
-                        }>
+                        <Badge className="bg-primary-foreground/20 text-primary-foreground border-0 text-xs">
                           <span className="capitalize">{expandedQuotation.status}</span>
                         </Badge>
-                        <span className="text-sm font-bold text-primary">{expandedQuotation.amount.toLocaleString()} {expandedQuotation.currency}</span>
+                        <span className="text-sm font-bold text-primary-foreground">{expandedQuotation.amount.toLocaleString()} {expandedQuotation.currency}</span>
                       </div>
                     </div>
                   </div>
@@ -962,31 +948,23 @@ export default function FinancePage() {
                   <X className="h-4 w-4" />
                 </motion.button>
 
-                <div className="p-6 border-b border-border/40 bg-gradient-to-br from-info/5 to-transparent">
+                <div className="p-6 border-b border-primary/20 bg-gradient-to-r from-primary via-primary-dark to-primary shadow-sm shadow-primary/50">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="bg-info/10 p-3 rounded-xl">
-                      <Target className="h-6 w-6 text-info" />
+                    <div className="bg-primary-foreground/20 p-3 rounded-xl">
+                      <Target className="h-6 w-6 text-primary-foreground" />
                     </div>
                     <div className="flex-1">
                       <motion.h2
                         layoutId={`milestone-title-${expandedMilestone.id}-${id}`}
-                        className="text-base font-bold tracking-tight mb-2"
+                        className="text-base font-bold tracking-tight mb-2 text-primary-foreground"
                       >
                         {expandedMilestone.name}
                       </motion.h2>
                       <div className="flex items-center gap-2">
-                        <Badge className={
-                          expandedMilestone.status === 'completed' 
-                            ? 'bg-green-500/10 text-green-600 border-0 text-xs'
-                            : expandedMilestone.status === 'approved'
-                            ? 'bg-primary/10 text-primary border-0 text-xs'
-                            : expandedMilestone.status === 'in_progress'
-                            ? 'bg-amber-500/10 text-amber-600 border-0 text-xs'
-                            : 'bg-gray-500/10 text-gray-600 border-0 text-xs'
-                        }>
+                        <Badge className="bg-primary-foreground/20 text-primary-foreground border-0 text-xs">
                           <span className="capitalize">{expandedMilestone.status.replace('_', ' ')}</span>
                         </Badge>
-                        <span className="text-sm font-bold text-info">{expandedMilestone.amount.toLocaleString()} {expandedMilestone.currency}</span>
+                        <span className="text-sm font-bold text-primary-foreground">{expandedMilestone.amount.toLocaleString()} {expandedMilestone.currency}</span>
                       </div>
                     </div>
                   </div>
@@ -1018,14 +996,14 @@ export default function FinancePage() {
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   {/* Progress Section */}
-                  <div className="bg-info/5 border-2 border-info/30 rounded-lg p-4">
+                  <div className="bg-primary/5 border-2 border-primary/30 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-bold text-info uppercase tracking-wider">Milestone Progress</h3>
-                      <span className="text-2xl font-bold text-info">{expandedMilestone.progress}%</span>
+                      <h3 className="text-sm font-bold text-primary uppercase tracking-wider">Milestone Progress</h3>
+                      <span className="text-2xl font-bold text-primary">{expandedMilestone.progress}%</span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-3 mb-2">
                       <div 
-                        className="bg-gradient-to-r from-info to-info h-3 rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-primary to-primary-dark h-3 rounded-full transition-all duration-500"
                         style={{ width: `${expandedMilestone.progress}%` }}
                       />
                     </div>
@@ -1048,19 +1026,19 @@ export default function FinancePage() {
                     <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Status</h3>
                     <div className="space-y-2">
                       <div className={`flex items-center gap-2 text-sm ${expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' || expandedMilestone.status === 'in_progress' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' || expandedMilestone.status === 'in_progress' ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' || expandedMilestone.status === 'in_progress' ? 'bg-success' : 'bg-muted'}`} />
                         <span>Started</span>
                       </div>
                       <div className={`flex items-center gap-2 text-sm ${expandedMilestone.status === 'in_progress' || expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'in_progress' || expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' ? 'bg-amber-500' : 'bg-gray-300'}`} />
+                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'in_progress' || expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' ? 'bg-warning' : 'bg-muted'}`} />
                         <span>In Progress</span>
                       </div>
                       <div className={`flex items-center gap-2 text-sm ${expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' ? 'bg-green-500' : 'bg-gray-300'}`} />
+                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'completed' || expandedMilestone.status === 'approved' ? 'bg-success' : 'bg-muted'}`} />
                         <span>Completed</span>
                       </div>
                       <div className={`flex items-center gap-2 text-sm ${expandedMilestone.status === 'approved' ? 'text-foreground' : 'text-muted-foreground'}`}>
-                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'approved' ? 'bg-primary' : 'bg-gray-300'}`} />
+                        <div className={`h-2 w-2 rounded-full ${expandedMilestone.status === 'approved' ? 'bg-primary' : 'bg-muted'}`} />
                         <span>Approved for Payment</span>
                       </div>
                     </div>
@@ -1075,7 +1053,7 @@ export default function FinancePage() {
                     </Button>
                   )}
                   {expandedMilestone.status === 'approved' && (
-                    <Button className="flex-1 h-9 text-xs shadow-lg bg-green-500 hover:bg-green-600">
+                    <Button className="flex-1 h-9 text-xs shadow-lg">
                       <DollarSign className="h-3.5 w-3.5 mr-1.5" />
                       Release Payment
                     </Button>

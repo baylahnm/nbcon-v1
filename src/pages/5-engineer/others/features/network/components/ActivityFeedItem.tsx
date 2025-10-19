@@ -1,13 +1,24 @@
+import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
-import { getUserInitials } from '../../../../../1-HomePage/others/lib/userUtils';
 import {
   Users,
   Briefcase,
   Award,
   Star,
   FileText,
-  CheckCircle2
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
+
+// Helper to get initials from name string
+const getInitialsFromName = (name: string): string => {
+  const parts = name.split(' ').filter(Boolean);
+  if (parts.length > 1) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+};
 
 interface ActivityFeedItemProps {
   activity: {
@@ -20,6 +31,7 @@ interface ActivityFeedItemProps {
     content: string;
     timestamp: string;
     relatedTo?: string;
+    details?: string;
   };
   onClickRelated?: (relatedId: string) => void;
 }
@@ -27,19 +39,19 @@ interface ActivityFeedItemProps {
 const activityConfig = {
   connection: {
     icon: Users,
-    colors: { bg: 'bg-blue-500/10', icon: 'text-blue-600', ring: 'ring-blue-500/20' }
+    colors: { bg: 'bg-primary/10', icon: 'text-primary', ring: 'ring-primary/20' }
   },
   project: {
     icon: Briefcase,
-    colors: { bg: 'bg-green-500/10', icon: 'text-green-600', ring: 'ring-green-500/20' }
+    colors: { bg: 'bg-success/10', icon: 'text-success', ring: 'ring-success/20' }
   },
   certification: {
     icon: Award,
-    colors: { bg: 'bg-purple-500/10', icon: 'text-purple-600', ring: 'ring-purple-500/20' }
+    colors: { bg: 'bg-primary/10', icon: 'text-primary', ring: 'ring-primary/20' }
   },
   endorsement: {
     icon: Star,
-    colors: { bg: 'bg-amber-500/10', icon: 'text-amber-600', ring: 'ring-amber-500/20' }
+    colors: { bg: 'bg-warning/10', icon: 'text-warning', ring: 'ring-warning/20' }
   },
   post: {
     icon: FileText,
@@ -48,11 +60,13 @@ const activityConfig = {
 };
 
 export function ActivityFeedItem({ activity, onClickRelated }: ActivityFeedItemProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const config = activityConfig[activity.type];
   const ActivityIcon = config.icon;
 
   return (
-    <div className="flex items-start gap-4 p-4 rounded-lg border border-border/50 bg-card hover:bg-muted/30 transition-colors">
+    <div className="rounded-lg border border-border/50 bg-card hover:bg-muted/30 transition-colors">
+      <div className="flex items-start gap-4 p-4">
       {/* Activity Icon (Color-coded) */}
       <div className={`${config.colors.bg} p-2.5 rounded-full ring-1 ${config.colors.ring}`}>
         <ActivityIcon className={`h-4 w-4 ${config.colors.icon}`} />
@@ -86,9 +100,34 @@ export function ActivityFeedItem({ activity, onClickRelated }: ActivityFeedItemP
       <Avatar className="h-8 w-8 ring-1 ring-border">
         <AvatarImage src={activity.user.avatar} />
         <AvatarFallback className="text-xs">
-          {getUserInitials(activity.user.name)}
+          {getInitialsFromName(activity.user.name)}
         </AvatarFallback>
       </Avatar>
+
+      {/* Expand/Collapse Button */}
+      {activity.details && (
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="p-1 hover:bg-muted rounded-md transition-colors flex-shrink-0"
+          aria-label={isExpanded ? 'Collapse' : 'Expand'}
+        >
+          {isExpanded ? (
+            <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          )}
+        </button>
+      )}
+    </div>
+
+    {/* Expanded Details Section */}
+    {isExpanded && activity.details && (
+      <div className="px-4 pb-4 pt-2 border-t border-border/40 mt-2">
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {activity.details}
+        </p>
+      </div>
+    )}
     </div>
   );
 }

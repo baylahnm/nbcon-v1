@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader } from '../../../../../1-HomePage/others/
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
-import { getUserInitials } from '../../../../../1-HomePage/others/lib/userUtils';
 import {
   Building2,
   MapPin,
@@ -19,6 +18,15 @@ import {
   Activity,
   TrendingUp
 } from 'lucide-react';
+
+// Helper to get initials from name string
+const getInitialsFromName = (name: string): string => {
+  const parts = name.split(' ').filter(Boolean);
+  if (parts.length > 1) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+};
 
 interface NetworkConnectionCardProps {
   connection: {
@@ -58,9 +66,9 @@ export function NetworkConnectionCard({
     : 33;
 
   const strengthColor = 
-    connection.connectionStrength === 'strong' ? 'bg-green-500' 
-    : connection.connectionStrength === 'medium' ? 'bg-amber-500' 
-    : 'bg-blue-500';
+    connection.connectionStrength === 'strong' ? 'bg-success' 
+    : connection.connectionStrength === 'medium' ? 'bg-warning' 
+    : 'bg-primary';
 
   return (
     <Card className="gap-0 group hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border-border/50">
@@ -72,7 +80,7 @@ export function NetworkConnectionCard({
             <Avatar className="h-16 w-16 ring-2 ring-primary/20 shadow-md group-hover:ring-primary/40 transition-all">
               <AvatarImage src={connection.avatar} />
               <AvatarFallback className="text-base font-bold bg-primary/10 text-primary">
-                {getUserInitials(connection.name)}
+                {getInitialsFromName(connection.name)}
               </AvatarFallback>
             </Avatar>
 
@@ -83,7 +91,7 @@ export function NetworkConnectionCard({
                   {connection.name}
                 </h3>
                 {connection.verified && (
-                  <CheckCircle2 className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
                 )}
               </div>
 

@@ -138,7 +138,7 @@ export function AppSidebar() {
          {/* Logo Section */}
          <div className={`border-b border-sidebar-border ${collapsed ? 'px-4 py-1' : 'px-4 py-3'}`}>
           <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
-            <div className="flex-shrink-0 w-8 h-8 bg-gradient-primary rounded-xl flex items-center justify-center shadow-md">
+            <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-t from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-sm shadow-primary/50">
               <NbLogo className="w-6 h-6 !flex" />
             </div>
             <div className={cn("transition-opacity duration-200", collapsed && "opacity-0 w-0 overflow-hidden")}>

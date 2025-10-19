@@ -179,7 +179,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
     : 'Ask anything...';
 
   return (
-    <div className={`w-full ${isCompact ? 'space-y-2' : 'space-y-4'}`}>
+    <div className="p-4">
       {/* Tool Menu */}
       {showToolMenu && (
         <ToolMenu

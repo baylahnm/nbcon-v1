@@ -1101,37 +1101,37 @@ export default function HelpPage() {
                 className="w-full max-w-4xl bg-card rounded-xl shadow-2xl my-8"
               >
                 {/* Modal Header */}
-                <div className="sticky top-0 z-10 bg-gradient-to-r from-success/90 via-success to-success-foreground/90 backdrop-blur-md px-6 py-4 rounded-t-xl border-b border-white/10">
+                <div className="sticky top-0 z-10 bg-gradient-to-r from-primary via-primary-dark to-primary backdrop-blur-md px-6 py-4 rounded-t-xl border-b border-primary/20 shadow-sm shadow-primary/50">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge className="bg-white/20 text-white border-0 text-xs">
+                        <Badge className="bg-primary-foreground/20 text-primary-foreground border-0 text-xs">
                           {expandedArticle.category}
                         </Badge>
-                        <span className="text-xs text-white/80">
+                        <span className="text-xs text-primary-foreground/80">
                           Updated {expandedArticle.lastUpdated}
                         </span>
                       </div>
-                      <h2 className="text-2xl font-bold text-white mb-1">
+                      <h2 className="text-2xl font-bold text-primary-foreground mb-1">
                         {expandedArticle.title}
                       </h2>
-                      <p className="text-sm text-white/90">
+                      <p className="text-sm text-primary-foreground/90">
                         {expandedArticle.excerpt}
                       </p>
                     </div>
                     <button
                       onClick={() => setExpandedArticle(null)}
-                      className="p-2 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0"
+                      className="p-2 hover:bg-primary-foreground/20 rounded-lg transition-colors flex-shrink-0"
                       aria-label="Close"
                     >
-                      <X className="h-5 w-5 text-white" />
+                      <X className="h-5 w-5 text-primary-foreground" />
                     </button>
                   </div>
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1.5 mt-3">
                     {expandedArticle.tags.map((tag) => (
-                      <Badge key={tag} className="bg-white/15 text-white border-0 text-[10px]">
+                      <Badge key={tag} className="bg-primary-foreground/15 text-primary-foreground border-0 text-[10px]">
                         {tag}
                       </Badge>
                     ))}

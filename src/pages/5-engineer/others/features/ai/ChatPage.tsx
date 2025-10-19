@@ -282,7 +282,7 @@ export function ChatPage({ onBack }: ChatPageProps) {
         </ScrollArea>
 
         {/* Composer */}
-        <div className="p-4 border-t border-sidebar-border bg-background">
+        <div className="border-t border-sidebar-border bg-background">
           <ChatComposer />
         </div>
       </div>

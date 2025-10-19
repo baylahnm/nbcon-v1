@@ -168,20 +168,20 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
                 </motion.button>
 
                 {/* Header */}
-                <div className="p-6 border-b border-border/40 bg-gradient-to-br from-primary/5 to-transparent">
+                <div className="p-6 border-b border-primary/20 bg-gradient-to-r from-primary via-primary-dark to-primary shadow-sm shadow-primary/50">
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
                       <motion.h2
                         layoutId={`project-title-${activeProject.id}-${id}`}
-                        className="text-base font-bold tracking-tight mb-2"
+                        className="text-base font-bold tracking-tight mb-2 text-primary-foreground"
                       >
                         {activeProject.name}
                       </motion.h2>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-sm text-primary-foreground/90 leading-relaxed">
                         {activeProject.description}
                       </p>
                     </div>
-                    <Badge className={`${getStatusColor(activeProject.status).bg} ${getStatusColor(activeProject.status).text} border-0 text-xs shrink-0`}>
+                    <Badge className="bg-primary-foreground/20 text-primary-foreground border-0 text-xs shrink-0">
                       {getStatusColor(activeProject.status).label}
                     </Badge>
                   </div>

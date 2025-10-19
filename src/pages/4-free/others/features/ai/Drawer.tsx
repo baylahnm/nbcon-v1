@@ -256,7 +256,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
 
 
             {/* Composer */}
-            <div className="p-4 border-t border-sidebar-border bg-background">
+            <div className="border-t border-sidebar-border bg-background">
               <ChatComposer />
             </div>
           </div>

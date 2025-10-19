@@ -13,7 +13,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
-import { Textarea } from '../../../../../1-HomePage/others/components/ui/textarea';
+import { PromptBox } from '../../../../../1-HomePage/others/components/ui/chatgpt-prompt-input';
 import { Card } from '../../../../../1-HomePage/others/components/ui/card';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Progress } from '../../../../../1-HomePage/others/components/ui/progress';
@@ -181,7 +181,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
     : 'Ask anything...';
 
   return (
-    <div className={`w-full ${isCompact ? 'space-y-2' : 'space-y-4'}`}>
+    <div className="p-4">
       {/* Tool Menu */}
       {showToolMenu && (
         <ToolMenu
@@ -192,7 +192,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
       )}
 
       {/* Composer */}
-      <Card className={`p-4 ${isCompact ? 'p-2' : ''}`}>
+      <Card className="p-2">
         <div className="space-y-3">
           {/* Attachments */}
           {composer.files.length > 0 && (
@@ -221,86 +221,17 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
             </div>
           )}
 
-          {/* Main Input Area */}
-          <div className="flex items-end gap-2">
-            {/* File Upload Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isProcessingFile || composer.files.length >= 5}
-              className="flex-shrink-0"
-            >
-              {isProcessingFile ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Paperclip className="w-4 h-4" />
-              )}
-            </Button>
-
-            {/* Text Input */}
-            <div className="flex-1 relative">
-              <Textarea
-                ref={textareaRef}
-                value={composer.text}
-                onChange={(e) => setComposerText(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={placeholder}
-                className="min-h-[44px] max-h-32 resize-none pr-12"
-                disabled={isGenerating}
-              />
-              
-              {/* Voice Recording Button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={isRecording ? stopRecording : startRecording}
-                disabled={isGenerating}
-                className="absolute right-2 top-1/2 -translate-y-1/2"
-              >
-                {isRecording ? (
-                  <MicOff className="w-4 h-4 text-red-500" />
-                ) : (
-                  <Mic className="w-4 h-4" />
-                )}
-              </Button>
-            </div>
-
-            {/* Send Button */}
-            <Button
-              onClick={handleSend}
-              disabled={(!composer.text.trim() && composer.files.length === 0) || isGenerating}
-              className="flex-shrink-0"
-            >
-              {isGenerating ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </Button>
-          </div>
-
-          {/* Tool Menu Button */}
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowToolMenu(!showToolMenu)}
-              className="text-muted-foreground"
-            >
-              <Plus className="w-4 h-4 mr-1" />
-              {composer.lang === 'ar' ? 'أدوات' : 'Tools'}
-            </Button>
-
-            {/* Mode Badge */}
-            <Badge variant="outline" className="text-xs">
-              {mode === 'chat' && (composer.lang === 'ar' ? 'محادثة' : 'Chat')}
-              {mode === 'research' && (composer.lang === 'ar' ? 'بحث عميق' : 'Research')}
-              {mode === 'image' && (composer.lang === 'ar' ? 'صورة' : 'Image')}
-              {mode === 'agent' && (composer.lang === 'ar' ? 'وكيل' : 'Agent')}
-              {mode === 'connectors' && (composer.lang === 'ar' ? 'موصلات' : 'Connectors')}
-            </Badge>
-          </div>
+          {/* Main Input Area - ChatGPT Style */}
+          <form onSubmit={(e) => { e.preventDefault(); handleSend(); }}>
+            <PromptBox
+              ref={textareaRef}
+              value={composer.text}
+              onChange={(e) => setComposerText(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={placeholder}
+              disabled={isGenerating}
+            />
+          </form>
         </div>
       </Card>
 

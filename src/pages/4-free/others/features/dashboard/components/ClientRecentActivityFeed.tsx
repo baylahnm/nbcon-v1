@@ -144,19 +144,19 @@ export function ClientRecentActivityFeed({
   const getActivityIcon = (type: ActivityItem['type']) => {
     switch (type) {
       case 'quote':
-        return { Icon: FileText, color: 'text-green-600', bgColor: 'bg-green-500/10', ringColor: 'ring-green-500/20' };
+        return { Icon: FileText, color: 'text-success', bgColor: 'bg-success/10', ringColor: 'ring-success/20' };
       case 'payment':
-        return { Icon: DollarSign, color: 'text-emerald-600', bgColor: 'bg-emerald-500/10', ringColor: 'ring-emerald-500/20' };
+        return { Icon: DollarSign, color: 'text-success', bgColor: 'bg-success/10', ringColor: 'ring-success/20' };
       case 'project':
         return { Icon: Briefcase, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20' };
       case 'engineer':
-        return { Icon: Users, color: 'text-purple-600', bgColor: 'bg-purple-500/10', ringColor: 'ring-purple-500/20' };
+        return { Icon: Users, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20' };
       case 'message':
-        return { Icon: MessageSquare, color: 'text-cyan-600', bgColor: 'bg-cyan-500/10', ringColor: 'ring-cyan-500/20' };
+        return { Icon: MessageSquare, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20' };
       case 'deadline':
-        return { Icon: AlertCircle, color: 'text-amber-600', bgColor: 'bg-amber-500/10', ringColor: 'ring-amber-500/20' };
+        return { Icon: AlertCircle, color: 'text-warning', bgColor: 'bg-warning/10', ringColor: 'ring-warning/20' };
       default:
-        return { Icon: Activity, color: 'text-gray-600', bgColor: 'bg-gray-500/10', ringColor: 'ring-gray-500/20' };
+        return { Icon: Activity, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20' };
     }
   };
 
@@ -303,24 +303,24 @@ export function ClientRecentActivityFeed({
                             className="bg-card rounded-2xl border-2 border-primary/30 shadow-2xl overflow-hidden"
                           >
                             {/* Header */}
-                            <div className="relative bg-gradient-to-br from-card via-card to-primary/5 p-6 border-b border-border/40">
+                            <div className="relative bg-gradient-to-r from-primary via-primary-dark to-primary p-6 border-b border-primary/20 shadow-sm shadow-primary/50">
                               <div className="flex items-start gap-4">
                                 <motion.div
                                   layoutId={`icon-${activity.id}`}
-                                  className={`${bgColor} p-4 rounded-2xl ring-2 ${ringColor} shrink-0`}
+                                  className="bg-primary-foreground/20 p-4 rounded-2xl ring-2 ring-primary-foreground/30 shrink-0"
                                 >
-                                  <Icon className={`h-7 w-7 ${color}`} />
+                                  <Icon className="h-7 w-7 text-primary-foreground" />
                                 </motion.div>
                                 <div className="flex-1">
                                   <motion.h3
                                     layoutId={`title-${activity.id}`}
-                                    className="text-xl font-bold tracking-tight mb-2"
+                                    className="text-xl font-bold tracking-tight mb-2 text-primary-foreground"
                                   >
                                     {activity.description}
                                   </motion.h3>
                                   <motion.div
                                     layoutId={`time-${activity.id}`}
-                                    className="flex items-center gap-2 text-sm text-muted-foreground"
+                                    className="flex items-center gap-2 text-sm text-primary-foreground/80"
                                   >
                                     <Clock className="h-4 w-4" />
                                     <span>{activity.relativeTime}</span>
@@ -329,7 +329,7 @@ export function ClientRecentActivityFeed({
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-10 w-10 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                                  className="h-10 w-10 p-0 rounded-full hover:bg-primary-foreground/20 text-primary-foreground"
                                   onClick={() => setExpandedActivityId(null)}
                                 >
                                   <X className="h-5 w-5" />
