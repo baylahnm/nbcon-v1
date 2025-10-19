@@ -18,7 +18,13 @@ const NbconLogo = ({ className, showMobileMenu = false, onMobileMenuClick }: Nbc
       >
         <div className="flex items-center">
           <div className="relative inline-block">
-            <span className="absolute -top-2 right-3 text-muted-foreground text-sm italic font-bold transform -rotate-12" style={{ fontFamily: 'Quintessential, cursive' }}>
+            <span 
+              className="absolute -top-2 right-3 text-sm italic font-bold transform -rotate-12 bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent animate-[rainbow_3s_linear_infinite]" 
+              style={{ 
+                fontFamily: 'Quintessential, cursive',
+                backgroundSize: '200% 100%'
+              }}
+            >
               pro
             </span>
             <div className="flex flex-col items-start relative top-1">

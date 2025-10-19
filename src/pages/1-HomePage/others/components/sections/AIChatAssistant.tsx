@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Clock, MessageSquare, Brain, Sparkles, Target, TrendingUp, Zap, CheckCircle2, AlertCircle } from 'lucide-react';
+import { BarChart3, Clock, MessageSquare, Bot, Sparkles, Target, TrendingUp, Zap, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -71,7 +71,7 @@ export const AIChatAssistant: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                      <Brain className="w-5 h-5 text-primary-foreground" />
+                      <Bot className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-foreground">{t('aiAssistant.title')}</h3>
@@ -113,7 +113,7 @@ export const AIChatAssistant: React.FC = () => {
                       {/* AI Welcome Message */}
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Brain className="w-4 h-4 text-primary" />
+                          <Bot className="w-4 h-4 text-primary" />
                         </div>
                         <div className="bg-muted rounded-lg p-3 max-w-md">
                           <p className="text-sm text-foreground">
@@ -139,7 +139,7 @@ export const AIChatAssistant: React.FC = () => {
                       {/* AI Response */}
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Brain className="w-4 h-4 text-primary" />
+                          <Bot className="w-4 h-4 text-primary" />
                         </div>
                         <div className="bg-muted rounded-lg p-3 max-w-md">
                           <p className="text-sm text-foreground">
@@ -208,7 +208,7 @@ export const AIChatAssistant: React.FC = () => {
 
                         <div className="pt-2 border-t border-border/40">
                           <p className="text-xs text-muted-foreground flex items-start gap-2">
-                            <Brain className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                            <Bot className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
                             AI suggests this project matches your expertise in HVAC systems and your availability in Riyadh area.
                           </p>
                         </div>
@@ -241,7 +241,7 @@ export const AIChatAssistant: React.FC = () => {
 
                         <div className="pt-2 border-t border-border/40">
                           <p className="text-xs text-muted-foreground flex items-start gap-2">
-                            <Brain className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                            <Bot className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
                             Your SCE certification and electrical background make you ideal for this compliance review project.
                           </p>
                         </div>
@@ -274,7 +274,7 @@ export const AIChatAssistant: React.FC = () => {
 
                         <div className="pt-2 border-t border-border/40">
                           <p className="text-xs text-muted-foreground flex items-start gap-2">
-                            <Brain className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                            <Bot className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
                             Expanding to renewable energy could increase your profile visibility by 35% based on market trends.
                           </p>
                         </div>
@@ -360,7 +360,7 @@ export const AIChatAssistant: React.FC = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <div className="bg-primary/10 p-2 rounded-lg">
-                              <Brain className="h-4 w-4 text-primary" />
+                              <Bot className="h-4 w-4 text-primary" />
                             </div>
                             <div>
                               <h5 className="font-bold text-sm">AI Learning Progress</h5>
