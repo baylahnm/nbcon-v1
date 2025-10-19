@@ -478,7 +478,8 @@ formatDate(new Date())  // "Jan 15, 2024" (en) | "١٥ يناير ٢٠٢٤" (ar)
 ### Recent Redesigns (October 2025)
 
 **✅ Network Page** - Professional networking with connection strength indicators, rich metadata, activity timeline  
-**✅ Learning Center** - Full Udemy-style course player, dynamic pages, progress tracking, certificates  
+**✅ Learning Center (Engineer)** - Full Udemy-style course player, dynamic pages, progress tracking, certificates  
+**✅ Learning Center (Client)** - Udemy-style redesign with enhanced course cards, video preview modal, SAR pricing, horizontal scrolling  
 **✅ Jobs Page** - Product-card design with AI matching, earnings calculator, skills gap analysis  
 **✅ Profile Page** - Complete LinkedIn-style profile with Supabase integration
 

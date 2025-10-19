@@ -8,9 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/oth
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { Avatar, AvatarImage, AvatarFallback } from '@/pages/1-HomePage/others/components/ui/avatar';
+import XScroll from '@/pages/1-HomePage/others/components/ui/x-scroll';
 import { toast } from 'sonner';
 import { CourseCard } from '@/pages/5-engineer/others/features/learning/components/CourseCard';
 import { HorizontalScrollCards } from '@/pages/5-engineer/others/features/learning/components/HorizontalScrollCards';
+import { EnhancedCourseCard } from '@/pages/4-free/others/components/learning/EnhancedCourseCard';
+import { CoursePreviewModal } from '@/pages/4-free/others/components/learning/CoursePreviewModal';
 import { useOutsideClick } from '@/pages/1-HomePage/others/hooks/use-outside-click';
 import { 
   BookOpen, 
@@ -60,6 +63,11 @@ interface Course {
   isTrending?: boolean;
   isBestSeller?: boolean;
   isNew?: boolean;
+  videoUrl?: string;
+  script?: string;
+  whatYoullLearn?: string[];
+  requirements?: string[];
+  includes?: string[];
 }
 
 interface LearningPath {
@@ -90,13 +98,30 @@ const mockCourses: Course[] = [
     level: 'Beginner',
     rating: 4.7,
     students: 1847,
-    price: 199,
-    originalPrice: 249,
+    price: 75, // SAR 75 (was $199)
+    originalPrice: 95, // SAR 95 (was $249)
     thumbnail: '/e-learning/Project Management/Project Management Fundamentals.jpg',
     progress: 60,
     category: 'Project Management',
     tags: ['PM', 'Planning', 'Leadership'],
-    isBestSeller: true
+    isBestSeller: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'Master project planning and execution',
+      'Learn effective stakeholder management',
+      'Understand budget and timeline control',
+      'Develop risk assessment skills'
+    ],
+    requirements: [
+      'Basic understanding of business operations',
+      'No prior project management experience required'
+    ],
+    includes: [
+      '6 hours of video content',
+      'Downloadable resources',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
   },
   {
     id: '2',
@@ -112,12 +137,29 @@ const mockCourses: Course[] = [
     level: 'Beginner',
     rating: 4.5,
     students: 2156,
-    price: 149,
+    price: 55, // SAR 55 (was $149)
     thumbnail: '/e-learning/Software/Engineering Drawing Standards.jpg',
     completed: true,
     category: 'Engineering Basics',
     tags: ['Drawings', 'Specifications', 'CAD'],
-    isTrending: true
+    isTrending: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'Read and interpret technical drawings',
+      'Understand engineering symbols and notations',
+      'Learn CAD software basics',
+      'Master specification reading'
+    ],
+    requirements: [
+      'Basic computer skills',
+      'No prior engineering experience needed'
+    ],
+    includes: [
+      '4 hours of video content',
+      'Drawing templates and examples',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
   },
   {
     id: '3',
@@ -133,14 +175,31 @@ const mockCourses: Course[] = [
     level: 'Intermediate',
     rating: 4.8,
     students: 892,
-    price: 299,
-    originalPrice: 399,
+    price: 110, // SAR 110 (was $299)
+    originalPrice: 150, // SAR 150 (was $399)
     thumbnail: '/e-learning/Project Management/Cost Estimation and Control.jpg',
     progress: 25,
     category: 'Finance',
     tags: ['Budget', 'Cost Estimation', 'Finance'],
     isTrending: true,
-    isBestSeller: true
+    isBestSeller: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'Master construction cost estimation',
+      'Learn budget planning techniques',
+      'Understand financial risk management',
+      'Develop cost control strategies'
+    ],
+    requirements: [
+      'Basic math skills',
+      'Interest in construction industry'
+    ],
+    includes: [
+      '8 hours of video content',
+      'Budget templates and tools',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
   },
   {
     id: '4',
@@ -156,7 +215,7 @@ const mockCourses: Course[] = [
     level: 'Intermediate',
     rating: 4.6,
     students: 1234,
-    price: 229,
+    price: 85, // SAR 85 (was $229)
     thumbnail: '/e-learning/Project Management/Contract Administration.jpg',
     category: 'Project Management',
     tags: ['Contracts', 'Legal', 'Management'],
@@ -176,7 +235,7 @@ const mockCourses: Course[] = [
     level: 'Intermediate',
     rating: 4.7,
     students: 1567,
-    price: 199,
+    price: 75, // SAR 75 (was $199)
     thumbnail: '/e-learning/Safety/Risk Assessment Techniques.jpg',
     category: 'Quality Management',
     tags: ['Quality', 'Control', 'Standards'],
@@ -196,13 +255,184 @@ const mockCourses: Course[] = [
     level: 'Beginner',
     rating: 4.8,
     students: 2890,
-    price: 99,
-    originalPrice: 149,
+    price: 35, // SAR 35 (was $99)
+    originalPrice: 55, // SAR 55 (was $149)
     thumbnail: '/e-learning/Safety/Construction Safety Management.jpg',
     category: 'Safety',
     tags: ['Safety', 'Compliance', 'Site Management'],
     isBestSeller: true,
-    isNew: true
+    isNew: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'Understand construction safety protocols',
+      'Learn risk assessment techniques',
+      'Master site safety management',
+      'Implement safety compliance programs'
+    ],
+    requirements: [
+      'No prior experience required',
+      'Basic understanding of construction sites'
+    ],
+    includes: [
+      '3 hours of video content',
+      'Safety checklists and templates',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
+  },
+  {
+    id: '7',
+    title: 'Advanced Structural Analysis',
+    description: 'Deep dive into structural engineering principles and analysis techniques',
+    instructor: { 
+      name: 'Dr. Omar Khalid', 
+      avatar: '/api/placeholder/40/40',
+      title: 'Structural Engineering Professor',
+      rating: 4.9
+    },
+    duration: '10 weeks',
+    level: 'Advanced',
+    rating: 4.9,
+    students: 456,
+    price: 145, // SAR 145
+    originalPrice: 180, // SAR 180
+    thumbnail: '/e-learning/Software/Engineering Drawing Standards.jpg',
+    category: 'Engineering Basics',
+    tags: ['Structural', 'Analysis', 'Advanced'],
+    isTrending: true,
+    isBestSeller: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'Advanced structural analysis methods',
+      'FEA software proficiency',
+      'Load path optimization',
+      'Seismic design principles'
+    ],
+    requirements: [
+      'Degree in Civil Engineering',
+      'Basic structural knowledge'
+    ],
+    includes: [
+      '10 hours of video content',
+      'Software tutorials',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
+  },
+  {
+    id: '8',
+    title: 'Site Supervision Fundamentals',
+    description: 'Learn effective construction site supervision and team management',
+    instructor: { 
+      name: 'Fatima Al-Otaibi', 
+      avatar: '/api/placeholder/40/40',
+      title: 'Senior Site Supervisor',
+      rating: 4.7
+    },
+    duration: '7 weeks',
+    level: 'Intermediate',
+    rating: 4.7,
+    students: 1123,
+    price: 95, // SAR 95
+    originalPrice: 130, // SAR 130
+    thumbnail: '/e-learning/Project Management/Project Management Fundamentals.jpg',
+    category: 'Project Management',
+    tags: ['Supervision', 'Leadership', 'Site Management'],
+    isTrending: true,
+    isBestSeller: true,
+    isNew: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'Effective team supervision',
+      'Quality control implementation',
+      'Safety management on site',
+      'Progress reporting and documentation'
+    ],
+    requirements: [
+      'Construction industry experience preferred',
+      'Basic project management knowledge'
+    ],
+    includes: [
+      '7 hours of video content',
+      'Supervision templates',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
+  },
+  {
+    id: '9',
+    title: 'BIM and Digital Construction',
+    description: 'Master Building Information Modeling and digital construction workflows',
+    instructor: { 
+      name: 'Michael Rodriguez', 
+      avatar: '/api/placeholder/40/40',
+      title: 'BIM Specialist',
+      rating: 4.8
+    },
+    duration: '8 weeks',
+    level: 'Advanced',
+    rating: 4.8,
+    students: 678,
+    price: 125, // SAR 125
+    thumbnail: '/e-learning/Software/Engineering Drawing Standards.jpg',
+    category: 'Engineering Basics',
+    tags: ['BIM', 'Digital', 'Software'],
+    isTrending: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'BIM software mastery (Revit, Navisworks)',
+      'Digital construction workflows',
+      'Clash detection and coordination',
+      '4D/5D BIM implementation'
+    ],
+    requirements: [
+      'CAD software experience',
+      'Basic 3D modeling knowledge'
+    ],
+    includes: [
+      '8 hours of video content',
+      'BIM templates and families',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
+  },
+  {
+    id: '10',
+    title: 'Sustainable Construction Practices',
+    description: 'Learn green building principles and sustainable construction methods',
+    instructor: { 
+      name: 'Layla Hassan', 
+      avatar: '/api/placeholder/40/40',
+      title: 'Sustainability Consultant',
+      rating: 4.6
+    },
+    duration: '5 weeks',
+    level: 'Intermediate',
+    rating: 4.6,
+    students: 934,
+    price: 65, // SAR 65
+    originalPrice: 90, // SAR 90
+    thumbnail: '/e-learning/Safety/Risk Assessment Techniques.jpg',
+    category: 'Engineering Basics',
+    tags: ['Sustainability', 'Green Building', 'LEED'],
+    isBestSeller: true,
+    videoUrl: '/api/placeholder/video',
+    whatYoullLearn: [
+      'LEED certification requirements',
+      'Sustainable materials selection',
+      'Energy-efficient design',
+      'Green building certifications'
+    ],
+    requirements: [
+      'Basic construction knowledge',
+      'Interest in sustainability'
+    ],
+    includes: [
+      '5 hours of video content',
+      'LEED study guides',
+      'Certificate of completion',
+      'Lifetime access'
+    ]
   }
 ];
 
@@ -237,6 +467,7 @@ export default function LearningPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [expandedCourse, setExpandedCourse] = useState<Course | null>(null);
+  const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [expandedStat, setExpandedStat] = useState<string | null>(null);
   const expandedRef = useRef<HTMLDivElement>(null);
@@ -287,10 +518,8 @@ export default function LearningPage() {
     }
   };
 
-  const handlePreview = (courseId: string) => {
-    // Navigate to full course page for preview
-    navigate(`/free/learning/course/${courseId}`);
-    setExpandedCourse(null);
+  const handlePreview = (course: Course) => {
+    setPreviewCourse(course);
   };
 
   const handleCourseEnroll = async (courseId: string) => {
@@ -315,7 +544,7 @@ export default function LearningPage() {
   };
 
   return (
-    <div className="w-full max-w-full p-4 space-y-4 overflow-x-hidden">
+    <div className="w-full max-w-[100vw] p-4 space-y-4 overflow-x-hidden">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b min-w-0">
         <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -444,25 +673,23 @@ export default function LearningPage() {
           <TrendingUp className="h-5 w-5 text-orange-500" />
           <h2 className="text-lg font-semibold">Trending Courses</h2>
         </div>
-        <HorizontalScrollCards 
-          className="w-full"
-          cardsPerView={{
-            mobile: 1.1,
-            tablet: 2.1,
-            desktop: 3,
-            wide: 3
-          }}
-        >
-          {mockCourses.filter(course => course.isTrending).map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              onEnroll={handleCourseEnroll}
-              onView={handleCourseView}
-              layout="threeRow"
-            />
-          ))}
-        </HorizontalScrollCards>
+        <div className="learning-page-scroll">
+          <XScroll>
+            <div className="flex space-x-4 p-1 pb-4">
+              {mockCourses.filter(course => course.isTrending).map((course) => (
+                <div key={course.id} className="flex-shrink-0">
+                  <EnhancedCourseCard
+                    course={course}
+                    onEnroll={handleCourseEnroll}
+                    onPreview={handlePreview}
+                    layout="default"
+                    width="320px"
+                  />
+                </div>
+              ))}
+            </div>
+          </XScroll>
+        </div>
       </div>
 
       {/* Best Seller Courses Section */}
@@ -471,25 +698,23 @@ export default function LearningPage() {
           <Award className="h-5 w-5 text-red-500" />
           <h2 className="text-lg font-semibold">Best Sellers</h2>
         </div>
-        <HorizontalScrollCards 
-          className="w-full"
-          cardsPerView={{
-            mobile: 1.1,
-            tablet: 2.1,
-            desktop: 3,
-            wide: 3
-          }}
-        >
-          {mockCourses.filter(course => course.isBestSeller).map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              onEnroll={handleCourseEnroll}
-              onView={handleCourseView}
-              layout="threeRow"
-            />
-          ))}
-        </HorizontalScrollCards>
+        <div className="learning-page-scroll">
+          <XScroll>
+            <div className="flex space-x-4 p-1 pb-4">
+              {mockCourses.filter(course => course.isBestSeller).map((course) => (
+                <div key={course.id} className="flex-shrink-0">
+                  <EnhancedCourseCard
+                    course={course}
+                    onEnroll={handleCourseEnroll}
+                    onPreview={handlePreview}
+                    layout="default"
+                    width="320px"
+                  />
+                </div>
+              ))}
+            </div>
+          </XScroll>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -519,115 +744,73 @@ export default function LearningPage() {
           </div>
 
           {/* Courses Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredCourses.map((course) => (
-              <Card key={course.id} className="group hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
-                <div className="aspect-video bg-muted rounded-t-lg relative overflow-hidden">
-                  <img 
-                    src={course.thumbnail} 
-                    alt={course.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {course.completed && (
-                    <div className="absolute top-2 right-2">
-                      <Badge className="bg-green-600 text-white border-0">
-                        <CheckCircle2 className="h-3 w-3 mr-1" />
-                        Completed
-                      </Badge>
-                    </div>
-                  )}
-                  {course.progress && !course.completed && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-2">
-                      <div className="flex items-center justify-between text-white text-xs mb-1">
-                        <span>Progress</span>
-                        <span>{course.progress}%</span>
-                      </div>
-                      <Progress value={course.progress} className="h-1" />
-                    </div>
-                  )}
-                </div>
-                <CardContent className="p-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Badge variant={course.level === 'Beginner' ? 'default' : course.level === 'Intermediate' ? 'secondary' : 'destructive'} className="text-xs">
-                        {course.level}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">{course.category}</Badge>
-                    </div>
-                    <h3 className="font-bold text-base line-clamp-2">{course.title}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {course.duration}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        {course.rating}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {course.students.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className="flex gap-2 pt-2">
-                      <Button size="sm" className="flex-1 h-8 text-xs">
-                        {course.completed ? 'Review' : course.progress ? 'Continue' : 'Start'}
-                        <ChevronRight className="h-3 w-3 ml-1" />
-                      </Button>
-                      <Button size="sm" variant="outline" className="h-8 w-8 p-0">
-                        <Play className="h-3 w-3" />
-                      </Button>
-                    </div>
+          <div className="learning-page-scroll">
+            <XScroll>
+              <div className="flex space-x-4 p-1 pb-4">
+                {filteredCourses.map((course) => (
+                  <div key={course.id} className="flex-shrink-0">
+                    <EnhancedCourseCard
+                      course={course}
+                      onEnroll={handleCourseEnroll}
+                      onPreview={handlePreview}
+                      layout="default"
+                      width="320px"
+                    />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                ))}
+              </div>
+            </XScroll>
           </div>
         </TabsContent>
 
         {/* Learning Paths Tab */}
         <TabsContent value="paths" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {mockLearningPaths.map((path) => (
-              <Card key={path.id} className="hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
-                <div className="aspect-video bg-muted rounded-t-lg relative overflow-hidden">
-                  <img 
-                    src={path.thumbnail} 
-                    alt={path.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Badge variant={path.difficulty === 'Beginner' ? 'default' : path.difficulty === 'Intermediate' ? 'secondary' : 'destructive'} className="text-xs">
-                        {path.difficulty}
-                      </Badge>
-                    </div>
-                    <h3 className="font-bold text-base">{path.title}</h3>
-                    <p className="text-sm text-muted-foreground">{path.description}</p>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Progress</span>
-                        <span className="font-medium">{path.completedCourses}/{path.totalCourses} courses</span>
+          <div className="learning-page-scroll">
+            <XScroll>
+              <div className="flex space-x-4 p-1 pb-4">
+                {mockLearningPaths.map((path) => (
+                  <div key={path.id} className="flex-shrink-0 w-80">
+                    <Card className="hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-border/50">
+                      <div className="aspect-video bg-muted rounded-t-lg relative overflow-hidden">
+                        <img 
+                          src={path.thumbnail} 
+                          alt={path.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <Progress value={path.progress} />
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {path.estimatedDuration}
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Badge variant={path.difficulty === 'Beginner' ? 'default' : path.difficulty === 'Intermediate' ? 'secondary' : 'destructive'} className="text-xs">
+                              {path.difficulty}
+                            </Badge>
+                          </div>
+                          <h3 className="font-bold text-base">{path.title}</h3>
+                          <p className="text-sm text-muted-foreground">{path.description}</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">Progress</span>
+                              <span className="font-medium">{path.completedCourses}/{path.totalCourses} courses</span>
+                            </div>
+                            <Progress value={path.progress} />
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {path.estimatedDuration}
+                              </div>
+                            </div>
+                          </div>
+                          <Button size="sm" className="w-full h-8 text-xs">
+                            Continue Path
+                            <ChevronRight className="h-3 w-3 ml-1" />
+                          </Button>
                         </div>
-                      </div>
-                    </div>
-                    <Button size="sm" className="w-full h-8 text-xs">
-                      Continue Path
-                      <ChevronRight className="h-3 w-3 ml-1" />
-                    </Button>
+                      </CardContent>
+                    </Card>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                ))}
+              </div>
+            </XScroll>
           </div>
         </TabsContent>
 
@@ -898,15 +1081,15 @@ export default function LearningPage() {
                       <div>
                         {expandedCourse.originalPrice && (
                           <span className="text-sm text-muted-foreground line-through mr-2">
-                            ${expandedCourse.originalPrice}
+                            {expandedCourse.originalPrice} SAR
                           </span>
                         )}
                         <span className="text-3xl font-bold text-primary">
-                          ${expandedCourse.price}
+                          {expandedCourse.price} SAR
                         </span>
                         {expandedCourse.originalPrice && (
                           <Badge className="ml-2 bg-primary/10 text-primary border-0">
-                            Save ${expandedCourse.originalPrice - expandedCourse.price}
+                            Save {expandedCourse.originalPrice - expandedCourse.price} SAR
                           </Badge>
                         )}
                       </div>
@@ -915,7 +1098,7 @@ export default function LearningPage() {
                           variant="outline"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handlePreview(expandedCourse.id);
+                            handlePreview(expandedCourse);
                           }}
                           disabled={isEnrolling}
                         >
@@ -1295,6 +1478,14 @@ export default function LearningPage() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Course Preview Modal */}
+      <CoursePreviewModal
+        course={previewCourse}
+        isOpen={!!previewCourse}
+        onClose={() => setPreviewCourse(null)}
+        onEnroll={handleCourseEnroll}
+      />
     </div>
   );
 }

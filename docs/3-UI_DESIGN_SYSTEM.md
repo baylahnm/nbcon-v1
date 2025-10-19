@@ -286,6 +286,56 @@ text-[10px]
 
 **Use for:** Job listings, course cards, project showcase, marketplace items
 
+### Horizontal Scroll Pattern (XScroll Component)
+
+**When to Use:**
+- Course carousels
+- Product showcases
+- Action hubs
+- Photo galleries
+
+**Implementation:**
+```tsx
+import XScroll from '@/pages/1-HomePage/others/components/ui/x-scroll';
+
+<div className="learning-page-scroll"> {/* Optional: for custom scrollbar styling */}
+  <XScroll>
+    <div className="flex space-x-4 p-1 pb-4">
+      {items.map((item) => (
+        <div key={item.id} className="flex-shrink-0">
+          <YourCard width="320px" />
+        </div>
+      ))}
+    </div>
+  </XScroll>
+</div>
+```
+
+**Key Classes:**
+- `flex-shrink-0` - Prevents cards from shrinking
+- `space-x-4` - 16px gap between items
+- Fixed width (e.g., `320px`) for consistent sizing
+
+**Scrollbar Customization (Optional):**
+```css
+/* Add to index.css for custom scrollbar */
+.your-page-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+  height: 12px;
+}
+
+.your-page-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 1);
+  border-radius: 6px;
+}
+```
+
+**Benefits:**
+- ✅ Properly contained (no page overflow)
+- ✅ Native scrolling performance
+- ✅ Touch-friendly on mobile
+- ✅ Custom scrollbar styling
+- ✅ Theme-aware
+
 ---
 
 ## 🔘 Button Patterns
@@ -833,7 +883,7 @@ className="hover:bg-primary/10 transition-colors"
 
 ### Learning Center (Udemy-Style)
 
-**Location:** `src/pages/5-engineer/7-LearningPage.tsx`
+**Engineer Portal:** `src/pages/5-engineer/7-LearningPage.tsx`
 
 **Pattern Used:**
 - Product-card design for courses
@@ -841,6 +891,17 @@ className="hover:bg-primary/10 transition-colors"
 - Dynamic course pages (`/learning/course/:courseId`)
 - Curriculum sidebar with collapsible sections
 - Progress tracking with achievements
+
+**Client Portal:** `src/pages/4-free/7-LearningPage.tsx` (Redesigned Oct 2025)
+
+**Enhanced Pattern Used:**
+- `EnhancedCourseCard.tsx` with enterprise hover effects
+- `CoursePreviewModal.tsx` with video player and script sync
+- Horizontal scrolling with `XScroll` component
+- SAR pricing (35-150 range)
+- Always-visible scrollbar (100% opacity)
+- 16px gap between cards (`space-x-4`)
+- Bookmark, wishlist, share actions on hover
 
 ### Profile Page (LinkedIn-Style)
 

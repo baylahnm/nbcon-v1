@@ -73,17 +73,20 @@ src/pages/
 │   ├── 8-SettingsPage.tsx
 │   └── others/              # Admin-specific features
 │
-├── 4-free/                  # Free Tier Portal (12 pages)
+├── 4-free/                  # Free Tier Portal (14 pages)
 │   ├── 1-DashboardPage.tsx
 │   ├── 2-ProfilePage.tsx
 │   ├── 3-BrowseEngineersPage.tsx
 │   ├── 4-PostJobPage.tsx
-│   ├── (... 8 more pages)
+│   ├── 7-LearningPage.tsx         # Udemy-style learning (redesigned Oct 2025)
+│   ├── (... 9 more pages)
 │   └── others/              # Client-specific features
 │       ├── ai/
 │       ├── billing/
 │       ├── browse/
-│       └── dashboard/
+│       ├── dashboard/
+│       └── components/
+│           └── learning/          # Enhanced course cards & preview modal
 │
 ├── 5-engineer/               # Engineer Portal (14 pages) ⭐
 │   ├── 1-DashboardPage.tsx          # Command center
@@ -460,7 +463,7 @@ export default function PageName() {
 
 **Complete E-Learning Platform:**
 
-**Main Components:**
+**Engineer Portal Components:**
 - `CourseCard.tsx` - Udemy-style cards with badges, ratings, pricing
 - `CourseDetailView.tsx` - Full-screen video player with sidebar
 - `CoursePage.tsx` - Dynamic pages at `/engineer/learning/course/:courseId`
@@ -468,6 +471,12 @@ export default function PageName() {
 - `CourseProgress.tsx` - Enrolled courses with achievements
 - `LearningPaths.tsx` - Skill-based learning journeys
 - `SkillAssessment.tsx` - Interactive quizzes
+
+**Client Portal Components (Oct 2025 Redesign):**
+- `EnhancedCourseCard.tsx` - Enterprise-level course cards with hover effects
+- `CoursePreviewModal.tsx` - Video player with synchronized script/transcript
+- Features: SAR pricing (35-150), horizontal scrolling, bookmark/wishlist
+- XScroll integration for proper overflow containment
 
 **Video Player Features:**
 - Full-screen layout with black background

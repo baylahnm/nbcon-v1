@@ -12,7 +12,7 @@ export default function XScroll({ children, className, ...props }: XScrollProps)
     <div className="flex">
       <ScrollArea className={cn('w-1 flex-1', className)} {...props}>
         {children}
-        <ScrollBar orientation="horizontal" />
+        {/* ScrollBar component removed - using native scrollbar with custom CSS styling */}
       </ScrollArea>
     </div>
   );
