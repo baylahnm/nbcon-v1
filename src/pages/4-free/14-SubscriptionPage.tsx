@@ -598,7 +598,11 @@ export default function SubscriptionPage() {
                   </div>
 
                   {plan.id === subscription.plan.id ? (
-                    <Button disabled className="w-full h-9 text-xs bg-success/10 text-primary hover:bg-success/10">
+                    <Button 
+                      disabled 
+                      variant="outline"
+                      className="w-full h-9 text-xs bg-success/10 text-success border-success/30 hover:bg-success/10 cursor-default"
+                    >
                       <Check className="h-3.5 w-3.5 mr-1.5" />
                       Current Plan
                     </Button>
