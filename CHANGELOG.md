@@ -2,6 +2,61 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2024-10-19] - Course Preview Modal Complete Rebuild with Scroll Shadows
+
+### ✅ Rebuilt - Modal Tab Content Scrolling + HeroUI-Style Scroll Shadows
+- **[HIGH]** Complete rebuild of Course Preview Modal tabs section with proper scrolling and scroll shadows
+  - Files Modified:
+    - `src/pages/4-free/others/components/learning/CoursePreviewModal.tsx`
+    - `src/index.css`
+  - Applied: October 19, 2025
+  - **Complete Rebuild:**
+    - **Removed complex ScrollArea nesting** - Replaced with native `overflow-y-auto`
+    - **Direct scroll container access** - Using refs to actual scrollable divs
+    - **Simplified layout hierarchy:**
+      - Right side container: `h-full` with flex column
+      - Close button row: Fixed height at top
+      - Tabs container: `flex-1 flex flex-col overflow-hidden`
+      - TabsList: Fixed header with responsive grid
+      - Tab content wrapper: `flex-1 overflow-hidden`
+      - TabsContent: `h-full m-0` (clean, no complex flex)
+      - Scroll container: Direct `h-full overflow-y-auto px-4 py-4`
+    - **Proper scroll shadow refs:**
+      - 3 refs for direct scroll container access
+      - Event listeners attached to `.overflow-y-auto` elements
+      - No querySelector complexity
+    - Applied to all three tabs: Overview, Script, Modules
+  - **Scroll Shadows (HeroUI-inspired):**
+    - Added `.modal-scroll-shadow` CSS class with pseudo-elements
+    - Top shadow: Fades in when scrolled down (gradient from background to transparent)
+    - Bottom shadow: Fades out when reaching bottom (gradient from transparent to background)
+    - Smooth opacity transitions (0.3s ease)
+    - Theme-aware shadows using `hsl(var(--background))`
+    - Height: 40px gradient zones for subtle effect
+    - Dynamic classes: `.scrolled-top` and `.scrolled-bottom`
+    - Scroll event listener attached to viewport elements using refs
+    - State management for each tab: `overviewScrolled`, `scriptScrolled`, `modulesScrolled`
+    - Proper cleanup with event listener removal
+    - Initial check on mount for correct shadow state
+  - **Key Improvements from Rebuild:**
+    - ✅ **Eliminated ScrollArea component** - Simpler, faster, more reliable
+    - ✅ **Direct DOM access** - Refs point to actual scroll containers
+    - ✅ **Native overflow** - Browser-native scrolling (better performance)
+    - ✅ **Cleaner event handling** - Direct event listeners, no propagation issues
+    - ✅ **Passive listeners** - Better scroll performance
+    - ✅ **Proper cleanup** - Event listeners removed on unmount
+  - **Result:**
+    - ✅ Tab content scrolls perfectly within its container
+    - ✅ Main page doesn't scroll when hovering modal
+    - ✅ Only the active tab area scrolls independently
+    - ✅ Close button remains accessible at top
+    - ✅ Tabs remain fixed while content scrolls
+    - ✅ **Beautiful scroll shadows indicate more content**
+    - ✅ **Shadows appear/disappear dynamically while scrolling**
+    - ✅ **Theme-aware shadow colors (adapts to all 10 themes)**
+    - ✅ **No complex component nesting bugs**
+  - Status: ✅ Complete - Rebuilt from scratch with native scrolling + elegant shadows
+
 ## [2024-10-19] - Client Portal Documentation Final Consolidation
 
 ### ✅ Documentation - Single File Consolidation
@@ -60,6 +115,25 @@ All notable changes to this project will be documented in this file.
     - Quick actions: Bookmark, wishlist, share buttons on hover
     - Progress tracking: Visual progress bars for enrolled courses
     - Badge system: Trending, Bestseller, New, and discount badges
+    - **Theme-aware badges:** All badges use CSS variables (no hardcoded colors)
+      - Beginner: `bg-success/10 text-success` (adapts to theme)
+      - Intermediate: `bg-warning/10 text-warning` (adapts to theme)
+      - Advanced: `bg-destructive/10 text-destructive` (adapts to theme)
+      - Trending: `bg-warning text-warning-foreground`
+      - Bestseller: `bg-destructive text-destructive-foreground`
+      - New: `bg-info text-info-foreground`
+      - Completed: `bg-success/10 text-success`
+    - **Theme-aware overlays and buttons:**
+      - Quick action buttons: `bg-background/95` (was `bg-white/90`)
+      - Quick action icons: `text-foreground` (now visible in all themes)
+      - Play button overlay: `bg-foreground/80` (was `bg-black/80`)
+      - Play icon: `text-background` (was `text-white`)
+      - Progress overlay: `bg-foreground/50` (was `bg-black/50`)
+      - Progress text: `text-background` (was `text-white`)
+      - Enroll button: `bg-primary text-primary-foreground` (was gradient with `text-white`)
+      - **Total replacements:** 15 hardcoded colors → theme variables
+      - Star ratings: `fill-yellow-400 text-yellow-400` → `fill-warning text-warning`
+      - Checkmarks: `text-green-600` → `text-success`
     - Enterprise styling: Professional design with consistent spacing
   - **Video Preview Modal:**
     - Full video player with professional controls
@@ -68,6 +142,17 @@ All notable changes to this project will be documented in this file.
     - Instructor profiles with ratings
     - SAR pricing display with discount calculations
     - Enrollment and wishlist actions
+    - **Layout improvements:**
+      - TabsList margin adjusted from `m-4` to `mx-4 mt-4 mb-0`
+      - Added `gap-4` between header content and close button
+      - Title has `min-w-0` and `pr-2` for proper text wrapping
+      - Better spacing for close button (no overlap)
+    - **Tab styling (matching main page):**
+      - Gradient background with primary colors on active state
+      - Shadow effects and border highlights
+      - Smooth transitions with hover effects
+      - Consistent 36px height and rounded corners
+      - Theme-aware colors throughout
   - **Horizontal Scrolling:**
     - XScroll component with `w-1 flex-1` pattern for proper containment
     - Properly contained scrolling (no page-level overflow)

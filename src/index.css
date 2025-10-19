@@ -2134,6 +2134,55 @@ All colors MUST be HSL.
   display: none !important;
 }
 
+/* Scroll Shadow Effect for Modal Tabs */
+.modal-scroll-shadow {
+  position: relative;
+}
+
+.modal-scroll-shadow::before,
+.modal-scroll-shadow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40px;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.modal-scroll-shadow::before {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--background)) 0%,
+    hsl(var(--background) / 0.8) 20%,
+    transparent 100%
+  );
+  opacity: 0;
+}
+
+.modal-scroll-shadow::after {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    hsl(var(--background)) 0%,
+    hsl(var(--background) / 0.8) 20%,
+    transparent 100%
+  );
+  opacity: 1;
+}
+
+/* Show top shadow when scrolled */
+.modal-scroll-shadow.scrolled-top::before {
+  opacity: 1;
+}
+
+/* Hide bottom shadow when at bottom */
+.modal-scroll-shadow.scrolled-bottom::after {
+  opacity: 0;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -2150,5 +2199,69 @@ All colors MUST be HSL.
   #root {
     overflow-x: hidden !important;
     max-width: 100vw !important;
+  }
+
+  /* Custom scrollbar styling for course modal - webkit browsers */
+  .course-modal-scroll::-webkit-scrollbar {
+    width: 10px; /* More visible scrollbar width */
+  }
+
+  .course-modal-scroll::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 5px;
+  }
+
+  .course-modal-scroll::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--primary));
+    border-radius: 5px;
+    border: 2px solid hsl(var(--background));
+  }
+
+  .course-modal-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--primary-dark));
+  }
+
+  /* Firefox scrollbar */
+  .course-modal-scroll {
+    scrollbar-width: auto;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
+  }
+
+  /* Ripple animation for comments */
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* Custom scrollbar styling for comments - webkit browsers */
+  .comment-reply-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .comment-reply-scroll::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  .comment-reply-scroll::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--primary));
+    border-radius: 3px;
+    border: 1px solid hsl(var(--background));
+  }
+
+  .comment-reply-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--primary-dark));
+  }
+
+  /* Firefox scrollbar for comments */
+  .comment-reply-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
   }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/pages/1-HomePage/others/components/ui/dialog';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
@@ -6,6 +6,7 @@ import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/pages/1-HomePage/others/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
 import { ScrollArea } from '@/pages/1-HomePage/others/components/ui/scroll-area';
+import { CommentReply } from '@/pages/1-HomePage/others/components/ui/comment-reply';
 import { toast } from 'sonner';
 import { 
   X,
@@ -87,13 +88,22 @@ export function CoursePreviewModal({
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // Scroll shadow states
+  const [overviewScrolled, setOverviewScrolled] = useState({ top: false, bottom: true });
+  const [scriptScrolled, setScriptScrolled] = useState({ top: false, bottom: true });
+  const [modulesScrolled, setModulesScrolled] = useState({ top: false, bottom: true });
   const [activeTab, setActiveTab] = useState('overview');
   const [isEnrolling, setIsEnrolling] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [currentScriptIndex, setCurrentScriptIndex] = useState(0);
+  const [isPanelsCollapsed, setIsPanelsCollapsed] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const overviewViewportRef = useRef<HTMLDivElement>(null);
+  const scriptViewportRef = useRef<HTMLDivElement>(null);
+  const modulesViewportRef = useRef<HTMLDivElement>(null);
 
   // Convert USD to SAR
   const convertToSAR = (usdPrice: number) => Math.round(usdPrice * 3.75);
@@ -109,7 +119,15 @@ export function CoursePreviewModal({
     { time: 120, text: "The initiation phase is where we define the project scope and objectives." },
     { time: 150, text: "Next, we move to planning, which is crucial for project success." },
     { time: 180, text: "During execution, we implement the project plan and manage resources." },
-    { time: 210, text: "Finally, we close the project and conduct a lessons learned session." }
+    { time: 210, text: "Finally, we close the project and conduct a lessons learned session." },
+    { time: 240, text: "Monitoring and controlling involves tracking progress and making adjustments." },
+    { time: 270, text: "Risk management is essential to identify and mitigate potential issues." },
+    { time: 300, text: "Stakeholder communication ensures everyone is aligned on project goals." },
+    { time: 330, text: "Quality assurance processes ensure deliverables meet requirements." },
+    { time: 360, text: "Resource allocation and team management are critical for project success." },
+    { time: 390, text: "Budget tracking helps maintain financial control throughout the project." },
+    { time: 420, text: "Change management processes handle scope adjustments effectively." },
+    { time: 450, text: "Documentation practices ensure knowledge transfer and compliance." }
   ] : [];
 
   // Mock course modules
@@ -123,12 +141,54 @@ export function CoursePreviewModal({
     { id: 7, title: "Project Closure", duration: "12:45", lectures: 4, isCompleted: false }
   ] : [];
 
+  // Cleaner scroll shadow handler - direct viewport control
+  const handleScrollShadow = useCallback((element: HTMLElement | null, setter: typeof setOverviewScrolled) => {
+    if (!element) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = element;
+    const isTop = scrollTop > 10;
+    const isBottom = scrollTop + clientHeight < scrollHeight - 10;
+    
+    setter({ top: isTop, bottom: isBottom });
+  }, []);
+
+  // Attach scroll listeners directly to viewport refs
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const setupScrollListener = (viewportRef: React.RefObject<HTMLDivElement>, setter: typeof setOverviewScrolled) => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      
+      const handleScroll = () => handleScrollShadow(viewport, setter);
+      viewport.addEventListener('scroll', handleScroll, { passive: true });
+      
+      // Initial check after DOM is ready
+      setTimeout(handleScroll, 100);
+      
+      return () => viewport.removeEventListener('scroll', handleScroll);
+    };
+
+    const cleanupOverview = setupScrollListener(overviewViewportRef, setOverviewScrolled);
+    const cleanupScript = setupScrollListener(scriptViewportRef, setScriptScrolled);
+    const cleanupModules = setupScrollListener(modulesViewportRef, setModulesScrolled);
+    
+    return () => {
+      cleanupOverview?.();
+      cleanupScript?.();
+      cleanupModules?.();
+    };
+  }, [handleScrollShadow, isOpen, activeTab]);
+
   useEffect(() => {
     if (isOpen && course) {
       // Reset state when modal opens
       setIsPlaying(false);
       setCurrentTime(0);
       setCurrentScriptIndex(0);
+      setOverviewScrolled({ top: false, bottom: true });
+      setScriptScrolled({ top: false, bottom: true });
+      setModulesScrolled({ top: false, bottom: true });
     }
   }, [isOpen, course]);
 
@@ -220,6 +280,10 @@ export function CoursePreviewModal({
     toast.success(isBookmarked ? 'Removed from bookmarks' : 'Added to bookmarks');
   };
 
+  const togglePanels = () => {
+    setIsPanelsCollapsed(!isPanelsCollapsed);
+  };
+
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -230,39 +294,50 @@ export function CoursePreviewModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl w-full h-[90vh] p-0 overflow-hidden">
-        <div className="flex h-full">
+      <DialogContent className="max-w-6xl w-[95vw] max-h-[95vh] h-auto min-h-[80vh] p-0 overflow-hidden [&>button:last-child]:hidden">
+        <div className="flex flex-col md:flex-row h-full min-h-[80vh]">
           {/* Left Side - Video Player */}
           <div className="flex-1 flex flex-col">
-            <DialogHeader className="p-6 pb-4 border-b">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <DialogTitle className="text-xl font-bold line-clamp-2 mb-2">
+            <DialogHeader className="p-3 sm:p-4 border-b">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <DialogTitle className="text-lg sm:text-xl font-bold line-clamp-2 mb-2 pr-2">
                     {course.title}
                   </DialogTitle>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-warning text-warning" />
+                        <span className="font-medium">{course.rating}</span>
+                        <span className="hidden sm:inline">({course.students.toLocaleString()} students)</span>
+                        <span className="sm:hidden">({course.students.toLocaleString()})</span>
+                      </div>
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium">{course.rating}</span>
-                      <span>({course.students.toLocaleString()} students)</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
+                      <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span>{course.duration}</span>
                     </div>
-                    <Badge className="bg-primary/10 text-primary border-primary/20">
+                    <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
                       {course.level}
                     </Badge>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={onClose}>
-                  <X className="h-5 w-5" />
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={togglePanels} 
+                  title={isPanelsCollapsed ? 'Show panels' : 'Hide panels'}
+                  className="hidden md:flex"
+                >
+                  {isPanelsCollapsed ? (
+                    <ChevronRight className="h-5 w-5" />
+                  ) : (
+                    <ChevronLeft className="h-5 w-5" />
+                  )}
                 </Button>
               </div>
             </DialogHeader>
 
             {/* Video Player */}
-            <div className="flex-1 bg-black relative">
+            <div className="bg-black relative w-full aspect-video max-h-[40vh] sm:max-h-[50vh] md:max-h-[60vh] overflow-hidden">
               <video
                 ref={videoRef}
                 className="w-full h-full object-cover"
@@ -357,212 +432,264 @@ export function CoursePreviewModal({
                 </div>
               </div>
             </div>
+
+            {/* Comments Section */}
+            <div className="p-3 sm:p-4 border-t border-border/40">
+              <CommentReply />
+            </div>
           </div>
 
           {/* Right Side - Course Details & Script */}
-          <div className="w-96 border-l bg-background flex flex-col">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-              <TabsList className="grid w-full grid-cols-3 m-4 mb-0">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="script">Script</TabsTrigger>
-                <TabsTrigger value="modules">Modules</TabsTrigger>
-              </TabsList>
+          <div className={`md:border-l bg-background flex flex-col transition-all duration-300 ${isPanelsCollapsed ? 'hidden md:flex md:w-0 overflow-hidden' : 'w-full md:w-96'}`}>
+            {/* Close Button Row */}
+            <div className="flex-shrink-0 flex justify-end items-center p-3 sm:p-4 border-b border-border/40">
+              <button 
+                type="button" 
+                onClick={onClose}
+                className="ring-offset-background focus:ring-ring bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 h-6 w-6 p-0 flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x">
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+                <span className="sr-only">Close</span>
+              </button>
+            </div>
+            
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 gap-0">
+              {/* Tabs Row */}
+              <div className="flex-shrink-0 p-3 sm:p-4 border-b border-border/40">
+                <TabsList className="w-full grid grid-cols-3 rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg">
+                  <TabsTrigger value="overview" className="h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Overview</TabsTrigger>
+                  <TabsTrigger value="script" className="h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Script</TabsTrigger>
+                  <TabsTrigger value="modules" className="h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Modules</TabsTrigger>
+                </TabsList>
+              </div>
 
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 min-h-0 relative">
                 {/* Overview Tab */}
-                <TabsContent value="overview" className="h-full m-0 p-4">
-                  <ScrollArea className="h-full">
-                    <div className="space-y-6">
-                      {/* Course Info */}
-                      <div>
+                <TabsContent value="overview" className="absolute inset-0 m-0 data-[state=inactive]:hidden">
+                  <div className={`h-full flex flex-col modal-scroll-shadow ${overviewScrolled.top ? 'scrolled-top' : ''} ${overviewScrolled.bottom ? 'scrolled-bottom' : ''}`}>
+          <div 
+            ref={overviewViewportRef}
+            className="flex-1 overflow-y-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-1 course-modal-scroll"
+          >
+                      <div className="space-y-6">
+                        {/* Course Info */}
+                        <div>
                         <h3 className="font-bold text-lg mb-3">About This Course</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {course.description}
-                        </p>
-                      </div>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {course.description}
+                          </p>
+                        </div>
 
-                      {/* Instructor */}
-                      <div>
-                        <h4 className="font-semibold mb-3">Instructor</h4>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage src={course.instructor.avatar} />
-                            <AvatarFallback>
-                              {course.instructor.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{course.instructor.name}</p>
-                            <p className="text-sm text-muted-foreground">{course.instructor.title}</p>
-                            <div className="flex items-center gap-1 mt-1">
-                              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                              <span className="text-xs">{course.instructor.rating}</span>
+                        {/* Instructor */}
+                        <div>
+                          <h4 className="font-semibold mb-3">Instructor</h4>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-12 w-12">
+                              <AvatarImage src={course.instructor.avatar} />
+                              <AvatarFallback>
+                                {course.instructor.name.split(' ').map(n => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium">{course.instructor.name}</p>
+                              <p className="text-sm text-muted-foreground">{course.instructor.title}</p>
+                              <div className="flex items-center gap-1 mt-1">
+                                <Star className="h-3 w-3 fill-warning text-warning" />
+                                <span className="text-xs">{course.instructor.rating}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* What You'll Learn */}
-                      {course.whatYoullLearn && (
-                        <div>
-                          <h4 className="font-semibold mb-3">What You'll Learn</h4>
-                          <ul className="space-y-2">
-                            {course.whatYoullLearn.map((item, index) => (
-                              <li key={index} className="flex items-start gap-2 text-sm">
-                                <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                                <span>{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {/* Course Includes */}
-                      {course.includes && (
-                        <div>
-                          <h4 className="font-semibold mb-3">This Course Includes</h4>
-                          <ul className="space-y-2">
-                            {course.includes.map((item, index) => (
-                              <li key={index} className="flex items-center gap-2 text-sm">
-                                <CheckCircle2 className="h-4 w-4 text-primary" />
-                                <span>{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {/* Pricing */}
-                      <div className="border-t pt-4">
-                        <div className="flex items-center justify-between mb-4">
+                        {/* What You'll Learn */}
+                        {course.whatYoullLearn && (
                           <div>
-                            {sarOriginalPrice && sarOriginalPrice > sarPrice && (
-                              <span className="text-sm text-muted-foreground line-through mr-2">
-                                {sarOriginalPrice} SAR
-                              </span>
-                            )}
-                            <span className="text-2xl font-bold text-primary">
-                              {sarPrice} SAR
-                            </span>
+                            <h4 className="font-semibold mb-3">What You'll Learn</h4>
+                            <ul className="space-y-2">
+                              {course.whatYoullLearn.map((item, index) => (
+                                <li key={index} className="flex items-start gap-2 text-sm">
+                                  <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          {sarOriginalPrice && sarOriginalPrice > sarPrice && (
-                            <Badge className="bg-primary/10 text-primary">
-                              Save {sarOriginalPrice - sarPrice} SAR
-                            </Badge>
-                          )}
-                        </div>
+                        )}
 
-                        <div className="space-y-2">
-                          <Button 
-                            className="w-full" 
-                            onClick={handleEnroll}
-                            disabled={isEnrolling}
-                          >
-                            {isEnrolling ? 'Enrolling...' : 'Enroll Now'}
-                          </Button>
-                          
-                          <div className="flex gap-2">
-                            <Button 
-                              variant="outline" 
-                              className="flex-1"
-                              onClick={handleWishlist}
-                            >
-                              <Heart className="h-4 w-4 mr-2" />
-                              Wishlist
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              className="flex-1"
-                              onClick={handleBookmark}
-                            >
-                              <Bookmark className="h-4 w-4 mr-2" />
-                              Bookmark
-                            </Button>
+                        {/* Course Includes */}
+                        {course.includes && (
+                          <div>
+                            <h4 className="font-semibold mb-3">This Course Includes</h4>
+                            <ul className="space-y-2">
+                              {course.includes.map((item, index) => (
+                                <li key={index} className="flex items-center gap-2 text-sm">
+                                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                        </div>
+                        )}
+
                       </div>
+                      
                     </div>
-                  </ScrollArea>
+                  </div>
                 </TabsContent>
 
                 {/* Script Tab */}
-                <TabsContent value="script" className="h-full m-0 p-4">
-                  <ScrollArea className="h-full">
-                    <div className="space-y-4">
-                      <h3 className="font-bold text-lg mb-4">Course Transcript</h3>
-                      
-                      <div className="space-y-3">
-                        {scriptData.map((script, index) => (
-                          <div
-                            key={index}
-                            className={`p-3 rounded-lg border transition-all cursor-pointer ${
-                              index === currentScriptIndex
-                                ? 'bg-primary/10 border-primary/30 shadow-sm'
-                                : 'bg-muted/30 border-border/50 hover:bg-muted/50'
-                            }`}
-                            onClick={() => {
-                              if (videoRef.current) {
-                                videoRef.current.currentTime = script.time;
-                                setCurrentTime(script.time);
-                              }
-                            }}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="flex-shrink-0">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-                                  index === currentScriptIndex
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'bg-muted text-muted-foreground'
-                                }`}>
-                                  {formatTime(script.time)}
+                <TabsContent value="script" className="absolute inset-0 m-0 data-[state=inactive]:hidden">
+                  <div className={`h-full flex flex-col modal-scroll-shadow ${scriptScrolled.top ? 'scrolled-top' : ''} ${scriptScrolled.bottom ? 'scrolled-bottom' : ''}`}>
+                    <div 
+                      ref={scriptViewportRef}
+                      className="flex-1 overflow-y-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-16 course-modal-scroll"
+                    >
+                      <div className="space-y-4">
+                        <h3 className="font-bold text-lg mb-4">Course Transcript</h3>
+                        
+                        <div className="space-y-3">
+                          {scriptData.map((script, index) => (
+                            <div
+                              key={index}
+                              className={`p-3 rounded-lg border transition-all cursor-pointer ${
+                                index === currentScriptIndex
+                                  ? 'bg-primary/10 border-primary/30 shadow-sm'
+                                  : 'bg-muted/30 border-border/50 hover:bg-muted/50'
+                              }`}
+                              onClick={() => {
+                                if (videoRef.current) {
+                                  videoRef.current.currentTime = script.time;
+                                  setCurrentTime(script.time);
+                                }
+                              }}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="flex-shrink-0">
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
+                                    index === currentScriptIndex
+                                      ? 'bg-primary text-primary-foreground'
+                                      : 'bg-muted text-muted-foreground'
+                                  }`}>
+                                    {formatTime(script.time)}
+                                  </div>
                                 </div>
+                                <p className="text-sm leading-relaxed">{script.text}</p>
                               </div>
-                              <p className="text-sm leading-relaxed">{script.text}</p>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
+                      
                     </div>
-                  </ScrollArea>
+                  </div>
                 </TabsContent>
 
                 {/* Modules Tab */}
-                <TabsContent value="modules" className="h-full m-0 p-4">
-                  <ScrollArea className="h-full">
-                    <div className="space-y-4">
-                      <h3 className="font-bold text-lg mb-4">Course Content</h3>
-                      
-                      <div className="space-y-2">
-                        {courseModules.map((module, index) => (
-                          <div
-                            key={module.id}
-                            className="flex items-center gap-3 p-3 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors"
-                          >
-                            <div className="flex-shrink-0">
-                              {module.isCompleted ? (
-                                <CheckCircle2 className="h-5 w-5 text-green-600" />
-                              ) : (
-                                <PlayCircle className="h-5 w-5 text-muted-foreground" />
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-sm line-clamp-1">{module.title}</p>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                <span>{module.duration}</span>
-                                <span>•</span>
-                                <span>{module.lectures} lectures</span>
+                <TabsContent value="modules" className="absolute inset-0 m-0 data-[state=inactive]:hidden">
+                  <div className={`h-full flex flex-col modal-scroll-shadow ${modulesScrolled.top ? 'scrolled-top' : ''} ${modulesScrolled.bottom ? 'scrolled-bottom' : ''}`}>
+                    <div 
+                      ref={modulesViewportRef}
+                      className="flex-1 overflow-y-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-16 course-modal-scroll"
+                    >
+                      <div className="space-y-4">
+                        <h3 className="font-bold text-lg mb-4">Course Content</h3>
+                        
+                        <div className="space-y-2">
+                          {courseModules.map((module, index) => (
+                            <div
+                              key={module.id}
+                              className="flex items-center gap-3 p-3 rounded-lg border border-border/50 hover:bg-muted/50 transition-colors"
+                            >
+                              <div className="flex-shrink-0">
+                                {module.isCompleted ? (
+                                  <CheckCircle2 className="h-5 w-5 text-success" />
+                                ) : (
+                                  <PlayCircle className="h-5 w-5 text-muted-foreground" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm line-clamp-1">{module.title}</p>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                                  <span>{module.duration}</span>
+                                  <span>•</span>
+                                  <span>{module.lectures} lectures</span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
+                      
+                      {/* Bottom spacer to ensure last content is fully visible */}
+                      <div className="h-8"></div>
                     </div>
-                  </ScrollArea>
+                  </div>
                 </TabsContent>
               </div>
             </Tabs>
+
+            {/* Pricing & Actions - Right Side */}
+            <div className="flex-shrink-0 p-3 sm:p-4 border-t border-border/40 bg-background">
+              <div className="space-y-4">
+                {/* Pricing */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {sarOriginalPrice && sarOriginalPrice > sarPrice && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        {sarOriginalPrice} SAR
+                      </span>
+                    )}
+                    <span className="text-2xl font-bold text-primary">
+                      {sarPrice} SAR
+                    </span>
+                    {sarOriginalPrice && sarOriginalPrice > sarPrice && (
+                      <Badge className="bg-primary/10 text-primary">
+                        Save {sarOriginalPrice - sarPrice} SAR
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="space-y-2">
+                  <Button 
+                    className="w-full h-10 sm:h-12 text-sm sm:text-base font-semibold" 
+                    onClick={handleEnroll}
+                    disabled={isEnrolling}
+                  >
+                    {isEnrolling ? 'Enrolling...' : 'Enroll Now'}
+                  </Button>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 h-9 sm:h-10 text-xs sm:text-sm"
+                      onClick={handleWishlist}
+                    >
+                      <Heart className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      <span className="hidden sm:inline">Wishlist</span>
+                      <span className="sm:hidden">Wish</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 h-9 sm:h-10 text-xs sm:text-sm"
+                      onClick={handleBookmark}
+                    >
+                      <Bookmark className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      <span className="hidden sm:inline">Bookmark</span>
+                      <span className="sm:hidden">Save</span>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
       </DialogContent>
     </Dialog>
   );

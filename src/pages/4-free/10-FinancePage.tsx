@@ -1160,20 +1160,19 @@ export default function FinancePage() {
         </div>
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-0">
-          <Card className="border-border/50">
-            <div className="p-4 pb-3 border-b border-border/40">
-              <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
-                <TabsTrigger value="overview" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Overview</TabsTrigger>
-                <TabsTrigger value="payments" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Payments</TabsTrigger>
-                <TabsTrigger value="invoices" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Invoices</TabsTrigger>
-                <TabsTrigger value="quotations" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Quotations</TabsTrigger>
-                <TabsTrigger value="milestones" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Milestones</TabsTrigger>
-              </TabsList>
-            </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-0 space-y-4">
+          {/* Tabs Navigation */}
+          <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
+            <TabsTrigger value="overview" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Overview</TabsTrigger>
+            <TabsTrigger value="payments" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Payments</TabsTrigger>
+            <TabsTrigger value="invoices" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Invoices</TabsTrigger>
+            <TabsTrigger value="quotations" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Quotations</TabsTrigger>
+            <TabsTrigger value="milestones" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Milestones</TabsTrigger>
+          </TabsList>
 
-            {/* Overview Tab */}
-            <TabsContent value="overview" className="m-0">
+          {/* Overview Tab - Separate Card */}
+          <TabsContent value="overview" className="m-0">
+            <Card className="border-border/50">
               <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Recent Payments */}
@@ -1282,20 +1281,30 @@ export default function FinancePage() {
                   </div>
                 </div>
               </CardContent>
-            </TabsContent>
+            </Card>
+          </TabsContent>
 
-            {/* Payments Tab */}
-            <TabsContent value="payments" className="m-0">
-              <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
-                {/* Search */}
-                <div className="relative min-w-0">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search payments by project, engineer, or description..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 h-9 text-sm"
-                  />
+          {/* Payments Tab - Separate Card */}
+          <TabsContent value="payments" className="m-0">
+            <Card className="border-border/50">
+              <CardContent className="p-4 space-y-4 bg-background">
+                {/* Search & Make Payment Button */}
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-1 min-w-0">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search payments by project, engineer, or description..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 h-9 text-sm"
+                    />
+                  </div>
+                  <Button 
+                    className="h-9 text-xs flex-shrink-0"
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Make Payment
+                  </Button>
                 </div>
 
                 {/* Payments List */}
@@ -1384,16 +1393,27 @@ export default function FinancePage() {
                   ))}
                 </div>
               </CardContent>
-            </TabsContent>
+            </Card>
+          </TabsContent>
 
-            {/* Invoices Tab */}
-            <TabsContent value="invoices" className="m-0">
-              <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
-                {/* Create Invoice Button */}
-                <div className="flex justify-end">
+          {/* Invoices Tab - Separate Card */}
+          <TabsContent value="invoices" className="m-0">
+            <Card className="border-border/50">
+              <CardContent className="p-4 space-y-4 bg-background">
+                {/* Search & Create Invoice Button */}
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-1 min-w-0">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search invoices by project, number, or client..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 h-9 text-sm"
+                    />
+                  </div>
                   <Button 
                     onClick={() => setShowInvoiceBuilder(true)} 
-                    className="h-8 text-xs"
+                    className="h-9 text-xs flex-shrink-0"
                   >
                     <Plus className="h-3.5 w-3.5 mr-1.5" />
                     Create Invoice
@@ -1487,16 +1507,27 @@ export default function FinancePage() {
                   ))}
                 </div>
               </CardContent>
-            </TabsContent>
+            </Card>
+          </TabsContent>
 
-            {/* Quotations Tab */}
-            <TabsContent value="quotations" className="m-0">
-              <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
-                {/* Create Quotation Button */}
-                <div className="flex justify-end">
+          {/* Quotations Tab - Separate Card */}
+          <TabsContent value="quotations" className="m-0">
+            <Card className="border-border/50">
+              <CardContent className="p-4 space-y-4 bg-background">
+                {/* Search & Create Quotation Button */}
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-1 min-w-0">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search quotations by project, number, or client..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 h-9 text-sm"
+                    />
+                  </div>
                   <Button 
                     onClick={() => setShowQuotationBuilder(true)} 
-                    className="h-8 text-xs"
+                    className="h-9 text-xs flex-shrink-0"
                   >
                     <Plus className="h-3.5 w-3.5 mr-1.5" />
                     Create Quotation
@@ -1606,11 +1637,32 @@ export default function FinancePage() {
                   ))}
                 </div>
               </CardContent>
-            </TabsContent>
+            </Card>
+          </TabsContent>
 
-            {/* Milestones Tab */}
-            <TabsContent value="milestones" className="m-0">
-              <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
+          {/* Milestones Tab - Separate Card */}
+          <TabsContent value="milestones" className="m-0">
+            <Card className="border-border/50">
+              <CardContent className="p-4 space-y-4 bg-background">
+                {/* Search & Create Milestone Button */}
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-1 min-w-0">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search milestones by project, title, or status..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 h-9 text-sm"
+                    />
+                  </div>
+                  <Button 
+                    className="h-9 text-xs flex-shrink-0"
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Create Milestone
+                  </Button>
+                </div>
+
                 <div className="space-y-3">
                   {mockMilestones.map((milestone) => (
                     <motion.div
@@ -1712,8 +1764,8 @@ export default function FinancePage() {
                   ))}
                 </div>
               </CardContent>
-            </TabsContent>
-          </Card>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         {/* Invoice Builder Sheet */}

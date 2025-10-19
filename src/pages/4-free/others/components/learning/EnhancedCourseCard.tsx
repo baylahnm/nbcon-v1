@@ -89,10 +89,10 @@ export function EnhancedCourseCard({
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Beginner': return 'bg-green-100 text-green-800 border-green-200';
-      case 'Intermediate': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Advanced': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'Beginner': return 'bg-success/10 text-success border-success/20';
+      case 'Intermediate': return 'bg-warning/10 text-warning border-warning/20';
+      case 'Advanced': return 'bg-destructive/10 text-destructive border-destructive/20';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -162,30 +162,30 @@ export function EnhancedCourseCard({
       
       {/* Play Button Overlay - Enhanced */}
       <div 
-        className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/thumbnail:opacity-100 transition-all duration-300 bg-black/20"
+        className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/thumbnail:opacity-100 transition-all duration-300 bg-foreground/20"
         onClick={handlePreview}
       >
-        <div className="bg-black/80 backdrop-blur-sm rounded-full p-4 hover:scale-110 transition-transform duration-200 shadow-2xl">
-          <Play className="h-8 w-8 text-white fill-white" />
+        <div className="bg-foreground/80 backdrop-blur-sm rounded-full p-4 hover:scale-110 transition-transform duration-200 shadow-2xl">
+          <Play className="h-8 w-8 text-background fill-background" />
         </div>
       </div>
 
       {/* Course Badges - Enhanced positioning */}
       <div className="absolute top-3 left-3 flex flex-col gap-2">
         {course.isTrending && (
-          <Badge className="bg-orange-500 text-white text-[10px] px-2 py-1 shadow-lg">
+          <Badge className="bg-warning text-warning-foreground text-[10px] px-2 py-1 shadow-lg border-0">
             <TrendingUp className="h-3 w-3 mr-1" />
             Trending
           </Badge>
         )}
         {course.isBestSeller && (
-          <Badge className="bg-red-500 text-white text-[10px] px-2 py-1 shadow-lg">
+          <Badge className="bg-destructive text-destructive-foreground text-[10px] px-2 py-1 shadow-lg border-0">
             <Award className="h-3 w-3 mr-1" />
             Bestseller
           </Badge>
         )}
         {course.isNew && (
-          <Badge className="bg-blue-500 text-white text-[10px] px-2 py-1 shadow-lg">
+          <Badge className="bg-info text-info-foreground text-[10px] px-2 py-1 shadow-lg border-0">
             New
           </Badge>
         )}
@@ -194,7 +194,7 @@ export function EnhancedCourseCard({
       {/* Discount Badge - Enhanced */}
       {discountPercentage > 0 && (
         <div className="absolute top-3 right-3">
-          <Badge className="bg-primary text-white text-[10px] px-2 py-1 shadow-lg">
+          <Badge className="bg-primary text-primary-foreground text-[10px] px-2 py-1 shadow-lg border-0">
             {discountPercentage}% OFF
           </Badge>
         </div>
@@ -202,8 +202,8 @@ export function EnhancedCourseCard({
 
       {/* Progress Bar for Enrolled Courses */}
       {course.isEnrolled && course.progress !== undefined && (
-        <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm p-2">
-          <div className="flex items-center justify-between text-white text-xs mb-1">
+        <div className="absolute bottom-0 left-0 right-0 bg-foreground/50 backdrop-blur-sm p-2">
+          <div className="flex items-center justify-between text-background text-xs mb-1">
             <span>Progress</span>
             <span>{course.progress}%</span>
           </div>
@@ -217,30 +217,30 @@ export function EnhancedCourseCard({
           <Button
             size="sm"
             variant="secondary"
-            className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+            className="h-8 w-8 p-0 bg-background/95 hover:bg-background backdrop-blur-sm shadow-md"
             onClick={handleBookmark}
           >
             {isBookmarked ? (
               <BookmarkCheck className="h-4 w-4 text-primary" />
             ) : (
-              <Bookmark className="h-4 w-4" />
+              <Bookmark className="h-4 w-4 text-foreground" />
             )}
           </Button>
           <Button
             size="sm"
             variant="secondary"
-            className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+            className="h-8 w-8 p-0 bg-background/95 hover:bg-background backdrop-blur-sm shadow-md"
             onClick={handleWishlist}
           >
-            <Heart className="h-4 w-4" />
+            <Heart className="h-4 w-4 text-foreground" />
           </Button>
           <Button
             size="sm"
             variant="secondary"
-            className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+            className="h-8 w-8 p-0 bg-background/95 hover:bg-background backdrop-blur-sm shadow-md"
             onClick={handleShare}
           >
-            <Share2 className="h-4 w-4" />
+            <Share2 className="h-4 w-4 text-foreground" />
           </Button>
         </div>
       </div>
@@ -288,7 +288,7 @@ export function EnhancedCourseCard({
       {/* Course Stats - Enhanced layout */}
       <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
-          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+          <Star className="h-3 w-3 fill-warning text-warning" />
           <span className="font-medium">{course.rating}</span>
         </div>
         <div className="flex items-center gap-1">
@@ -310,7 +310,7 @@ export function EnhancedCourseCard({
           
           {/* Completion Badge */}
           {course.isEnrolled && course.progress === 100 && (
-            <Badge className="bg-green-100 text-green-800 text-[10px] px-2 py-1 border-green-200">
+            <Badge className="bg-success/10 text-success text-[10px] px-2 py-1 border-success/20">
               <CheckCircle2 className="h-3 w-3 mr-1" />
               Completed
             </Badge>
@@ -391,7 +391,7 @@ export function EnhancedCourseCard({
               </Button>
               <Button 
                 size="sm" 
-                className="h-7 text-[10px] px-2 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white"
+                className="h-7 text-[10px] px-2 bg-primary text-primary-foreground hover:bg-primary/90"
                 onClick={handleEnroll}
                 disabled={isEnrolling}
               >
