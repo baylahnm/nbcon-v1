@@ -76,8 +76,8 @@ export function ApplicationStatusTracker({
 
   const getStageColor = (status: string) => {
     switch (status) {
-      case "completed": return "bg-green-500/10 border-green-500 text-green-600";
-      case "current": return "bg-blue-500/10 border-blue-500 text-blue-600";
+      case "completed": return "bg-success/10 border-success text-success";
+      case "current": return "bg-primary/10 border-primary text-primary";
       default: return "bg-muted border-border text-muted-foreground";
     }
   };
@@ -160,10 +160,10 @@ export function ApplicationStatusTracker({
                 <div className="flex items-center justify-between mb-1">
                   <h5 className="font-medium text-sm">{stage.name}</h5>
                   {stage.status === "completed" && (
-                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <CheckCircle className="w-4 h-4 text-success" />
                   )}
                   {stage.status === "current" && (
-                    <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-xs">
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-xs">
                       In Progress
                     </Badge>
                   )}
@@ -178,8 +178,8 @@ export function ApplicationStatusTracker({
 
         {/* Next Steps */}
         {currentStage < stages.length - 1 && (
-          <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <h5 className="font-semibold text-sm text-blue-600 mb-1">Next Step</h5>
+          <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
+            <h5 className="font-semibold text-sm text-primary mb-1">Next Step</h5>
             <p className="text-xs text-muted-foreground">
               {currentStage === 2 && "Wait for the client to schedule an interview. You'll be notified via email."}
               {currentStage === 1 && "Your application is being reviewed. Check back in 2-3 days."}

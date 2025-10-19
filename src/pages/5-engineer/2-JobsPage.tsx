@@ -153,10 +153,62 @@ const mockJobs: Job[] = [
     isBookmarked: true,
     skills: ['AutoCAD Electrical', 'Smart Grid', 'Power Systems', 'Design'],
     clientRating: 4.9
+  },
+  {
+    id: '4',
+    title: 'HVAC Systems Engineer',
+    company: 'Saudi Electricity Company',
+    location: 'Riyadh, Saudi Arabia',
+    type: 'full-time',
+    salary: {
+      min: 13000,
+      max: 19000,
+      currency: 'SAR'
+    },
+    description: 'Design and oversee HVAC systems for commercial and residential buildings. Conduct load calculations, select equipment, and ensure energy efficiency compliance with Saudi Building Code standards. Collaborate with MEP teams and coordinate with contractors during installation phases.',
+    requirements: [
+      'Mechanical Engineering degree',
+      '5+ years HVAC design experience',
+      'Proficiency in HAP, Carrier E20-II software',
+      'Knowledge of ASHRAE standards',
+      'Saudi Building Code familiarity'
+    ],
+    postedDate: '2024-01-28',
+    deadline: '2024-02-28',
+    status: 'open',
+    category: 'Mechanical Engineering',
+    experience: '5+ years',
+    isBookmarked: false,
+    skills: ['HVAC Design', 'HAP', 'Carrier E20-II', 'Energy Efficiency', 'ASHRAE'],
+    clientRating: 4.7
+  },
+  {
+    id: '5',
+    title: 'Geotechnical Engineer',
+    company: 'Al-Rajhi Engineering Consultants',
+    location: 'Jeddah, Saudi Arabia',
+    type: 'contract',
+    budget: 12000,
+    description: 'Conduct soil investigations and foundation design for high-rise developments along the Red Sea coast. Perform site assessments, analyze soil samples, prepare geotechnical reports, and provide foundation recommendations for seismic zones.',
+    requirements: [
+      'Civil/Geotechnical Engineering degree',
+      '4+ years geotechnical experience',
+      'Field testing and laboratory analysis skills',
+      'Foundation design expertise',
+      'Report writing proficiency'
+    ],
+    postedDate: '2024-01-30',
+    deadline: '2024-03-01',
+    status: 'open',
+    category: 'Civil Engineering',
+    experience: '4+ years',
+    isBookmarked: false,
+    skills: ['Soil Investigation', 'Foundation Design', 'Geotechnical Analysis', 'Field Testing', 'AutoCAD'],
+    clientRating: 4.8
   }
 ];
 
-const jobCategories = ['All', 'Structural Engineering', 'Project Management', 'Electrical Engineering', 'Mechanical Engineering'];
+const jobCategories = ['All', 'Structural Engineering', 'Project Management', 'Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering'];
 
 export default function JobsPage() {
   const navigate = useNavigate();
@@ -465,14 +517,14 @@ export default function JobsPage() {
                           variant="secondary"
                           size="icon"
                           className={`absolute top-4 right-4 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:scale-110 transition-all ${
-                            job.isBookmarked ? 'text-rose-500' : ''
+                            job.isBookmarked ? 'text-rose-500' : 'text-muted-foreground hover:text-primary'
                           }`}
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
                         >
                           <Bookmark
-                            className={`h-5 w-5 ${job.isBookmarked ? 'fill-rose-500' : ''}`}
+                            className={`h-5 w-5 ${job.isBookmarked ? 'fill-rose-500 text-rose-500' : 'text-muted-foreground'}`}
                           />
                         </Button>
                         
