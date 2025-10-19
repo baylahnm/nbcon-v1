@@ -7,8 +7,8 @@ interface TrustStripProps {
 
 export const TrustStrip: React.FC<TrustStripProps> = ({ title }) => {
   return (
-    <section className="pt-[100px] pb-0 px-6 md:px-0 bg-background">
-      <div className="container mx-auto px-0 text-center">
+    <section className="py-12 md:py-16 px-6 md:px-8 lg:px-12 bg-background">
+      <div className="container mx-auto text-center">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">
           <TypewriterText 
             text={title} 

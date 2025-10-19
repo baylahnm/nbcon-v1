@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, BarChart3, Clock, Shield, MessageSquare, ArrowRight, Brain, Plus, Settings2, Mic, ArrowUp } from 'lucide-react';
+import { BarChart3, Clock, MessageSquare, Brain, Sparkles, Target, TrendingUp, Zap, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../ui/button';
 import { Card } from '../ui/card';
-import { CustomersTableCard } from '../ui/customers-table-card';
+import { Badge } from '../ui/badge';
+import { Progress } from '../ui/progress';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import FeatureSection from '../ui/feature-section';
-import { ContainerScroll } from '../ui/container-scroll-animation';
+import { PromptBox } from '../ui/chatgpt-prompt-input';
 
 export const AIChatAssistant: React.FC = () => {
   const { t } = useTranslation('homepage');
@@ -16,44 +16,53 @@ export const AIChatAssistant: React.FC = () => {
   useEffect(() => {
     const placeholderText = 'Ask about engineering projects, costs, or find engineers...';
     let index = 0;
+    let timeoutId: NodeJS.Timeout | null = null;
+    let isActive = true;
     
     const typeText = () => {
+      if (!isActive) return;
+      
       if (index < placeholderText.length) {
         setTypedPlaceholder(placeholderText.slice(0, index + 1));
         index++;
-        setTimeout(typeText, 50);
+        timeoutId = setTimeout(typeText, 50);
       } else {
         // Reset after a delay
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
+          if (!isActive) return;
           index = 0;
           setTypedPlaceholder('');
-          setTimeout(typeText, 1000);
+          timeoutId = setTimeout(typeText, 1000);
         }, 3000);
       }
     };
 
     typeText();
+
+    // Cleanup function
+    return () => {
+      isActive = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
-    <section className="py-[100px] px-6 md:py-[100px] md:px-0 bg-muted/30">
-      <div className="container mx-auto px-0">
+    <section className="py-16 md:py-24 lg:py-32 px-6 md:px-8 lg:px-12 bg-muted/30">
+      <div className="container mx-auto">
         <div className="max-w-7xl mx-auto">
-          {/* Main Dashboard with Scroll Animation */}
-          <ContainerScroll
-            titleComponent={
-              <div className="text-center">
+          {/* Section Title */}
+          <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   {t('aiAssistant.title')}
                 </h2>
-                <p className="text-lg text-muted-foreground max-w-3xl mx-auto pb-4">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                   {t('aiAssistant.subtitle')}
                 </p>
               </div>
-            }
-          >
-            <div className="relative rounded-2xl p-[2px] pb-[17px] h-[600px] overflow-hidden bg-background shadow-2xl backdrop-blur-xl">
-              {/* Laser Flow animated border */}
+
+          {/* Main Dashboard Card */}
+          <div className="relative rounded-2xl p-[2px] h-[600px] overflow-hidden bg-background shadow-2xl">
+            {/* Animated gradient border */}
               <div className="pointer-events-none absolute inset-0 z-0 animate-[spin_8s_linear_infinite] bg-[conic-gradient(hsl(var(--primary))_0%,hsl(var(--accent))_25%,hsl(var(--secondary))_50%,hsl(var(--destructive))_75%,hsl(var(--primary))_100%)] opacity-60" />
               
               <div className="relative z-10 w-full h-full bg-card rounded-2xl overflow-hidden flex flex-col">
@@ -100,7 +109,7 @@ export const AIChatAssistant: React.FC = () => {
                 {activeTab === 'chat' && (
                   <div className="h-full flex flex-col">
                     {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto space-y-4 pt-4 pl-4">
+                    <div className="flex-1 overflow-y-auto space-y-4 p-4">
                       {/* AI Welcome Message */}
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -115,7 +124,7 @@ export const AIChatAssistant: React.FC = () => {
                       </div>
                         
                       {/* Sample User Message */}
-                      <div className="flex items-start space-x-3 justify-end pr-4">
+                      <div className="flex items-start space-x-3 justify-end">
                         <div className="bg-primary rounded-lg p-3 max-w-md">
                           <p className="text-sm text-primary-foreground">
                             {t('aiAssistant.chat.userMessage')}
@@ -151,60 +160,11 @@ export const AIChatAssistant: React.FC = () => {
                       </div>
                     </div>
                     
-                    {/* Chat Input - Modern Design */}
+                    {/* Chat Input - Enhanced PromptBox Component */}
                     <div className="p-4 pb-[17px] border-t border-sidebar-border bg-card">
                       <div className="w-full">
                         <form onSubmit={(e) => e.preventDefault()}>
-                          <div className="flex flex-col rounded-[28px] p-2 shadow-sm transition-colors bg-background border border-border cursor-text">
-                                <input type="file" className="hidden" accept="image/*" />
-                                <textarea
-                                  rows={1}
-                                  placeholder={typedPlaceholder}
-                                  className="custom-scrollbar w-full resize-none border-0 bg-transparent p-3 text-foreground placeholder:text-muted-foreground focus:ring-0 focus-visible:outline-none min-h-12"
-                                  style={{ height: '48px' }}
-                                />
-                                <div className="mt-0.5 p-1 pt-0">
-                                  <div className="flex items-center gap-2">
-                                    {/* Attach Image Button */}
-                                    <button
-                                      type="button"
-                                      className="flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none"
-                                    >
-                                      <Plus className="h-6 w-6" />
-                                      <span className="sr-only">Attach image</span>
-                                    </button>
-                                    
-                                    {/* Tools Button */}
-                                    <button
-                                      type="button"
-                                      className="flex h-8 items-center gap-2 rounded-full p-2 text-sm text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-ring"
-                                    >
-                                      <Settings2 className="h-4 w-4" />
-                                      Tools
-                                    </button>
-
-                                    <div className="ml-auto flex items-center gap-2">
-                                      {/* Voice Record Button */}
-                                      <button
-                                        type="button"
-                                        className="flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none"
-                                      >
-                                        <Mic className="h-5 w-5" />
-                                        <span className="sr-only">Record voice</span>
-                                      </button>
-                                      
-                                      {/* Send Button */}
-                                      <button
-                                        type="submit"
-                                        className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-primary/40"
-                                      >
-                                        <ArrowUp className="h-6 w-6" />
-                                        <span className="sr-only">Send message</span>
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                          </div>
+                          <PromptBox placeholder={typedPlaceholder || "Ask anything..."} />
                         </form>
                       </div>
                     </div>
@@ -212,80 +172,281 @@ export const AIChatAssistant: React.FC = () => {
                 )}
 
                 {activeTab === 'projects' && (
-                  <div className="h-full">
-                    <CustomersTableCard 
-                      title={t('aiAssistant.projectsTab.title')}
-                      subtitle={t('aiAssistant.projectsTab.subtitle')}
-                      customers={[
-                        {
-                          id: 1,
-                          date: '11/15/2024',
-                          status: 'Paid',
-                          statusVariant: 'success',
-                          name: 'Ahmed Al-Rashid',
-                          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-                          revenue: 'SAR 15,000',
-                        },
-                        {
-                          id: 2,
-                          date: '11/14/2024',
-                          status: 'Paid',
-                          statusVariant: 'success',
-                          name: 'Fatima Al-Zahra',
-                          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-                          revenue: 'SAR 22,500',
-                        },
-                        {
-                          id: 3,
-                          date: '11/13/2024',
-                          status: 'Ref',
-                          statusVariant: 'warning',
-                          name: 'Mohammed Al-Sayed',
-                          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-                          revenue: 'SAR 8,500',
-                        },
-                        {
-                          id: 4,
-                          date: '11/12/2024',
-                          status: 'Cancelled',
-                          statusVariant: 'danger',
-                          name: 'Sara Al-Mansouri',
-                          avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-                          revenue: 'SAR 12,000',
-                        },
-                      ]}
-                    />
+                  <div className="h-full overflow-y-auto p-4 space-y-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-base font-bold">AI-Recommended Projects</h4>
+                      <Badge className="bg-primary/10 text-primary border-0">
+                        <Sparkles className="h-3 w-3 mr-1" />
+                        Smart Match
+                      </Badge>
+                    </div>
+
+                    {/* AI Project Recommendations */}
+                    <Card className="border-border/50 hover:shadow-md transition-all">
+                      <div className="p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h5 className="font-bold text-sm mb-1">Residential HVAC System Design</h5>
+                            <p className="text-xs text-muted-foreground">Riyadh, Saudi Arabia • Posted 2 hours ago</p>
+                          </div>
+                          <div className="flex items-center gap-1 bg-green-500/10 px-2 py-1 rounded-full">
+                            <Target className="h-3 w-3 text-green-600" />
+                            <span className="text-xs font-medium text-green-600">96% Match</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">HVAC Design</Badge>
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">AutoCAD</Badge>
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">Energy Efficiency</Badge>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium text-primary">SAR 18,000 - 25,000</span>
+                          <span className="text-muted-foreground">Est. 3-4 weeks</span>
+                        </div>
+
+                        <div className="pt-2 border-t border-border/40">
+                          <p className="text-xs text-muted-foreground flex items-start gap-2">
+                            <Brain className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                            AI suggests this project matches your expertise in HVAC systems and your availability in Riyadh area.
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+
+                    <Card className="border-border/50 hover:shadow-md transition-all">
+                      <div className="p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h5 className="font-bold text-sm mb-1">Commercial Building Electrical Review</h5>
+                            <p className="text-xs text-muted-foreground">Jeddah, Saudi Arabia • Posted 5 hours ago</p>
+                          </div>
+                          <div className="flex items-center gap-1 bg-amber-500/10 px-2 py-1 rounded-full">
+                            <Target className="h-3 w-3 text-amber-600" />
+                            <span className="text-xs font-medium text-amber-600">82% Match</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">Electrical</Badge>
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">Code Review</Badge>
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">SCE Compliance</Badge>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium text-primary">SAR 12,000 - 15,000</span>
+                          <span className="text-muted-foreground">Est. 2 weeks</span>
+                        </div>
+
+                        <div className="pt-2 border-t border-border/40">
+                          <p className="text-xs text-muted-foreground flex items-start gap-2">
+                            <Brain className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                            Your SCE certification and electrical background make you ideal for this compliance review project.
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+
+                    <Card className="border-border/50 hover:shadow-md transition-all">
+                      <div className="p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h5 className="font-bold text-sm mb-1">Solar Panel Installation Planning</h5>
+                            <p className="text-xs text-muted-foreground">Dammam, Saudi Arabia • Posted 1 day ago</p>
+                          </div>
+                          <div className="flex items-center gap-1 bg-blue-500/10 px-2 py-1 rounded-full">
+                            <Target className="h-3 w-3 text-blue-600" />
+                            <span className="text-xs font-medium text-blue-600">75% Match</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">Renewable Energy</Badge>
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">Solar Design</Badge>
+                          <Badge variant="outline" className="text-[10px] bg-primary/5">Site Planning</Badge>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium text-primary">SAR 22,000 - 30,000</span>
+                          <span className="text-muted-foreground">Est. 4-6 weeks</span>
+                        </div>
+
+                        <div className="pt-2 border-t border-border/40">
+                          <p className="text-xs text-muted-foreground flex items-start gap-2">
+                            <Brain className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                            Expanding to renewable energy could increase your profile visibility by 35% based on market trends.
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
                   </div>
                 )}
 
                 {activeTab === 'analytics' && (
-                  <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.successRate')}</h4>
-                      <div className="text-3xl font-bold text-primary mb-1">94.2%</div>
-                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.successRateChange')}</p>
+                  <div className="h-full overflow-y-auto p-4 space-y-4">
+                    <h4 className="text-base font-bold mb-4">AI Performance Insights</h4>
+                    
+                    {/* AI Metrics Grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <Card className="border-border/50">
+                        <div className="p-4 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <div className="bg-green-500/10 p-2 rounded-lg">
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                            </div>
+                            <span className="text-xs text-muted-foreground">Match Accuracy</span>
+                          </div>
+                          <div className="text-2xl font-bold tracking-tight">94.8%</div>
+                          <div className="flex items-center gap-1 text-xs text-green-600">
+                            <TrendingUp className="h-3 w-3" />
+                            <span>+2.4%</span>
+                          </div>
+                        </div>
+                      </Card>
+
+                      <Card className="border-border/50">
+                        <div className="p-4 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <div className="bg-blue-500/10 p-2 rounded-lg">
+                              <MessageSquare className="h-4 w-4 text-blue-600" />
+                            </div>
+                            <span className="text-xs text-muted-foreground">Conversations</span>
+                          </div>
+                          <div className="text-2xl font-bold tracking-tight">1,247</div>
+                          <div className="flex items-center gap-1 text-xs text-blue-600">
+                            <TrendingUp className="h-3 w-3" />
+                            <span>+156 this month</span>
+                          </div>
+                        </div>
+                      </Card>
+
+                      <Card className="border-border/50">
+                        <div className="p-4 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <div className="bg-purple-500/10 p-2 rounded-lg">
+                              <Zap className="h-4 w-4 text-purple-600" />
+                            </div>
+                            <span className="text-xs text-muted-foreground">Avg Response</span>
+                          </div>
+                          <div className="text-2xl font-bold tracking-tight">1.8s</div>
+                          <div className="flex items-center gap-1 text-xs text-green-600">
+                            <TrendingUp className="h-3 w-3" />
+                            <span>15% faster</span>
+                          </div>
+                        </div>
                     </Card>
-                    <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.responseTime')}</h4>
-                      <div className="text-3xl font-bold text-primary mb-1">2.3h</div>
-                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.responseTimeChange')}</p>
+
+                      <Card className="border-border/50">
+                        <div className="p-4 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <div className="bg-amber-500/10 p-2 rounded-lg">
+                              <Target className="h-4 w-4 text-amber-600" />
+                            </div>
+                            <span className="text-xs text-muted-foreground">Success Rate</span>
+                          </div>
+                          <div className="text-2xl font-bold tracking-tight">87.3%</div>
+                          <div className="flex items-center gap-1 text-xs text-green-600">
+                            <TrendingUp className="h-3 w-3" />
+                            <span>+5.1%</span>
+                          </div>
+                        </div>
                     </Card>
-                    <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.totalProjects')}</h4>
-                      <div className="text-3xl font-bold text-primary mb-1">1,247</div>
-                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.totalProjectsChange')}</p>
+                    </div>
+
+                    {/* AI Learning Progress */}
+                    <Card className="border-border/50">
+                      <div className="p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="bg-primary/10 p-2 rounded-lg">
+                              <Brain className="h-4 w-4 text-primary" />
+                            </div>
+                            <div>
+                              <h5 className="font-bold text-sm">AI Learning Progress</h5>
+                              <p className="text-xs text-muted-foreground">Continuous improvement from interactions</p>
+                            </div>
+                          </div>
+                          <Badge className="bg-primary/10 text-primary border-0 text-[10px]">Active</Badge>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Engineer Matching</span>
+                              <span className="font-medium text-primary">96%</span>
+                            </div>
+                            <Progress value={96} className="h-1.5" />
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Cost Estimation</span>
+                              <span className="font-medium text-primary">92%</span>
+                            </div>
+                            <Progress value={92} className="h-1.5" />
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Timeline Prediction</span>
+                              <span className="font-medium text-primary">88%</span>
+                            </div>
+                            <Progress value={88} className="h-1.5" />
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">SCE Compliance Check</span>
+                              <span className="font-medium text-primary">94%</span>
+                            </div>
+                            <Progress value={94} className="h-1.5" />
+                          </div>
+                        </div>
+                      </div>
                     </Card>
-                    <Card className="p-4 bg-background">
-                      <h4 className="font-semibold mb-2">{t('aiAssistant.analytics.satisfaction')}</h4>
-                      <div className="text-3xl font-bold text-primary mb-1">4.8★</div>
-                      <p className="text-sm text-muted-foreground">{t('aiAssistant.analytics.satisfactionChange')}</p>
+
+                    {/* Recent AI Activities */}
+                    <Card className="border-border/50">
+                      <div className="p-4">
+                        <h5 className="font-bold text-sm mb-3">Recent AI Activities</h5>
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2 text-xs">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600 mt-0.5 flex-shrink-0" />
+                            <div className="flex-1">
+                              <p className="text-foreground">Matched 3 engineers for HVAC project in Riyadh</p>
+                              <p className="text-muted-foreground">2 minutes ago</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2 text-xs">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600 mt-0.5 flex-shrink-0" />
+                            <div className="flex-1">
+                              <p className="text-foreground">Estimated project cost: SAR 18,000-25,000</p>
+                              <p className="text-muted-foreground">5 minutes ago</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2 text-xs">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-600 mt-0.5 flex-shrink-0" />
+                            <div className="flex-1">
+                              <p className="text-foreground">Verified SCE compliance for 2 candidates</p>
+                              <p className="text-muted-foreground">12 minutes ago</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2 text-xs">
+                            <AlertCircle className="h-3.5 w-3.5 text-amber-600 mt-0.5 flex-shrink-0" />
+                            <div className="flex-1">
+                              <p className="text-foreground">Recommended expanding skills to renewable energy</p>
+                              <p className="text-muted-foreground">18 minutes ago</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </Card>
                   </div>
                 )}
                 </div>
               </div>
             </div>
-          </ContainerScroll>
 
           {/* Feature Section */}
           <div className="mt-[100px]">

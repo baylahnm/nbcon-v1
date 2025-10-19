@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useId } from 'react';
+import React, { useState, useEffect, useRef, useId } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "../1-HomePage/others/components/ui/card";
 import { Button } from "../1-HomePage/others/components/ui/button";
@@ -455,7 +455,7 @@ export default function SubscriptionPage() {
           <CardContent className="p-4 bg-background rounded-b-xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {subscription.plan.features.slice(0, 4).map((feature, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
+                <div key={`${subscription.plan.id}-feature-preview-${index}-${feature.substring(0, 20)}`} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
                   <Check className="h-4 w-4 text-success flex-shrink-0" />
                   <span className="text-sm">{feature}</span>
                 </div>
@@ -584,7 +584,7 @@ export default function SubscriptionPage() {
 
                     <ul className="text-muted-foreground space-y-2 text-xs">
                       {plan.features.slice(0, 5).map((feature, index) => (
-                        <li key={index} className="flex items-center gap-2">
+                        <li key={`${plan.id}-feature-${index}-${feature.substring(0, 15)}`} className="flex items-center gap-2">
                           <Check className="h-3 w-3 text-primary flex-shrink-0" />
                           {feature}
                         </li>
@@ -683,9 +683,8 @@ export default function SubscriptionPage() {
               </TableHeader>
               <TableBody>
                 {subscription.billingHistory.map((billing, index) => (
-                  <>
+                  <React.Fragment key={`billing-${billing.date}-${billing.amount}-${index}`}>
                     <TableRow 
-                      key={index} 
                       className="hover:bg-muted/50 transition-colors cursor-pointer"
                       onClick={() => setExpandedBillingRow(expandedBillingRow === index ? null : index)}
                     >
@@ -739,7 +738,7 @@ export default function SubscriptionPage() {
                     {/* Expanded Row Content */}
                     <AnimatePresence>
                       {expandedBillingRow === index && (
-                        <TableRow key={`expanded-${index}`}>
+                        <TableRow>
                           <TableCell colSpan={7} className="p-0 border-0">
                             <motion.div
                               initial={{ height: 0, opacity: 0 }}
@@ -830,7 +829,7 @@ export default function SubscriptionPage() {
                         </TableRow>
                       )}
                     </AnimatePresence>
-                  </>
+                  </React.Fragment>
                 ))}
               </TableBody>
             </Table>
@@ -886,7 +885,7 @@ export default function SubscriptionPage() {
                     {/* All Features */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {subscription.plan.features.map((feature, index) => (
-                        <div key={index} className="flex items-start gap-3 p-4 bg-success/5 rounded-lg border border-success/20">
+                        <div key={`${subscription.plan.id}-modal-feature-${index}-${feature.substring(0, 20)}`} className="flex items-start gap-3 p-4 bg-success/5 rounded-lg border border-success/20">
                           <div className="bg-success/10 p-2 rounded-lg shrink-0">
                             <Check className="h-5 w-5 text-success" />
                           </div>

@@ -125,8 +125,7 @@ export default function PricingSection6() {
 
   return (
     <div
-      className=" min-h-screen  mx-auto relative bg-background overflow-hidden"
-      style={{ paddingBottom: '130px' }}
+      className="min-h-screen mx-auto relative bg-background overflow-hidden py-20 md:py-32 lg:py-40 px-6 md:px-8 lg:px-12"
       ref={pricingRef}
     >
 

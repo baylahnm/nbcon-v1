@@ -3,8 +3,8 @@ import { Phone, Award, MapPin, Home, Briefcase, MessageSquare, BarChart3, Users,
 
 const WhyChooseUs = () => {
   return (
-    <section className="py-16 px-6 md:py-[200px] md:px-0">
-      <div className="container mx-auto px-0">
+    <section className="py-16 md:py-24 lg:py-32 px-6 md:px-8 lg:px-12">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Column - Interactive Dashboard Demo */}
           <div className="relative">

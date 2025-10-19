@@ -42,7 +42,8 @@ export function FeaturesSectionWithBentoGrid() {
     },
   ];
   return (
-    <div className="relative z-20 py-10 lg:py-40 max-w-7xl mx-auto">
+    <section className="py-20 md:py-32 lg:py-40 px-6 md:px-8 lg:px-12 bg-background">
+    <div className="relative z-10 max-w-7xl mx-auto">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('features.title')}</h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -62,6 +63,7 @@ export function FeaturesSectionWithBentoGrid() {
         </div>
       </div>
     </div>
+    </section>
   );
 }
 

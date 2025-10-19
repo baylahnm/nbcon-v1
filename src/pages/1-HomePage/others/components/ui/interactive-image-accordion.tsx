@@ -81,7 +81,7 @@ export function InteractiveImageAccordion() {
 
   return (
     <div className="bg-background font-sans">
-      <section className="container mx-auto px-4 py-12 md:py-24">
+      <section className="container mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-24 lg:py-32">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           
           {/* Left Side: Text Content */}

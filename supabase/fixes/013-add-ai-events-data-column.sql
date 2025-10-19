@@ -57,26 +57,28 @@ BEGIN
 END $$;
 
 -- =============================================================================
--- TEST QUERY
+-- TEST QUERY (Optional - Run from application context only)
 -- =============================================================================
 
--- Test insert with data column
--- This should NOT fail anymore
+-- NOTE: Test insert requires authenticated user context (auth.uid())
+-- The verification block above already confirms the column exists
+-- To test from application: AI Assistant page will log events automatically
+
+/*
+-- Test insert with data column (only works in authenticated context)
 INSERT INTO ai_events (
   user_id, 
   event_type, 
-  service_mode, 
   data
 ) VALUES (
   auth.uid(),
   'test_event',
-  'general',
-  '{"test": "verification", "timestamp": "2025-10-18"}'::jsonb
-)
-ON CONFLICT DO NOTHING;
+  '{"test": "verification", "timestamp": "2025-10-18", "status": "success"}'::jsonb
+);
 
--- Clean up test data
-DELETE FROM ai_events WHERE event_type = 'test_event';
+-- Clean up
+DELETE FROM ai_events WHERE event_type = 'test_event' AND user_id = auth.uid();
+*/
 
 -- =============================================================================
 -- ROLLBACK (if needed)
@@ -90,11 +92,13 @@ DELETE FROM ai_events WHERE event_type = 'test_event';
 -- SUCCESS MESSAGE
 -- =============================================================================
 
-RAISE NOTICE '';
-RAISE NOTICE '====================================';
-RAISE NOTICE '✅ FIX #013 APPLIED SUCCESSFULLY';
-RAISE NOTICE '====================================';
-RAISE NOTICE 'AI events logging is now working!';
-RAISE NOTICE 'Analytics tracking restored.';
-RAISE NOTICE '';
-
+DO $$
+BEGIN
+  RAISE NOTICE '';
+  RAISE NOTICE '====================================';
+  RAISE NOTICE '✅ FIX #013 APPLIED SUCCESSFULLY';
+  RAISE NOTICE '====================================';
+  RAISE NOTICE 'AI events logging is now working!';
+  RAISE NOTICE 'Analytics tracking restored.';
+  RAISE NOTICE '';
+END $$;

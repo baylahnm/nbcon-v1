@@ -61,15 +61,17 @@ export function MiniEarningsCalculator({ onOpenCalculator }: MiniEarningsCalcula
         </div>
       </div>
 
-      {/* Action */}
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className="w-full text-xs"
-        onClick={onOpenCalculator}
-      >
-        Open Full Calculator →
-      </Button>
+      {/* Action - Only show if callback is provided */}
+      {onOpenCalculator && (
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="w-full text-xs"
+          onClick={onOpenCalculator}
+        >
+          Open Full Calculator →
+        </Button>
+      )}
     </div>
   );
 }
