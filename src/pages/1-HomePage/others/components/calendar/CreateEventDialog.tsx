@@ -33,6 +33,9 @@ interface CreateEventDialogProps {
   mode?: 'create' | 'edit';
 }
 
+// Type for theme tokens
+type ThemeTokens = Record<string, string>;
+
 // Theme-aware label component
 const ThemedLabel = ({ 
   htmlFor, 
@@ -41,7 +44,7 @@ const ThemedLabel = ({
 }: { 
   htmlFor: string; 
   children: React.ReactNode; 
-  themeTokens: any;
+  themeTokens: ThemeTokens;
 }) => (
   <Label 
     htmlFor={htmlFor}
@@ -65,7 +68,7 @@ const ThemedDateTimeInput = ({
   value: string; 
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; 
   error?: string;
-  themeTokens: any;
+  themeTokens: ThemeTokens;
 }) => {
   return (
     <div className="relative">
@@ -99,7 +102,7 @@ const ThemedDateTimeInput = ({
             ? `hsl(${themeTokens['--destructive'] || '4 65% 48%'})`
             : `hsl(${themeTokens['--border'] || '0 0% 90%'})`,
           color: `hsl(${themeTokens['--foreground'] || '0 0% 3.9%'})`,
-          // @ts-ignore - CSS custom property
+          // @ts-expect-error - CSS custom property not in CSSProperties type
           '--tw-ring-color': `hsl(${themeTokens['--ring'] || '142 65% 47%'})`,
           transition: 'all 0.2s ease-in-out',
           // Custom properties for datetime picker
@@ -140,8 +143,8 @@ const ThemedDateTimeInput = ({
   );
 };
 
-// Theme-aware icon component
-const EventTypeIcon = ({ type, themeTokens }: { type: EventType; themeTokens: any }) => {
+// Theme-aware icon component  
+const EventTypeIcon = ({ type, themeTokens }: { type: EventType; themeTokens: ThemeTokens }) => {
   const getIconStyle = (type: EventType) => {
     const styles = {
       job: {
@@ -227,7 +230,7 @@ const eventStatuses: { value: EventStatus; label: string }[] = [
   { value: 'cancelled', label: 'Cancelled' }
 ];
 
-const getPriorityStyle = (priority: string, themeTokens: any) => {
+const getPriorityStyle = (priority: string, themeTokens: ThemeTokens) => {
   const styles = {
     High: {
       backgroundColor: `hsl(${themeTokens['--destructive'] || '4 65% 48%'} / 0.1)`,
@@ -306,7 +309,7 @@ export default function CreateEventDialog({
   // Inject custom CSS for datetime picker theming
   useEffect(() => {
     const styleId = 'datetime-picker-theme';
-    let existingStyle = document.getElementById(styleId);
+    const existingStyle = document.getElementById(styleId);
     
     if (existingStyle) {
       existingStyle.remove();
@@ -468,7 +471,7 @@ export default function CreateEventDialog({
       setErrors({});
       setNewTag('');
     }
-  }, [isOpen, initialEvent, initialDate]);
+  }, [isOpen, initialEvent, initialDate, buildInitialFormData]);
 
   const resetForm = () => {
     setFormData(buildInitialFormData(initialEvent));
@@ -480,7 +483,7 @@ export default function CreateEventDialog({
   const dialogDescription = isEditMode ? 'Update the event details below.' : 'Add a new event to your calendar. Fill in the details below.';
   const submitLabel = isEditMode ? 'Save Changes' : 'Create Event';
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | boolean | string[] | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {

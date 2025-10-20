@@ -20,7 +20,7 @@ type Message = {
   read_at?: string | null;
   created_at: string;
   metadata?: Record<string, unknown> | null;
-  reactions?: any[] | null;
+  reactions?: Array<{ emoji: string; count: number; users: string[] }> | null;
   sender_profile?: {
     first_name: string;
     last_name: string;

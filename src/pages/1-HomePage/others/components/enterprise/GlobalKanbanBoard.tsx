@@ -121,7 +121,17 @@ export function GlobalKanbanBoard() {
             setIsTaskModalOpen(false);
             setSelectedTask(undefined);
           }}
-          task={selectedTask}
+          task={{
+            id: selectedTask.id,
+            title: selectedTask.title,
+            description: selectedTask.description || '',
+            priority: (selectedTask.priority || 'Medium') as 'High' | 'Medium' | 'Low',
+            status: selectedTask.status === 'todo' ? 'Pending' : 
+                    selectedTask.status === 'in_progress' ? 'In Progress' : 
+                    selectedTask.status === 'done' ? 'Completed' : 'Pending',
+            assignee: selectedTask.assignees?.[0]?.name || '',
+            dueDate: selectedTask.dueDate || ''
+          }}
           projectId={selectedTask.project.id}
         />
       )}

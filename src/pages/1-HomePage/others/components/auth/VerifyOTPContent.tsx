@@ -104,11 +104,13 @@ export default function VerifyOTPContent({
 
         onOTPVerified(verifiedUser);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('OTP verification error:', error);
+      const errorMessage = error instanceof Error ? error.message : (language === 'ar' ? 'رمز التحقق غير صحيح' : 'Invalid verification code');
+      
       toast({
         title: language === 'ar' ? 'خطأ في التحقق' : 'Verification Failed',
-        description: error.message || (language === 'ar' ? 'رمز التحقق غير صحيح' : 'Invalid verification code'),
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

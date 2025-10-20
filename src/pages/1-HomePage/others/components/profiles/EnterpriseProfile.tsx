@@ -506,7 +506,7 @@ export function EnterpriseProfile() {
                     <Label>Profile Visibility</Label>
                     <Select
                       value={profileData.settings.profileVisibility}
-                      onValueChange={(value: any) => setProfileData(prev => ({
+                      onValueChange={(value: 'public' | 'professional' | 'private') => setProfileData(prev => ({
                         ...prev,
                         settings: { ...prev.settings, profileVisibility: value }
                       }))}

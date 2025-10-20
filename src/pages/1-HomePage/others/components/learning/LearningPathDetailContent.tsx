@@ -221,7 +221,7 @@ export function LearningPathDetailContent({ pathId, pathTitle, onBack, onStartCo
                   ].map((tab) => (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveView(tab.id as any)}
+                      onClick={() => setActiveView(tab.id as 'overview' | 'curriculum' | 'skills' | 'timeline')}
                       className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                         activeView === tab.id
                           ? 'border-primary text-primary'

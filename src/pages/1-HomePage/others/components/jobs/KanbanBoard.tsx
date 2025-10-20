@@ -79,7 +79,7 @@ export function KanbanBoard() {
   }, []);
 
   const handleColumnTaskCreate = (status: string) => {
-    return (taskData: any) => {
+    return (taskData: { title: string; description?: string; priority?: string; assignee?: string; dueDate?: string }) => {
       addTask({ ...taskData, status });
     };
   };

@@ -1,5 +1,9 @@
 # 🌐 Browser Tools MCP Guide
 
+**Last Updated:** December 20, 2024  
+**Version:** 1.0  
+**Status:** Production Ready
+
 ## Available Browser MCP Servers
 
 Your Cursor setup now includes **3 powerful browser automation tools**:

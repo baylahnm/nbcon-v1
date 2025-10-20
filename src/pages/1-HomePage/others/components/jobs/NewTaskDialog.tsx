@@ -99,7 +99,7 @@ export function NewTaskDialog({
       setErrors({});
       setNewTag('');
     }
-  }, [open, defaultStatus, availableCategories]);
+  }, [open, defaultStatus, availableCategories, initialStatus]);
 
   // Validation
   const validateForm = (): boolean => {

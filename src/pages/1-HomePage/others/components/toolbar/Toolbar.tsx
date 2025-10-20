@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // Mock useDraggable - the actual hook is incompatible with this usage
-const useDraggable = (options?: any) => ({ 
+const useDraggable = (options?: { initialPosition?: { x: number; y: number }; bounds?: string; disabled?: boolean }) => ({ 
   position: { x: 50, y: 50 }, 
   isDragging: false, 
   dragRef: { current: null } as React.RefObject<HTMLDivElement>,

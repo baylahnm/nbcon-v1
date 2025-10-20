@@ -6,9 +6,9 @@
 
 ---
 
-## 🎯 Essential Documentation (6 Files)
+## 🎯 Essential Documentation (7 Files)
 
-The complete nbcon documentation has been consolidated into **6 essential guides**:
+The complete nbcon documentation has been consolidated into **7 essential guides**:
 
 ### 1. **[1-GETTING_STARTED.md](1-GETTING_STARTED.md)** 🚀
 **Start here!** Quick start guide, project overview, authentication basics, database setup.
@@ -113,6 +113,28 @@ Complete Client Portal documentation - all 14 pages, features, tickets, verifica
 
 ---
 
+### 7. **[7-AI_ASSISTANT_GUIDE.md](7-AI_ASSISTANT_GUIDE.md)** 🤖
+Complete AI Assistant documentation - setup, features, API reference, troubleshooting.
+
+**Read this if you're:**
+- Setting up AI Assistant
+- Understanding AI features
+- Working with OpenAI integration
+- Troubleshooting AI issues
+- Managing AI prompts and conversations
+
+**Time:** 20-25 minutes
+
+**Includes:**
+- Complete setup instructions
+- 30 construction-specific prompts
+- Role-based AI assistance
+- API reference and examples
+- Database schema details
+- Troubleshooting guide
+
+---
+
 ## 📖 Quick Navigation
 
 | I want to... | Go to... |
@@ -152,12 +174,12 @@ Email: info@nbcon.org
 Password: Qazwsx1234@
 ```
 
-### Recent Updates (v2.1)
-- ✅ **UI Component Fixes** - All form components now use consistent theme colors
-- ✅ **Switch Component** - Added proper borders for better visual definition
-- ✅ **ThreadList Component** - Fixed conversation name truncation (10 chars + ellipsis)
-- ✅ **SelectTrigger Styling** - Updated default styling for theme consistency
-- ✅ **Card Width Fixes** - ThreadList cards now properly fit container width
+### Recent Updates (v2.2)
+- ✅ **AI Assistant Integration** - Full OpenAI backend with 30 construction-specific prompts
+- ✅ **ScrollArea Component** - Fixed vertical scrolling with proper overflow handling
+- ✅ **Edge Function Deployment** - AI chat function ready for production
+- ✅ **TypeScript Fixes** - Resolved Deno import errors in Supabase functions
+- ✅ **Database Schema** - AI tables ready with proper RLS policies
 
 ---
 
@@ -359,13 +381,14 @@ A: See 3-UI_DESIGN_SYSTEM.md → Component Examples
 
 ---
 
-**Documentation Version:** 3.0  
-**Core Guides:** 6 essential guides (numbered 0-5)  
+**Documentation Version:** 3.1  
+**Core Guides:** 7 essential guides (numbered 0-6)  
 **Portal Guides:** 1 of 4 complete (6-CLIENT_FREE_PORTAL ✅)  
+**AI Assistant Guide:** 7-AI_ASSISTANT_GUIDE ✅  
 **Client Portal Files:** **1** (consolidated from 14, **93% reduction**) ✅  
 **Tickets Status:** 4/5 Closed ✅ | 1/5 Pending ⚠️  
 **Maintained By:** Development Team  
-**Last Review:** October 19, 2025
+**Last Review:** December 20, 2024
 
 **Quality:** Production-grade, comprehensive, ultra-consolidated ✅  
 **Coverage:** Client Portal 100% documented + tested + 1 file | Engineer, Enterprise, Admin 🔜

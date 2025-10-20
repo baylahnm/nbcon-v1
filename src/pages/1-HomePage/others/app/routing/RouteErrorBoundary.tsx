@@ -18,17 +18,21 @@ class InternalErrorBoundary extends React.Component<{ children: React.ReactNode 
 
   render() {
     if (this.state.hasError) {
+      const errorMessage = this.state.error instanceof Error 
+        ? this.state.error.message 
+        : String(this.state.error);
+      
       return (
         <div className="p-6">
           <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
-          <pre className="text-sm opacity-70 mb-4 whitespace-pre-wrap">{String((this.state.error as any)?.message ?? this.state.error)}</pre>
+          <pre className="text-sm opacity-70 mb-4 whitespace-pre-wrap">{errorMessage}</pre>
           <button className="px-4 py-2 rounded bg-black text-white" onClick={this.handleReset}>
             Retry
           </button>
         </div>
       );
     }
-    return this.props.children as any;
+    return this.props.children;
   }
 }
 

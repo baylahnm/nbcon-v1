@@ -77,7 +77,7 @@ export function AchievementDialog({ isOpen, onClose, onSave, achievement, title 
             <Label htmlFor="type">Type</Label>
             <Select
               value={formData.type}
-              onValueChange={(value: any) => setFormData({ ...formData, type: value })}
+              onValueChange={(value: string) => setFormData({ ...formData, type: value })}
             >
               <SelectTrigger>
                 <SelectValue />

@@ -1,8 +1,8 @@
 # 🚀 nbcon - Getting Started Guide
 
-**Last Updated:** December 19, 2024  
+**Last Updated:** December 20, 2024  
 **Status:** Production Ready  
-**Version:** 2.1
+**Version:** 2.2
 
 ---
 
@@ -475,13 +475,13 @@ formatDate(new Date())  // "Jan 15, 2024" (en) | "١٥ يناير ٢٠٢٤" (ar)
 13. **Help** - Support articles and contact options
 14. **Settings** - Account preferences and configuration
 
-### Recent Redesigns (October 2025)
+### Recent Updates (December 2024)
 
-**✅ Network Page** - Professional networking with connection strength indicators, rich metadata, activity timeline  
-**✅ Learning Center (Engineer)** - Full Udemy-style course player, dynamic pages, progress tracking, certificates  
-**✅ Learning Center (Client)** - Udemy-style redesign with enhanced course cards, video preview modal, SAR pricing, horizontal scrolling  
-**✅ Jobs Page** - Product-card design with AI matching, earnings calculator, skills gap analysis  
-**✅ Profile Page** - Complete LinkedIn-style profile with Supabase integration
+**✅ AI Assistant Integration** - Full OpenAI backend with 30 construction-specific prompts, role-based assistance  
+**✅ ScrollArea Component** - Fixed vertical scrolling with proper overflow handling  
+**✅ Edge Function Deployment** - AI chat function ready for production  
+**✅ TypeScript Fixes** - Resolved Deno import errors in Supabase functions  
+**✅ Database Schema** - AI tables ready with proper RLS policies
 
 ---
 

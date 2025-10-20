@@ -264,10 +264,11 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
 
         onAuthSuccess(authenticatedUser);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Authentication error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.';
       setErrors({ 
-        submit: language === 'ar' ? 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.' : error.message || 'Login failed. Please try again.' 
+        submit: language === 'ar' ? 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.' : errorMessage
       });
     } finally {
       setIsLoading(false);
@@ -385,12 +386,14 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
           ? 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد الخاص بك.'
           : 'Password reset link has been sent to your email. Please check your inbox.',
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : (language === 'ar' 
+        ? 'فشل في إرسال رابط إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى.'
+        : 'Failed to send password reset link. Please try again.');
+      
       toast({
         title: language === 'ar' ? 'خطأ' : 'Error',
-        description: error.message || (language === 'ar' 
-          ? 'فشل في إرسال رابط إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى.'
-          : 'Failed to send password reset link. Please try again.'),
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

@@ -86,7 +86,7 @@ export function EngineersTable({ engineers, onEngineerClick, currentUserId }: En
   const locations = Array.from(new Set(engineers.map(e => e.location.split(',')[0].trim())));
 
   // Filter engineers
-  let filteredEngineers = engineers.filter(engineer => {
+  const filteredEngineers = engineers.filter(engineer => {
     const matchesSearch = engineer.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesLocation = locationFilter === "all" || engineer.location.includes(locationFilter);
     const matchesGender = genderFilter === "all" || engineer.gender === genderFilter;

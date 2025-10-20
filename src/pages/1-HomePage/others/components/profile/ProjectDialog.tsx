@@ -169,7 +169,7 @@ export function ProjectDialog({ isOpen, onClose, onSave, project, title = "Add P
             <Label htmlFor="status">Project Status</Label>
             <Select
               value={formData.status}
-              onValueChange={(value: any) => setFormData({ ...formData, status: value })}
+              onValueChange={(value: string) => setFormData({ ...formData, status: value })}
             >
               <SelectTrigger>
                 <SelectValue />

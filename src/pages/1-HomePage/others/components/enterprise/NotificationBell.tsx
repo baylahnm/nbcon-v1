@@ -38,9 +38,9 @@ export function NotificationBell() {
         });
       }
     }
-  }, [unreadNotifications.length]);
+  }, [unreadNotifications.length, markNotificationRead, setSelectedProject]);
 
-  const handleNotificationClick = (notification: any) => {
+  const handleNotificationClick = (notification: { id: string; payload: { projectId?: string; title: string; message: string } }) => {
     markNotificationRead(notification.id);
     if (notification.payload.projectId) {
       setSelectedProject(notification.payload.projectId);

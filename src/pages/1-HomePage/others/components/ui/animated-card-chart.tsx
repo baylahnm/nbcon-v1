@@ -6,7 +6,9 @@ import { cn } from "../../lib/utils";
 
 // --- Card Components ---
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  // Extends HTMLAttributes to support all standard div props
+}
 
 export function AnimatedCard({ className, ...props }: CardProps) {
   return (

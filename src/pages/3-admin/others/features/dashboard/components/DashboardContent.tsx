@@ -330,7 +330,7 @@ export function DashboardContent() {
     console.log(`Border action: ${action}`);
     
     setContainerLayout(prev => {
-      let newLayout = { ...prev };
+      const newLayout = { ...prev };
       
       switch (action) {
         case 'add-column-left':

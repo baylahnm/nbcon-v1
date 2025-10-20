@@ -113,7 +113,7 @@ const HomePage = () => {
     return () => {
       if (timeoutId) window.clearTimeout(timeoutId);
     };
-  }, [charIndex, isDeleting, typingIndex]);
+  }, [charIndex, isDeleting, typingIndex, typingTexts]);
   const [activeTab, setActiveTab] = useState<'clients' | 'engineers' | 'enterprises'>('clients');
   const [currentTestimonialPage, setCurrentTestimonialPage] = useState(0);
   

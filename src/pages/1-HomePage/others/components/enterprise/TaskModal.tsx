@@ -8,12 +8,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from '../ui/badge';
 import { Calendar, Clock, User, Flag } from 'lucide-react';
 
+interface Task {
+  id?: string;
+  title: string;
+  description: string;
+  priority: 'High' | 'Medium' | 'Low';
+  status: 'Pending' | 'In Progress' | 'Completed';
+  assignee: string;
+  dueDate: string;
+}
+
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   projectId: string;
-  task?: any;
-  onSave?: (task: any) => void;
+  task?: Task;
+  onSave?: (task: Task) => void;
 }
 
 export function TaskModal({ isOpen, onClose, projectId, task, onSave }: TaskModalProps) {
@@ -69,7 +79,7 @@ export function TaskModal({ isOpen, onClose, projectId, task, onSave }: TaskModa
               <Label htmlFor="priority">Priority</Label>
               <Select
                 value={formData.priority}
-                onValueChange={(value) => setFormData({ ...formData, priority: value })}
+                onValueChange={(value: 'High' | 'Medium' | 'Low') => setFormData({ ...formData, priority: value })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -86,7 +96,7 @@ export function TaskModal({ isOpen, onClose, projectId, task, onSave }: TaskModa
               <Label htmlFor="status">Status</Label>
               <Select
                 value={formData.status}
-                onValueChange={(value) => setFormData({ ...formData, status: value })}
+                onValueChange={(value: 'Pending' | 'In Progress' | 'Completed') => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -95,7 +105,6 @@ export function TaskModal({ isOpen, onClose, projectId, task, onSave }: TaskModa
                   <SelectItem value="Pending">Pending</SelectItem>
                   <SelectItem value="In Progress">In Progress</SelectItem>
                   <SelectItem value="Completed">Completed</SelectItem>
-                  <SelectItem value="Cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
             </div>

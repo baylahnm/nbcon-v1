@@ -73,7 +73,7 @@ const defaultFilters: ActiveFilters = {
 export function LearningFilters({ options, activeFilters, onFiltersChange, resultsCount }: LearningFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleFilterChange = (key: keyof ActiveFilters, value: any) => {
+  const handleFilterChange = (key: keyof ActiveFilters, value: string | string[] | number | boolean) => {
     onFiltersChange({
       ...activeFilters,
       [key]: value

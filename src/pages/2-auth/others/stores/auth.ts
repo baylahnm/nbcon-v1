@@ -302,7 +302,7 @@ export const initializeAuth = () => {
 
   const syncFromStorage = () => {
     // First try to get user from the new storage key
-    let storedUser = getStoredUser();
+    const storedUser = getStoredUser();
     
     // If no user found, try to migrate from the old storage key
     if (!storedUser && typeof window !== 'undefined') {

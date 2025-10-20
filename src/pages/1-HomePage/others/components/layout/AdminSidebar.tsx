@@ -10,11 +10,12 @@ import {
   LogOut, User, ChevronDown
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { LucideIcon } from 'lucide-react';
 
 interface AdminMenuItem {
   title: string;
   url: string;
-  icon: any;
+  icon: LucideIcon;
   group?: string;
 }
 

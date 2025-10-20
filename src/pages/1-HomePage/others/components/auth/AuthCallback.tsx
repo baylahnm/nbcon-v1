@@ -155,7 +155,18 @@ export function AuthCallback() {
 }
 
 // Function to ensure user profile exists in database
-const ensureUserProfileExists = async (user: any) => {
+// Note: This function is currently unused but kept for reference
+const ensureUserProfileExists = async (user: { 
+  id: string; 
+  email?: string; 
+  name: string;
+  role: 'engineer' | 'client' | 'enterprise' | 'admin';
+  phone?: string;
+  location: string;
+  language: string;
+  avatar?: string;
+  user_metadata?: { name?: string; full_name?: string } 
+}) => {
   try {
     // Check if profile already exists
     const { data: existingProfile } = await supabase
