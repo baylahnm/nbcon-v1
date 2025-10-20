@@ -2173,6 +2173,45 @@ All colors MUST be HSL.
   display: none !important;
 }
 
+/* Force visible scrollbar for Browse Engineers page - Always show with full opacity */
+.browse-engineers-scroll [data-slot="scroll-area-viewport"] {
+  overflow-x: scroll !important; /* Force scrollbar to always show */
+}
+
+.browse-engineers-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+  height: 12px; /* Larger for better visibility */
+  display: block !important; /* Force display */
+}
+
+.browse-engineers-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.8);
+  border-radius: 6px;
+  border: 1px solid hsl(var(--border));
+}
+
+.browse-engineers-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 1) !important; /* 100% OPACITY */
+  border-radius: 6px;
+  border: 2px solid hsl(var(--background));
+  min-width: 50px; /* Minimum thumb width for visibility */
+}
+
+.browse-engineers-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary-dark) / 1) !important; /* 100% OPACITY */
+  box-shadow: 0 0 6px hsl(var(--primary) / 0.5);
+}
+
+/* Firefox - Browse Engineers page specific */
+.browse-engineers-scroll [data-slot="scroll-area-viewport"] {
+  scrollbar-width: auto !important; /* Show full scrollbar, not thin */
+  scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
+}
+
+/* Hide Radix UI's overlay scrollbar component */
+.browse-engineers-scroll [data-slot="scroll-area-scrollbar"] {
+  display: none !important; /* Hide the overlay scrollbar */
+}
+
 /* Scroll Shadow Effect for Modal Tabs */
 .modal-scroll-shadow {
   position: relative;

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Avatar, AvatarFallback, AvatarImage } from '../1-HomePage/others/components/ui/avatar';
 import { Progress } from '../1-HomePage/others/components/ui/progress';
 import { useOutsideClick } from '../1-HomePage/others/hooks/use-outside-click';
+import XScroll from '@/pages/1-HomePage/others/components/ui/x-scroll';
 import { 
   Users, 
   Search, 
@@ -578,8 +579,11 @@ export default function BrowseEngineersPage() {
             <Button
               variant={viewMode === 'grid' ? 'default' : 'outline'}
               size="sm"
-              className="h-8 text-xs"
-              onClick={() => setViewMode('grid')}
+              className={`h-8 text-xs transition-all ${viewMode === 'grid' ? 'shadow-sm shadow-primary/50' : ''}`}
+              onClick={() => {
+                console.log('List View clicked, setting viewMode to grid');
+                setViewMode('grid');
+              }}
             >
               <List className="h-3.5 w-3.5 mr-1.5" />
               List View
@@ -587,8 +591,11 @@ export default function BrowseEngineersPage() {
             <Button
               variant={viewMode === 'map' ? 'default' : 'outline'}
               size="sm"
-              className="h-8 text-xs"
-              onClick={() => setViewMode('map')}
+              className={`h-8 text-xs transition-all ${viewMode === 'map' ? 'shadow-sm shadow-primary/50' : ''}`}
+              onClick={() => {
+                console.log('Map View clicked, setting viewMode to map');
+                setViewMode('map');
+              }}
             >
               <MapIcon className="h-3.5 w-3.5 mr-1.5" />
               Map View
@@ -814,17 +821,20 @@ export default function BrowseEngineersPage() {
             </div>
 
             {/* Engineer Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {sortedEngineers.map((engineer) => (
-                <motion.div
-                  key={engineer.id}
-                  layoutId={`engineer-card-${engineer.id}-${id}`}
-                  onClick={() => setExpandedEngineer(engineer)}
-                  className="cursor-pointer"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0">
+            <div className="browse-engineers-scroll">
+              <XScroll>
+                <div className="flex space-x-4 p-1 pb-4">
+                  {sortedEngineers.map((engineer) => (
+                    <motion.div
+                      key={engineer.id}
+                      layoutId={`engineer-card-${engineer.id}-${id}`}
+                      onClick={() => setExpandedEngineer(engineer)}
+                      className="cursor-pointer flex-shrink-0"
+                      style={{ width: '350px' }}
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Card className="group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0">
                     {/* Header with Match Score */}
                     <div className="relative bg-gradient-to-br from-muted to-muted/50 p-4">
                       {engineer.matchScore && (
@@ -993,8 +1003,10 @@ export default function BrowseEngineersPage() {
                     </div>
                   </CardContent>
                 </Card>
-                </motion.div>
-              ))}
+                    </motion.div>
+                  ))}
+                </div>
+              </XScroll>
             </div>
 
             {/* Empty State */}

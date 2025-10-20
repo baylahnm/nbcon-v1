@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2024-12-20] - Browse Engineers Page - Horizontal Scroll Layout
+
+### ✅ Enhanced - UI/UX Improvements
+- **[HIGH]** Converted Browse Engineers page to horizontal scrollable card layout
+  - **Files Modified:**
+    - `src/pages/4-free/3-BrowseEngineersPage.tsx` - Converted grid to horizontal scroll + enhanced view mode buttons
+    - `src/index.css` - Added custom scrollbar styles for browse-engineers-scroll
+  - **Changes:**
+    - Changed from `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4` to horizontal scroll with XScroll component
+    - Set card width to 350px for consistent sizing
+    - Added smooth scrolling with visible custom scrollbar
+    - Enhanced List View and Map View buttons with active state styling (shadow-sm shadow-primary/50)
+    - Buttons now properly toggle between 'default' and 'outline' variants based on viewMode state
+    - Added transition-all class for smooth state transitions
+    - Added console logging for debugging button clicks
+    - Maintains all existing functionality (hover, click, animations)
+  - Applied: December 20, 2024
+  - Status: ✅ Complete
+  - Pattern: Same as /free/learning Trending Courses and Best Sellers sections
+
 ## [2024-12-20] - Code Quality Improvements - TypeScript & ESLint Cleanup
 
 ### ✅ Fixed - TypeScript Type Safety Improvements
