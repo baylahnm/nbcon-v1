@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
@@ -14,7 +14,7 @@ interface ClientQuickActionsHubProps {
   userRole?: string;
 }
 
-export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickActionsHubProps) {
+export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickActionsHubProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -206,7 +206,7 @@ export function ClientQuickActionsHub({ userRole = 'client' }: ClientQuickAction
       </Card>
     </div>
   );
-}
+});
 
 export default ClientQuickActionsHub;
 

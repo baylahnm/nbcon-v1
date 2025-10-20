@@ -2303,4 +2303,29 @@ All colors MUST be HSL.
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
   }
+
+  /* Custom scrollbar styling for projects - webkit browsers */
+  .projects-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .projects-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  .projects-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 4px;
+  }
+
+  .projects-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary-dark));
+  }
+
+  /* Firefox scrollbar for projects */
+  .projects-scroll [data-slot="scroll-area-viewport"] {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
+  }
 }

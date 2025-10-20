@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
@@ -125,7 +125,7 @@ const defaultActivities: ActivityItem[] = [
   },
 ];
 
-export function ClientRecentActivityFeed({ 
+export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({ 
   activities = defaultActivities, 
   maxItems = 10 
 }: ClientRecentActivityFeedProps) {
@@ -514,7 +514,7 @@ export function ClientRecentActivityFeed({
       )}
     </Card>
   );
-}
+});
 
 export default ClientRecentActivityFeed;
 

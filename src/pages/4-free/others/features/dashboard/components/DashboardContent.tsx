@@ -1,8 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { Home } from "lucide-react";
+import { useState } from 'react';
+import { Home, Bot, Plus, Users, ChevronDown, FileText, Calculator, Mail, Shield, Wrench, ClipboardList } from "lucide-react";
 import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
+import { Button } from '../../../../../1-HomePage/others/components/ui/button';
+import { Dialog, DialogContent } from '../../../../../1-HomePage/others/components/ui/dialog';
+import { ScrollArea } from '../../../../../1-HomePage/others/components/ui/scroll-area';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../../../1-HomePage/others/components/ui/dropdown-menu';
+import { ChatComposer } from '../../ai/components/ChatComposer';
 import { useAuthStore } from "../../../stores/auth";
 import { getUserDisplayName } from '../../../../../1-HomePage/others/lib/userUtils';
 
@@ -11,13 +17,26 @@ import { ClientOverviewStats } from './ClientOverviewStats';
 import { ClientQuickActionsHub } from './ClientQuickActionsHub';
 import { ClientActiveProjectsList } from './ClientActiveProjectsList';
 import { ClientRecentActivityFeed } from './ClientRecentActivityFeed';
+import { ChatPage } from '../../ai/ChatPage';
+import { MessageBubble } from '../../ai/components/MessageBubble';
+import { useAiStore } from '../../ai/store/useAiStore';
 
 export function DashboardContent() {
   const { profile } = useAuthStore();
   const navigate = useNavigate();
+  const [showFullChat, setShowFullChat] = useState(false);
+  const { getActiveMessages, settings, setComposerText, sendMessage } = useAiStore();
+  const activeMessages = getActiveMessages();
   
   // Get user display name
   const displayName = getUserDisplayName(profile);
+
+  // Handle AI prompt selection
+  const handlePromptSelect = async (prompt: string) => {
+    setComposerText(prompt);
+    // Optional: auto-submit the prompt
+    // await sendMessage(prompt);
+  };
 
   // Get role display
   const getRoleDisplay = () => {
@@ -58,11 +77,11 @@ export function DashboardContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+    <main className="min-h-screen bg-gradient-to-br from-background to-muted/10">
       <div className="p-4 space-y-4">
         
         {/* Header */}
-        <div className="pb-4 border-b border-border/40">
+        <header className="pb-4 border-b border-border/40" role="banner">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center justify-between">
               <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -83,30 +102,317 @@ export function DashboardContent() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </header>
+
+        {/* AI Assistant (Prominent, Top) */}
+        <section 
+          role="region" 
+          aria-label="AI Assistant"
+          style={{
+            border: '2px solid transparent',
+            borderRadius: '0.75rem',
+            backgroundImage: `
+              linear-gradient(hsl(var(--card)), hsl(var(--card))),
+              linear-gradient(135deg, hsl(var(--primary) / 0.18) 0%, transparent 60%)
+            `,
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+          }}
+        >
+          <Card className="bg-transparent border-0 shadow-none">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="relative overflow-hidden bg-gradient-to-t from-primary to-primary-dark p-3 rounded-xl ring-1 ring-primary/20 shadow-sm shadow-primary/50">
+                    <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--primary)/0.3)_50%,hsl(var(--primary))_100%)]"></span>
+                    <Bot className="h-5 w-5 text-primary-foreground relative z-10" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold tracking-tight">AI Assistant</h2>
+                    <p className="text-sm text-muted-foreground">How can I help you today?</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button className="h-9 text-xs">
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Start Project
+                  </Button>
+                  <Button variant="outline" className="h-9 text-xs">
+                    <Users className="h-3.5 w-3.5 mr-1.5" />
+                    Find Engineers
+                  </Button>
+                  <Button variant="ghost" className="h-9 text-xs" onClick={() => navigate('/free/ai')}>
+                    Open Full Chat
+                  </Button>
+                </div>
+              </div>
+
+              {/* Messages Preview (scrollable) */}
+              {activeMessages && activeMessages.length > 0 && (
+                <div className="mt-3 rounded-lg border border-border/40 bg-background">
+                  <ScrollArea className="relative flex-1 p-4 overflow-y-auto max-h-72">
+                    <div className="space-y-3">
+                      {activeMessages.slice(-6).map((message: any) => (
+                        <MessageBubble
+                          key={message.id}
+                          message={message}
+                          isRTL={settings?.rtl}
+                          showHijri={settings?.hijri}
+                          onCitationClick={() => {}}
+                          onImageDownload={() => {}}
+                          onRegenerate={() => {}}
+                          onFeedback={() => {}}
+                        />
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              )}
+
+              {/* Inline Chat Composer */}
+              <div className="mt-4 border-t border-border/40">
+                <ChatComposer />
+              </div>
+
+              {/* AI Prompt Templates */}
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-2">
+                {/* Project Planning */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Project Planning AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <FileText className="h-3 w-3" />
+                        <span>Project Planning</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64">
+                    <DropdownMenuLabel className="text-xs">Project Planning</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive project charter for a commercial building project in Saudi Arabia, including scope, objectives, stakeholders, and deliverables.")}>
+                      Create project charter for commercial building
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed construction schedule template for a typical commercial project, including phases, milestones, and dependencies.")}>
+                      Generate construction schedule template
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a feasibility study outline for a new construction project, covering technical, financial, and operational aspects.")}>
+                      Draft feasibility study outline
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Suggest risk mitigation strategies for construction projects, focusing on common risks in Saudi Arabia's construction industry.")}>
+                      Suggest risk mitigation strategies
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a detailed project milestone breakdown for a construction project, with key deliverables and timeline.")}>
+                      Create project milestone breakdown
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Cost & Budgeting */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Cost & Budgeting AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <Calculator className="h-3 w-3" />
+                        <span>Cost & Budgeting</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64">
+                    <DropdownMenuLabel className="text-xs">Cost & Budgeting</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Estimate the cost for a comprehensive site survey in Riyadh, including topographic survey, soil testing, and geotechnical investigation.")}>
+                      Estimate cost for site survey in Riyadh
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed Bill of Quantities (BOQ) template for a residential villa project, organized by work packages and CSI divisions.")}>
+                      Generate BOQ template for villa project
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Calculate material costs for foundation work including concrete, rebar, formwork, and excavation for a typical commercial building.")}>
+                      Calculate material costs for foundation work
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Analyze a budget variance report template showing planned vs actual costs, variances, and explanations for a construction project.")}>
+                      Analyze budget variance report
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a cash flow projection for the next 6 months of a construction project, including inflows, outflows, and net cash position.")}>
+                      Create cash flow projection
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Communication */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Communication AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <Mail className="h-3 w-3" />
+                        <span>Communication</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64">
+                    <DropdownMenuLabel className="text-xs">Communication</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs">
+                      Draft client progress update email
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Write contractor coordination letter
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Create weekly site report template
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Draft RFI (Request for Information)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Generate meeting minutes template
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              {/* Second Row - More Categories */}
+              <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
+                {/* Compliance & Safety */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Compliance & Safety AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <Shield className="h-3 w-3" />
+                        <span>Compliance & Safety</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64">
+                    <DropdownMenuLabel className="text-xs">Compliance & Safety</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs">
+                      SCE license verification checklist
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Generate safety inspection report
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Create HSE compliance checklist
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Draft building permit requirements
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Quality assurance procedures template
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Technical & Design */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Technical & Design AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <Wrench className="h-3 w-3" />
+                        <span>Technical & Design</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64">
+                    <DropdownMenuLabel className="text-xs">Technical & Design</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs">
+                      Suggest material specs for structural work
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Review MEP design considerations
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Calculate concrete mix design
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Analyze soil test results
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Generate load calculation summary
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Documentation */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Documentation AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <ClipboardList className="h-3 w-3" />
+                        <span>Documentation</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-64">
+                    <DropdownMenuLabel className="text-xs">Documentation</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-xs">
+                      Create change order request template
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Draft as-built drawings checklist
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Generate punch list for handover
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Write project closeout report
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs">
+                      Create warranty documentation list
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Full AI Chat Dialog */}
+        <Dialog open={showFullChat} onOpenChange={setShowFullChat}>
+          <DialogContent className="max-w-6xl w-[95vw] h-[85vh] p-0 overflow-hidden">
+            <ChatPage onBack={() => setShowFullChat(false)} />
+          </DialogContent>
+        </Dialog>
         
         {/* Section 1: Overview Stats */}
-        <ClientOverviewStats 
-          activeProjects={6}
-          totalEngineers={24}
-          pendingQuotes={8}
-          totalSpent="1,245,000 SAR"
-          onStatClick={handleStatClick}
-        />
+        <section role="region" aria-label="Overview Statistics">
+          <ClientOverviewStats 
+            activeProjects={6}
+            totalEngineers={24}
+            pendingQuotes={8}
+            totalSpent="1,245,000 SAR"
+            onStatClick={handleStatClick}
+          />
+        </section>
 
         {/* Section 2: Quick Actions */}
-        <ClientQuickActionsHub userRole={profile?.role} />
+        <section role="region" aria-label="Quick Actions">
+          <ClientQuickActionsHub userRole={profile?.role} />
+        </section>
 
         {/* Section 3 & 4: Projects and Activity */}
         <div className="flex flex-col gap-4">
           {/* Active Projects */}
-          <ClientActiveProjectsList />
+          <section role="region" aria-label="Active Projects">
+            <ClientActiveProjectsList />
+          </section>
           
           {/* Recent Activity */}
-          <ClientRecentActivityFeed />
+          <section role="region" aria-label="Recent Activity">
+            <ClientRecentActivityFeed />
+          </section>
         </div>
 
       </div>
-    </div>
+    </main>
   );
 }

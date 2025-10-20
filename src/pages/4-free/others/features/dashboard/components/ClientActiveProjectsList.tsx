@@ -1,4 +1,4 @@
-import { useState, useEffect, useId, useRef } from 'react';
+import { useState, useEffect, useId, useRef, memo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
@@ -7,6 +7,7 @@ import { Progress } from '../../../../../1-HomePage/others/components/ui/progres
 import { Building, Calendar, Users, Eye, FolderOpen, TrendingUp, ChevronUp, ChevronDown, DollarSign, Clock, X, MapPin, FileText, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useOutsideClick } from '../../../../../1-HomePage/others/hooks/use-outside-click';
+import XScroll from '../../../../../1-HomePage/others/components/ui/x-scroll';
 
 interface Project {
   id: string;
@@ -17,6 +18,7 @@ interface Project {
   nextMilestone: string;
   deadline: string;
   budget: string;
+  image?: string;
   description?: string;
   location?: string;
   startDate?: string;
@@ -37,6 +39,7 @@ const defaultProjects: Project[] = [
     nextMilestone: 'Structural Design Phase 2',
     deadline: 'Dec 28, 2025',
     budget: '850,000 SAR',
+    image: '/dashboardShowcase/Project Management.png',
     description: 'Multi-purpose commercial development in Al-Khobar featuring retail spaces, office buildings, and entertainment facilities. The project includes structural engineering, MEP design, and full construction oversight.',
     location: 'Al-Khobar, Eastern Province',
     startDate: 'Mar 15, 2025',
@@ -57,6 +60,7 @@ const defaultProjects: Project[] = [
     nextMilestone: 'Environmental Impact Study',
     deadline: 'Jan 15, 2026',
     budget: '2,100,000 SAR',
+    image: '/dashboardShowcase/Real-time Cost Estimation.png',
     description: 'Extension of the Riyadh Metro system including new stations, track infrastructure, and integration with existing lines. Requires civil engineering, geotechnical studies, and environmental compliance.',
     location: 'Riyadh, Riyadh Province',
     startDate: 'Oct 01, 2025',
@@ -76,6 +80,7 @@ const defaultProjects: Project[] = [
     nextMilestone: 'Foundation Review',
     deadline: 'Feb 10, 2026',
     budget: '3,500,000 SAR',
+    image: '/dashboardShowcase/Smart Engineer Matching.png',
     description: 'Large-scale infrastructure development for NEOM smart city including roads, utilities, telecommunications, and sustainable energy systems. Multi-disciplinary engineering effort with emphasis on innovation.',
     location: 'NEOM, Tabuk Province',
     startDate: 'Jul 01, 2025',
@@ -87,9 +92,51 @@ const defaultProjects: Project[] = [
       { name: 'System Integration', completed: false, date: 'Aug 30, 2026' },
     ]
   },
+  {
+    id: '4',
+    name: 'Jeddah Waterfront Development',
+    engineers: 6,
+    progress: 85,
+    status: 'review',
+    nextMilestone: 'Final Quality Inspection',
+    deadline: 'Nov 30, 2025',
+    budget: '1,750,000 SAR',
+    image: '/dashboardShowcase/Quality Assurance.png',
+    description: 'Coastal development project featuring mixed-use buildings, promenade infrastructure, and marine facilities along the Red Sea. Final review phase with emphasis on quality assurance and handover preparation.',
+    location: 'Jeddah, Makkah Province',
+    startDate: 'Jan 15, 2025',
+    milestones: [
+      { name: 'Coastal Engineering Study', completed: true, date: 'Feb 20, 2025' },
+      { name: 'Marine Structure Design', completed: true, date: 'Apr 30, 2025' },
+      { name: 'Building Construction', completed: true, date: 'Aug 15, 2025' },
+      { name: 'Final Quality Inspection', completed: false, date: 'Nov 30, 2025' },
+      { name: 'Project Handover', completed: false, date: 'Dec 15, 2025' },
+    ]
+  },
+  {
+    id: '5',
+    name: 'Dammam Industrial Complex',
+    engineers: 4,
+    progress: 15,
+    status: 'planning',
+    nextMilestone: 'Geotechnical Survey',
+    deadline: 'Mar 20, 2026',
+    budget: '1,200,000 SAR',
+    image: '/dashboardShowcase/SCE Compliance.png',
+    description: 'Industrial facility development with focus on SCE compliance, environmental regulations, and sustainable industrial practices. Currently in early planning and survey phase.',
+    location: 'Dammam, Eastern Province',
+    startDate: 'Oct 20, 2025',
+    milestones: [
+      { name: 'Initial Feasibility Study', completed: true, date: 'Nov 05, 2025' },
+      { name: 'Geotechnical Survey', completed: false, date: 'Mar 20, 2026' },
+      { name: 'Environmental Compliance Review', completed: false, date: 'May 10, 2026' },
+      { name: 'Detailed Engineering Design', completed: false, date: 'Jul 25, 2026' },
+      { name: 'Construction Phase Planning', completed: false, date: 'Sep 15, 2026' },
+    ]
+  },
 ];
 
-export function ClientActiveProjectsList({ projects = defaultProjects }: ClientActiveProjectsListProps) {
+export const ClientActiveProjectsList = memo(function ClientActiveProjectsList({ projects = defaultProjects }: ClientActiveProjectsListProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const expandedRef = useRef<HTMLDivElement>(null);
@@ -354,84 +401,112 @@ export function ClientActiveProjectsList({ projects = defaultProjects }: ClientA
         </CardHeader>
 
         {!isCollapsed && (
-          <CardContent className="p-4 space-y-4 bg-background rounded-b-xl">
-            {projects.map((project) => {
-              const statusColor = getStatusColor(project.status);
-              
-              return (
-                <motion.div
-                  key={project.id}
-                  layoutId={`project-card-${project.id}-${id}`}
-                  onClick={() => setActiveProject(project)}
-                  className="cursor-pointer"
-                  whileHover={{ scale: 1.01 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Card className="hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 border-border/50">
-                    <CardContent className="p-4 space-y-3">
-                      {/* Header */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <motion.h4 
-                            layoutId={`project-title-${project.id}-${id}`}
-                            className="font-semibold text-sm leading-tight line-clamp-1"
-                          >
-                            {project.name}
-                          </motion.h4>
-                          <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <Users className="h-3 w-3" />
-                              <span>{project.engineers} Engineers</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <DollarSign className="h-3 w-3" />
-                              <span>{project.budget}</span>
+          <CardContent className="p-4 bg-background rounded-b-xl">
+            <div className="projects-scroll">
+              <XScroll>
+                <div className="flex space-x-4 p-1 pb-4">
+                  {projects.map((project) => {
+                    const statusColor = getStatusColor(project.status);
+                    
+                    return (
+                      <motion.div
+                        key={project.id}
+                        layoutId={`project-card-${project.id}-${id}`}
+                        onClick={() => setActiveProject(project)}
+                        className="cursor-pointer flex-shrink-0"
+                        style={{ width: '320px' }}
+                        whileHover={{ scale: 1.01 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Card className="hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 border-border/50 overflow-hidden h-full">
+                    <CardContent className="p-0">
+                      {/* Project Image */}
+                      {project.image && (
+                        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                          <img
+                            src={project.image}
+                            alt={project.name}
+                            loading="lazy"
+                            className="w-full h-full object-cover"
+                          />
+                          {/* Gradient Overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                          
+                          {/* Status Badge on Image */}
+                          <div className="absolute top-3 left-3">
+                            <Badge className={`${statusColor.bg} ${statusColor.text} border-0 text-xs`}>
+                              {statusColor.label}
+                            </Badge>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Content */}
+                      <div className="p-4 space-y-3">
+                        {/* Header */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <motion.h4 
+                              layoutId={`project-title-${project.id}-${id}`}
+                              className="font-semibold text-sm leading-tight line-clamp-1"
+                            >
+                              {project.name}
+                            </motion.h4>
+                            <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <Users className="h-3 w-3" />
+                                <span>{project.engineers} Engineers</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <DollarSign className="h-3 w-3" />
+                                <span>{project.budget}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <Badge className={`${statusColor.bg} ${statusColor.text} border-0 text-xs shrink-0`}>
-                          {statusColor.label}
-                        </Badge>
-                      </div>
 
-                      {/* Progress Bar */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">Progress</span>
-                          <span className="font-medium">{project.progress}%</span>
+                        {/* Progress Bar */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Progress</span>
+                            <span className="font-medium">{project.progress}%</span>
+                          </div>
+                          <Progress value={project.progress} className="h-2" />
                         </div>
-                        <Progress value={project.progress} className="h-2" />
-                      </div>
 
-                      {/* Footer Info */}
-                      <div className="flex items-center justify-between pt-2 border-t border-border/40">
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          <span className="line-clamp-1">Next: {project.nextMilestone}</span>
+                        {/* Footer Info */}
+                        <div className="flex items-center justify-between pt-2 border-t border-border/40">
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Calendar className="h-3 w-3" />
+                            <span className="line-clamp-1">Next: {project.nextMilestone}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
+                            <Clock className="h-3 w-3" />
+                            <span>Due {project.deadline}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
-                          <Clock className="h-3 w-3" />
-                          <span>Due {project.deadline}</span>
-                        </div>
-                      </div>
 
-                      {/* Tap to Expand Hint */}
-                      <div className="pt-2 text-center">
-                        <p className="text-[10px] text-muted-foreground">
-                          Click to view full details
-                        </p>
+                        {/* Tap to Expand Hint */}
+                        <div className="pt-2 text-center">
+                          <p className="text-[10px] text-muted-foreground">
+                            Click to view full details
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
-              );
-            })}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </XScroll>
+            </div>
           </CardContent>
         )}
       </Card>
     </>
   );
-}
+});
 
 export default ClientActiveProjectsList;
 
