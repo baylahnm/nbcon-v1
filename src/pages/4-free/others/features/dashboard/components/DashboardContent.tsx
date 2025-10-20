@@ -255,19 +255,19 @@ export function DashboardContent() {
                   <DropdownMenuContent align="start" className="w-64">
                     <DropdownMenuLabel className="text-xs">Communication</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a professional client progress update email for a construction project, including completed milestones, current status, upcoming activities, and any issues requiring attention.")}>
                       Draft client progress update email
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Write a contractor coordination letter addressing schedule alignment, deliverables, site access, and safety requirements for a multi-contractor project.")}>
                       Write contractor coordination letter
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive weekly site report template including work progress, labor attendance, equipment status, materials received, safety incidents, and weather conditions.")}>
                       Create weekly site report template
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a formal Request for Information (RFI) document for clarification on structural design details, including reference drawings and specific technical questions.")}>
                       Draft RFI (Request for Information)
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a professional meeting minutes template for project coordination meetings, including attendees, discussion points, decisions made, and action items with owners and deadlines.")}>
                       Generate meeting minutes template
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -290,19 +290,19 @@ export function DashboardContent() {
                   <DropdownMenuContent align="start" className="w-64">
                     <DropdownMenuLabel className="text-xs">Compliance & Safety</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive SCE (Saudi Council of Engineers) license verification checklist for engineers, including required documents, validation steps, and compliance requirements.")}>
                       SCE license verification checklist
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed safety inspection report template for construction sites, covering PPE compliance, scaffolding, excavation safety, electrical hazards, and housekeeping.")}>
                       Generate safety inspection report
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive HSE (Health, Safety, Environment) compliance checklist aligned with Saudi Arabian construction regulations and international standards.")}>
                       Create HSE compliance checklist
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a complete list of building permit requirements in Saudi Arabia, including municipality approvals, civil defense clearance, and required documentation.")}>
                       Draft building permit requirements
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate quality assurance procedures template for construction projects, covering inspections, testing protocols, non-conformance handling, and documentation requirements.")}>
                       Quality assurance procedures template
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -322,19 +322,19 @@ export function DashboardContent() {
                   <DropdownMenuContent align="start" className="w-64">
                     <DropdownMenuLabel className="text-xs">Technical & Design</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Suggest appropriate material specifications for structural concrete work in Saudi Arabia, including grade requirements, aggregate properties, admixtures, and compliance with Saudi Building Code.")}>
                       Suggest material specs for structural work
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Review key MEP (Mechanical, Electrical, Plumbing) design considerations for commercial buildings, including load calculations, system selection, energy efficiency, and coordination with structural elements.")}>
                       Review MEP design considerations
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Calculate concrete mix design for C30 grade concrete suitable for structural applications, including cement, aggregates, water-cement ratio, and admixtures for local Saudi climate.")}>
                       Calculate concrete mix design
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Analyze soil test results and provide foundation recommendations, including bearing capacity, settlement analysis, and suitable foundation types for the given soil conditions.")}>
                       Analyze soil test results
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a structural load calculation summary for a typical commercial building, including dead loads, live loads, wind loads, and seismic considerations per Saudi Building Code.")}>
                       Generate load calculation summary
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -354,19 +354,19 @@ export function DashboardContent() {
                   <DropdownMenuContent align="start" className="w-64">
                     <DropdownMenuLabel className="text-xs">Documentation</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a professional change order request template including description of changes, justification, cost impact, schedule impact, and required approvals.")}>
                       Create change order request template
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a comprehensive as-built drawings checklist for project handover, covering all disciplines (architectural, structural, MEP), revision tracking, and approval requirements.")}>
                       Draft as-built drawings checklist
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed punch list template for project handover, organized by trade, priority level, responsible party, and completion timeline.")}>
                       Generate punch list for handover
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Write a comprehensive project closeout report including project summary, achievements, lessons learned, final costs, outstanding items, and warranty information.")}>
                       Write project closeout report
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a complete warranty documentation list for construction project handover, including equipment warranties, material warranties, contractor guarantees, and maintenance manuals.")}>
                       Create warranty documentation list
                     </DropdownMenuItem>
                   </DropdownMenuContent>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from '@/shared/supabase/client';
 import {
   SERVICE_MODE_CONFIG,
   SERVICE_MODES,
@@ -242,7 +243,7 @@ export const useAiStore = create<AiState>()(
         const threadId = get().activeThreadId!;
         const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-        // Add user message
+        // Add user message (optimistic update)
         const userMessage: Message = {
           id: messageId,
           threadId,
@@ -264,6 +265,7 @@ export const useAiStore = create<AiState>()(
           .substr(2, 9)}`;
 
         try {
+          // Create placeholder assistant message
           const assistantMessage: Message = {
             id: assistantMessageId,
             threadId,
@@ -276,29 +278,65 @@ export const useAiStore = create<AiState>()(
 
           get().addMessage(assistantMessage);
 
-          const responses = [
-            "I understand you're asking about ",
-            content.toLowerCase(),
-            '. Let me help you with that. ',
-            'Based on the information provided, ',
-            'I can offer some insights and recommendations. ',
-            'Would you like me to elaborate on any specific aspect?',
-          ];
-
-          for (let i = 0; i < responses.length; i++) {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            get().updateMessage(assistantMessageId, {
-              content: responses.slice(0, i + 1).join(''),
-            });
+          // Get user profile for role context
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) {
+            throw new Error('User not authenticated');
           }
 
+          // Get user profile to determine role
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('user_id', user.id)
+            .single();
+
+          const userRole = profile?.role || 'client';
+
+          // Get conversation history (last 10 messages for context)
+          const threadMessages = state.messagesByThread[threadId] || [];
+          const conversationHistory = threadMessages
+            .slice(-10)
+            .map(msg => ({
+              role: msg.role,
+              content: msg.content
+            }));
+
+          // Call edge function
+          const { data, error } = await supabase.functions.invoke('ai-chat', {
+            body: {
+              message: content,
+              threadId,
+              role: userRole,
+              language: state.composer.lang,
+              mode: state.mode,
+              attachments,
+              conversationHistory,
+            },
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data.status === 'error') {
+            throw new Error(data.error || 'AI request failed');
+          }
+
+          // Update assistant message with real response
           get().updateMessage(assistantMessageId, {
+            content: data.response,
             isStreaming: false,
           });
+
         } catch (error) {
+          console.error('AI sendMessage error:', error);
+          
+          // Update message with error
           get().updateMessage(assistantMessageId, {
             isStreaming: false,
-            error: 'Failed to generate response',
+            error: error instanceof Error ? error.message : 'Failed to generate response. Please try again.',
+            content: 'Sorry, I encountered an error processing your request. Please try again.',
           });
         } finally {
           set({ isGenerating: false });
