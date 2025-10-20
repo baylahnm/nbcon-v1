@@ -1,6 +1,14 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { createClient } from '@supabase/supabase-js';
+import { z } from "zod";
+
+// Deno global type declaration for TypeScript
+declare const Deno: {
+  serve: (handler: (req: Request) => Response | Promise<Response>) => void;
+  env: {
+    get: (key: string) => string | undefined;
+  };
+};
 
 // Request schema
 const chatRequestSchema = z.object({

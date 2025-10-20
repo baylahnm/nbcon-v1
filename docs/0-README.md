@@ -1,8 +1,8 @@
 # 📚 nbcon Documentation
 
-**Last Updated:** December 19, 2024  
+**Last Updated:** December 20, 2024  
 **Status:** Production Ready  
-**Version:** 2.1
+**Version:** 2.2
 
 ---
 
