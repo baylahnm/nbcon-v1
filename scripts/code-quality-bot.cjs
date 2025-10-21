@@ -45,9 +45,23 @@ class CodeQualityBot {
   // Utility: Run shell command
   exec(command) {
     try {
-      return execSync(command, { encoding: 'utf8' });
+      return execSync(command, { 
+        encoding: 'utf8',
+        shell: 'powershell.exe'
+      });
     } catch (error) {
       return error.stdout || '';
+    }
+  }
+
+  // Utility: Search files using grep (Windows compatible)
+  searchFiles(pattern, directory = 'src/') {
+    try {
+      // Use findstr on Windows as fallback
+      const result = this.exec(`powershell -Command "Get-ChildItem -Path ${directory} -Recurse -File | Select-String -Pattern '${pattern}' | Select-Object -ExpandProperty Path -Unique"`);
+      return result.split('\n').filter(Boolean).map(f => f.trim());
+    } catch (error) {
+      return [];
     }
   }
 
@@ -62,8 +76,7 @@ class CodeQualityBot {
     ];
 
     patterns.forEach(({ pattern, name }) => {
-      const result = this.exec(`npx rg "${pattern}" src/ --files-with-matches 2>/dev/null || echo ""`);
-      const files = result.split('\n').filter(Boolean);
+      const files = this.searchFiles(pattern);
       
       if (files.length > 0) {
         this.issues.high.push({
@@ -88,8 +101,7 @@ class CodeQualityBot {
     ];
 
     patterns.forEach(({ pattern, name }) => {
-      const result = this.exec(`npx rg "${pattern}" src/ --files-with-matches 2>/dev/null || echo ""`);
-      const files = result.split('\n').filter(Boolean);
+      const files = this.searchFiles(pattern);
       
       if (files.length > 0) {
         this.issues.medium.push({
@@ -115,14 +127,17 @@ class CodeQualityBot {
     ];
 
     patterns.forEach(({ pattern, name }) => {
-      const result = this.exec(`npx rg "${pattern}" src/ --files-with-matches 2>/dev/null || echo ""`);
-      const files = result.split('\n').filter(Boolean);
+      const files = this.searchFiles(pattern);
       
       if (files.length > 0) {
         // Check if DOMPurify is used
         const purifyCheck = files.filter(file => {
-          const content = fs.readFileSync(file, 'utf8');
-          return content.includes('DOMPurify') || content.includes('@ts-ignore - CSS custom property');
+          try {
+            const content = fs.readFileSync(file, 'utf8');
+            return content.includes('DOMPurify') || content.includes('@ts-ignore - CSS custom property');
+          } catch (err) {
+            return false;
+          }
         });
         
         const vulnerable = files.filter(f => !purifyCheck.includes(f));
@@ -151,8 +166,7 @@ class CodeQualityBot {
     ];
 
     patterns.forEach(({ pattern, name }) => {
-      const result = this.exec(`npx rg "${pattern}" src/ --files-with-matches 2>/dev/null || echo ""`);
-      const files = result.split('\n').filter(Boolean);
+      const files = this.searchFiles(pattern);
       
       if (files.length > 0) {
         this.issues.medium.push({
@@ -177,8 +191,7 @@ class CodeQualityBot {
     ];
 
     patterns.forEach(({ pattern, name }) => {
-      const result = this.exec(`npx rg "${pattern}" src/ --files-with-matches 2>/dev/null || echo ""`);
-      const files = result.split('\n').filter(Boolean);
+      const files = this.searchFiles(pattern);
       
       if (files.length > 0) {
         this.issues.medium.push({
@@ -197,8 +210,7 @@ class CodeQualityBot {
   checkAnyTypes() {
     this.log('🔍 Checking for any types...', 'cyan');
     
-    const result = this.exec(`npx rg ": any" src/ --files-with-matches 2>/dev/null || echo ""`);
-    const files = result.split('\n').filter(Boolean);
+    const files = this.searchFiles(': any');
     
     if (files.length > 50) {
       this.issues.low.push({
@@ -216,8 +228,7 @@ class CodeQualityBot {
   checkTsIgnore() {
     this.log('🔍 Checking for @ts-ignore usage...', 'cyan');
     
-    const result = this.exec(`npx rg "@ts-ignore|@ts-expect-error" src/ --files-with-matches 2>/dev/null || echo ""`);
-    const files = result.split('\n').filter(Boolean);
+    const files = this.searchFiles('@ts-ignore|@ts-expect-error');
     
     if (files.length > 5) {
       this.issues.medium.push({
