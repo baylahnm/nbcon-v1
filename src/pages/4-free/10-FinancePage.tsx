@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useId } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
@@ -396,8 +397,17 @@ function StatCard({ icon: Icon, label, value, trend, trendDown }: StatCardProps)
 }
 
 export default function FinancePage() {
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Handle URL tab parameter
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['overview', 'payments', 'invoices', 'quotations', 'milestones'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
   const [showInvoiceBuilder, setShowInvoiceBuilder] = useState(false);
   const [showQuotationBuilder, setShowQuotationBuilder] = useState(false);
   const [expandedPayment, setExpandedPayment] = useState<Payment | null>(null);

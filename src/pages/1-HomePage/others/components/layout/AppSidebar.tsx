@@ -84,7 +84,7 @@ const makeGroupedMenu = (role?: string): MenuGroup[] => {
           items: [
             { title: 'Dashboard', url: R.client.dashboard, icon: Home },
             { title: 'Browse Engineers', url: R.client.browse, icon: Users },
-            { title: 'My Projects', url: R.client.jobs, icon: Briefcase },
+            { title: 'Calendar', url: R.client.calendar, icon: Calendar },
           ]
         },
         {
@@ -92,7 +92,14 @@ const makeGroupedMenu = (role?: string): MenuGroup[] => {
           defaultOpen: true,
           items: [
             { title: 'Post New Job', url: R.client.jobNew, icon: Plus },
-            { title: 'Calendar', url: R.client.calendar, icon: Calendar },
+            { title: 'Projects', url: R.client.jobs, icon: Briefcase },
+          ]
+        },
+        {
+          title: 'AI Tools',
+          defaultOpen: true,
+          items: [
+            { title: 'AI Assistant', url: R.client.ai, icon: Bot },
           ]
         },
         {
@@ -100,7 +107,6 @@ const makeGroupedMenu = (role?: string): MenuGroup[] => {
           defaultOpen: false,
           items: [
             { title: 'Messages', url: R.client.messages, icon: MessageSquare },
-            { title: 'AI Assistant', url: R.client.ai, icon: Bot },
             { title: 'Network', url: R.client.network, icon: Users },
           ]
         },

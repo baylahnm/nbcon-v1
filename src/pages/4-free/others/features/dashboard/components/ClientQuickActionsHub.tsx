@@ -26,7 +26,7 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
     { id: 'post-job', label: 'Post New Job', icon: Briefcase, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/job/new' },
     { id: 'browse', label: 'Find Engineers', icon: Users, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/browse' },
     { id: 'projects', label: 'My Projects', icon: Building2, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/myprojects' },
-    { id: 'quotes', label: 'View Quotes', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/quotes' },
+    { id: 'quotes', label: 'View Quotes', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/finance?tab=quotations' },
     { id: 'payments', label: 'Finance', icon: DollarSign, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/finance' },
     { id: 'messages', label: 'Messages', icon: MessageSquare, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/messages' },
     { id: 'calendar', label: 'Calendar', icon: Calendar, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/calendar' },
