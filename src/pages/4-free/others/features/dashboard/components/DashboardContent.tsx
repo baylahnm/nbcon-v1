@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
-import { Home, Bot, Plus, Users, ChevronDown, FileText, Calculator, Mail, Shield, Wrench, ClipboardList } from "lucide-react";
+import { Home, Bot, Plus, Users, ChevronDown, FileText, Calculator, Mail, Shield, Wrench, ClipboardList, Trash2 } from "lucide-react";
 import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
@@ -25,7 +25,7 @@ export function DashboardContent() {
   const { profile } = useAuthStore();
   const navigate = useNavigate();
   const [showFullChat, setShowFullChat] = useState(false);
-  const { getActiveMessages, settings, setComposerText, sendMessage } = useAiStore();
+  const { getActiveMessages, settings, setComposerText, sendMessage, deleteThread, activeThreadId } = useAiStore();
   const activeMessages = getActiveMessages();
   
   // Get user display name
@@ -36,6 +36,13 @@ export function DashboardContent() {
     setComposerText(prompt);
     // Optional: auto-submit the prompt
     // await sendMessage(prompt);
+  };
+
+  // Handle clear chat
+  const handleClearChat = () => {
+    if (activeThreadId) {
+      deleteThread(activeThreadId);
+    }
   };
 
   // Get role display
@@ -84,7 +91,7 @@ export function DashboardContent() {
         <header className="pb-4 border-b border-border/40" role="banner">
           <Card className="border-0 shadow-none bg-transparent">
             <CardContent className="p-0 flex items-center justify-between">
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="flex items-center gap-4 min-w-0 flex-1">
                 <Avatar className="h-10 w-10 ring-2 ring-primary/20 flex-shrink-0">
                   <AvatarImage src={profile?.avatar_url || undefined} />
                   <AvatarFallback className="bg-primary text-white text-xl font-bold">
@@ -122,8 +129,8 @@ export function DashboardContent() {
           <Card className="bg-transparent border-0 shadow-none">
             <CardContent className="p-4">
               <div className="flex items-start justify-between gap-4 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <div className="relative overflow-hidden bg-gradient-to-t from-primary to-primary-dark p-3 rounded-xl ring-1 ring-primary/20 shadow-sm shadow-primary/50">
+                <div className="flex items-center gap-4">
+                  <div className="relative overflow-hidden bg-gradient-to-t from-primary to-primary-dark p-4 rounded-xl ring-1 ring-primary/20 shadow-sm shadow-primary/50">
                     <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--primary)/0.3)_50%,hsl(var(--primary))_100%)]"></span>
                     <Bot className="h-5 w-5 text-primary-foreground relative z-10" />
                   </div>
@@ -133,7 +140,7 @@ export function DashboardContent() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   <Button className="h-9 text-xs">
                     <Plus className="h-3.5 w-3.5 mr-1.5" />
                     Start Project
@@ -145,6 +152,17 @@ export function DashboardContent() {
                   <Button variant="ghost" className="h-9 text-xs" onClick={() => navigate('/free/ai')}>
                     Open Full Chat
                   </Button>
+                  {activeMessages && activeMessages.length > 0 && (
+                    <Button 
+                      variant="outline" 
+                      className="h-9 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300" 
+                      onClick={handleClearChat}
+                      title="Clear all chat messages"
+                    >
+                      <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                      Clear Chat
+                    </Button>
+                  )}
                 </div>
               </div>
 
@@ -152,7 +170,7 @@ export function DashboardContent() {
               {activeMessages && activeMessages.length > 0 && (
                 <div className="mt-3 rounded-lg border border-border/40 bg-background">
                   <ScrollArea className="relative flex-1 p-4 overflow-y-auto max-h-72">
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {activeMessages.slice(-6).map((message: any) => (
                         <MessageBubble
                           key={message.id}
@@ -176,7 +194,7 @@ export function DashboardContent() {
               </div>
 
               {/* AI Prompt Templates */}
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Project Planning */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -275,7 +293,7 @@ export function DashboardContent() {
               </div>
 
               {/* Second Row - More Categories */}
-              <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Compliance & Safety */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -384,15 +402,7 @@ export function DashboardContent() {
         </Dialog>
         
         {/* Section 1: Overview Stats */}
-        <section role="region" aria-label="Overview Statistics">
-          <ClientOverviewStats 
-            activeProjects={6}
-            totalEngineers={24}
-            pendingQuotes={8}
-            totalSpent="1,245,000 SAR"
-            onStatClick={handleStatClick}
-          />
-        </section>
+        <ClientOverviewStats />
 
         {/* Section 2: Quick Actions */}
         <section role="region" aria-label="Quick Actions">

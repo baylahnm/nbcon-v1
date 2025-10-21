@@ -2,7 +2,7 @@ import type { Kpi } from "../store/useDashboardStore";
 
 export function KpiStrip({ items, onClick }:{ items:Kpi[]; onClick?:(k:Kpi)=>void }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {items.map(k=>(
         <button key={k.key} onClick={()=>onClick?.(k)}
           className="text-left rounded-xl border-0 bg-[var(--surface)] p-4 shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]">

@@ -88,7 +88,7 @@ export const InlineComponentLibrary: React.FC<InlineComponentLibraryProps> = ({
         </div>
       </CardHeader>
       <CardContent className="p-4">
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-4">
           {COMPONENT_TYPES.map((component) => {
             const IconComponent = component.icon;
             return (
@@ -98,7 +98,7 @@ export const InlineComponentLibrary: React.FC<InlineComponentLibraryProps> = ({
                 className="h-auto p-4 justify-start text-left hover:bg-muted/50"
                 onClick={() => handleAddComponent(component.id)}
               >
-                <div className="flex items-start gap-3 w-full">
+                <div className="flex items-start gap-4 w-full">
                   <div className={`w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0`}>
                     <IconComponent className={`w-4 h-4 ${component.color}`} />
                   </div>

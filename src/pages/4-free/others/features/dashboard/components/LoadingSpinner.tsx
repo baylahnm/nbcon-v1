@@ -18,9 +18,9 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-center p-8">
-      <Card className="p-6">
-        <CardContent className="flex flex-col items-center gap-3">
+    <div className="flex items-center justify-center p-4">
+      <Card className="p-4">
+        <CardContent className="flex flex-col items-center gap-4">
           <Loader2 className={`${sizeClasses[size]} animate-spin text-primary`} />
           <p className="text-sm text-muted-foreground">{message}</p>
         </CardContent>

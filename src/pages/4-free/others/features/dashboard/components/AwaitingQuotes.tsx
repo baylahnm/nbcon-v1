@@ -3,11 +3,11 @@ export function AwaitingQuotes({ quotes, onAccept, onChat }:{
 }) {
   if (!quotes?.length) return <div className="opacity-70 text-sm">No quotes waiting.</div>;
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-4">
       {quotes.map(q=>(
-        <li key={q.id} className="rounded-lg border border-[var(--border)] p-3 flex items-center justify-between">
+        <li key={q.id} className="rounded-lg border border-[var(--border)] p-4 flex items-center justify-between">
           <div className="text-sm">{q.jobTitle} — SAR {q.amount.toLocaleString()}</div>
-          <div className="flex gap-2">
+          <div className="flex gap-4">
             <button onClick={()=>onChat(q.id)} className="border border-[var(--border)] rounded-lg px-3 py-1 text-sm">Chat</button>
             <button onClick={()=>onAccept(q.id)} className="bg-[var(--color-primary)] text-black rounded-lg px-3 py-1 text-sm">Accept</button>
           </div>

@@ -2,7 +2,7 @@ export function QuickActions({ buttons }:{
   buttons:{ label:string; onClick:()=>void; variant?:"primary"|"outline" }[];
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-4">
       {buttons.map((b,i)=>(
         <button key={i} onClick={b.onClick}
           className={b.variant==="primary"

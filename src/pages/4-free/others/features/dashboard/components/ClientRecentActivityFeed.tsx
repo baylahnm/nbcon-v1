@@ -176,7 +176,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
     >
       <CardHeader className="p-4 border-b border-border/40">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
               <Activity className="h-6 w-6 text-white" />
             </div>
@@ -187,7 +187,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Badge className="bg-gradient-to-t from-primary to-primary-dark text-primary-foreground border-0 shadow-sm shadow-primary/50 h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">
               {displayedActivities.length}
             </Badge>
@@ -209,7 +209,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
 
       {!isCollapsed && (
         <>
-          <CardContent className="p-4 space-y-3 bg-background relative">
+          <CardContent className="p-4 space-y-4 bg-background relative">
             {/* Backdrop Overlay - Aceternity Style */}
             <AnimatePresence>
               {expandedActivityId && (
@@ -224,7 +224,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
               )}
             </AnimatePresence>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {displayedActivities.map((activity) => {
                 const { Icon, color, bgColor, ringColor } = getActivityIcon(activity.type);
                 const isExpanded = expandedActivityId === activity.id;
@@ -240,11 +240,11 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                       <motion.div
                         layoutId={`card-content-${activity.id}`}
                         onClick={() => setExpandedActivityId(activity.id)}
-                        className="flex items-start gap-3 p-4 bg-gradient-to-br from-card to-card/80 rounded-xl border border-border/50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02]"
+                        className="flex items-start gap-4 p-4 bg-gradient-to-br from-card to-card/80 rounded-xl border border-border/50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02]"
                       >
                         <motion.div
                           layoutId={`icon-${activity.id}`}
-                          className={`${bgColor} p-2.5 rounded-lg ring-1 ${ringColor} shrink-0`}
+                          className={`${bgColor} p-4 rounded-lg ring-1 ${ringColor} shrink-0`}
                         >
                           <Icon className={`h-4 w-4 ${color}`} />
                         </motion.div>
@@ -303,7 +303,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                             className="bg-card rounded-2xl border-2 border-primary/30 shadow-2xl overflow-hidden"
                           >
                             {/* Header */}
-                            <div className="relative bg-gradient-to-r from-primary via-primary-dark to-primary p-6 border-b border-primary/20 shadow-sm shadow-primary/50">
+                            <div className="relative bg-gradient-to-r from-primary via-primary-dark to-primary p-4 border-b border-primary/20 shadow-sm shadow-primary/50">
                               <div className="flex items-start gap-4">
                                 <motion.div
                                   layoutId={`icon-${activity.id}`}
@@ -320,7 +320,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                                   </motion.h3>
                                   <motion.div
                                     layoutId={`time-${activity.id}`}
-                                    className="flex items-center gap-2 text-sm text-primary-foreground/80"
+                                    className="flex items-center gap-4 text-sm text-primary-foreground/80"
                                   >
                                     <Clock className="h-4 w-4" />
                                     <span>{activity.relativeTime}</span>
@@ -338,7 +338,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                             </div>
 
                             {/* Content */}
-                            <div className="p-6 space-y-6">
+                            <div className="p-4 space-y-4">
                               {/* Full Description */}
                               {activity.details?.fullDescription && (
                                 <motion.div
@@ -363,8 +363,8 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
                               >
                                 {activity.details?.amount && (
-                                  <div className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-emerald-500/5 to-emerald-500/10 border border-emerald-500/20">
-                                    <div className="bg-emerald-500/10 p-2.5 rounded-lg">
+                                  <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-emerald-500/5 to-emerald-500/10 border border-emerald-500/20">
+                                    <div className="bg-emerald-500/10 p-4 rounded-lg">
                                       <DollarSign className="h-5 w-5 text-emerald-600" />
                                     </div>
                                     <div>
@@ -375,8 +375,8 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                                 )}
 
                                 {activity.details?.engineer && (
-                                  <div className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
-                                    <div className="bg-primary/10 p-2.5 rounded-lg">
+                                  <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+                                    <div className="bg-primary/10 p-4 rounded-lg">
                                       <User className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
@@ -387,8 +387,8 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                                 )}
 
                                 {activity.details?.location && (
-                                  <div className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-purple-500/5 to-purple-500/10 border border-purple-500/20">
-                                    <div className="bg-purple-500/10 p-2.5 rounded-lg">
+                                  <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-purple-500/5 to-purple-500/10 border border-purple-500/20">
+                                    <div className="bg-purple-500/10 p-4 rounded-lg">
                                       <MapPin className="h-5 w-5 text-purple-600" />
                                     </div>
                                     <div>
@@ -399,8 +399,8 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                                 )}
 
                                 {activity.details?.deadline && (
-                                  <div className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-amber-500/5 to-amber-500/10 border border-amber-500/20">
-                                    <div className="bg-amber-500/10 p-2.5 rounded-lg">
+                                  <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-br from-amber-500/5 to-amber-500/10 border border-amber-500/20">
+                                    <div className="bg-amber-500/10 p-4 rounded-lg">
                                       <Calendar className="h-5 w-5 text-amber-600" />
                                     </div>
                                     <div>
@@ -440,7 +440,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                                   animate={{ opacity: 1, y: 0 }}
                                   exit={{ opacity: 0, y: -5 }}
                                   transition={{ duration: 0.3, delay: 0.25, ease: "easeOut" }}
-                                  className="space-y-3 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20"
+                                  className="space-y-4 p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20"
                                 >
                                   <div className="flex items-center justify-between">
                                     <span className="text-xs font-bold text-primary uppercase tracking-wider">Project Progress</span>

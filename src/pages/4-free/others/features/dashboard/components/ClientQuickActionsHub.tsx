@@ -107,7 +107,7 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
       <Card className="bg-transparent border border-border/50 gap-0">
         <CardHeader className="p-4 border-b border-border/40">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
                     <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
                 <Zap className="h-6 w-6 text-white" />
               </div>
@@ -118,7 +118,7 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <Badge className="bg-gradient-to-t from-primary to-primary-dark text-primary-foreground border-0 shadow-sm shadow-primary/50 h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{clientActions.length}</Badge>
               <Button
                 variant="ghost"
@@ -187,7 +187,7 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
                       <Button 
                         variant="ghost"
                         size="sm"
-                        className="h-auto min-w-[100px] p-3 flex flex-col items-center gap-2 bg-background hover:bg-background hover:scale-105 transition-transform"
+                        className="h-auto min-w-[100px] p-4 flex flex-col items-center gap-4 bg-background hover:bg-background hover:scale-105 transition-transform"
                       >
                         <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor} transition-transform`}>
                           <action.icon className={`h-4 w-4 ${action.color}`} />
