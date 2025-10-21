@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
-import { Home, Bot, Plus, Users, ChevronDown, FileText, Calculator, Mail, Shield, Wrench, ClipboardList, Trash2 } from "lucide-react";
+import { Home, Bot, Plus, Users, ChevronDown, FileText, Calculator, Mail, Shield, Wrench, ClipboardList, Trash2, Rocket, Target, DollarSign, CheckCircle, AlertTriangle, MessageCircle, Package } from "lucide-react";
 import { Card, CardContent } from '../../../../../1-HomePage/others/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
@@ -202,183 +202,245 @@ export function DashboardContent() {
                 <ChatComposer />
               </div>
 
-              {/* AI Prompt Templates */}
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Project Planning */}
+              {/* AI Prompt Templates - 8 Categories (40 Prompts) */}
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* 1. Project Initiation */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Project Planning AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Project Initiation AI prompts">
                       <div className="flex items-center gap-1.5">
-                        <FileText className="h-3 w-3" />
-                        <span>Project Planning</span>
+                        <Rocket className="h-3 w-3" />
+                        <span>Project Initiation</span>
                       </div>
                       <ChevronDown className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive project charter for a commercial building project in Saudi Arabia, including scope, objectives, stakeholders, and deliverables.")}>
-                      Create project charter for commercial building
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive project charter including vision, objectives, scope boundaries, success criteria, stakeholders, and initial constraints for a commercial construction project.")}>
+                      Create project charter with objectives
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed construction schedule template for a typical commercial project, including phases, milestones, and dependencies.")}>
-                      Generate construction schedule template
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a feasibility study analyzing technical viability, financial projections, resource requirements, regulatory compliance, and risk assessment for a new construction project.")}>
+                      Generate feasibility study
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a feasibility study outline for a new construction project, covering technical, financial, and operational aspects.")}>
-                      Draft feasibility study outline
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Define a detailed project scope statement covering deliverables, acceptance criteria, exclusions, constraints, and assumptions for a construction project.")}>
+                      Define project scope statement
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Suggest risk mitigation strategies for construction projects, focusing on common risks in Saudi Arabia's construction industry.")}>
-                      Suggest risk mitigation strategies
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive stakeholder register mapping stakeholders, their interests, influence levels, communication needs, and engagement strategies.")}>
+                      Create stakeholder register
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a detailed project milestone breakdown for a construction project, with key deliverables and timeline.")}>
-                      Create project milestone breakdown
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a project kickoff meeting agenda including introductions, project overview, roles and responsibilities, communication plan, and next steps.")}>
+                      Draft project kickoff agenda
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Cost & Budgeting */}
+                {/* 2. Strategic Planning */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Cost & Budgeting AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Strategic Planning AI prompts">
                       <div className="flex items-center gap-1.5">
-                        <Calculator className="h-3 w-3" />
-                        <span>Cost & Budgeting</span>
+                        <Target className="h-3 w-3" />
+                        <span>Strategic Planning</span>
                       </div>
                       <ChevronDown className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Estimate the cost for a comprehensive site survey in Riyadh, including topographic survey, soil testing, and geotechnical investigation.")}>
-                      Estimate cost for site survey in Riyadh
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed Work Breakdown Structure (WBS) for a construction project, breaking down deliverables into manageable work packages with hierarchical organization.")}>
+                      Generate Work Breakdown Structure (WBS)
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed Bill of Quantities (BOQ) template for a residential villa project, organized by work packages and CSI divisions.")}>
-                      Generate BOQ template for villa project
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive project schedule template with phases, milestones, task dependencies, duration estimates, and critical path analysis.")}>
+                      Create project schedule template
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Calculate material costs for foundation work including concrete, rebar, formwork, and excavation for a typical commercial building.")}>
-                      Calculate material costs for foundation work
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Build a resource allocation plan mapping team members, equipment, materials, and budget across project phases with utilization rates and availability.")}>
+                      Build resource allocation plan
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Analyze a budget variance report template showing planned vs actual costs, variances, and explanations for a construction project.")}>
-                      Analyze budget variance report
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Design a visual project roadmap showing key phases, major milestones, deliverable dates, decision points, and dependencies over the project timeline.")}>
+                      Design project roadmap
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a cash flow projection for the next 6 months of a construction project, including inflows, outflows, and net cash position.")}>
-                      Create cash flow projection
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a sprint planning template for agile project management including user stories, acceptance criteria, story points, velocity tracking, and retrospective format.")}>
+                      Create sprint/phase planning template
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Communication */}
+                {/* 3. Budgeting & Finance */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Communication AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Budgeting & Finance AI prompts">
                       <div className="flex items-center gap-1.5">
-                        <Mail className="h-3 w-3" />
+                        <DollarSign className="h-3 w-3" />
+                        <span>Budgeting & Finance</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Estimate comprehensive project costs including direct costs (labor, materials, equipment), indirect costs (overhead, admin), contingency reserves, and management reserves.")}>
+                      Estimate comprehensive project costs
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed Bill of Quantities (BOQ) template for residential construction, organized by CSI divisions with quantities, units, rates, and total costs.")}>
+                      Generate Bill of Quantities (BOQ)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a budget baseline document with cost breakdown by phase, cost performance metrics (CPI, EV, AC), variance analysis, and forecasting templates.")}>
+                      Create budget baseline and tracking
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Build a 12-month cash flow forecast showing projected income, expenses, net cash position, cumulative cash flow, and funding requirement analysis.")}>
+                      Build cash flow forecast
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Design a cost control dashboard template tracking planned vs actual costs, budget utilization, variance alerts, trend analysis, and forecast at completion.")}>
+                      Design cost control dashboard
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* 4. Execution & Coordination */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Execution & Coordination AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <Users className="h-3 w-3" />
+                        <span>Execution & Coordination</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a daily standup meeting template covering yesterday's achievements, today's priorities, blockers and dependencies, resource needs, and coordination points.")}>
+                      Create daily standup template
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a RACI matrix (Responsible, Accountable, Consulted, Informed) for a construction project mapping tasks to team members with clear accountability.")}>
+                      Generate task assignment matrix (RACI)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Build a comprehensive progress tracking template including task completion percentages, milestone status, deliverable reviews, and earned value metrics.")}>
+                      Build progress tracking system
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Design a team coordination plan covering communication protocols, decision-making authority, escalation procedures, meeting schedules, and collaboration tools.")}>
+                      Design team coordination plan
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a procurement schedule template listing materials/services needed, quantities, lead times, preferred vendors, approval requirements, and delivery tracking.")}>
+                      Create procurement schedule
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* 5. Quality & Compliance */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Quality & Compliance AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <CheckCircle className="h-3 w-3" />
+                        <span>Quality & Compliance</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive quality assurance plan including quality standards, inspection points, testing protocols, acceptance criteria, and non-conformance procedures.")}>
+                      Create quality assurance plan
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a regulatory compliance checklist for Saudi Arabia covering building codes, safety regulations, environmental requirements, and permit documentation.")}>
+                      Generate compliance checklist
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Build a systematic inspection schedule template mapping inspection types, frequencies, responsible parties, documentation requirements, and approval workflows.")}>
+                      Build inspection schedule
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Design a testing and commissioning protocol for MEP systems including test procedures, acceptance criteria, documentation forms, and sign-off requirements.")}>
+                      Design testing protocol
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create an audit preparation guide listing required documentation, compliance evidence, key personnel, common audit questions, and readiness checklist.")}>
+                      Create audit preparation guide
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* 6. Risk & Safety Management */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Risk & Safety Management AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <AlertTriangle className="h-3 w-3" />
+                        <span>Risk & Safety</span>
+                      </div>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Conduct a comprehensive risk assessment for a construction project identifying technical, schedule, cost, and external risks with probability-impact scoring and heat map.")}>
+                      Conduct risk assessment analysis
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a detailed risk mitigation plan for top 10 project risks including prevention strategies, contingency plans, trigger conditions, and responsible owners.")}>
+                      Create risk mitigation plan
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a site safety management plan covering hazard identification, PPE requirements, safety training, incident reporting, emergency procedures, and safety audits.")}>
+                      Generate safety management plan
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Build an issue tracking template capturing issue description, severity, impact, assigned owner, resolution steps, status updates, and closure verification.")}>
+                      Build issue tracking system
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Design a change control process template including change request form, impact assessment, approval workflow, implementation plan, and communication procedure.")}>
+                      Design change control process
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* 7. Communication & Reporting */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Communication & Reporting AI prompts">
+                      <div className="flex items-center gap-1.5">
+                        <MessageCircle className="h-3 w-3" />
                         <span>Communication</span>
                       </div>
                       <ChevronDown className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a professional client progress update email for a construction project, including completed milestones, current status, upcoming activities, and any issues requiring attention.")}>
-                      Draft client progress update email
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft an executive status report template with project health (RAG status), key achievements, upcoming milestones, budget status, risks, and decisions needed.")}>
+                      Draft executive status report
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Write a contractor coordination letter addressing schedule alignment, deliverables, site access, and safety requirements for a multi-contractor project.")}>
-                      Write contractor coordination letter
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a stakeholder-specific communication covering project progress, completed deliverables, schedule updates, budget status, and action items requiring their input.")}>
+                      Create stakeholder update
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive weekly site report template including work progress, labor attendance, equipment status, materials received, safety incidents, and weather conditions.")}>
-                      Create weekly site report template
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate comprehensive meeting minutes template including attendees, agenda items, discussion summaries, decisions made, action items with owners/deadlines, and next meeting.")}>
+                      Generate meeting minutes
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a formal Request for Information (RFI) document for clarification on structural design details, including reference drawings and specific technical questions.")}>
-                      Draft RFI (Request for Information)
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Write a project newsletter template highlighting recent achievements, team spotlights, upcoming activities, lessons learned, and celebrating successes.")}>
+                      Write project newsletter
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a professional meeting minutes template for project coordination meetings, including attendees, discussion points, decisions made, and action items with owners and deadlines.")}>
-                      Generate meeting minutes template
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                {/* Compliance & Safety */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Compliance & Safety AI prompts">
-                      <div className="flex items-center gap-1.5">
-                        <Shield className="h-3 w-3" />
-                        <span>Compliance & Safety</span>
-                      </div>
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive SCE (Saudi Council of Engineers) license verification checklist for engineers, including required documents, validation steps, and compliance requirements.")}>
-                      SCE license verification checklist
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed safety inspection report template for construction sites, covering PPE compliance, scaffolding, excavation safety, electrical hazards, and housekeeping.")}>
-                      Generate safety inspection report
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive HSE (Health, Safety, Environment) compliance checklist aligned with Saudi Arabian construction regulations and international standards.")}>
-                      Create HSE compliance checklist
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a complete list of building permit requirements in Saudi Arabia, including municipality approvals, civil defense clearance, and required documentation.")}>
-                      Draft building permit requirements
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate quality assurance procedures template for construction projects, covering inspections, testing protocols, non-conformance handling, and documentation requirements.")}>
-                      Quality assurance procedures template
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Build a project dashboard layout design showing KPIs (schedule variance, cost variance, quality metrics), status indicators, trend charts, and alert sections.")}>
+                      Build reporting dashboard layout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Technical & Design */}
+                {/* 8. Closure & Handover */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Technical & Design AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Closure & Handover AI prompts">
                       <div className="flex items-center gap-1.5">
-                        <Wrench className="h-3 w-3" />
-                        <span>Technical & Design</span>
+                        <Package className="h-3 w-3" />
+                        <span>Closure & Handover</span>
                       </div>
                       <ChevronDown className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Suggest appropriate material specifications for structural concrete work in Saudi Arabia, including grade requirements, aggregate properties, admixtures, and compliance with Saudi Building Code.")}>
-                      Suggest material specs for structural work
+                  <DropdownMenuContent align="start" className="w-72">
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive project closeout checklist covering deliverable acceptance, documentation completion, financial closure, contract termination, and team release.")}>
+                      Create project closeout checklist
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Review key MEP (Mechanical, Electrical, Plumbing) design considerations for commercial buildings, including load calculations, system selection, energy efficiency, and coordination with structural elements.")}>
-                      Review MEP design considerations
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a handover documentation package including as-built drawings, operation manuals, maintenance schedules, warranty information, and training materials.")}>
+                      Generate handover documentation
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Calculate concrete mix design for C30 grade concrete suitable for structural applications, including cement, aggregates, water-cement ratio, and admixtures for local Saudi climate.")}>
-                      Calculate concrete mix design
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Write a detailed lessons learned report analyzing what went well, what could improve, root causes of issues, best practices identified, and recommendations for future projects.")}>
+                      Write lessons learned report
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Analyze soil test results and provide foundation recommendations, including bearing capacity, settlement analysis, and suitable foundation types for the given soil conditions.")}>
-                      Analyze soil test results
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Build a project archive structure organizing contracts, correspondence, technical documents, financial records, approvals, and as-built information for easy retrieval.")}>
+                      Build project archive structure
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a structural load calculation summary for a typical commercial building, including dead loads, live loads, wind loads, and seismic considerations per Saudi Building Code.")}>
-                      Generate load calculation summary
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Documentation */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Documentation AI prompts">
-                      <div className="flex items-center gap-1.5">
-                        <ClipboardList className="h-3 w-3" />
-                        <span>Documentation</span>
-                      </div>
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a professional change order request template including description of changes, justification, cost impact, schedule impact, and required approvals.")}>
-                      Create change order request template
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a comprehensive as-built drawings checklist for project handover, covering all disciplines (architectural, structural, MEP), revision tracking, and approval requirements.")}>
-                      Draft as-built drawings checklist
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Generate a detailed punch list template for project handover, organized by trade, priority level, responsible party, and completion timeline.")}>
-                      Generate punch list for handover
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Write a comprehensive project closeout report including project summary, achievements, lessons learned, final costs, outstanding items, and warranty information.")}>
-                      Write project closeout report
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a complete warranty documentation list for construction project handover, including equipment warranties, material warranties, contractor guarantees, and maintenance manuals.")}>
-                      Create warranty documentation list
+                    <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Design a post-implementation review template evaluating project objectives achievement, stakeholder satisfaction, performance metrics, budget accuracy, and success factors.")}>
+                      Design post-implementation review
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
