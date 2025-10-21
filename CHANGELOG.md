@@ -2,6 +2,95 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-01-21] - Theme System 2.0 - Descriptive Color Names
+
+### ✨ New - Neon Rainbow Theme
+- **[NEW THEME]** Added vibrant "Neon Rainbow" theme with rainbow color spectrum
+  - **Description:** Dark mode theme using rainbow colors across different UI elements
+  - **Strategy:** Different rainbow colors for different semantic meanings
+  - **Color Palette:**
+    - 🟣 **Primary:** Vibrant Magenta-Pink (280°, 100%, 60%)
+    - 🔵 **Secondary:** Bright Cyan (180°, 100%, 60%)
+    - 🟢 **Accent:** Electric Green (120°, 100%, 60%)
+    - 🟢 **Success:** Electric Green (120°, 100%, 50%)
+    - 🟠 **Warning:** Bright Orange-Yellow (45°, 100%, 50%)
+    - 🔴 **Destructive:** Bright Red (0°, 100%, 55%)
+    - 🔵 **Info:** Bright Cyan-Blue (200°, 100%, 55%)
+    - 💗 **Ring:** Hot Pink (320°, 100%, 60%)
+  - **Rainbow Gradient Utilities:**
+    - `.bg-rainbow-gradient` - Static rainbow gradient (6 colors)
+    - `.bg-rainbow-animated` - Animated flowing rainbow gradient (15s loop)
+    - `.btn-rainbow` - Rainbow button (auto-applied in neon-rainbow theme)
+    - Rainbow glow effects on hover
+  - **Design Philosophy:**
+    - Each UI element type gets a different rainbow color
+    - Maximum saturation (100%) for vibrant appearance
+    - Carefully chosen lightness for optimal visibility
+    - Subtle color tints on cards and backgrounds
+  - **Use Cases:**
+    - Creative professionals and designers
+    - Fun, energetic interfaces
+    - Standing out from standard themes
+    - Maximum color variety and vibrancy
+  - **Files Modified:**
+    - `src/shared/theme/types.ts` - Added `'neon-rainbow'` to ThemePreset
+    - `src/shared/theme/presets.ts` - Rainbow color distribution across tokens
+    - `src/pages/1-HomePage/others/components/ui/theme-toggle.tsx` - Added to theme selector
+    - `src/index.css` - Added rainbow gradient utility classes
+  - **How to Use Rainbow Gradients:**
+    - Add `bg-rainbow-gradient` class for static rainbow
+    - Add `bg-rainbow-animated` class for animated rainbow
+    - Buttons automatically get rainbow treatment in this theme
+  - Status: ✅ **COMPLETE** - Neon Rainbow theme with utility classes available
+  - Added: January 21, 2025
+
+### 🎨 Updated - Theme Naming System with Color Indicators
+- **[BREAKING CHANGE]** Renamed all theme presets to include descriptive color names
+  - **Problem:** Theme names like "Light", "Dark", "Abstract", "Nika" didn't clearly indicate what colors they used
+  - **Solution:** Added descriptive color names with emoji indicators for better UX
+  - **Changes Made:**
+    - `light` → `light-green` (Sun icon)
+    - `dark` → `neon-green` (Moon icon)
+    - `wazeer` → `wazeer` (Palette icon - kept name for cultural significance)
+    - `sunset` → `sunset-orange` (Sunset icon)
+    - `abstract` → `ocean-blue` (Waves icon)
+    - `nika` → `pink-magenta` (Sparkles icon)
+    - `lagoon` → `cyan-lagoon` (Waves icon)
+    - `dark-nature` → `forest-night` (TreePine icon)
+    - `full-gradient` → `purple-violet` (Paintbrush icon)
+    - `sea-purple` → `sea-purple` (Droplets icon - kept name as already descriptive)
+  - **Files Modified:**
+    - `src/shared/theme/types.ts` - Updated type definitions
+    - `src/shared/theme/presets.ts` - Renamed all theme keys, added color metadata
+    - `src/shared/stores/theme.ts` - Updated default theme, added migration logic
+    - `src/pages/1-HomePage/others/components/ui/theme-toggle.tsx` - Updated theme labels
+  - **Backward Compatibility:**
+    - Added `LegacyThemePreset` type for old theme names
+    - Created `LEGACY_THEME_MIGRATION` map for automatic conversion
+    - Implemented `migrateLegacyTheme()` function
+    - Migration happens automatically on app load (no user action required)
+    - User preferences are preserved across migration
+  - **Impact:**
+    - ✅ All existing user theme preferences automatically migrated
+    - ✅ Theme selector now shows clear color indicators (professional Lucide icons)
+    - ✅ Better UX - users can see at a glance what colors each theme uses
+    - ✅ Settings UI automatically displays new names via `THEME_METADATA`
+    - ✅ No data loss - all saved themes migrate seamlessly
+    - ✅ Professional appearance with consistent icon design
+  - **Technical Details:**
+    - Migration runs in `onRehydrateStorage` hook
+    - Also runs in `initializeTheme()` as fallback
+    - Logs migration to console for debugging: `[Theme Store] Migrating theme: light → light-green`
+    - Default theme updated from `'light'` to `'light-green'`
+    - System mode now uses `'neon-green'` (dark) and `'light-green'` (light)
+  - **THEME_METADATA Updates:**
+    - Descriptive color names without emojis for professional appearance
+    - Each theme has a dedicated Lucide icon (Sun, Moon, Waves, etc.)
+    - Added `color` field with hex color for each theme
+    - Updated descriptions to be more specific
+  - Status: ✅ **COMPLETE** - All themes renamed with backward compatibility
+  - Updated: January 21, 2025
+
 ## [2024-12-20] - AI Service Mode Cards - Expandable UI
 
 ### 🐛 Fixed - AI Drawer Scroll Behavior

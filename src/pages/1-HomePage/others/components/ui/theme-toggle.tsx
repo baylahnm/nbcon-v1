@@ -15,15 +15,16 @@ import {
 } from "./dropdown-menu";
 
 const themes = [
-  { key: 'light', label: 'Light', icon: Sun },
-  { key: 'dark', label: 'Dark', icon: Moon },
+  { key: 'light-green', label: 'Light Green', icon: Sun },
+  { key: 'neon-green', label: 'Neon Green', icon: Moon },
+  { key: 'dark-rainbow', label: 'Dark Rainbow', icon: Sparkles },
   { key: 'wazeer', label: 'Wazeer', icon: Palette },
-  { key: 'sunset', label: 'Sunset', icon: Sunset },
-  { key: 'abstract', label: 'Abstract', icon: Sparkles },
-  { key: 'nika', label: 'Nika', icon: Circle },
-  { key: 'lagoon', label: 'Lagoon', icon: Waves },
-  { key: 'dark-nature', label: 'Dark Nature', icon: TreePine },
-  { key: 'full-gradient', label: 'Full Gradient', icon: Paintbrush },
+  { key: 'sunset-orange', label: 'Sunset Orange', icon: Sunset },
+  { key: 'ocean-blue', label: 'Ocean Blue', icon: Waves },
+  { key: 'pink-magenta', label: 'Pink Magenta', icon: Circle },
+  { key: 'cyan-lagoon', label: 'Cyan Lagoon', icon: Waves },
+  { key: 'forest-night', label: 'Forest Night', icon: TreePine },
+  { key: 'purple-violet', label: 'Purple Violet', icon: Paintbrush },
   { key: 'sea-purple', label: 'Sea Purple', icon: Droplets },
 ];
 

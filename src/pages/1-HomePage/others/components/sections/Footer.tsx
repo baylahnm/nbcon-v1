@@ -26,7 +26,7 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ footerData }) => {
   const { t } = useTranslation('homepage');
   return (
-    <footer className="bg-primary py-16 px-4 rounded-t-[50px]">
+    <footer className="bg-primary-gradient py-16 px-4 rounded-t-[50px]">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8 border-b border-sidebar-border pb-8">
           {/* Company Info */}
@@ -37,7 +37,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
             <p className="text-primary-foreground/80 mb-6 max-w-md">
               {t('footer.description')}
             </p>
-            <div className="flex space-x-4 bg-primary p-0 rounded-lg">
+            <div className="flex space-x-4 p-0 rounded-lg">
               <Button variant="outline" size="sm" className="w-[30px] h-[30px] p-0 border-0 hover:bg-primary-foreground/10 group bg-primary-foreground dark:bg-primary-foreground">
                 <Facebook className="w-4 h-4 text-primary group-hover:text-secondary transition-colors" />
               </Button>

@@ -5,22 +5,23 @@
  * This replaces the duplicated theme stores in each role directory.
  * 
  * Features:
- * - 10 theme presets (light, dark, wazeer, sunset, abstract, nika, lagoon, dark-nature, full-gradient, sea-purple)
+ * - 10 theme presets with descriptive color names
+ * - Automatic migration from legacy theme names
  * - Custom token overrides
  * - Persistent storage
  * - Import/export capabilities
  * - Randomize function for testing
  * 
- * @version 1.0.0
+ * @version 2.0.0
  * @status Production Ready
- * @created January 15, 2025
+ * @updated January 21, 2025 - Theme name updates
  */
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ThemeState, ThemeMode, ThemePreset, ThemeTokenCategory } from '../theme/types';
 import { THEME_TOKENS } from '../theme/tokens';
-import { THEME_PRESETS } from '../theme/presets';
+import { THEME_PRESETS, migrateLegacyTheme } from '../theme/presets';
 
 /**
  * Shared Theme Store
@@ -42,7 +43,7 @@ export const useThemeStore = create<ThemeState>()(
       // STATE
       // ========================================================================
       mode: 'system',
-      preset: 'light',
+      preset: 'wazeer', // Default theme: Wazeer (Saudi Heritage earth tones)
       custom: {},
       applied: {},
 
@@ -63,10 +64,12 @@ export const useThemeStore = create<ThemeState>()(
         if (mode === 'system') {
           // Detect OS preference
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const effectivePreset = prefersDark ? 'dark' : 'light';
+          const effectivePreset = prefersDark ? 'neon-green' : 'light-green';
           get().applyPreset(effectivePreset);
-        } else if (mode === 'light' || mode === 'dark') {
-          get().applyPreset(mode as ThemePreset);
+        } else if (mode === 'light') {
+          get().applyPreset('light-green');
+        } else if (mode === 'dark') {
+          get().applyPreset('neon-green');
         } else {
           get().applyPreset(preset);
         }
@@ -259,6 +262,15 @@ export const useThemeStore = create<ThemeState>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
+          // Migrate legacy theme names to new names
+          const migratedPreset = migrateLegacyTheme(state.preset);
+          
+          // Update state if migration occurred
+          if (migratedPreset !== state.preset) {
+            console.log('[Theme Store] Migrating theme:', state.preset, '→', migratedPreset);
+            state.preset = migratedPreset;
+          }
+          
           // Apply the restored theme after hydration
           console.log('[Theme Store] Rehydrating theme:', state.preset);
           state.applyPreset(state.preset);
@@ -275,18 +287,21 @@ export const useThemeStore = create<ThemeState>()(
 export const initializeTheme = () => {
   const store = useThemeStore.getState();
   
+  // Migrate legacy theme if needed
+  const migratedPreset = migrateLegacyTheme(store.preset);
+  
   // Apply stored theme or default
-  if (store.preset) {
-    store.applyPreset(store.preset);
+  if (migratedPreset) {
+    store.applyPreset(migratedPreset);
   } else {
-    store.applyPreset('light');
+    store.applyPreset('light-green');
   }
   
   // Listen for OS theme changes if in system mode
   if (store.mode === 'system') {
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
     darkModeQuery.addEventListener('change', (e) => {
-      const effectivePreset = e.matches ? 'dark' : 'light';
+      const effectivePreset = e.matches ? 'neon-green' : 'light-green';
       store.applyPreset(effectivePreset);
     });
   }

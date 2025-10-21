@@ -306,7 +306,7 @@ export function ClientOverviewStats() {
                   <div className="flex items-center gap-4">
               <motion.div
                       layoutId={`icon-${active.id}-${id}`}
-                      className="bg-primary h-[48px] w-[48px] flex items-center justify-center rounded-xl shadow-md"
+                      className="bg-primary-gradient h-[48px] w-[48px] flex items-center justify-center rounded-xl shadow-md"
                     >
                       <active.icon className="h-6 w-6 text-primary-foreground" />
                     </motion.div>
@@ -427,7 +427,7 @@ export function ClientOverviewStats() {
                     <div className="flex items-center gap-4">
                       <motion.div 
                         layoutId={`icon-${card.id}-${id}`}
-                        className="bg-primary h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md"
+                        className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-md"
                       >
                         <Icon className="h-5 w-5 text-primary-foreground" />
                       </motion.div>

@@ -70,7 +70,7 @@ export const AIChatAssistant: React.FC = () => {
               <div className="bg-primary/10 border-b border-sidebar-border p-4 flex-shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-primary-gradient rounded-full flex items-center justify-center">
                       <Bot className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <div>
@@ -125,7 +125,7 @@ export const AIChatAssistant: React.FC = () => {
                         
                       {/* Sample User Message */}
                       <div className="flex items-start space-x-3 justify-end">
-                        <div className="bg-primary rounded-lg p-3 max-w-md">
+                        <div className="bg-primary-gradient rounded-lg p-3 max-w-md">
                           <p className="text-sm text-primary-foreground">
                             {t('aiAssistant.chat.userMessage')}
                           </p>

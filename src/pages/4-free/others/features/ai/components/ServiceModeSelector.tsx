@@ -65,7 +65,7 @@ export function ServiceModeSelector() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Sparkles className="w-4 h-4 text-primary" />
+        <Sparkles className="w-4 h-4 text-primary-gradient" />
         <span>Kickstart a workflow with an AI-optimised service mode.</span>
       </div>
 
@@ -79,7 +79,7 @@ export function ServiceModeSelector() {
             <Card
               key={mode}
               className={`transition-all duration-200 cursor-pointer border-border/80 ${
-                isActive ? "border-primary shadow-primary/10" : ""
+                isActive ? "border-primary-gradient shadow-primary-gradient" : ""
               } ${isExpanded ? "shadow-lg" : "hover:shadow-md"}`}
               onClick={() => setExpandedMode(isExpanded ? null : mode)}
             >
@@ -126,7 +126,7 @@ export function ServiceModeSelector() {
                     <div className="grid gap-1 text-sm text-muted-foreground">
                       {config.workflow.map((stage, index) => (
                         <div key={stage.id} className="flex items-baseline gap-2">
-                          <span className="text-xs font-semibold text-primary">{index + 1}.</span>
+                          <span className="text-xs font-semibold text-primary-gradient">{index + 1}.</span>
                           <span>{stage.title}</span>
                         </div>
                       ))}
@@ -178,7 +178,7 @@ export function ServiceModeSelector() {
       )}
 
       {plan && (
-        <Card className="border-primary/50">
+        <Card className="border-primary-gradient">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">{plan.title}</CardTitle>
             <p className="text-sm text-muted-foreground">

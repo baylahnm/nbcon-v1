@@ -10,16 +10,28 @@
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 export type ThemePreset = 
+  | 'light-green' 
+  | 'neon-green' 
+  | 'dark-rainbow'
+  | 'wazeer' 
+  | 'sunset-orange' 
+  | 'ocean-blue' 
+  | 'pink-magenta' 
+  | 'cyan-lagoon' 
+  | 'forest-night' 
+  | 'purple-violet' 
+  | 'sea-purple';
+
+// Legacy theme names for backward compatibility
+export type LegacyThemePreset = 
   | 'light' 
   | 'dark' 
-  | 'wazeer' 
   | 'sunset' 
   | 'abstract' 
   | 'nika' 
   | 'lagoon' 
   | 'dark-nature' 
-  | 'full-gradient' 
-  | 'sea-purple';
+  | 'full-gradient';
 
 export type ThemeTokenCategory = 
   | 'core' 

@@ -4,17 +4,42 @@
  * All 10 theme presets with complete token definitions.
  * Each preset includes 38 CSS variables (HSL format).
  * 
- * @version 1.0.0
+ * @version 2.0.0
  * @status Production Ready
  */
 
-import { ThemePreset } from './types';
+import { ThemePreset, LegacyThemePreset } from './types';
+
+/**
+ * Migration map from legacy theme names to new theme names
+ */
+export const LEGACY_THEME_MIGRATION: Record<LegacyThemePreset, ThemePreset> = {
+  'light': 'light-green',
+  'dark': 'neon-green',
+  'sunset': 'sunset-orange',
+  'abstract': 'ocean-blue',
+  'nika': 'pink-magenta',
+  'lagoon': 'cyan-lagoon',
+  'dark-nature': 'forest-night',
+  'full-gradient': 'purple-violet',
+};
+
+/**
+ * Migrates a legacy theme name to the new theme name
+ */
+export function migrateLegacyTheme(theme: string): ThemePreset {
+  if (theme in LEGACY_THEME_MIGRATION) {
+    return LEGACY_THEME_MIGRATION[theme as LegacyThemePreset];
+  }
+  // If it's already a new theme name or unknown, return as-is (with fallback)
+  return (theme as ThemePreset) || 'light-green';
+}
 
 export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   // ============================================================================
-  // LIGHT THEME - Default Light Theme
+  // LIGHT GREEN THEME - Clean and bright with forest green accent
   // ============================================================================
-  light: {
+  'light-green': {
     '--background': '0 0% 100%',
     '--foreground': '0 0% 9%',
     '--card': '0 0% 96.1%',
@@ -56,9 +81,9 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   },
 
   // ============================================================================
-  // DARK THEME - Default Dark Theme
+  // NEON GREEN THEME - Dark mode with vibrant green accent
   // ============================================================================
-  dark: {
+  'neon-green': {
     '--background': '0 0% 3%',
     '--foreground': '0 0% 95%',
     '--card': '0 0% 6%',
@@ -100,53 +125,97 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   },
 
   // ============================================================================
+  // DARK RAINBOW THEME - Dark mode with vibrant rainbow gradient
+  // ============================================================================
+  'dark-rainbow': {
+    '--background': '0 0% 3%',
+    '--foreground': '0 0% 95%',
+    '--card': '0 0% 6%',
+    '--card-foreground': '0 0% 95%',
+    '--popover': '0 0% 6%',
+    '--popover-foreground': '0 0% 95%',
+    '--primary': '180 100% 40%', // Darker cyan-blue for better text contrast
+    '--primary-foreground': '0 0% 100%',
+    '--primary-light': '200 100% 45%', // Darker blue
+    '--primary-dark': '160 100% 35%', // Darker green
+    '--secondary': '0 0% 6%',
+    '--secondary-foreground': '0 0% 95%',
+    '--muted': '0 0% 6%',
+    '--muted-foreground': '0 0% 65%',
+    '--accent': '0 0% 6%',
+    '--accent-foreground': '0 0% 95%',
+    '--success': '120 100% 40%', // Darker green
+    '--success-foreground': '0 0% 100%',
+    '--warning': '60 100% 45%', // Darker yellow (middle of blue-green mix)
+    '--warning-foreground': '0 0% 100%',
+    '--destructive': '0 100% 50%', // Darker red
+    '--destructive-foreground': '0 0% 100%',
+    '--info': '200 100% 45%', // Darker blue
+    '--info-foreground': '0 0% 100%',
+    '--border': '0 0% 15%',
+    '--input': '0 0% 15%',
+    '--input-background': '0 0% 6%',
+    '--input-foreground': '0 0% 95%',
+    '--input-placeholder': '0 0% 60%',
+    '--ring': '180 100% 40%', // Darker cyan-blue ring
+    '--sidebar-background': '0 0% 6%',
+    '--sidebar-foreground': '0 0% 95%',
+    '--sidebar-primary': '180 100% 40%',
+    '--sidebar-primary-foreground': '0 0% 100%',
+    '--sidebar-accent': '180 100% 40%',
+    '--sidebar-accent-foreground': '0 0% 95%',
+    '--sidebar-border': '0 0% 15%',
+    '--sidebar-ring': '180 100% 40%',
+  },
+
+  // ============================================================================
   // WAZEER THEME - Earth Tones (Saudi Heritage)
   // ============================================================================
   wazeer: {
     '--background': '0 0% 100%',
-    '--foreground': '160 30% 25%',
+    '--foreground': '20 25% 30%', // Warm brown for text
     '--card': '30 15% 92%',
-    '--card-foreground': '20 25% 35%',
+    '--card-foreground': '20 25% 30%', // Warm brown for text
     '--popover': '0 0% 100%',
-    '--popover-foreground': '160 30% 25%',
-    '--primary': '160 30% 25%',
+    '--popover-foreground': '20 25% 30%', // Warm brown for text
+    '--primary': '160 30% 30%', // Mid earth tone green
     '--primary-foreground': '0 0% 100%',
-    '--primary-light': '160 25% 35%',
-    '--primary-dark': '160 35% 15%',
+    '--primary-light': '160 25% 42%', // Lighter sage green
+    '--primary-dark': '160 35% 20%', // Darker forest green
     '--secondary': '20 25% 35%',
     '--secondary-foreground': '0 0% 100%',
     '--muted': '30 15% 92%',
-    '--muted-foreground': '20 25% 35%',
+    '--muted-foreground': '20 25% 45%', // Medium brown for muted text
     '--accent': '30 15% 92%',
-    '--accent-foreground': '160 30% 25%',
-    '--success': '160 30% 25%',
+    '--accent-foreground': '20 25% 30%', // Warm brown for text
+    '--success': '142 60% 35%', // Forest green success
     '--success-foreground': '0 0% 100%',
     '--warning': '32 100% 42%',
     '--warning-foreground': '0 0% 100%',
     '--destructive': '4 65% 48%',
     '--destructive-foreground': '0 0% 100%',
-    '--info': '217 92% 55%',
+    '--info': '200 70% 45%',
     '--info-foreground': '0 0% 100%',
     '--border': '30 15% 80%',
     '--input': '30 15% 80%',
     '--input-background': '0 0% 100%',
-    '--input-foreground': '160 30% 25%',
-    '--input-placeholder': '20 25% 35%',
-    '--ring': '160 30% 25%',
+    '--input-foreground': '20 25% 30%', // Warm brown for text
+    '--input-placeholder': '20 25% 45%', // Lighter brown for placeholder
+    '--ring': '160 30% 30%',
     '--sidebar-background': '30 15% 92%',
-    '--sidebar-foreground': '20 25% 35%',
-    '--sidebar-primary': '160 30% 25%',
+    '--sidebar-foreground': '20 25% 30%', // Warm brown for text
+    '--sidebar-primary': '160 30% 30%',
     '--sidebar-primary-foreground': '0 0% 100%',
-    '--sidebar-accent': '160 30% 25%',
+    '--sidebar-accent': '160 30% 30%',
     '--sidebar-accent-foreground': '0 0% 100%',
     '--sidebar-border': '30 15% 80%',
-    '--sidebar-ring': '160 30% 25%',
+    '--sidebar-ring': '160 30% 30%',
   },
 
   // ============================================================================
-  // SUNSET THEME - Warm Red/Orange Tones
+  // SUNSET ORANGE THEME - Warm sunset-inspired orange tones
   // ============================================================================
-  sunset: {
+  'sunset-orange': {
     '--background': '0 0% 100%',
     '--foreground': '20 15% 20%',
     '--card': '25 20% 95%',
@@ -183,9 +252,9 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   },
 
   // ============================================================================
-  // ABSTRACT THEME - Cool Blue Tones
+  // OCEAN BLUE THEME - Deep ocean blue professional theme
   // ============================================================================
-  abstract: {
+  'ocean-blue': {
     '--background': '0 0% 100%',
     '--foreground': '0 0% 0%',
     '--card': '0 0% 96.1%',
@@ -222,9 +291,9 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   },
 
   // ============================================================================
-  // NIKA THEME - Vibrant Magenta
+  // PINK MAGENTA THEME - Vibrant hot pink energy
   // ============================================================================
-  nika: {
+  'pink-magenta': {
     '--background': '0 0% 100%',
     '--foreground': '0 0% 0%',
     '--card': '0 0% 96.1%',
@@ -261,9 +330,9 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   },
 
   // ============================================================================
-  // LAGOON THEME - Ocean Cyan
+  // CYAN LAGOON THEME - Bright turquoise ocean lagoon
   // ============================================================================
-  lagoon: {
+  'cyan-lagoon': {
     '--background': '0 0% 100%',
     '--foreground': '180 20% 20%',
     '--card': '180 15% 95%',
@@ -300,9 +369,9 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   },
 
   // ============================================================================
-  // DARK-NATURE THEME - Dark Green Forest
+  // FOREST NIGHT THEME - Deep forest green darkness
   // ============================================================================
-  'dark-nature': {
+  'forest-night': {
     '--background': '0 0% 5%',
     '--foreground': '120 20% 90%',
     '--card': '120 10% 10%',
@@ -339,9 +408,9 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
   },
 
   // ============================================================================
-  // FULL-GRADIENT THEME - Purple Violet Gradient
+  // PURPLE VIOLET THEME - Vibrant purple gradient flow
   // ============================================================================
-  'full-gradient': {
+  'purple-violet': {
     '--background': '0 0% 100%',
     '--foreground': '0 0% 20%',
     '--card': '0 0% 95%',
@@ -419,58 +488,74 @@ export const THEME_PRESETS: Record<ThemePreset, Record<string, string>> = {
 
 /**
  * Theme Preset Metadata
- * Human-readable descriptions for each theme
+ * Human-readable descriptions for each theme with color indicators
  */
-export const THEME_METADATA: Record<ThemePreset, { name: string; description: string; icon: string }> = {
-  light: {
-    name: 'Light',
-    description: 'Clean and bright default theme',
-    icon: 'Sun'
+export const THEME_METADATA: Record<ThemePreset, { name: string; description: string; icon: string; color: string }> = {
+  'light-green': {
+    name: 'Light Green',
+    description: 'Clean and bright with forest green accent',
+    icon: 'Sun',
+    color: '#2d8659'
   },
-  dark: {
-    name: 'Dark',
-    description: 'Easy on the eyes dark mode',
-    icon: 'Moon'
+  'neon-green': {
+    name: 'Neon Green',
+    description: 'Dark mode with vibrant green accent',
+    icon: 'Moon',
+    color: '#2d8659'
+  },
+  'dark-rainbow': {
+    name: 'Dark Rainbow',
+    description: 'Dark mode with vibrant blue-to-green gradient spectrum',
+    icon: 'Sparkles',
+    color: '#2b9e96' // Teal blue-green
   },
   wazeer: {
     name: 'Wazeer',
     description: 'Earth tones inspired by Saudi heritage',
-    icon: 'Palmtree'
+    icon: 'Palmtree',
+    color: '#3d6b56' // Updated to match new primary earth tone
   },
-  sunset: {
-    name: 'Sunset',
-    description: 'Warm red and orange tones',
-    icon: 'Sunset'
+  'sunset-orange': {
+    name: 'Sunset Orange',
+    description: 'Warm sunset-inspired orange tones',
+    icon: 'Sunset',
+    color: '#f25c30'
   },
-  abstract: {
-    name: 'Abstract',
-    description: 'Modern cool blue aesthetic',
-    icon: 'Waves'
+  'ocean-blue': {
+    name: 'Ocean Blue',
+    description: 'Deep ocean blue professional theme',
+    icon: 'Waves',
+    color: '#3676a8'
   },
-  nika: {
-    name: 'Nika',
-    description: 'Vibrant magenta energy',
-    icon: 'Sparkles'
+  'pink-magenta': {
+    name: 'Pink Magenta',
+    description: 'Vibrant hot pink energy',
+    icon: 'Sparkles',
+    color: '#ea3982'
   },
-  lagoon: {
-    name: 'Lagoon',
-    description: 'Peaceful ocean cyan',
-    icon: 'Waves'
+  'cyan-lagoon': {
+    name: 'Cyan Lagoon',
+    description: 'Bright turquoise ocean lagoon',
+    icon: 'Waves',
+    color: '#40bfbf'
   },
-  'dark-nature': {
-    name: 'Dark Nature',
+  'forest-night': {
+    name: 'Forest Night',
     description: 'Deep forest green darkness',
-    icon: 'Trees'
+    icon: 'Trees',
+    color: '#4d9966'
   },
-  'full-gradient': {
-    name: 'Full Gradient',
-    description: 'Purple violet gradient flow',
-    icon: 'Palette'
+  'purple-violet': {
+    name: 'Purple Violet',
+    description: 'Vibrant purple gradient flow',
+    icon: 'Palette',
+    color: '#9933ff'
   },
   'sea-purple': {
     name: 'Sea Purple',
     description: 'Blue-purple ocean depths',
-    icon: 'Waves'
+    icon: 'Waves',
+    color: '#6f5fbf'
   },
 };
 

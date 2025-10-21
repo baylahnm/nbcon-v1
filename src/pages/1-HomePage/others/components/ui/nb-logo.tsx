@@ -9,7 +9,7 @@ const NbLogo = ({ className }: NbLogoProps) => {
   const isSmall = className?.includes('w-6') || className?.includes('w-8');
   
   return (
-    <div className={`flex items-center justify-center ${className || 'w-12 h-12'}`}>
+    <div className={`flex items-center justify-center bg-primary-gradient rounded-lg ${className || 'w-10 h-10'}`}>
       <span className={`text-primary-foreground font-bold relative inline-block ${isSmall ? 'text-sm' : 'text-xl'}`}>
         n.
         <span 

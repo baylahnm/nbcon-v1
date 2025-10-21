@@ -289,7 +289,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                     <Button
                       size="sm"
                       onClick={scrollToBottom}
-                      className="h-8 w-8 p-0 rounded-full shadow-md bg-primary text-primary-foreground hover:bg-primary/90"
+                      className="h-8 w-8 p-0 rounded-full shadow-md bg-primary-gradient text-primary-foreground hover:bg-primary/90"
                       title="Jump to latest message"
                     >
                       <ArrowDown className="h-4 w-4" />

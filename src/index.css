@@ -2367,4 +2367,118 @@ All colors MUST be HSL.
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
   }
+
+  /* ============================================================================
+     PRIMARY GRADIENT UTILITIES - Blue-to-Green Gradient System
+     ============================================================================ */
+  
+  /* Primary gradient backgrounds */
+  .bg-primary-gradient {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary-light)) 0%, 
+      hsl(var(--primary)) 50%, 
+      hsl(var(--primary-dark)) 100%
+    );
+  }
+  
+  /* Primary gradient text */
+  .text-primary-gradient {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary-light)) 0%, 
+      hsl(var(--primary)) 50%, 
+      hsl(var(--primary-dark)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Primary gradient borders */
+  .border-primary-gradient {
+    border-image: linear-gradient(135deg, 
+      hsl(var(--primary-light)) 0%, 
+      hsl(var(--primary)) 50%, 
+      hsl(var(--primary-dark)) 100%
+    ) 1;
+  }
+  
+  /* Primary gradient rings */
+  .ring-primary-gradient {
+    box-shadow: 0 0 0 1px hsl(var(--primary-light)), 
+                0 0 0 2px hsl(var(--primary)), 
+                0 0 0 3px hsl(var(--primary-dark));
+  }
+  
+  /* Primary gradient hover effects */
+  .hover-primary-gradient:hover {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary-light)) 0%, 
+      hsl(var(--primary)) 50%, 
+      hsl(var(--primary-dark)) 100%
+    );
+    color: hsl(var(--primary-foreground));
+  }
+  
+  /* Primary gradient button styles */
+  .btn-primary-gradient {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary-light)) 0%, 
+      hsl(var(--primary)) 50%, 
+      hsl(var(--primary-dark)) 100%
+    );
+    color: hsl(var(--primary-foreground));
+    border: none;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary-gradient:hover {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary-dark)) 0%, 
+      hsl(var(--primary)) 50%, 
+      hsl(var(--primary-light)) 100%
+    );
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+  }
+  
+  /* Primary gradient cards */
+  .card-primary-gradient {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary-light) / 0.1) 0%, 
+      hsl(var(--primary) / 0.05) 50%, 
+      hsl(var(--primary-dark) / 0.1) 100%
+    );
+    border: 1px solid hsl(var(--primary) / 0.2);
+  }
+  
+  /* Primary gradient shadows */
+  .shadow-primary-gradient {
+    box-shadow: 0 4px 6px -1px hsl(var(--primary) / 0.1), 
+                0 2px 4px -1px hsl(var(--primary) / 0.06);
+  }
+  
+  /* Primary gradient animations */
+  @keyframes primary-gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .animate-primary-gradient {
+    background: linear-gradient(270deg, 
+      hsl(var(--primary-light)) 0%, 
+      hsl(var(--primary)) 25%, 
+      hsl(var(--primary-dark)) 50%, 
+      hsl(var(--primary)) 75%, 
+      hsl(var(--primary-light)) 100%
+    );
+    background-size: 200% 200%;
+    animation: primary-gradient-shift 3s ease infinite;
+  }
 }
