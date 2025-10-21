@@ -140,7 +140,7 @@ export function DashboardContent() {
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-4">
                   <div className="relative overflow-hidden bg-primary-gradient p-4 rounded-xl ring-1 ring-primary/20 shadow-primary-gradient">
-                    <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary))_0%,hsl(var(--primary)/0.3)_50%,hsl(var(--primary))_100%)]"></span>
+                    <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,hsl(var(--primary-light))_0%,hsl(var(--primary)/0.3)_50%,hsl(var(--primary-dark))_100%)]"></span>
                     <Bot className="h-5 w-5 text-primary-foreground relative z-10" />
                   </div>
                   <div>

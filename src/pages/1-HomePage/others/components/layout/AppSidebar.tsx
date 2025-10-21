@@ -349,7 +349,7 @@ export function AppSidebar() {
          <div className={`border-b border-sidebar-border ${collapsed ? 'px-4 py-1' : 'px-4 py-3'}`}>
           <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
             <div className="flex-shrink-0">
-              <NbLogo className="w-8 h-8" />
+              <NbLogo />
             </div>
             <div className={cn("transition-opacity duration-200", collapsed && "opacity-0 w-0 overflow-hidden")}>
               <h2 className="text-lg font-bold text-sidebar-foreground sidebar-logo-title">nbcon</h2>
@@ -386,7 +386,7 @@ export function AppSidebar() {
         <div className="mt-auto p-4 border-t border-sidebar-border px-0 py-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={cn("w-full justify-start p-3 h-auto gap-3", collapsed && "justify-center")}>
+              <Button variant="ghost" className={cn("w-full justify-start p-3 h-auto gap-3", collapsed && "justify-center pr-0")}>
                 <Avatar className="h-8 w-8 m-0">
                   <AvatarImage 
                     src={getUserProfileImage(profile) || undefined} 
