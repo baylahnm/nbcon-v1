@@ -26,9 +26,9 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ footerData }) => {
   const { t } = useTranslation('homepage');
   return (
-    <footer className="bg-primary pt-16 pb-12 px-6 md:px-8 lg:px-12 rounded-t-[50px]">
+    <footer className="bg-primary py-16 px-4 rounded-t-[50px]">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-6 border-b border-sidebar-border pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8 border-b border-sidebar-border pb-8">
           {/* Company Info */}
           <div className="lg:col-span-2">
             <div className="mb-4">

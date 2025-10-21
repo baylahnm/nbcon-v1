@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Bot, 
   MessageSquare, 
@@ -13,12 +13,12 @@ import {
   Search as SearchIcon,
   Image as ImageIcon,
   Cog,
-  Link as LinkIcon
+  Link as LinkIcon,
+  ArrowDown
 } from 'lucide-react';
 import { Button } from '../../../../1-HomePage/others/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../1-HomePage/others/components/ui/card';
 import { Badge } from '../../../../1-HomePage/others/components/ui/badge';
-import { ScrollArea } from '../../../../1-HomePage/others/components/ui/scroll-area';
 import { Separator } from '../../../../1-HomePage/others/components/ui/separator';
 import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
@@ -41,19 +41,23 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
     mode,
     isGenerating,
     settings,
-    getActiveThread,
-    getActiveMessages,
     newThread,
     setActiveThread,
     stopGeneration,
     switchMode,
     drawerOpen,
-    setDrawerOpen
+    setDrawerOpen,
+    deleteThread
   } = useAiStore();
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const activeThread = getActiveThread();
-  const activeMessages = getActiveMessages();
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  // Subscribe to threads and activeThreadId reactively - this will update when store changes
+  const activeThread = threads.find((thread) => thread.id === activeThreadId) || null;
+  const activeMessages = activeThreadId ? (messagesByThread[activeThreadId] || []) : [];
   const lastMessages = activeMessages.slice(-10); // Show last 10 messages
 
   // Track drawer open
@@ -62,6 +66,18 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
       aiClient.trackDashboardWidgetClicked('ai_drawer');
     }
   }, [isOpen]);
+
+  // Scroll to bottom function
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (lastMessages.length > 0) {
+      scrollToBottom();
+    }
+  }, [lastMessages.length]);
 
   // Handle thread selection
   const handleThreadSelect = (thread: any) => {
@@ -117,7 +133,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-background border-l border-sidebar-border shadow-lg z-50 flex flex-col">
+    <div className="fixed inset-y-0 right-0 w-96 bg-background border-l border-sidebar-border shadow-lg z-50 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="p-4 border-b border-sidebar-border bg-muted/30">
         <div className="flex items-center justify-between mb-3">
@@ -149,14 +165,30 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
           </div>
         </div>
 
-        {/* Mode Badge */}
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-xs">
-            <ModeIcon className={`w-3 h-3 mr-1 ${modeInfo.color}`} />
-            {modeInfo.label}
-          </Badge>
-          {settings.hijri && activeThread && (
-            <HijriBadge date={activeThread.updatedAt} isCompact />
+        {/* Mode Badge and Clear Chat */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              <ModeIcon className={`w-3 h-3 mr-1 ${modeInfo.color}`} />
+              {modeInfo.label}
+            </Badge>
+            {settings.hijri && activeThread && (
+              <HijriBadge date={activeThread.updatedAt} isCompact />
+            )}
+          </div>
+          
+          {/* Clear Chat Button */}
+          {lastMessages.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => activeThreadId && deleteThread(activeThreadId)}
+              className="h-7 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300"
+              title="Clear all chat messages"
+            >
+              <Trash2 className="h-3 w-3 mr-1" />
+              Clear Chat
+            </Button>
           )}
         </div>
 
@@ -184,7 +216,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                 <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                   {settings.rtl ? 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â­Ã˜Â§Ã˜Â¯Ã˜Â«Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â£Ã˜Â®Ã™Å Ã˜Â±Ã˜Â©' : 'Recent Chats'}
                 </h3>
-                <ScrollArea className="h-64 overflow-y-auto">
+                <div className="h-64 overflow-y-auto">
                   <div className="space-y-1">
                     {threads.slice(0, 5).map((thread) => (
                       <Card
@@ -218,18 +250,18 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                       </Card>
                     ))}
                   </div>
-                </ScrollArea>
+                </div>
               </div>
             </div>
           </div>
         ) : (
           /* Compact View - Show Messages */
           <div className="flex-1 flex flex-col min-h-0">
-            {/* Messages */}
-            <ScrollArea className="flex-1 p-4 overflow-y-auto">
+            {/* Messages Container */}
+            <div className="flex-1 overflow-y-auto p-4" style={{ maxHeight: 'calc(100vh - 200px)' }}>
               {lastMessages.length === 0 ? (
-                <div className="space-y-6">
-                  <div className="text-center py-6">
+                <div className="space-y-4">
+                  <div className="text-center">
                     <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
                       <ModeIcon className="w-6 h-6 text-muted-foreground" />
                     </div>
@@ -250,9 +282,23 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
                       isCompact
                     />
                   ))}
+                  <div ref={messagesEndRef} />
+                  
+                  {/* Jump to Bottom Button - Inside Messages Area */}
+                  <div className="flex justify-end pt-2">
+                    <Button
+                      size="sm"
+                      onClick={scrollToBottom}
+                      className="h-8 w-8 p-0 rounded-full shadow-md bg-primary text-primary-foreground hover:bg-primary/90"
+                      title="Jump to latest message"
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               )}
-            </ScrollArea>
+            </div>
+
 
 
             {/* Composer */}

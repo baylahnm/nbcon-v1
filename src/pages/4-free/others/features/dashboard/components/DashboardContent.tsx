@@ -7,7 +7,7 @@ import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Dialog, DialogContent } from '../../../../../1-HomePage/others/components/ui/dialog';
 import { ScrollArea } from '../../../../../1-HomePage/others/components/ui/scroll-area';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../../../1-HomePage/others/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '../../../../../1-HomePage/others/components/ui/dropdown-menu';
 import { ChatComposer } from '../../ai/components/ChatComposer';
 import { useAuthStore } from "../../../stores/auth";
 import { getUserDisplayName } from '../../../../../1-HomePage/others/lib/userUtils';
@@ -25,8 +25,9 @@ export function DashboardContent() {
   const { profile } = useAuthStore();
   const navigate = useNavigate();
   const [showFullChat, setShowFullChat] = useState(false);
-  const { getActiveMessages, settings, setComposerText, sendMessage, deleteThread, activeThreadId } = useAiStore();
-  const activeMessages = getActiveMessages();
+  const { settings, setComposerText, sendMessage, deleteThread, activeThreadId, messagesByThread } = useAiStore();
+  // Subscribe to messages reactively - this will update when store changes
+  const activeMessages = activeThreadId ? (messagesByThread[activeThreadId] || []) : [];
   
   // Get user display name
   const displayName = getUserDisplayName(profile);
@@ -111,6 +112,14 @@ export function DashboardContent() {
           </Card>
         </header>
 
+        {/* Section 1: Quick Actions (Moved to Top) */}
+        <section role="region" aria-label="Quick Actions">
+          <ClientQuickActionsHub userRole={profile?.role} />
+        </section>
+
+        {/* Section 2: Overview Stats */}
+        <ClientOverviewStats />
+
         {/* AI Assistant (Prominent, Top) */}
         <section 
           role="region" 
@@ -155,7 +164,7 @@ export function DashboardContent() {
                   {activeMessages && activeMessages.length > 0 && (
                     <Button 
                       variant="outline" 
-                      className="h-9 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300" 
+                      className="h-9 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-border hover:border-red-500" 
                       onClick={handleClearChat}
                       title="Clear all chat messages"
                     >
@@ -164,8 +173,8 @@ export function DashboardContent() {
                     </Button>
                   )}
                 </div>
-              </div>
-
+        </div>
+        
               {/* Messages Preview (scrollable) */}
               {activeMessages && activeMessages.length > 0 && (
                 <div className="mt-3 rounded-lg border border-border/40 bg-background">
@@ -198,7 +207,7 @@ export function DashboardContent() {
                 {/* Project Planning */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Project Planning AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs border-border hover:bg-gradient-to-t hover:from-primary hover:to-primary-dark hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/20" aria-label="Project Planning AI prompts">
                       <div className="flex items-center gap-1.5">
                         <FileText className="h-3 w-3" />
                         <span>Project Planning</span>
@@ -207,8 +216,7 @@ export function DashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuLabel className="text-xs">Project Planning</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs bg-gradient-to-r from-primary to-primary-dark text-primary-foreground py-2 rounded-t-md -m-1 mb-0 px-3">Project Planning</DropdownMenuLabel>
                     <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive project charter for a commercial building project in Saudi Arabia, including scope, objectives, stakeholders, and deliverables.")}>
                       Create project charter for commercial building
                     </DropdownMenuItem>
@@ -230,7 +238,7 @@ export function DashboardContent() {
                 {/* Cost & Budgeting */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Cost & Budgeting AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs border-border hover:bg-gradient-to-t hover:from-primary hover:to-primary-dark hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/20" aria-label="Cost & Budgeting AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Calculator className="h-3 w-3" />
                         <span>Cost & Budgeting</span>
@@ -239,8 +247,7 @@ export function DashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuLabel className="text-xs">Cost & Budgeting</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs bg-gradient-to-r from-primary to-primary-dark text-primary-foreground py-2 rounded-t-md -m-1 mb-0 px-3">Cost & Budgeting</DropdownMenuLabel>
                     <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Estimate the cost for a comprehensive site survey in Riyadh, including topographic survey, soil testing, and geotechnical investigation.")}>
                       Estimate cost for site survey in Riyadh
                     </DropdownMenuItem>
@@ -262,7 +269,7 @@ export function DashboardContent() {
                 {/* Communication */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Communication AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs border-border hover:bg-gradient-to-t hover:from-primary hover:to-primary-dark hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/20" aria-label="Communication AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Mail className="h-3 w-3" />
                         <span>Communication</span>
@@ -271,8 +278,7 @@ export function DashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuLabel className="text-xs">Communication</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs bg-gradient-to-r from-primary to-primary-dark text-primary-foreground py-2 rounded-t-md -m-1 mb-0 px-3">Communication</DropdownMenuLabel>
                     <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Draft a professional client progress update email for a construction project, including completed milestones, current status, upcoming activities, and any issues requiring attention.")}>
                       Draft client progress update email
                     </DropdownMenuItem>
@@ -290,14 +296,10 @@ export function DashboardContent() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </div>
-
-              {/* Second Row - More Categories */}
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Compliance & Safety */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Compliance & Safety AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs border-border hover:bg-gradient-to-t hover:from-primary hover:to-primary-dark hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/20" aria-label="Compliance & Safety AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Shield className="h-3 w-3" />
                         <span>Compliance & Safety</span>
@@ -306,8 +308,7 @@ export function DashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuLabel className="text-xs">Compliance & Safety</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs bg-gradient-to-r from-primary to-primary-dark text-primary-foreground py-2 rounded-t-md -m-1 mb-0 px-3">Compliance & Safety</DropdownMenuLabel>
                     <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a comprehensive SCE (Saudi Council of Engineers) license verification checklist for engineers, including required documents, validation steps, and compliance requirements.")}>
                       SCE license verification checklist
                     </DropdownMenuItem>
@@ -329,7 +330,7 @@ export function DashboardContent() {
                 {/* Technical & Design */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Technical & Design AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs border-border hover:bg-gradient-to-t hover:from-primary hover:to-primary-dark hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/20" aria-label="Technical & Design AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Wrench className="h-3 w-3" />
                         <span>Technical & Design</span>
@@ -338,8 +339,7 @@ export function DashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuLabel className="text-xs">Technical & Design</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs bg-gradient-to-r from-primary to-primary-dark text-primary-foreground py-2 rounded-t-md -m-1 mb-0 px-3">Technical & Design</DropdownMenuLabel>
                     <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Suggest appropriate material specifications for structural concrete work in Saudi Arabia, including grade requirements, aggregate properties, admixtures, and compliance with Saudi Building Code.")}>
                       Suggest material specs for structural work
                     </DropdownMenuItem>
@@ -361,7 +361,7 @@ export function DashboardContent() {
                 {/* Documentation */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-8 text-xs border-primary/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30" aria-label="Documentation AI prompts">
+                    <Button variant="outline" className="justify-between h-9 text-xs border-border hover:bg-gradient-to-t hover:from-primary hover:to-primary-dark hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/20" aria-label="Documentation AI prompts">
                       <div className="flex items-center gap-1.5">
                         <ClipboardList className="h-3 w-3" />
                         <span>Documentation</span>
@@ -370,8 +370,7 @@ export function DashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-64">
-                    <DropdownMenuLabel className="text-xs">Documentation</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className="text-xs bg-gradient-to-r from-primary to-primary-dark text-primary-foreground py-2 rounded-t-md -m-1 mb-0 px-3">Documentation</DropdownMenuLabel>
                     <DropdownMenuItem className="text-xs cursor-pointer" onClick={() => handlePromptSelect("Create a professional change order request template including description of changes, justification, cost impact, schedule impact, and required approvals.")}>
                       Create change order request template
                     </DropdownMenuItem>
@@ -400,25 +399,18 @@ export function DashboardContent() {
             <ChatPage onBack={() => setShowFullChat(false)} />
           </DialogContent>
         </Dialog>
-        
-        {/* Section 1: Overview Stats */}
-        <ClientOverviewStats />
 
-        {/* Section 2: Quick Actions */}
-        <section role="region" aria-label="Quick Actions">
-          <ClientQuickActionsHub userRole={profile?.role} />
-        </section>
 
         {/* Section 3 & 4: Projects and Activity */}
         <div className="flex flex-col gap-4">
           {/* Active Projects */}
           <section role="region" aria-label="Active Projects">
-            <ClientActiveProjectsList />
+          <ClientActiveProjectsList />
           </section>
           
           {/* Recent Activity */}
           <section role="region" aria-label="Recent Activity">
-            <ClientRecentActivityFeed />
+          <ClientRecentActivityFeed />
           </section>
         </div>
 

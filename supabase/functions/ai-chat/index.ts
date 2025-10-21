@@ -104,12 +104,43 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders() })
   }
 
+  // Health check endpoint (no auth required)
+  if (req.url.endsWith('/health') || req.method === 'GET') {
+    return new Response(
+      JSON.stringify({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        function: 'ai-chat',
+        message: 'Function is running',
+        openai_configured: !!Deno.env.get('OPENAI_API_KEY')
+      }),
+      { 
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+        status: 200 
+      }
+    )
+  }
+
   try {
     // Get OpenAI API key from environment
     const openaiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openaiKey) {
-      throw new Error('OPENAI_API_KEY not configured in Supabase secrets')
+      console.error('[AI-CHAT] OPENAI_API_KEY not configured')
+      return new Response(
+        JSON.stringify({
+          error: 'OPENAI_API_KEY not configured in Supabase secrets'
+        }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders(),
+            'Content-Type': 'application/json'
+          }
+        }
+      )
     }
+
+    console.log('[AI-CHAT] OpenAI API key found, processing request')
 
     // Parse and validate request
     const body = await req.json()

@@ -181,7 +181,7 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
     : 'Ask anything...';
 
   return (
-    <div className="p-0">
+    <div>
       {/* Tool Menu */}
       {showToolMenu && (
         <ToolMenu

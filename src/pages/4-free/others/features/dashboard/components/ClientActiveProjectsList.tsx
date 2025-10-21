@@ -166,15 +166,15 @@ export const ClientActiveProjectsList = memo(function ClientActiveProjectsList({
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'in-progress':
-        return { bg: 'bg-primary/10', text: 'text-primary', label: 'In Progress' };
+        return { bg: 'bg-primary', text: 'text-primary-foreground', label: 'In Progress' };
       case 'planning':
-        return { bg: 'bg-amber-500/10', text: 'text-amber-600', label: 'Planning' };
+        return { bg: 'bg-amber-500', text: 'text-white', label: 'Planning' };
       case 'review':
-        return { bg: 'bg-purple-500/10', text: 'text-purple-600', label: 'Under Review' };
+        return { bg: 'bg-purple-500', text: 'text-white', label: 'Under Review' };
       case 'completed':
-        return { bg: 'bg-green-500/10', text: 'text-green-600', label: 'Completed' };
+        return { bg: 'bg-green-500', text: 'text-white', label: 'Completed' };
       default:
-        return { bg: 'bg-gray-500/10', text: 'text-gray-600', label: 'Unknown' };
+        return { bg: 'bg-gray-500', text: 'text-white', label: 'Unknown' };
     }
   };
 

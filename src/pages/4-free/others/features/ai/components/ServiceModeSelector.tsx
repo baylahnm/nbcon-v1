@@ -22,6 +22,7 @@ export function ServiceModeSelector() {
   const [isPlanning, setIsPlanning] = useState<ServiceMode | null>(null);
   const [plan, setPlan] = useState<ServicePlan | null>(null);
   const [planError, setPlanError] = useState<string | null>(null);
+  const [expandedMode, setExpandedMode] = useState<ServiceMode | null>(null);
 
   const handleActivate = (mode: ServiceMode) => {
     if (activeServiceMode !== mode) {
@@ -72,14 +73,17 @@ export function ServiceModeSelector() {
         {availableServiceModes.map((mode) => {
           const config = serviceModes[mode];
           const isActive = activeServiceMode === mode;
+          const isExpanded = expandedMode === mode;
+          
           return (
             <Card
               key={mode}
-              className={`transition-shadow hover:shadow-lg border-border/80 ${
+              className={`transition-all duration-200 cursor-pointer border-border/80 ${
                 isActive ? "border-primary shadow-primary/10" : ""
-              }`}
+              } ${isExpanded ? "shadow-lg" : "hover:shadow-md"}`}
+              onClick={() => setExpandedMode(isExpanded ? null : mode)}
             >
-              <CardHeader className="pb-3">
+              <CardHeader className={isExpanded ? "pb-3" : "pb-4"}>
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle className="text-base font-semibold">
                     {config.title}
@@ -91,58 +95,76 @@ export function ServiceModeSelector() {
                     {mode}
                   </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {config.summary}
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex flex-wrap gap-2">
-                  {config.tools.map((tool) => (
-                    <Badge key={tool.id} variant="secondary" className="text-xs">
-                      {tool.label}
-                    </Badge>
-                  ))}
-                </div>
-
-                <div className="rounded-md border border-dashed border-muted-foreground/20 p-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">
-                    Workflow Stages
+                
+                {!isExpanded && (
+                  <p className="text-xs text-muted-foreground">
+                    Click to view details
                   </p>
-                  <div className="grid gap-1 text-sm text-muted-foreground">
-                    {config.workflow.map((stage, index) => (
-                      <div key={stage.id} className="flex items-baseline gap-2">
-                        <span className="text-xs font-semibold text-primary">{index + 1}.</span>
-                        <span>{stage.title}</span>
-                      </div>
+                )}
+                
+                {isExpanded && (
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {config.summary}
+                  </p>
+                )}
+              </CardHeader>
+              
+              {isExpanded && (
+                <CardContent className="space-y-3" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex flex-wrap gap-2">
+                    {config.tools.map((tool) => (
+                      <Badge key={tool.id} variant="secondary" className="text-xs">
+                        {tool.label}
+                      </Badge>
                     ))}
                   </div>
-                </div>
 
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant={isActive ? "default" : "outline"}
-                    onClick={() => handleActivate(mode)}
-                  >
-                    Use Mode
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    disabled={isPlanning === mode}
-                    onClick={() => handlePlan(mode)}
-                  >
-                    {isPlanning === mode ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Generating Plan...
-                      </>
-                    ) : (
-                      "Preview Plan"
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
+                  <div className="rounded-md border border-dashed border-muted-foreground/20 p-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">
+                      Workflow Stages
+                    </p>
+                    <div className="grid gap-1 text-sm text-muted-foreground">
+                      {config.workflow.map((stage, index) => (
+                        <div key={stage.id} className="flex items-baseline gap-2">
+                          <span className="text-xs font-semibold text-primary">{index + 1}.</span>
+                          <span>{stage.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant={isActive ? "default" : "outline"}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleActivate(mode);
+                      }}
+                    >
+                      Use Mode
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      disabled={isPlanning === mode}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePlan(mode);
+                      }}
+                    >
+                      {isPlanning === mode ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Generating Plan...
+                        </>
+                      ) : (
+                        "Start Plan"
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              )}
             </Card>
           );
         })}

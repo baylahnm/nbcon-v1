@@ -39,8 +39,6 @@ export function ChatPage({ onBack }: ChatPageProps) {
     mode,
     isGenerating,
     settings,
-    getActiveThread,
-    getActiveMessages,
     newThread,
     setActiveThread,
     stopGeneration,
@@ -48,8 +46,9 @@ export function ChatPage({ onBack }: ChatPageProps) {
   } = useAiStore();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const activeThread = getActiveThread();
-  const activeMessages = getActiveMessages();
+  // Subscribe to threads and activeThreadId reactively - this will update when store changes
+  const activeThread = threads.find((thread) => thread.id === activeThreadId) || null;
+  const activeMessages = activeThreadId ? (messagesByThread[activeThreadId] || []) : [];
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
