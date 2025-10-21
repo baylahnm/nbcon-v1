@@ -1,7 +1,6 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../../../1-HomePage/others/components/ui/dialog';
-import { Button } from '../../../../../1-HomePage/others/components/ui/button';
-import { X, Sparkles, Calculator, Target, TrendingUp } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '../../../../../1-HomePage/others/components/ui/dialog';
+import { Sparkles, Calculator, Target, TrendingUp, X } from 'lucide-react';
 import { AIJobMatchScore } from './AIJobMatchScore';
 import { EarningsCalculator } from './EarningsCalculator';
 import { SkillsGapAnalysis } from './SkillsGapAnalysis';
@@ -19,26 +18,22 @@ export default function JobDetailsPopover({ isOpen, onClose, job }: JobDetailsPo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="sticky top-0 bg-background border-b p-6 pb-4 z-10">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 [&>button]:hidden">
+        <DialogHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-primary h-10 w-10 flex items-center justify-center rounded-xl">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                <Sparkles className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
                 <DialogTitle className="text-xl font-bold">{job.title || 'Job Details'}</DialogTitle>
                 <p className="text-sm text-muted-foreground">{job.company || 'Company'}</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="h-8 w-8 p-0"
-            >
+            <DialogClose className="bg-primary-gradient text-primary-foreground hover:opacity-90 rounded-md h-8 w-8 p-0 flex items-center justify-center shadow-md">
               <X className="h-4 w-4" />
-            </Button>
+              <span className="sr-only">Close</span>
+            </DialogClose>
           </div>
         </DialogHeader>
 
@@ -61,19 +56,19 @@ export default function JobDetailsPopover({ isOpen, onClose, job }: JobDetailsPo
           {/* Earnings Calculator Card */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="bg-green-500 h-6 w-6 flex items-center justify-center rounded-lg">
-                <Calculator className="w-4 h-4 text-white" />
+              <div className="bg-success h-6 w-6 flex items-center justify-center rounded-lg">
+                <Calculator className="w-4 h-4 text-success-foreground" />
               </div>
               <h3 className="font-semibold">Earnings Calculator</h3>
             </div>
-            <EarningsCalculator />
+            <EarningsCalculator jobType="full-time" />
           </div>
 
           {/* Skills Gap Analysis Card */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="bg-orange-500 h-6 w-6 flex items-center justify-center rounded-lg">
-                <Target className="w-4 h-4 text-white" />
+              <div className="bg-warning h-6 w-6 flex items-center justify-center rounded-lg">
+                <Target className="w-4 h-4 text-warning-foreground" />
               </div>
               <h3 className="font-semibold">Skills Gap Analysis</h3>
             </div>
@@ -85,12 +80,16 @@ export default function JobDetailsPopover({ isOpen, onClose, job }: JobDetailsPo
           {/* Similar Jobs Recommendations Card */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="bg-purple-500 h-6 w-6 flex items-center justify-center rounded-lg">
-                <TrendingUp className="w-4 h-4 text-white" />
+              <div className="bg-info h-6 w-6 flex items-center justify-center rounded-lg">
+                <TrendingUp className="w-4 h-4 text-info-foreground" />
               </div>
               <h3 className="font-semibold">Similar Jobs You May Like</h3>
             </div>
-            <SimilarJobsRecommendations />
+            <SimilarJobsRecommendations 
+              currentJobId={job.id}
+              currentJobSkills={job.skills || []}
+              currentJobCategory={job.category || "Engineering"}
+            />
           </div>
         </div>
       </DialogContent>

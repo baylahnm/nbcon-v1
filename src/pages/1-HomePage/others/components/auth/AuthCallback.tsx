@@ -115,7 +115,7 @@ export function AuthCallback() {
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br bg-primary-gradient/80 rounded-xl flex items-center justify-center">
             {status === 'loading' && <Loader2 className="w-8 h-8 text-primary-foreground animate-spin" />}
             {status === 'success' && <CheckCircle className="w-8 h-8 text-primary-foreground" />}
             {status === 'error' && <XCircle className="w-8 h-8 text-primary-foreground" />}

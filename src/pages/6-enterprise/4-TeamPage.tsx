@@ -276,7 +276,7 @@ export function TeamProjectsPage() {
             {activeTab === 'management' && (
               <motion.span
                 layoutId="activeTab"
-                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
                 initial={false}
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
@@ -293,7 +293,7 @@ export function TeamProjectsPage() {
             {activeTab === 'timesheet' && (
               <motion.span
                 layoutId="activeTab"
-                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
                 initial={false}
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
@@ -310,7 +310,7 @@ export function TeamProjectsPage() {
             {activeTab === 'reports' && (
               <motion.span
                 layoutId="activeTab"
-                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
                 initial={false}
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
@@ -327,7 +327,7 @@ export function TeamProjectsPage() {
             {activeTab === 'documents' && (
               <motion.span
                 layoutId="activeTab"
-                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+                className="absolute top-0 left-0 h-9 w-full rounded-md border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
                 initial={false}
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />

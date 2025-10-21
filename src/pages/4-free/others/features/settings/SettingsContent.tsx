@@ -353,7 +353,7 @@ export function SettingsContent() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
               <SettingsIcon className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -414,7 +414,7 @@ export function SettingsContent() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                  <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <User className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -490,7 +490,7 @@ export function SettingsContent() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                  <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Building className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -562,7 +562,7 @@ export function SettingsContent() {
           >
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <SettingsIcon className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -694,7 +694,7 @@ export function SettingsContent() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                  <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Eye className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -763,7 +763,7 @@ export function SettingsContent() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                  <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Shield className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -880,7 +880,7 @@ export function SettingsContent() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                  <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Palette className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -932,7 +932,7 @@ export function SettingsContent() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                  <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Monitor className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -1109,7 +1109,7 @@ export function SettingsContent() {
           >
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <Zap className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -1169,7 +1169,7 @@ export function SettingsContent() {
           >
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <Monitor className="h-6 w-6 text-white" />
                 </div>
                 <div>

@@ -548,7 +548,7 @@ export default function LearningPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b min-w-0">
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
+          <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <div className="min-w-0">
@@ -620,7 +620,7 @@ export default function LearningPage() {
               <CardContent className="p-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark p-2.5 rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient p-2.5 rounded-lg shadow-sm shadow-primary/50">
                       <stat.icon className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex items-center gap-1 text-xs font-medium text-green-600">

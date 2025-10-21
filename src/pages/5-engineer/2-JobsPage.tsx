@@ -391,7 +391,7 @@ export default function JobsPage() {
             <CardContent className="p-4">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                      <div className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                         <stat.icon className="h-5 w-5 text-white" />
                 </div>
                       <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
@@ -498,14 +498,14 @@ export default function JobsPage() {
                         
                         {/* Badges */}
                         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50">
+                          <Badge className="bg-primary-gradient text-white border-0 shadow-sm shadow-primary/50">
                             New
                           </Badge>
-                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50">
+                          <Badge className="bg-primary-gradient text-white border-0 shadow-sm shadow-primary/50">
                             Recommended
                           </Badge>
                           {job.clientRating && (
-                            <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
+                            <Badge className="bg-primary-gradient text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                               <Star className="h-3 w-3 fill-white" />
                               {job.clientRating}
                             </Badge>
@@ -564,7 +564,7 @@ export default function JobsPage() {
                               <span className="text-xs font-medium text-amber-900 dark:text-amber-100">
                                 Deadline: {job.deadline}
                               </span>
-                              <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 text-[10px] px-2 py-0.5 shadow-sm shadow-primary/50">
+                              <Badge className="bg-primary-gradient text-white border-0 text-[10px] px-2 py-0.5 shadow-sm shadow-primary/50">
                                 Apply Soon
                               </Badge>
                             </div>
@@ -736,7 +736,7 @@ export default function JobsPage() {
                           <span className="capitalize">{job.status}</span>
                       </Badge>
                         {job.clientRating && (
-                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
+                          <Badge className="bg-primary-gradient text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                             <Star className="h-3 w-3 fill-white" />
                             {job.clientRating}
                           </Badge>
@@ -975,7 +975,7 @@ export default function JobsPage() {
                           <span className="capitalize">{job.status}</span>
                             </Badge>
                         {job.clientRating && (
-                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
+                          <Badge className="bg-primary-gradient text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                             <Star className="h-3 w-3 fill-white" />
                             {job.clientRating}
                           </Badge>
@@ -1198,12 +1198,12 @@ export default function JobsPage() {
                       
                       {/* Badges - Bookmarked */}
                       <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                        <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
+                        <Badge className="bg-primary-gradient text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                           <Bookmark className="h-3 w-3 fill-white" />
                               Bookmarked
                             </Badge>
                         {job.clientRating && (
-                          <Badge className="bg-gradient-to-t from-primary to-primary-dark text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
+                          <Badge className="bg-primary-gradient text-white border-0 shadow-sm shadow-primary/50 flex items-center gap-1">
                             <Star className="h-3 w-3 fill-white" />
                             {job.clientRating}
                           </Badge>

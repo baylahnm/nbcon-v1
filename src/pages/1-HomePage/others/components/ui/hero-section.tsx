@@ -23,7 +23,7 @@ const transitionVariants = {
             filter: 'blur(0px)',
             y: 0,
             transition: {
-                type: 'spring',
+                type: 'spring' as const,
                 bounce: 0.3,
                 duration: 1.5,
             },
@@ -218,7 +218,7 @@ export function HeroSection() {
                                                     </div>
                                                 </div>
                                                 <div className="flex space-x-1 mt-3">
-                                                    <button className="px-3 py-1 bg-gradient-to-t from-primary to-primary-dark text-primary-foreground shadow-sm shadow-primary/50 rounded text-xs font-medium">{t('footer.engineers.title')}</button>
+                                                    <button className="px-3 py-1 bg-primary-gradient text-primary-foreground shadow-sm shadow-primary/50 rounded text-xs font-medium">{t('footer.engineers.title')}</button>
                                                     <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">{t('footer.clients.title')}</button>
                                                     <button className="px-3 py-1 bg-muted text-muted-foreground rounded text-xs font-medium">{t('footer.clients.enterprise')}</button>
                                                 </div>
@@ -375,7 +375,7 @@ const HeroHeader = () => {
 
                                 {/* Auth Button - Smaller on mobile */}
                                 <div className="hidden sm:block bg-foreground/10 rounded-[14px] border p-0.5">
-                                    <Link to="/auth" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-gradient-to-t from-primary to-primary-dark text-primary-foreground shadow-sm shadow-primary/50 hover:opacity-90 transition-opacity h-11 rounded-xl px-5 text-base">
+                                    <Link to="/auth" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary-gradient text-primary-foreground shadow-sm shadow-primary/50 hover:opacity-90 transition-opacity h-11 rounded-xl px-5 text-base">
                                         <span className="text-nowrap">
                                             {i18n.language === 'en' ? 'Sign In' : 'تسجيل الدخول'}
                                         </span>

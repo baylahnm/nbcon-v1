@@ -624,7 +624,7 @@ export default function BrowseEngineersPage() {
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Users className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Total Engineers</p>
@@ -657,7 +657,7 @@ export default function BrowseEngineersPage() {
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <CheckCircle2 className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">SCE Verified</p>
@@ -690,7 +690,7 @@ export default function BrowseEngineersPage() {
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Clock className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Available Now</p>
@@ -723,7 +723,7 @@ export default function BrowseEngineersPage() {
               <CardContent className="p-4">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Star className="h-5 w-5 text-white" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Avg Rating</p>

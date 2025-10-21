@@ -504,7 +504,7 @@ export default function SubscriptionPage() {
                 {billingCycle === 'monthly' && (
                   <motion.span
                     layoutId="billing-indicator"
-                    className="absolute top-0 left-0 h-10 w-full rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+                    className="absolute top-0 left-0 h-10 w-full rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
@@ -519,7 +519,7 @@ export default function SubscriptionPage() {
                 {billingCycle === 'yearly' && (
                   <motion.span
                     layoutId="billing-indicator"
-                    className="absolute top-0 left-0 h-10 w-full rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+                    className="absolute top-0 left-0 h-10 w-full rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}

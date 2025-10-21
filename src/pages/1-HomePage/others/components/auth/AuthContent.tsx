@@ -558,7 +558,7 @@ export function AuthContent({ onAuthSuccess, onNeedOTPVerification, onBack }: Au
         {/* Main Auth Card */}
         <Card className="shadow-xl border-border/20">
           <CardHeader className="text-center pb-4">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 border border-primary/10">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br bg-primary-gradient/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25 border border-primary/10">
               <NbLogo />
             </div>
             <CardTitle className="text-2xl text-foreground">

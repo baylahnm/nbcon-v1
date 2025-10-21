@@ -202,7 +202,7 @@ export function AccountTypePricing() {
 
         {/* Heading */}
         <div className="mx-auto mb-10 max-w-3xl text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r bg-primary-gradient/60 bg-clip-text text-transparent">
             {t('auth:accountType.title')}
           </h1>
           <p className="text-muted-foreground mt-4 text-sm md:text-base">

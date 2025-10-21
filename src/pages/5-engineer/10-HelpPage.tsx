@@ -711,7 +711,7 @@ export default function HelpPage() {
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <BookOpen className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -794,7 +794,7 @@ export default function HelpPage() {
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <HelpCircle className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -912,7 +912,7 @@ export default function HelpPage() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <MessagesSquare className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -976,7 +976,7 @@ export default function HelpPage() {
             >
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                     <Send className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -1044,7 +1044,7 @@ export default function HelpPage() {
             >
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                   <Clock className="h-6 w-6 text-white" />
                 </div>
                 <div>

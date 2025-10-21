@@ -1848,7 +1848,148 @@ bg-background
 
 **This guide ensures production-ready fixes with minimal risk!** 🚀
 
-**Version:** 2.1  
+---
+
+## 🌐 **Browser Automation Tools**
+
+### **Overview**
+
+Your development environment includes 3 powerful browser automation tools via MCP (Model Context Protocol) for debugging, testing, and workflow automation.
+
+### **Available Tools**
+
+#### **1. Chrome DevTools MCP**
+- **Purpose**: Direct Chrome DevTools Protocol access
+- **Capabilities**:
+  - Inspect DOM elements
+  - Execute JavaScript in browser context
+  - Monitor network requests
+  - View console logs
+  - Debug running applications
+
+**Example Usage:**
+```
+"Open Chrome DevTools and inspect the Network tab"
+"Show me the DOM structure of the current page"
+```
+
+#### **2. Puppeteer MCP**
+- **Purpose**: Full browser automation
+- **Capabilities**:
+  - Navigate web pages
+  - Click buttons and fill forms
+  - Take screenshots
+  - Generate PDFs
+  - Test applications
+  - Automate workflows
+
+**Example Usage:**
+```
+"Open localhost:8080 and take a screenshot"
+"Navigate to login and fill the form"
+"Generate PDF of the current page"
+```
+
+#### **3. Browser Automation MCP**
+- **Purpose**: AI-powered browser control
+- **Capabilities**:
+  - Natural language control
+  - Complex multi-step workflows
+  - Visual element recognition
+  - Form automation
+  - Data extraction
+
+**Example Usage:**
+```
+"Go to dashboard, click AI Assistant, and send a message"
+"Fill out the registration form with test data"
+```
+
+---
+
+### **Common Use Cases**
+
+**Debug nbcon App:**
+```
+"Open localhost:8080 and check for console errors"
+"Navigate to /free/dashboard and take screenshot"
+"Inspect network requests when loading page"
+```
+
+**Test Features:**
+```
+"Test the complete signup flow from start to finish"
+"Click through all navigation items and verify they load"
+```
+
+**Visual Testing:**
+```
+"Take screenshots of all main pages"
+"Compare mobile vs desktop layout"
+```
+
+**Performance Testing:**
+```
+"Measure page load time for dashboard"
+"Check network waterfall for slow requests"
+"Identify render-blocking resources"
+```
+
+---
+
+### **Configuration**
+
+**Location:** `.cursor/mcp.json`
+
+**Puppeteer Options:**
+```json
+{
+  "puppeteer": {
+    "env": {
+      "PUPPETEER_HEADLESS": "false",  // Show browser
+      "PUPPETEER_SLOWMO": "50"        // Slow actions (ms)
+    }
+  }
+}
+```
+
+**Browser Automation Options:**
+```json
+{
+  "browser-automation": {
+    "env": {
+      "BROWSER_HEADLESS": "false",
+      "BROWSER_TIMEOUT": "30000",
+      "BROWSER_VIEWPORT_WIDTH": "1920",
+      "BROWSER_VIEWPORT_HEIGHT": "1080"
+    }
+  }
+}
+```
+
+---
+
+### **Troubleshooting Browser Tools**
+
+**MCP Server Not Available:**
+1. Restart Cursor completely
+2. Check Windows Defender/Firewall
+3. Verify Node.js installed: `node --version`
+4. Test manually: `npx -y @modelcontextprotocol/server-puppeteer`
+
+**Browser Doesn't Open:**
+1. Set `BROWSER_HEADLESS: "false"`
+2. Ensure Chrome installed
+3. Close all Chrome instances first
+
+**Connection Timeouts:**
+1. Increase timeout in config
+2. Check internet connection
+3. Try simpler commands first
+
+---
+
+**Version:** 3.0 (Browser Tools Integrated)  
 **Maintained By:** Development Team  
-**Last Review:** December 19, 2024
+**Last Review:** October 21, 2025
 

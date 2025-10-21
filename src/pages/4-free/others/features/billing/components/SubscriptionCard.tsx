@@ -105,7 +105,7 @@ export function SubscriptionCard({
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br bg-primary-gradient/80 rounded-xl flex items-center justify-center">
               <Icon className="w-6 h-6 text-white" />
             </div>
             <div>

@@ -353,7 +353,7 @@ function StatCard({
         <CardContent className="p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+              <div className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                 <Icon className="h-5 w-5 text-white" />
               </div>
               <p className="text-xs font-medium text-muted-foreground">{label}</p>

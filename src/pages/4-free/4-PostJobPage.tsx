@@ -310,7 +310,7 @@ export default function PostJobPage() {
               <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <Briefcase className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -374,7 +374,7 @@ export default function PostJobPage() {
               <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <DollarSign className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -523,7 +523,7 @@ export default function PostJobPage() {
               <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <Users className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -572,7 +572,7 @@ export default function PostJobPage() {
               <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <CheckCircle2 className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -621,7 +621,7 @@ export default function PostJobPage() {
               <Card className="bg-transparent border border-border/50">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50">
                       <FileText className="h-6 w-6 text-white" />
                     </div>
                     <div>

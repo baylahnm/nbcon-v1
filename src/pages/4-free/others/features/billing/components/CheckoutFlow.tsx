@@ -131,7 +131,7 @@ export function CheckoutFlow({ selectedPlan, onBack }: CheckoutFlowProps) {
             Back to Plans
           </Button>
           
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r bg-primary-gradient/60 bg-clip-text text-transparent">
             {getStepTitle()}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

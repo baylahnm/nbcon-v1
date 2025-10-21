@@ -30,7 +30,7 @@ const PricingSwitch = ({ onSwitch, t }: { onSwitch: (value: string) => void, t: 
           {selected === "0" && (
             <motion.span
               layoutId={"switch"}
-              className="absolute top-0 left-0 h-10 w-full rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+              className="absolute top-0 left-0 h-10 w-full rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           )}
@@ -47,7 +47,7 @@ const PricingSwitch = ({ onSwitch, t }: { onSwitch: (value: string) => void, t: 
           {selected === "1" && (
             <motion.span
               layoutId={"switch"}
-              className="absolute top-0 left-0 h-10 w-full  rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-gradient-to-t from-primary to-primary-dark"
+              className="absolute top-0 left-0 h-10 w-full  rounded-full border-4 shadow-sm shadow-primary/50 border-primary bg-primary-gradient"
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           )}
@@ -234,7 +234,7 @@ export default function PricingSection6() {
                   <button
                     className={`w-full py-2 px-4 text-xl rounded-xl ${
                       plan.popular
-                        ? "bg-gradient-to-t from-primary to-primary-dark shadow-lg shadow-primary/50 border border-primary text-primary-foreground hover:shadow-primary/70 hover:scale-[1.02] transform transition-all duration-200"
+                        ? "bg-primary-gradient shadow-lg shadow-primary/50 border border-primary text-primary-foreground hover:shadow-primary/70 hover:scale-[1.02] transform transition-all duration-200"
                         : plan.buttonVariant === "outline"
                           ? "bg-primary text-primary-foreground shadow-lg shadow-primary/50 border border-primary hover:bg-primary/90 hover:shadow-primary/70 hover:scale-[1.02] transform transition-all duration-200"
                           : ""

@@ -189,7 +189,7 @@ export default function VerifyOTPContent({
           {/* Main OTP Card */}
           <Card className="shadow-xl border-border/20">
             <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br bg-primary-gradient/80 rounded-xl flex items-center justify-center">
                 <Shield className="w-8 h-8 text-primary-foreground" />
               </div>
               <CardTitle className="text-2xl text-foreground">
@@ -301,7 +301,7 @@ export default function VerifyOTPContent({
       </div>
 
       {/* Right Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary/80 items-center justify-center p-8">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br bg-primary-gradient/80 items-center justify-center p-8">
         <div className="text-center space-y-6 text-primary-foreground">
           <div className="w-24 h-24 mx-auto bg-primary-foreground/10 rounded-full flex items-center justify-center">
             <Shield className="w-12 h-12 text-primary-foreground" />

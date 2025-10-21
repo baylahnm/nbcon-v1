@@ -64,7 +64,7 @@ export function EmailConfirmationRequired() {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center animate-pulse">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br bg-primary-gradient/80 rounded-xl flex items-center justify-center animate-pulse">
             <Mail className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-2xl">Check Your Email</CardTitle>

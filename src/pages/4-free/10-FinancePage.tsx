@@ -374,7 +374,7 @@ function StatCard({ icon: Icon, label, value, trend, trendDown }: StatCardProps)
         <CardContent className="p-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div className="bg-gradient-to-t from-primary to-primary-dark h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
+              <div className="bg-primary-gradient h-[32px] w-[32px] flex items-center justify-center rounded-lg shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
                 <Icon className="h-5 w-5 text-primary-foreground" />
               </div>
               <p className="text-xs font-medium text-muted-foreground">{label}</p>
@@ -1003,7 +1003,7 @@ export default function FinancePage() {
                     </div>
                     <div className="w-full bg-muted rounded-full h-3 mb-2">
                       <div 
-                        className="bg-gradient-to-r from-primary to-primary-dark h-3 rounded-full transition-all duration-500"
+                        className="bg-primary-gradient h-3 rounded-full transition-all duration-500"
                         style={{ width: `${expandedMilestone.progress}%` }}
                       />
                     </div>
@@ -1078,7 +1078,7 @@ export default function FinancePage() {
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b min-w-0">
             <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
               <Wallet className="h-5 w-5 text-white" />
             </div>
             <div className="min-w-0">

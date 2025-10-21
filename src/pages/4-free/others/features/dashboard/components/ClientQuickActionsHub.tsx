@@ -108,7 +108,7 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
         <CardHeader className="p-4 border-b border-border/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
+                    <div className="bg-primary-gradient h-[40px] w-[40px] flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 group-hover:scale-110 transition-transform">
                 <Zap className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -119,7 +119,7 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Badge className="bg-gradient-to-t from-primary to-primary-dark text-primary-foreground border-0 shadow-sm shadow-primary/50 h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{clientActions.length}</Badge>
+              <Badge className="bg-primary-gradient text-primary-foreground border-0 shadow-sm shadow-primary/50 h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{clientActions.length}</Badge>
               <Button
                 variant="ghost"
                 size="sm"

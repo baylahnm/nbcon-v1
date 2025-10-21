@@ -308,7 +308,7 @@ export function ClientProfile() {
         {/* Page Header */}
         <div className="flex items-center justify-between pb-4 border-b border-border/40">
           <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className="bg-gradient-to-t from-primary to-primary-dark h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-sm shadow-primary/50 flex-shrink-0">
               <User className="h-5 w-5 text-white" />
             </div>
             <div className="min-w-0">
@@ -320,7 +320,7 @@ export function ClientProfile() {
           </div>
           <Button
             onClick={() => setIsEditing(!isEditing)}
-            className="h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all bg-gradient-to-t from-primary to-primary-dark text-primary-foreground border-0"
+            className="h-8 text-xs shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all bg-primary-gradient text-primary-foreground border-0"
           >
             {isEditing ? (
               <>
@@ -448,7 +448,7 @@ export function ClientProfile() {
                 <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <User className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Personal Information</CardTitle>
@@ -544,7 +544,7 @@ export function ClientProfile() {
                 <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Shield className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Privacy Settings</CardTitle>
@@ -631,7 +631,7 @@ export function ClientProfile() {
                 <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Briefcase className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Professional Information</CardTitle>
@@ -737,7 +737,7 @@ export function ClientProfile() {
                 <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Globe className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Languages</CardTitle>
@@ -786,7 +786,7 @@ export function ClientProfile() {
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Target className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Professional Skills</CardTitle>
@@ -851,7 +851,7 @@ export function ClientProfile() {
               <CardHeader className="p-4 border-b border-border/40">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Briefcase className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Portfolio Projects</CardTitle>
@@ -919,7 +919,7 @@ export function ClientProfile() {
                 <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Star className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Client Reviews</CardTitle>
@@ -966,7 +966,7 @@ export function ClientProfile() {
                 <Card className="bg-transparent border border-border/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardHeader className="p-4 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-t from-primary to-primary-dark h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
+                    <div className="bg-primary-gradient h-8 w-8 flex items-center justify-center rounded-lg shadow-sm shadow-primary/50">
                       <Award className="h-4 w-4 text-white" />
                     </div>
                     <CardTitle className="text-base font-bold">Achievements & Awards</CardTitle>

@@ -16,13 +16,14 @@ import {
   DialogDescription, 
   DialogFooter, 
   DialogHeader, 
-  DialogTitle 
+  DialogTitle,
+  DialogClose
 } from '../ui/dialog';
 import { Switch } from '../ui/switch';
 import { Badge } from '../ui/badge';
 import { CalendarEvent, EventType, EventStatus } from '../../stores/useCalendarStore';
 import { useThemeStore } from '../../stores/theme';
-import { Calendar, Clock, MapPin, Users, DollarSign, Tag, Building, Briefcase, Target, HardHat, FileText, Phone, CreditCard, CalendarIcon, ClockIcon } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, DollarSign, Tag, Building, Briefcase, Target, HardHat, FileText, Phone, CreditCard, CalendarIcon, ClockIcon, X } from 'lucide-react';
 
 interface CreateEventDialogProps {
   isOpen: boolean;
@@ -587,25 +588,35 @@ export default function CreateEventDialog({
           borderColor: `hsl(${themeTokens['--border'] || '0 0% 90%'})`
         }}
       >
-        <DialogHeader>
-          <DialogTitle 
-            className="flex items-center gap-2"
-            style={{ color: `hsl(${themeTokens['--foreground'] || '0 0% 3.9%'})` }}
-          >
-            <Calendar 
-              className="h-5 w-5" 
-              style={{ color: `hsl(${themeTokens['--primary'] || '142 65% 47%'})` }}
-            />
-            {dialogTitle}
-          </DialogTitle>
-          <DialogDescription
-            style={{ color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})` }}
-          >
-            {dialogDescription}
-          </DialogDescription>
+        <DialogHeader className="flex flex-row items-start justify-between p-4">
+          <div className="flex-1">
+            <DialogTitle 
+              className="flex items-center gap-2"
+              style={{ color: `hsl(${themeTokens['--foreground'] || '0 0% 3.9%'})` }}
+            >
+              <Calendar 
+                className="h-5 w-5" 
+                style={{ color: `hsl(${themeTokens['--primary'] || '142 65% 47%'})` }}
+              />
+              {dialogTitle}
+            </DialogTitle>
+            <DialogDescription
+              style={{ color: `hsl(${themeTokens['--muted-foreground'] || '0 0% 45%'})` }}
+            >
+              {dialogDescription}
+            </DialogDescription>
+          </div>
+          
+          {/* Close button column */}
+          <div className="flex items-center gap-2">
+            <DialogClose className="ring-offset-background focus:ring-ring bg-primary-gradient text-primary-foreground hover:opacity-90 rounded-md transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 h-8 w-8 p-0 flex items-center justify-center shadow-md">
+              <X />
+              <span className="sr-only">Close</span>
+            </DialogClose>
+          </div>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 p-4">
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 
@@ -997,7 +1008,7 @@ export default function CreateEventDialog({
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="p-4">
           <Button 
             variant="outline" 
             onClick={handleClose}
