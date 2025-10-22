@@ -19,6 +19,7 @@ import {
   AlertCircle,
   Edit3
 } from 'lucide-react';
+import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
 import { FloatingAIButton } from '../components/FloatingAIButton';
 
 interface WBSNode {
@@ -35,6 +36,7 @@ export default function WBSBuilderTool() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('project');
+  const { sendMessage } = useAiStore();
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
@@ -95,14 +97,20 @@ export default function WBSBuilderTool() {
 
   const handleAIGenerate = async () => {
     setIsGenerating(true);
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    setIsGenerating(false);
-    // AI would generate complete WBS structure here
+    try {
+      const prompt = `Generate a complete Work Breakdown Structure (WBS) for a construction project. Project ID: ${projectId || 'N/A'}. Include major phases, work packages, and detailed tasks with estimated durations. Format as hierarchical structure suitable for Saudi construction projects.`;
+      await sendMessage(prompt);
+      setIsGenerating(false);
+      // Note: In production, parse AI response and update wbsTree state
+    } catch (error) {
+      console.error('AI generation failed:', error);
+      setIsGenerating(false);
+    }
   };
 
   const getStatusColor = (status?: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-500/10 text-green-600 border-green-500/20';
+      case 'completed': return 'bg-primary/15 text-primary border-primary/25';
       case 'in-progress': return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
       default: return 'bg-muted text-muted-foreground border-border';
     }
@@ -206,10 +214,10 @@ export default function WBSBuilderTool() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="px-6 py-8 space-y-6">
+      <div className="p-4 space-y-4">
         
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <Button
               size="sm"
@@ -219,13 +227,13 @@ export default function WBSBuilderTool() {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <div className="bg-purple-500/10 p-3 rounded-xl ring-1 ring-purple-500/20 shadow-md">
-              <Network className="h-7 w-7 text-purple-600" />
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+              <Network className="h-5 w-5 text-white" />
             </div>
             <div>
               <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
                 WBS Builder
-                <Badge variant="outline" className="text-[9px] bg-purple-500/10 text-purple-600 border-purple-500/20">
+                <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
                   <Sparkles className="h-2.5 w-2.5 mr-1" />
                   AI-Powered
                 </Badge>
@@ -265,8 +273,8 @@ export default function WBSBuilderTool() {
           <Card className="border-border/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="bg-purple-500/10 p-2 rounded-lg ring-1 ring-purple-500/20">
-                  <Network className="h-4 w-4 text-purple-600" />
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Network className="h-4 w-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-xl font-bold tracking-tight">{totalWorkPackages}</p>
@@ -279,8 +287,8 @@ export default function WBSBuilderTool() {
           <Card className="border-border/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="bg-blue-500/10 p-2 rounded-lg ring-1 ring-blue-500/20">
-                  <ChevronRight className="h-4 w-4 text-blue-600" />
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <ChevronRight className="h-4 w-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-xl font-bold tracking-tight">3</p>
@@ -293,8 +301,8 @@ export default function WBSBuilderTool() {
           <Card className="border-border/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="bg-green-500/10 p-2 rounded-lg ring-1 ring-green-500/20">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
                 </div>
                 <div>
                   <p className="text-xl font-bold tracking-tight">2</p>
@@ -321,7 +329,7 @@ export default function WBSBuilderTool() {
 
         {/* WBS Tree */}
         <Card className="border-border/50">
-          <CardHeader className="p-5 pb-3 border-b border-border/40">
+          <CardHeader className="p-4 border-b border-border/40">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-bold tracking-tight">Work Breakdown Structure</CardTitle>
               <div className="flex items-center gap-2">
@@ -335,7 +343,7 @@ export default function WBSBuilderTool() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-5">
+          <CardContent className="p-4">
             <div className="space-y-1">
               {wbsTree.map((node, index) => renderNode(node, index))}
             </div>

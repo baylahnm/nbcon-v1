@@ -170,8 +170,9 @@ export default function AIToolsPlanningPage() {
       return;
     }
     setSelectedTool(toolId);
-    // Navigate to tool detail page - for now only charter and wbs are implemented
-    if (toolId === 'charter' || toolId === 'wbs') {
+    // Navigate to tool detail page - all 6 tools now implemented
+    const validTools = ['charter', 'wbs', 'stakeholders', 'risks', 'timeline', 'resources'];
+    if (validTools.includes(toolId)) {
       navigate(`/free/ai-tools/planning/${toolId}?project=${selectedProject}`);
     } else {
       // For other tools, show coming soon (or navigate to AI assistant with prompt)

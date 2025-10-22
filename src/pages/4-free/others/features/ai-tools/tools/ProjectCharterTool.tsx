@@ -22,7 +22,7 @@ import {
   Edit3,
   RefreshCw
 } from 'lucide-react';
-import { useAiStore } from '../../ai/store/useAiStore';
+import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
 import { FloatingAIButton } from '../components/FloatingAIButton';
 
 interface CharterSection {
@@ -38,7 +38,7 @@ export default function ProjectCharterTool() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('project');
-  const { sendMessage } = useAiStore();
+  const { sendMessage, setComposerText } = useAiStore();
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState('vision');
@@ -107,17 +107,16 @@ export default function ProjectCharterTool() {
     if (!section) return;
 
     // Create AI prompt based on section
-    const prompt = `Generate content for the "${section.title}" section of a project charter. ${section.description}. Make it professional and comprehensive for a construction project in Saudi Arabia.`;
+    const prompt = `Generate content for the "${section.title}" section of a project charter. ${section.description}. Make it professional and comprehensive for a construction project in Saudi Arabia. Project ID: ${projectId || 'N/A'}`;
 
     try {
-      // In real implementation, this would call the AI
-      // For now, simulate with timeout
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Mock AI response
+      // Call AI Assistant (opens chat with prompt)
+      await sendMessage(prompt);
+      
+      // For now, use mock content (in production, AI response would be parsed and inserted)
       const mockContent = `[AI Generated Content for ${section.title}]\n\nThis section provides comprehensive details about ${section.description.toLowerCase()}. The content is tailored for construction projects in Saudi Arabia, following PMI best practices and local regulations.\n\n• Key Point 1: Industry-specific considerations\n• Key Point 2: Regulatory compliance requirements\n• Key Point 3: Stakeholder engagement strategies\n\nThis content should be reviewed and customized to match your specific project requirements.`;
-
-      // Update section with AI content
+      
+      // Update section with content
       setSections(prev => prev.map(s => 
         s.id === sectionId 
           ? { ...s, content: mockContent, aiGenerated: true }
@@ -166,10 +165,10 @@ export default function ProjectCharterTool() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="px-6 py-8 space-y-6">
+      <div className="p-4 space-y-4">
         
         {/* Header with Back Button */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/40">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <Button
               size="sm"
@@ -179,13 +178,13 @@ export default function ProjectCharterTool() {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <div className="bg-blue-500/10 p-3 rounded-xl ring-1 ring-blue-500/20 shadow-md">
-              <FileText className="h-7 w-7 text-blue-600" />
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+              <FileText className="h-5 w-5 text-white" />
             </div>
             <div>
               <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
                 Project Charter Generator
-                <Badge variant="outline" className="text-[9px] bg-blue-500/10 text-blue-600 border-blue-500/20">
+                <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
                   <Sparkles className="h-2.5 w-2.5 mr-1" />
                   AI-Powered
                 </Badge>
@@ -209,7 +208,7 @@ export default function ProjectCharterTool() {
 
         {/* Progress Overview */}
         <Card className="border-border/50">
-          <CardContent className="p-5">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20">
@@ -232,14 +231,14 @@ export default function ProjectCharterTool() {
         </Card>
 
         {/* Main Content - Tabs */}
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4">
           
           {/* Left Sidebar - Section Navigation */}
           <Card className="border-border/50 h-fit sticky top-6">
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <CardTitle className="text-base font-bold tracking-tight">Charter Sections</CardTitle>
             </CardHeader>
-            <CardContent className="p-3">
+            <CardContent className="p-4">
               <div className="space-y-1">
                 {sections.map((section) => (
                   <button
@@ -264,7 +263,7 @@ export default function ProjectCharterTool() {
                       </div>
                       <div className="shrink-0">
                         {section.content.trim().length > 0 ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                          <CheckCircle2 className="h-4 w-4 text-primary" />
                         ) : (
                           <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30"></div>
                         )}
@@ -274,7 +273,7 @@ export default function ProjectCharterTool() {
                 ))}
               </div>
 
-              <div className="mt-4 p-3 bg-muted/30 rounded-lg border border-border/40">
+              <div className="mt-4 p-4 bg-background rounded-lg border border-border">
                 <p className="text-[10px] text-muted-foreground mb-2">Progress</p>
                 <Progress value={completionPercentage} className="h-1.5 mb-2" />
                 <p className="text-xs font-bold">{completionPercentage}% Complete</p>
@@ -284,7 +283,7 @@ export default function ProjectCharterTool() {
 
           {/* Right Content Area */}
           <Card className="border-border/50">
-            <CardHeader className="p-5 pb-3 border-b border-border/40">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-base font-bold tracking-tight mb-1">
@@ -303,11 +302,11 @@ export default function ProjectCharterTool() {
               </div>
             </CardHeader>
 
-            <CardContent className="p-5 space-y-4">
+            <CardContent className="p-4 space-y-4">
               
               {/* AI Generation Controls */}
               {currentSection && currentSection.content.trim().length === 0 && (
-                <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
+                <Card className="bg-background border-border">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
                       <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20 shrink-0">
@@ -427,10 +426,10 @@ export default function ProjectCharterTool() {
 
                       {/* AI Regenerate Option */}
                       {currentSection.aiGenerated && !currentSection.isEditing && (
-                        <div className="flex items-center justify-between p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                        <div className="flex items-center justify-between p-4 bg-primary/10 rounded-lg border border-primary/20">
                           <div className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-blue-600" />
-                            <p className="text-xs text-blue-600 font-medium">
+                            <Sparkles className="h-4 w-4 text-primary" />
+                            <p className="text-xs text-primary font-medium">
                               AI-generated content
                             </p>
                           </div>

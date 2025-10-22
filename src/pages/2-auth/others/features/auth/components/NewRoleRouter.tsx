@@ -39,6 +39,10 @@ import ClientSubscriptionPage from "../../../../../4-free/14-SubscriptionPage";
 import AIToolsPlanningPage from "../../../../../4-free/15-AIToolsPlanningPage";
 import ProjectCharterTool from "../../../../../4-free/others/features/ai-tools/tools/ProjectCharterTool";
 import WBSBuilderTool from "../../../../../4-free/others/features/ai-tools/tools/WBSBuilderTool";
+import StakeholderMapperTool from "../../../../../4-free/others/features/ai-tools/tools/StakeholderMapperTool";
+import RiskRegisterTool from "../../../../../4-free/others/features/ai-tools/tools/RiskRegisterTool";
+import TimelineBuilderTool from "../../../../../4-free/others/features/ai-tools/tools/TimelineBuilderTool";
+import ResourcePlannerTool from "../../../../../4-free/others/features/ai-tools/tools/ResourcePlannerTool";
 import { DashboardPage as EnterpriseDashboardPage } from "../../../../../6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "../../../../../6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -214,6 +218,10 @@ export default function NewRoleRouter() {
               <Route path="planning" element={<AIToolsPlanningPage />} />
               <Route path="planning/charter" element={<ProjectCharterTool />} />
               <Route path="planning/wbs" element={<WBSBuilderTool />} />
+              <Route path="planning/stakeholders" element={<StakeholderMapperTool />} />
+              <Route path="planning/risks" element={<RiskRegisterTool />} />
+              <Route path="planning/timeline" element={<TimelineBuilderTool />} />
+              <Route path="planning/resources" element={<ResourcePlannerTool />} />
             </Route>
           </Route>
 
