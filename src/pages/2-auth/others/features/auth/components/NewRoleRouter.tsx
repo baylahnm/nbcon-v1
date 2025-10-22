@@ -46,6 +46,10 @@ import ResourcePlannerTool from "../../../../../4-free/others/features/ai-tools/
 import CostBudgetingPage from "../../../../../4-free/16-CostBudgetingPage";
 import BOQGeneratorTool from "../../../../../4-free/others/features/ai-tools/tools/BOQGeneratorTool";
 import CostEstimatorTool from "../../../../../4-free/others/features/ai-tools/tools/CostEstimatorTool";
+import CashFlowPlannerTool from "../../../../../4-free/others/features/ai-tools/tools/CashFlowPlannerTool";
+import BudgetTrackerTool from "../../../../../4-free/others/features/ai-tools/tools/BudgetTrackerTool";
+import ValueEngineeringTool from "../../../../../4-free/others/features/ai-tools/tools/ValueEngineeringTool";
+import PaymentScheduleTool from "../../../../../4-free/others/features/ai-tools/tools/PaymentScheduleTool";
 import { DashboardPage as EnterpriseDashboardPage } from "../../../../../6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "../../../../../6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -228,6 +232,10 @@ export default function NewRoleRouter() {
               <Route path="budgeting" element={<CostBudgetingPage />} />
               <Route path="budgeting/boq" element={<BOQGeneratorTool />} />
               <Route path="budgeting/estimator" element={<CostEstimatorTool />} />
+              <Route path="budgeting/cashflow" element={<CashFlowPlannerTool />} />
+              <Route path="budgeting/tracker" element={<BudgetTrackerTool />} />
+              <Route path="budgeting/value" element={<ValueEngineeringTool />} />
+              <Route path="budgeting/payments" element={<PaymentScheduleTool />} />
             </Route>
           </Route>
 
