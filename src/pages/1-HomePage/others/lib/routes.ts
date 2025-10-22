@@ -29,6 +29,7 @@ export const R = {
     calendar: "/free/calendar",
     messages: "/free/messages",
     ai: "/free/ai",
+    aiToolsPlanning: "/free/ai-tools/planning",
     profile: "/free/profile",
     network: "/free/network",
     learning: "/free/learning",

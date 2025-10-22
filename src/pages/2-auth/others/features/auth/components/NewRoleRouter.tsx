@@ -36,6 +36,9 @@ import RankingPage from "../../../../../5-engineer/13-RankingPage";
 import ReportsPage from "../../../../../5-engineer/14-ReportsPage";
 import SubscriptionPage from "../../../../../5-engineer/16-SubscriptionPage";
 import ClientSubscriptionPage from "../../../../../4-free/14-SubscriptionPage";
+import AIToolsPlanningPage from "../../../../../4-free/15-AIToolsPlanningPage";
+import ProjectCharterTool from "../../../../../4-free/others/features/ai-tools/tools/ProjectCharterTool";
+import WBSBuilderTool from "../../../../../4-free/others/features/ai-tools/tools/WBSBuilderTool";
 import { DashboardPage as EnterpriseDashboardPage } from "../../../../../6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "../../../../../6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -207,6 +210,11 @@ export default function NewRoleRouter() {
             <Route path="help" element={<HelpPage />} />
             <Route path="subscription" element={<ClientSubscriptionPage />} />
             <Route path="settings" element={<ClientSettingsPage />} />
+            <Route path="ai-tools">
+              <Route path="planning" element={<AIToolsPlanningPage />} />
+              <Route path="planning/charter" element={<ProjectCharterTool />} />
+              <Route path="planning/wbs" element={<WBSBuilderTool />} />
+            </Route>
           </Route>
 
           {/* Enterprise Routes */}
