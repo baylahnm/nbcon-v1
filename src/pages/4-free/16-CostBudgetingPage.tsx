@@ -23,15 +23,17 @@ import {
   ArrowLeft,
   Briefcase,
   Sparkles,
+  FileText,
   CheckCircle2,
   Clock,
-  FileText,
   DollarSign,
-  Bot,
   Layers,
   Target,
   Calendar,
 } from 'lucide-react';
+
+// Import shared components
+import { ROUTES } from '@/shared/constants/routes';
 
 // Sample projects (same as planning page)
 const sampleProjects = [
@@ -142,7 +144,7 @@ const recentOutputs = [
 export default function CostBudgetingPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [selectedProject, setSelectedProject] = useState<string>('');
+  const [selectedProject, setSelectedProject] = useState<string>('1');
 
   useEffect(() => {
     // Get project from URL or default to first project
@@ -280,70 +282,49 @@ export default function CostBudgetingPage() {
         </div>
 
         {/* AI-Powered Cost & Budgeting Tools */}
-        <Card className="border-border/50">
-          <CardHeader className="p-4 border-b border-border/40">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                  <DollarSign className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-base font-bold tracking-tight">
-                    AI-Powered Cost & Budgeting Tools
-                  </CardTitle>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {budgetingTools.length} intelligent tools for financial management
-                  </p>
-                </div>
-              </div>
-              <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
-                {budgetingTools.length} Tools
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {budgetingTools.map((tool) => {
-                const IconComponent = tool.icon;
-                return (
-                  <Card key={tool.id} className="border-border/50 hover:shadow-md transition-all">
-                    <CardHeader className="p-4 border-b border-border/40">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                          <IconComponent className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-base font-bold tracking-tight">
-                            {tool.title}
-                          </CardTitle>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {tool.subtitle}
-                          </p>
-                        </div>
+        <div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {budgetingTools.map((tool) => {
+              const IconComponent = tool.icon;
+              return (
+                <Card key={tool.id} className="border-border/50 hover:shadow-md transition-all">
+                  <CardHeader className="p-4 border-b border-border/40">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-xl ring-1 shadow-md bg-primary/10 text-primary border-primary/20">
+                        <IconComponent className="h-4 w-4" />
                       </div>
-                    </CardHeader>
-                    <CardContent className="p-4 space-y-2.5">
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {tool.description}
-                      </p>
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Layers className="h-3 w-3" />
-                        <span>{tool.features}</span>
+                      <div className="flex-1">
+                        <CardTitle className="text-base font-bold tracking-tight">
+                          {tool.title}
+                        </CardTitle>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {tool.subtitle}
+                        </p>
                       </div>
-                      <Button
-                        onClick={() => handleToolClick(tool.route)}
-                        className="w-full h-8 text-xs shadow-md"
-                        disabled={!selectedProject}
-                      >
-                        Launch Tool →
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-2.5">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {tool.description}
+                    </p>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Layers className="h-3 w-3" />
+                      <span>{tool.features}</span>
+                    </div>
+                    <Button
+                      onClick={() => handleToolClick(tool.route)}
+                      className="w-full h-8 text-xs shadow-md"
+                      disabled={!selectedProject}
+                    >
+                      Launch Tool →
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Recent Activity & Outputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -474,53 +455,54 @@ export default function CostBudgetingPage() {
           </CardContent>
         </Card>
 
-        {/* Quick Links */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 text-xs"
-            onClick={() => navigate('/free/myprojects')}
-          >
-            <Briefcase className="h-3.5 w-3.5 mr-1.5" />
-            Projects
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 text-xs"
-            onClick={() => navigate('/free/calendar')}
-          >
-            <Calendar className="h-3.5 w-3.5 mr-1.5" />
-            Calendar
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 text-xs"
-            onClick={() => navigate('/free/finance')}
-          >
-            <DollarSign className="h-3.5 w-3.5 mr-1.5" />
-            Finance
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 text-xs"
-            onClick={() => navigate('/free/ai')}
-          >
-            <Bot className="h-3.5 w-3.5 mr-1.5" />
-            AI Assistant
-          </Button>
-        </div>
+        {/* Quick Actions */}
+        <Card className="border-border/50">
+          <CardHeader className="p-4 border-b border-border/40">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                <Plus className="h-4 w-4 text-primary" />
+              </div>
+              <CardTitle className="text-base font-bold tracking-tight">Quick Actions</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.BUDGETING_BOQ)}
+              >
+                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                BOQ
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.BUDGETING_ESTIMATOR)}
+              >
+                <Calculator className="h-3.5 w-3.5 mr-1.5" />
+                Cost
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.BUDGETING_CASHFLOW)}
+              >
+                <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
+                Cash Flow
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.BUDGETING_TRACKER)}
+              >
+                <BarChart3 className="h-3.5 w-3.5 mr-1.5" />
+                Tracker
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Floating AI Button */}
-        <Button
-          className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-xl hover:shadow-2xl transition-all z-50 p-0"
-          onClick={() => navigate('/free/ai')}
-        >
-          <Bot className="h-5 w-5" />
-        </Button>
       </div>
     </div>
   );

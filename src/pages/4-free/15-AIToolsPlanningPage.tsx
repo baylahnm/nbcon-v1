@@ -17,7 +17,8 @@ import {
   TrendingUp,
   Users,
   Clock,
-  CheckCircle2,
+  Layers,
+  Calendar,
   AlertTriangle,
   Download,
   Sparkles,
@@ -29,7 +30,7 @@ import {
 } from 'lucide-react';
 
 // Import shared components
-import { FloatingAIButton } from './others/features/ai-tools/components/FloatingAIButton';
+import { ROUTES } from '@/shared/constants/routes';
 
 // Mock projects data
 const mockProjects = [
@@ -41,8 +42,11 @@ const mockProjects = [
 interface AITool {
   id: string;
   title: string;
+  subtitle: string;
   description: string;
   icon: any;
+  route: string;
+  features: string;
   colorVariant: 'primary' | 'secondary' | 'accent' | 'muted' | 'success' | 'warning';
   status: 'available' | 'in-progress' | 'completed';
   lastUpdated?: string;
@@ -54,8 +58,11 @@ const planningTools: AITool[] = [
   {
     id: 'charter',
     title: 'Project Charter Generator',
-    description: 'Create comprehensive project charter with AI assistance',
+    subtitle: 'AI-powered charter creation',
+    description: 'Create comprehensive project charter with AI assistance for project initiation and stakeholder alignment',
     icon: FileText,
+    route: '/free/ai-tools/planning/charter',
+    features: 'Templates, AI Generation, Approval Workflow',
     colorVariant: 'primary',
     status: 'available',
     aiCapability: 'AI generates charter from project details',
@@ -64,8 +71,11 @@ const planningTools: AITool[] = [
   {
     id: 'wbs',
     title: 'WBS Builder',
-    description: 'Visual Work Breakdown Structure with AI suggestions',
+    subtitle: 'Visual work breakdown structure',
+    description: 'Create hierarchical project breakdown with AI suggestions and drag-and-drop interface',
     icon: Network,
+    route: '/free/ai-tools/planning/wbs',
+    features: 'Hierarchy, AI Suggestions, Export Options',
     colorVariant: 'secondary',
     status: 'available',
     aiCapability: 'AI creates hierarchical task breakdown',
@@ -74,8 +84,11 @@ const planningTools: AITool[] = [
   {
     id: 'stakeholders',
     title: 'Stakeholder Mapper',
-    description: 'Map stakeholders with power/interest matrix',
+    subtitle: 'Power and interest analysis',
+    description: 'Map stakeholders with power/interest matrix and communication strategies',
     icon: Users,
+    route: '/free/ai-tools/planning/stakeholders',
+    features: 'Matrix Analysis, Communication Plans, Engagement',
     colorVariant: 'success',
     status: 'available',
     aiCapability: 'AI identifies key stakeholders and influence',
@@ -84,8 +97,11 @@ const planningTools: AITool[] = [
   {
     id: 'risks',
     title: 'Risk Register',
-    description: 'Identify and track project risks with heat map',
+    subtitle: 'Comprehensive risk analysis',
+    description: 'Identify and track project risks with heat map and mitigation strategies',
     icon: AlertTriangle,
+    route: '/free/ai-tools/planning/risks',
+    features: 'Risk Matrix, Mitigation Plans, Monitoring',
     colorVariant: 'warning',
     status: 'available',
     aiCapability: 'AI scans for technical, schedule, cost risks',
@@ -94,8 +110,11 @@ const planningTools: AITool[] = [
   {
     id: 'timeline',
     title: 'Timeline Builder',
-    description: 'Visual Gantt chart with critical path analysis',
+    subtitle: 'AI-powered scheduling',
+    description: 'Create realistic project schedules with AI optimization and dependency management',
     icon: CalendarIcon,
+    route: '/free/ai-tools/planning/timeline',
+    features: 'Dependencies, Critical Path, Milestones',
     colorVariant: 'accent',
     status: 'available',
     aiCapability: 'AI creates schedule from WBS and constraints',
@@ -104,8 +123,11 @@ const planningTools: AITool[] = [
   {
     id: 'resources',
     title: 'Resource Planner',
-    description: 'Allocate team members and equipment optimally',
+    subtitle: 'Optimized resource allocation',
+    description: 'Allocate team members and equipment optimally with AI optimization and capacity planning',
     icon: Target,
+    route: '/free/ai-tools/planning/resources',
+    features: 'Capacity Planning, Skills Matching, Workload',
     colorVariant: 'muted',
     status: 'available',
     aiCapability: 'AI optimizes allocation based on skills',
@@ -115,11 +137,11 @@ const planningTools: AITool[] = [
 
 export default function AIToolsPlanningPage() {
   const navigate = useNavigate();
-  const [selectedProject, setSelectedProject] = useState<string>('');
+  const [selectedProject, setSelectedProject] = useState<string>('1');
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
   // Get selected project details
-  const currentProject = mockProjects.find(p => p.id === selectedProject);
+  const selectedProjectData = mockProjects.find(p => p.id === selectedProject);
 
   // Theme-agnostic color system - All icons same color, containers vary by opacity
   const getColorClasses = (variant: 'primary' | 'secondary' | 'accent' | 'muted' | 'success' | 'warning') => {
@@ -164,16 +186,15 @@ export default function AIToolsPlanningPage() {
     return colorMap[variant];
   };
 
-  const handleToolClick = (toolId: string) => {
+  const handleToolClick = (route: string) => {
     if (!selectedProject) {
       // Show alert to select project first
       return;
     }
-    setSelectedTool(toolId);
+    setSelectedTool(route);
     // Navigate to tool detail page - all 6 tools now implemented
-    const validTools = ['charter', 'wbs', 'stakeholders', 'risks', 'timeline', 'resources'];
-    if (validTools.includes(toolId)) {
-      navigate(`/free/ai-tools/planning/${toolId}?project=${selectedProject}`);
+    if (route.startsWith('/free/ai-tools/planning/')) {
+      navigate(`${route}?project=${selectedProject}`);
     } else {
       // For other tools, show coming soon (or navigate to AI assistant with prompt)
       navigate('/free/ai');
@@ -185,251 +206,288 @@ export default function AIToolsPlanningPage() {
       <div className="p-4 space-y-4">
         
         {/* Page Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md hover:scale-110 transition-transform duration-300">
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
               <Rocket className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
-                Project Setup & Planning
-                <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
-                  <Sparkles className="h-2.5 w-2.5 mr-1" />
-                  AI-Powered Toolkit
-                </Badge>
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Interactive AI tools to initiate projects, plan work, and allocate resources
+              <h1 className="text-base font-bold tracking-tight">Project Planning Tools</h1>
+              <p className="text-xs text-muted-foreground">
+                AI-powered project planning and resource allocation
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 text-xs">
+            <Button variant="outline" className="h-8 text-xs">
               <Download className="h-3.5 w-3.5 mr-1.5" />
               Export All
             </Button>
-            <Button size="sm" className="h-8 text-xs shadow-md">
+            <Button className="h-8 text-xs">
               <Plus className="h-3.5 w-3.5 mr-1.5" />
               New Project
             </Button>
           </div>
         </div>
 
-        {/* Project Selector & Status */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          
-          {/* Project Selector */}
-          <Card className="lg:col-span-2 border-border/50">
+        {/* Top Widgets Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Select Active Project */}
+          <Card className="border-border/50">
             <CardHeader className="p-4 border-b border-border/40">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-bold tracking-tight flex items-center gap-2">
-                  <Briefcase className="h-5 w-5 text-primary" />
-                  Select Active Project
-                </CardTitle>
-                <Badge variant="outline" className="text-[9px]">
-                  {mockProjects.length} Projects
-                </Badge>
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Briefcase className="h-4 w-4 text-primary" />
+                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Select Active Project</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-4">
-                <Select value={selectedProject} onValueChange={setSelectedProject}>
-                  <SelectTrigger className="h-10 border border-border">
-                    <SelectValue placeholder="Choose a project to work on..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockProjects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{project.name}</span>
-                          <Badge variant="outline" className="text-[9px]">
-                            {project.status}
-                          </Badge>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <CardContent className="p-4 space-y-4">
+              <Select value={selectedProject} onValueChange={setSelectedProject}>
+                <SelectTrigger className="border border-border h-10">
+                  <SelectValue placeholder="Choose a project to work on..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {mockProjects.map((project) => (
+                    <SelectItem key={project.id} value={project.id}>
+                      {project.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-                {currentProject && (
-                  <div className="p-4 bg-background rounded-lg border border-border">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <p className="text-sm font-semibold">{currentProject.name}</p>
-                        <p className="text-xs text-muted-foreground capitalize">
-                          Status: {currentProject.status}
-                        </p>
-                      </div>
-                      <Badge className={`text-xs ${
-                        currentProject.progress >= 60 ? 'bg-primary/15 text-primary border-primary/25' :
-                        currentProject.progress >= 30 ? 'bg-primary/10 text-primary border-primary/20' :
-                        'bg-primary/5 text-primary border-primary/15'
-                      }`}>
-                        {currentProject.progress}% Complete
-                      </Badge>
-                    </div>
-                    <Progress value={currentProject.progress} className="h-2" />
+              {selectedProjectData && (
+                <div className="p-4 bg-background rounded-lg border border-border space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium">{selectedProjectData.name}</span>
+                    <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
+                      Active
+                    </Badge>
                   </div>
-                )}
-
-                {!selectedProject && (
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription className="text-xs">
-                      Select a project to unlock AI-powered planning tools and track progress
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Progress</span>
+                      <span className="font-medium">{selectedProjectData.progress}%</span>
+                    </div>
+                    <Progress value={selectedProjectData.progress} className="h-1.5" />
+                  </div>
+                  <div className="flex items-center justify-between text-xs pt-1">
+                    <span className="text-muted-foreground">Status</span>
+                    <span className="font-bold text-primary">
+                      {selectedProjectData.status}
+                    </span>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
+          {/* Planning Progress */}
           <Card className="border-border/50">
             <CardHeader className="p-4 border-b border-border/40">
-              <CardTitle className="text-base font-bold tracking-tight">Planning Progress</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Tools Completed</span>
-                    <span className="font-bold">2/6</span>
-                  </div>
-                  <Progress value={33} className="h-2" />
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Target className="h-4 w-4 text-primary" />
                 </div>
+                <CardTitle className="text-base font-bold tracking-tight">Planning Progress</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Tools Completed</span>
+                  <span className="font-medium">2 / {planningTools.length}</span>
+                </div>
+                <Progress value={33} className="h-2" />
+              </div>
 
-                <div className="pt-3 border-t border-border/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Charter</span>
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">WBS</span>
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Stakeholders</span>
-                    <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30"></div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Risk Register</span>
-                    <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30"></div>
-                  </div>
+              <div className="grid grid-cols-3 gap-2 pt-2">
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-primary">2</div>
+                  <div className="text-[9px] text-muted-foreground">Completed</div>
+                </div>
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-amber-600">1</div>
+                  <div className="text-[9px] text-muted-foreground">In Progress</div>
+                </div>
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-muted-foreground">3</div>
+                  <div className="text-[9px] text-muted-foreground">Not Started</div>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* AI Tools Grid - Interactive Tools */}
+        {/* AI-Powered Planning Tools */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2.5">
-              <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20">
-                <Sparkles className="h-4 w-4 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-base font-bold">AI-Powered Planning Tools</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Interactive tools that combine human expertise with AI automation
-                </p>
-              </div>
-            </div>
-            <Button size="sm" variant="ghost" className="h-7 text-xs">
-              View Guide
-            </Button>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {planningTools.map((tool) => {
-              const colors = getColorClasses(tool.colorVariant);
-              const isDisabled = !selectedProject;
-
+              const IconComponent = tool.icon;
               return (
-                <Card 
-                  key={tool.id}
-                  className={`group relative overflow-hidden border-border/50 transition-all duration-300 ${
-                    isDisabled 
-                      ? 'opacity-60 cursor-not-allowed' 
-                      : 'hover:shadow-xl hover:-translate-y-0.5 cursor-pointer'
-                  }`}
-                  onClick={() => !isDisabled && handleToolClick(tool.id)}
-                >
-                  {/* Status Badge */}
-                  {tool.status === 'completed' && (
-                    <div className="absolute top-3 right-3">
-                      <Badge className="text-[9px] bg-primary/15 text-primary border-primary/25">
-                        <CheckCircle2 className="h-2.5 w-2.5 mr-1" />
-                        Done
-                      </Badge>
-                    </div>
-                  )}
-                  {tool.status === 'in-progress' && (
-                    <div className="absolute top-3 right-3">
-                      <Badge className="text-[9px] bg-primary/10 text-primary border-primary/20">
-                        <Clock className="h-2.5 w-2.5 mr-1" />
-                        In Progress
-                      </Badge>
-                    </div>
-                  )}
-
-                  <CardHeader className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div className={`bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md ${
-                        !isDisabled && 'group-hover:scale-110'
-                      } transition-transform duration-300`}>
-                        <tool.icon className="h-4 w-4 text-primary" />
+                <Card key={tool.id} className="border-border/50 hover:shadow-md transition-all">
+                  <CardHeader className="p-4 border-b border-border/40">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-xl ring-1 shadow-md bg-primary/10 text-primary border-primary/20">
+                        <IconComponent className="h-4 w-4" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <CardTitle className="text-base font-bold tracking-tight mb-1">
+                      <div className="flex-1">
+                        <CardTitle className="text-base font-bold tracking-tight">
                           {tool.title}
                         </CardTitle>
-                        <p className="text-xs text-muted-foreground">
-                          {tool.description}
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {tool.subtitle}
                         </p>
                       </div>
                     </div>
                   </CardHeader>
-
-                  <CardContent className="p-4 space-y-4">
-                    {/* AI & Human Tasks */}
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-2">
-                        <Sparkles className="h-4 w-4 text-primary shrink-0" />
-                        <p className="text-xs text-muted-foreground leading-relaxed">{tool.aiCapability}</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <Users className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <p className="text-xs text-muted-foreground leading-relaxed">{tool.humanTask}</p>
-                      </div>
+                  <CardContent className="p-4 space-y-2.5">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {tool.description}
+                    </p>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Layers className="h-3 w-3" />
+                      <span>{tool.features}</span>
                     </div>
-
-                    {/* Action Button */}
-                    <Button 
-                      className="w-full h-8 text-xs shadow-md hover:shadow-xl transition-all"
-                      disabled={isDisabled}
+                    <Button
+                      onClick={() => handleToolClick(tool.route)}
+                      className="w-full h-8 text-xs shadow-md"
+                      disabled={!selectedProject}
                     >
-                      {isDisabled ? 'Select Project First' : 'Launch Tool'}
-                      {!isDisabled && <ChevronRight className="h-3.5 w-3.5 ml-1.5" />}
+                      Launch Tool →
                     </Button>
-
-                    {/* Last Updated */}
-                    {tool.lastUpdated && (
-                      <p className="text-[10px] text-muted-foreground text-center">
-                        Updated {tool.lastUpdated}
-                      </p>
-                    )}
                   </CardContent>
-
-                  {/* Hover Indicator */}
-                  {!isDisabled && (
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  )}
                 </Card>
               );
             })}
           </div>
+        </div>
+
+        {/* Recent Activity & Outputs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Recent Activities */}
+          <Card className="border-border/50">
+            <CardHeader className="p-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Clock className="h-4 w-4 text-primary" />
+                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Recent Activities</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Rocket className="h-4 w-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Project charter created</p>
+                  <p className="text-[10px] text-muted-foreground">Charter Generator</p>
+                </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  2 hours ago
+                </span>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Target className="h-4 w-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">WBS structure updated</p>
+                  <p className="text-[10px] text-muted-foreground">WBS Generator</p>
+                </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  4 hours ago
+                </span>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Users className="h-4 w-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Stakeholder analysis completed</p>
+                  <p className="text-[10px] text-muted-foreground">Stakeholder Manager</p>
+                </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  1 day ago
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Outputs */}
+          <Card className="border-border/50">
+            <CardHeader className="p-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <FileText className="h-4 w-4 text-primary" />
+                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Recent Outputs</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-2">
+              <div className="p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <Rocket className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium mb-0.5">Project Charter</p>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>NEOM Phase 2</span>
+                      <span>•</span>
+                      <span>Oct 20, 2025</span>
+                      <span>•</span>
+                      <span>1.2 MB</span>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <Download className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+              <div className="p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <Target className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium mb-0.5">Work Breakdown Structure</p>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>Infrastructure</span>
+                      <span>•</span>
+                      <span>Oct 18, 2025</span>
+                      <span>•</span>
+                      <span>245 KB</span>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <Download className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+              <div className="p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <Users className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium mb-0.5">Stakeholder Register</p>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>Analysis Report</span>
+                      <span>•</span>
+                      <span>Oct 15, 2025</span>
+                      <span>•</span>
+                      <span>180 KB</span>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <Download className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* How It Works Section */}
@@ -474,153 +532,53 @@ export default function AIToolsPlanningPage() {
               </div>
             </div>
 
-            {/* Feature Highlights */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-border/40">
-              <div className="flex items-center gap-2">
-                <div className="bg-primary/10 p-1.5 rounded">
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-xs font-medium">Auto-save drafts</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="bg-primary/10 p-1.5 rounded">
-                  <Download className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-xs font-medium">Export to PDF/Excel</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="bg-primary/10 p-1.5 rounded">
-                  <Users className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-xs font-medium">Team collaboration</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="bg-primary/10 p-1.5 rounded">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                </div>
-                <span className="text-xs font-medium">AI suggestions</span>
-              </div>
-            </div>
           </CardContent>
         </Card>
 
-        {/* Recent Outputs */}
-        {selectedProject && (
-          <Card className="border-border/50">
-            <CardHeader className="p-4 pb-3 border-b border-border/40">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-bold tracking-tight flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-primary" />
-                  Recent Outputs
-                </CardTitle>
-                <Button size="sm" variant="ghost" className="h-7 text-xs">
-                  View All →
-                </Button>
+
+        {/* Quick Actions */}
+        <Card className="border-border/50">
+          <CardHeader className="p-4 border-b border-border/40">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                <Plus className="h-4 w-4 text-primary" />
               </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-4">
-                <div className="flex items-start gap-4 p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md shrink-0">
-                    <FileText className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold">Project Charter v2.3</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Generated 2 hours ago • 8 pages • PDF</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <FileText className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md shrink-0">
-                    <Network className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold">Work Breakdown Structure (WBS)</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Generated yesterday • 47 work packages • Excel</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <FileText className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md shrink-0">
-                    <Users className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold">Stakeholder Register</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Last updated 3 days ago • 24 stakeholders • PDF</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <FileText className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Quick Links */}
-        <Card className="bg-gradient-to-r from-muted/50 to-muted/20 border-border/40">
+              <CardTitle className="text-base font-bold tracking-tight">Quick Actions</CardTitle>
+            </div>
+          </CardHeader>
           <CardContent className="p-4">
-            <h3 className="text-xs font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-              <ChevronRight className="h-3.5 w-3.5" />
-              QUICK LINKS
-            </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Button
-                size="sm"
                 variant="outline"
-                className="h-8 text-xs shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
-                onClick={() => navigate('/free/myprojects')}
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.PLANNING_WBS)}
               >
-                <Briefcase className="h-3.5 w-3.5 mr-1.5" />
-                My Projects
+                <Layers className="h-3.5 w-3.5 mr-1.5" />
+                WBS
               </Button>
               <Button
-                size="sm"
                 variant="outline"
-                className="h-8 text-xs shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
-                onClick={() => navigate('/free/calendar')}
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.PLANNING_TIMELINE)}
               >
-                <CalendarIcon className="h-3.5 w-3.5 mr-1.5" />
-                Calendar
+                <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                Schedule
               </Button>
               <Button
-                size="sm"
                 variant="outline"
-                className="h-8 text-xs shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
-                onClick={() => navigate('/free/finance')}
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.PLANNING_RESOURCES)}
               >
-                <DollarSign className="h-3.5 w-3.5 mr-1.5" />
-                Budget Overview
+                <Users className="h-3.5 w-3.5 mr-1.5" />
+                Resources
               </Button>
               <Button
-                size="sm"
                 variant="outline"
-                className="h-8 text-xs shadow-sm hover:shadow-md hover:border-primary/30 transition-all"
-                onClick={() => navigate('/free/ai')}
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.PLANNING_RISKS)}
               >
-                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                AI Assistant
+                <AlertTriangle className="h-3.5 w-3.5 mr-1.5" />
+                Risks
               </Button>
             </div>
           </CardContent>
@@ -628,8 +586,6 @@ export default function AIToolsPlanningPage() {
 
       </div>
 
-      {/* Floating AI Button */}
-      <FloatingAIButton />
     </div>
   );
 }

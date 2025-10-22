@@ -23,16 +23,15 @@ import {
   AlertTriangle,
   CheckCircle,
   Users,
+  Search,
   Clock,
   BarChart3,
   ClipboardList,
   MessageSquare,
   Settings,
-  Bot,
   Loader2,
   Layers,
   FileText,
-  Search,
   Target,
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
@@ -146,371 +145,368 @@ export default function QualityCompliancePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto px-6 py-8 space-y-8">
+      <div className="p-4 space-y-4">
         
         {/* Page Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight">Quality & Compliance Tools</h1>
+              <h1 className="text-base font-bold tracking-tight">Quality & Compliance Tools</h1>
               <p className="text-xs text-muted-foreground">AI-powered quality management and compliance tracking</p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              className="h-8 text-xs"
-              onClick={() => navigate('/free/ai-tools')}
-            >
-              <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
-              Back to AI Tools
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="h-8 text-xs">
+              <FileDown className="h-3.5 w-3.5 mr-1.5" />
+              Export All
             </Button>
-            <Button 
-              className="h-8 text-xs shadow-md"
-              onClick={handleAIGenerate}
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  AI Quality Insights
-                </>
-              )}
+            <Button className="h-8 text-xs">
+              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              New Quality Plan
             </Button>
           </div>
         </div>
 
-        {/* Project Selector */}
-        <Card className="border-border/50">
-          <CardHeader className="p-4 border-b border-border/40">
-            <div className="flex items-center justify-between">
+        {/* Top Widgets Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Select Active Project */}
+          <Card className="border-border/50">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
                   <Settings className="h-4 w-4 text-primary" />
                 </div>
-                <div>
-                  <CardTitle className="text-base font-bold">Select Active Project</CardTitle>
-                  <p className="text-xs text-muted-foreground">Choose project to link quality tools</p>
-                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Select Active Project</CardTitle>
               </div>
-              <Button variant="outline" size="sm" className="h-7 text-xs">
-                <Plus className="h-3.5 w-3.5 mr-1.5" />
-                New Project
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4">
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
               <Select value={selectedProject} onValueChange={setSelectedProject}>
-                <SelectTrigger className="w-80 border border-border h-10">
-                  <SelectValue placeholder="Select project" />
+                <SelectTrigger className="border border-border h-10">
+                  <SelectValue placeholder="Choose a project to work on..." />
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map((project) => (
                     <SelectItem key={project.id} value={project.id}>
-                      <div className="flex items-center justify-between w-full">
-                        <span>{project.name}</span>
-                        <Badge variant="outline" className="ml-2 text-[9px]">
-                          {project.progress}%
-                        </Badge>
-                      </div>
+                      {project.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+
               {selectedProjectData && (
-                <div className="flex items-center gap-2">
-                  <div className="text-sm font-medium">{selectedProjectData.name}</div>
-                  <Badge 
-                    variant={selectedProjectData.status === 'active' ? 'default' : 'secondary'}
-                    className="text-[9px]"
-                  >
-                    {selectedProjectData.status}
-                  </Badge>
+                <div className="p-4 bg-background rounded-lg border border-border space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium">{selectedProjectData.name}</span>
+                    <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
+                      {selectedProjectData.status}
+                    </Badge>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Progress</span>
+                      <span className="font-medium">{selectedProjectData.progress}%</span>
+                    </div>
+                    <Progress value={selectedProjectData.progress} className="h-1.5" />
+                  </div>
                 </div>
               )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Quality Progress Widget */}
-        <Card className="border-border/50">
-          <CardHeader className="p-4 border-b border-border/40">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                <TrendingUp className="h-4 w-4 text-primary" />
-              </div>
-              <div>
-                <CardTitle className="text-base font-bold">Quality Progress</CardTitle>
-                <p className="text-xs text-muted-foreground">Overall quality compliance status</p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Compliance Score</span>
-                  <span className="text-sm font-bold text-green-600">92%</span>
+          {/* Quality Progress */}
+          <Card className="border-border/50">
+            <CardHeader className="p-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <TrendingUp className="h-4 w-4 text-primary" />
                 </div>
-                <Progress value={92} className="h-2" />
+                <CardTitle className="text-base font-bold tracking-tight">Quality Progress</CardTitle>
               </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Quality Checks</span>
-                  <span className="text-sm font-bold text-blue-600">156/180</span>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Tools Completed</span>
+                  <span className="font-medium">3 / 5</span>
                 </div>
-                <Progress value={87} className="h-2" />
+                <Progress value={60} className="h-2" />
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Defects Resolved</span>
-                  <span className="text-sm font-bold text-amber-600">23/28</span>
-                </div>
-                <Progress value={82} className="h-2" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">SCE Compliance</span>
-                  <span className="text-sm font-bold text-purple-600">100%</span>
-                </div>
-                <Progress value={100} className="h-2" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Quality Tools Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {qualityTools.map((tool) => (
-            <Card 
-              key={tool.id} 
-              className="group hover:shadow-xl transition-all duration-300 border-2 border-border/50 hover:border-primary/30 overflow-hidden gap-0"
-            >
-              <CardHeader className="p-4 border-b border-border/40">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                    <tool.icon className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-base font-bold tracking-tight">{tool.title}</CardTitle>
-                    <p className="text-xs text-muted-foreground mt-0.5">{tool.subtitle}</p>
-                  </div>
-                  <Badge 
-                    variant={tool.status === 'active' ? 'default' : 'secondary'}
-                    className="text-[9px]"
-                  >
-                    {tool.status}
-                  </Badge>
+              <div className="grid grid-cols-3 gap-2 pt-2">
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-primary">3</div>
+                  <div className="text-[9px] text-muted-foreground">Completed</div>
                 </div>
-              </CardHeader>
-              <CardContent className="p-4 space-y-4">
-                <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
-                
-                <div className="space-y-2">
-                  <h4 className="text-xs font-medium text-muted-foreground">Key Features:</h4>
-                  <p className="text-xs text-muted-foreground">{tool.features}</p>
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-amber-600">1</div>
+                  <div className="text-[9px] text-muted-foreground">In Progress</div>
                 </div>
-
-                <Button 
-                  className="w-full h-8 text-xs shadow-md"
-                  onClick={() => handleToolClick(tool.route)}
-                >
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  Launch Tool →
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-muted-foreground">1</div>
+                  <div className="text-[9px] text-muted-foreground">Not Started</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Recent Activities */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* AI-Powered Quality & Compliance Tools */}
+        <div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {qualityTools.map((tool) => {
+              const IconComponent = tool.icon;
+              return (
+                <Card key={tool.id} className="border-border/50 hover:shadow-md transition-all">
+                  <CardHeader className="p-4 border-b border-border/40">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-xl ring-1 shadow-md bg-primary/10 text-primary border-primary/20">
+                        <IconComponent className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1">
+                        <CardTitle className="text-base font-bold tracking-tight">
+                          {tool.title}
+                        </CardTitle>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {tool.subtitle}
+                        </p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-2.5">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {tool.description}
+                    </p>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Layers className="h-3 w-3" />
+                      <span>{tool.features}</span>
+                    </div>
+                    <Button
+                      onClick={() => handleToolClick(tool.route)}
+                      className="w-full h-8 text-xs shadow-md"
+                      disabled={!selectedProject}
+                    >
+                      Launch Tool →
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Recent Activity & Outputs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Recent Activities */}
           <Card className="border-border/50">
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
                   <Clock className="h-4 w-4 text-primary" />
                 </div>
-                <div>
-                  <CardTitle className="text-base font-bold">Recent Activities</CardTitle>
-                  <p className="text-xs text-muted-foreground">Latest quality management actions</p>
-                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Recent Activities</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg">
-                <div className="bg-green-500/10 p-1.5 rounded-lg">
-                  <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <CheckCircle className="h-4 w-4 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Quality inspection completed</p>
-                  <p className="text-xs text-muted-foreground">Structural phase - 2 hours ago</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Quality inspection completed</p>
+                  <p className="text-[10px] text-muted-foreground">Structural phase</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  2 hours ago
+                </span>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg">
-                <div className="bg-blue-500/10 p-1.5 rounded-lg">
-                  <FileText className="h-3.5 w-3.5 text-blue-600" />
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <FileText className="h-4 w-4 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Compliance report generated</p>
-                  <p className="text-xs text-muted-foreground">SCE requirements - 4 hours ago</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Compliance report generated</p>
+                  <p className="text-[10px] text-muted-foreground">SCE requirements</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  4 hours ago
+                </span>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg">
-                <div className="bg-amber-500/10 p-1.5 rounded-lg">
-                  <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <AlertTriangle className="h-4 w-4 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Defect identified and logged</p>
-                  <p className="text-xs text-muted-foreground">MEP installation - 6 hours ago</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Defect identified and logged</p>
+                  <p className="text-[10px] text-muted-foreground">MEP installation</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  6 hours ago
+                </span>
               </div>
             </CardContent>
           </Card>
 
+          {/* Recent Outputs */}
           <Card className="border-border/50">
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                  <FileDown className="h-4 w-4 text-primary" />
+                  <FileText className="h-4 w-4 text-primary" />
                 </div>
-                <div>
-                  <CardTitle className="text-base font-bold">Recent Outputs</CardTitle>
-                  <p className="text-xs text-muted-foreground">Latest quality reports and documents</p>
-                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Recent Outputs</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg hover:shadow-md transition-all">
-                <div className="bg-primary/10 p-1.5 rounded-lg">
-                  <ClipboardList className="h-3.5 w-3.5 text-primary" />
+            <CardContent className="p-4 space-y-2">
+              <div className="p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <ClipboardList className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium mb-0.5">Quality Control Checklist</p>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>Structural Phase</span>
+                      <span>•</span>
+                      <span>Oct 20, 2025</span>
+                      <span>•</span>
+                      <span>1.2 MB</span>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <FileDown className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Quality Control Checklist</p>
-                  <p className="text-xs text-muted-foreground">Structural Phase - PDF</p>
-                </div>
-                <Button variant="outline" size="sm" className="h-6 text-xs">
-                  <FileDown className="h-3 w-3" />
-                </Button>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg hover:shadow-md transition-all">
-                <div className="bg-primary/10 p-1.5 rounded-lg">
-                  <Shield className="h-3.5 w-3.5 text-primary" />
+              <div className="p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <Shield className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium mb-0.5">Compliance Status Report</p>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>SCE Requirements</span>
+                      <span>•</span>
+                      <span>Oct 18, 2025</span>
+                      <span>•</span>
+                      <span>245 KB</span>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <FileDown className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Compliance Status Report</p>
-                  <p className="text-xs text-muted-foreground">SCE Requirements - PDF</p>
-                </div>
-                <Button variant="outline" size="sm" className="h-6 text-xs">
-                  <FileDown className="h-3 w-3" />
-                </Button>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-background border border-border rounded-lg hover:shadow-md transition-all">
-                <div className="bg-primary/10 p-1.5 rounded-lg">
-                  <BarChart3 className="h-3.5 w-3.5 text-primary" />
+              <div className="p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <BarChart3 className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium mb-0.5">Quality Metrics Dashboard</p>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <span>Weekly Summary</span>
+                      <span>•</span>
+                      <span>Oct 15, 2025</span>
+                      <span>•</span>
+                      <span>180 KB</span>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <FileDown className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Quality Metrics Dashboard</p>
-                  <p className="text-xs text-muted-foreground">Weekly Summary - PDF</p>
-                </div>
-                <Button variant="outline" size="sm" className="h-6 text-xs">
-                  <FileDown className="h-3 w-3" />
-                </Button>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* How It Works */}
+        {/* How AI-Powered Quality Management Works */}
         <Card className="border-border/50">
           <CardHeader className="p-4 border-b border-border/40">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                <Layers className="h-4 w-4 text-primary" />
+                <Sparkles className="h-4 w-4 text-primary" />
               </div>
-              <div>
-                <CardTitle className="text-base font-bold">How It Works</CardTitle>
-                <p className="text-xs text-muted-foreground">Simple 3-step process for quality management</p>
-              </div>
+              <CardTitle className="text-base font-bold tracking-tight">
+                How AI-Powered Quality Management Works
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex items-start gap-4">
-                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Step 1 */}
+              <div className="text-center p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
+                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md mx-auto mb-4">
                   <span className="text-xl font-bold text-white">1</span>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold mb-1">Select Project</h3>
-                  <p className="text-xs text-muted-foreground">Choose your active project to link all quality tools and maintain context.</p>
-                </div>
+                <h3 className="text-sm font-bold mb-2">Select Tool</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Choose from 5 specialized quality tools based on your needs
+                </p>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+
+              {/* Step 2 */}
+              <div className="text-center p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
+                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md mx-auto mb-4">
                   <span className="text-xl font-bold text-white">2</span>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold mb-1">Launch AI Tool</h3>
-                  <p className="text-xs text-muted-foreground">Click any quality tool to access AI-powered features for comprehensive quality management.</p>
-                </div>
+                <h3 className="text-sm font-bold mb-2">AI Generate</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Let AI create checklists, reports, and compliance documents from project data
+                </p>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+
+              {/* Step 3 */}
+              <div className="text-center p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
+                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md mx-auto mb-4">
                   <span className="text-xl font-bold text-white">3</span>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold mb-1">Review & Refine</h3>
-                  <p className="text-xs text-muted-foreground">AI generates content, you review and refine to ensure accuracy and compliance.</p>
-                </div>
+                <h3 className="text-sm font-bold mb-2">Review & Export</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Refine results and export to PDF, Excel, or quality management systems
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Links */}
+        {/* Quick Actions */}
         <Card className="border-border/50">
           <CardHeader className="p-4 border-b border-border/40">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                <Search className="h-4 w-4 text-primary" />
+                <Plus className="h-4 w-4 text-primary" />
               </div>
-              <div>
-                <CardTitle className="text-base font-bold">Quick Links</CardTitle>
-                <p className="text-xs text-muted-foreground">Access quality tools and related features</p>
-              </div>
+              <CardTitle className="text-base font-bold tracking-tight">Quick Actions</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="p-4">
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Button
                 variant="outline"
                 className="h-8 text-xs"
-                onClick={() => handleToolClick('/free/ai-tools/quality/checklist')}
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.QUALITY_CHECKLIST)}
               >
-                <ClipboardList className="h-3.5 w-3.5 mr-1.5" />
-                Checklists
+                <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
+                Checklist
               </Button>
               <Button
                 variant="outline"
                 className="h-8 text-xs"
-                onClick={() => handleToolClick('/free/ai-tools/quality/inspection')}
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.QUALITY_INSPECTION)}
               >
-                <FileText className="h-3.5 w-3.5 mr-1.5" />
-                Inspections
+                <Search className="h-3.5 w-3.5 mr-1.5" />
+                Inspection
               </Button>
               <Button
                 variant="outline"
                 className="h-8 text-xs"
-                onClick={() => handleToolClick('/free/ai-tools/quality/compliance')}
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.QUALITY_COMPLIANCE)}
               >
                 <Shield className="h-3.5 w-3.5 mr-1.5" />
                 Compliance
@@ -518,33 +514,15 @@ export default function QualityCompliancePage() {
               <Button
                 variant="outline"
                 className="h-8 text-xs"
-                onClick={() => handleToolClick('/free/ai-tools/quality/defects')}
+                onClick={() => handleToolClick(ROUTES.AI_TOOLS.QUALITY_DEFECTS)}
               >
-                <Target className="h-3.5 w-3.5 mr-1.5" />
+                <AlertTriangle className="h-3.5 w-3.5 mr-1.5" />
                 Defects
-              </Button>
-              <Button
-                variant="outline"
-                className="h-8 text-xs"
-                onClick={() => handleToolClick('/free/ai-tools/quality/metrics')}
-              >
-                <BarChart3 className="h-3.5 w-3.5 mr-1.5" />
-                Metrics
               </Button>
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Floating AI Button */}
-      <div className="fixed bottom-6 right-6">
-        <Button
-          size="lg"
-          className="h-12 w-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-primary-gradient"
-          onClick={() => navigate('/free/ai')}
-        >
-          <Bot className="h-6 w-6 text-white" />
-        </Button>
       </div>
     </div>
   );

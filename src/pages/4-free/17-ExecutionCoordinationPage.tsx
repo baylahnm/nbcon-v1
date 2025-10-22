@@ -13,9 +13,6 @@ import {
 } from '@/pages/1-HomePage/others/components/ui/select';
 import {
   Construction,
-  ArrowLeft,
-  Sparkles,
-  Save,
   FileDown,
   Plus,
   Calendar,
@@ -28,12 +25,8 @@ import {
   ClipboardList,
   MessageSquare,
   Settings,
-  Bot,
-  Loader2,
   Layers,
 } from 'lucide-react';
-import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-import { toast } from 'sonner';
 import { ROUTES, getRouteWithProject } from '@/shared/constants/routes';
 
 interface ExecutionTool {
@@ -52,8 +45,6 @@ export default function ExecutionCoordinationPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('project');
-  const { sendMessage } = useAiStore();
-  const [isGenerating, setIsGenerating] = useState(false);
   const [selectedProject, setSelectedProject] = useState('1');
 
   // Sample project data
@@ -121,36 +112,14 @@ export default function ExecutionCoordinationPage() {
     },
   ];
 
-  const handleAIGenerate = async () => {
-    setIsGenerating(true);
-    try {
-      const prompt = `Generate a comprehensive execution coordination plan for a construction project. Project ID: ${projectId || 'N/A'}. Include daily site log templates, progress tracking metrics, change order procedures, meeting coordination protocols, and issue resolution workflows. Focus on Saudi construction practices and SCE compliance requirements.`;
-      
-      await sendMessage(prompt);
-      
-      toast.success("AI has generated execution coordination plan. Review tools below.");
-      
-      setIsGenerating(false);
-    } catch (error) {
-      console.error('AI generation failed:', error);
-      toast.error("Could not generate coordination plan. Please try again.");
-      setIsGenerating(false);
-    }
-  };
 
   const handleToolClick = (route: string) => {
     navigate(getRouteWithProject(route, selectedProject));
   };
 
   const getColorClasses = (color: string) => {
-    const colorMap = {
-      blue: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-      green: 'bg-green-500/10 text-green-600 border-green-500/20',
-      amber: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
-      purple: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
-      red: 'bg-red-500/10 text-red-600 border-red-500/20',
-    };
-    return colorMap[color as keyof typeof colorMap] || 'bg-primary/10 text-primary border-primary/20';
+    // Use consistent theme-agnostic styling
+    return 'bg-primary/10 text-primary border-primary/20';
   };
 
   const selectedProjectData = projects.find(p => p.id === selectedProject);
@@ -164,14 +133,6 @@ export default function ExecutionCoordinationPage() {
         {/* Page Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={() => navigate('/free/dashboard')}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
             <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
               <Construction className="h-5 w-5 text-white" />
             </div>
@@ -183,109 +144,105 @@ export default function ExecutionCoordinationPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className="h-8 text-xs"
-              onClick={handleAIGenerate}
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  AI Generate Plan
-                </>
-              )}
+            <Button variant="outline" className="h-8 text-xs">
+              <FileDown className="h-3.5 w-3.5 mr-1.5" />
+              Export All
             </Button>
-            <Button
-              className="h-8 text-xs shadow-md"
-              onClick={() => navigate('/free/ai')}
-            >
-              <Bot className="h-3.5 w-3.5 mr-1.5" />
-              AI Assistant
+            <Button className="h-8 text-xs">
+              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              New Execution Plan
             </Button>
           </div>
         </div>
 
-        {/* Project Selector */}
-        <Card className="border-border/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+        {/* Top Widgets Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Select Active Project */}
+          <Card className="border-border/50">
+            <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
                   <Calendar className="h-4 w-4 text-primary" />
                 </div>
-                <div>
-                  <div className="text-sm font-bold">Select Active Project</div>
-                  <div className="text-xs text-muted-foreground">Choose project to manage execution</div>
-                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Select Active Project</CardTitle>
               </div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
               <Select value={selectedProject} onValueChange={setSelectedProject}>
-                <SelectTrigger className="border border-border h-10 w-64">
-                  <SelectValue />
+                <SelectTrigger className="border border-border h-10">
+                  <SelectValue placeholder="Choose a project to work on..." />
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map((project) => (
                     <SelectItem key={project.id} value={project.id}>
-                      <div className="flex items-center gap-2">
-                        <span>{project.name}</span>
-                        <Badge className={`text-[9px] ${
-                          project.status === 'active' 
-                            ? 'bg-green-500/10 text-green-600 border-green-500/20' 
-                            : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                        }`}>
-                          {project.status}
-                        </Badge>
-                      </div>
+                      {project.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Execution Progress */}
-        {selectedProjectData && (
+              {selectedProjectData && (
+                <div className="p-4 bg-background rounded-lg border border-border space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium">{selectedProjectData.name}</span>
+                    <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
+                      Active
+                    </Badge>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Progress</span>
+                      <span className="font-medium">{selectedProjectData.progress}%</span>
+                    </div>
+                    <Progress value={selectedProjectData.progress} className="h-1.5" />
+                  </div>
+                  <div className="flex items-center justify-between text-xs pt-1">
+                    <span className="text-muted-foreground">Status</span>
+                    <span className="font-bold text-primary">
+                      {selectedProjectData.status}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Execution Progress */}
           <Card className="border-border/50">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold">Execution Progress</div>
-                    <div className="text-xs text-muted-foreground">{selectedProjectData.name}</div>
-                  </div>
+            <CardHeader className="p-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <TrendingUp className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-right">
-                  <div className="text-xs text-muted-foreground">Overall Progress</div>
-                  <div className="text-sm font-bold text-primary">{selectedProjectData.progress}%</div>
-                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Execution Progress</CardTitle>
               </div>
-              <Progress value={selectedProjectData.progress} className="h-2 mb-3" />
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-xs text-muted-foreground">Active Issues</div>
-                  <div className="text-sm font-bold text-red-600">{activeIssues}</div>
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Tools Completed</span>
+                  <span className="font-medium">3 / {executionTools.length}</span>
                 </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Pending Changes</div>
-                  <div className="text-sm font-bold text-amber-600">{pendingChanges}</div>
+                <Progress value={60} className="h-2" />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 pt-2">
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-primary">3</div>
+                  <div className="text-[9px] text-muted-foreground">Completed</div>
                 </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Upcoming Meetings</div>
-                  <div className="text-sm font-bold text-blue-600">{upcomingMeetings}</div>
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-amber-600">1</div>
+                  <div className="text-[9px] text-muted-foreground">In Progress</div>
+                </div>
+                <div className="text-center p-2 bg-background rounded-lg border border-border">
+                  <div className="text-lg font-bold text-muted-foreground">1</div>
+                  <div className="text-[9px] text-muted-foreground">Not Started</div>
                 </div>
               </div>
             </CardContent>
           </Card>
-        )}
+        </div>
 
         {/* Execution Tools Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -325,8 +282,9 @@ export default function ExecutionCoordinationPage() {
           ))}
         </div>
 
-        {/* Recent Activities */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Recent Activity & Outputs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Recent Activities */}
           <Card className="border-border/50">
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
@@ -336,45 +294,47 @@ export default function ExecutionCoordinationPage() {
                 <CardTitle className="text-base font-bold tracking-tight">Recent Activities</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-4 space-y-3">
-              <div className="p-3 bg-background rounded-lg border border-border">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium">Daily Site Log Updated</span>
-                  <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-[9px]">
-                    Completed
-                  </Badge>
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <ClipboardList className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  Weather: 28°C, Clear • Safety: 0 incidents • Progress: Foundation 85% complete
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Daily site log updated</p>
+                  <p className="text-[10px] text-muted-foreground">Daily Site Log</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  2 hours ago
+                </span>
               </div>
-
-              <div className="p-3 bg-background rounded-lg border border-border">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium">Change Order #CO-2025-001</span>
-                  <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-[9px]">
-                    Pending
-                  </Badge>
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <BarChart3 className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  Client requested additional electrical outlets • Cost impact: +15,000 SAR
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Progress dashboard updated</p>
+                  <p className="text-[10px] text-muted-foreground">Progress Dashboard</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  4 hours ago
+                </span>
               </div>
-
-              <div className="p-3 bg-background rounded-lg border border-border">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium">Weekly Progress Meeting</span>
-                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[9px]">
-                    Scheduled
-                  </Badge>
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Settings className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  Tomorrow 10:00 AM • Agenda: Progress review, issue resolution, next week planning
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Change order processed</p>
+                  <p className="text-[10px] text-muted-foreground">Change Order Manager</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  1 day ago
+                </span>
               </div>
             </CardContent>
           </Card>
 
+          {/* Recent Outputs */}
           <Card className="border-border/50">
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center gap-3">
@@ -384,41 +344,42 @@ export default function ExecutionCoordinationPage() {
                 <CardTitle className="text-base font-bold tracking-tight">Recent Outputs</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-4 space-y-3">
-              <div className="p-3 bg-background rounded-lg border border-border">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium">Progress Report - Week 12</span>
-                  <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-[9px]">
-                    Generated
-                  </Badge>
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <BarChart3 className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  Foundation 85% • Structural 15% • MEP 5% • Overall: 65% complete
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Progress Report - Week 12</p>
+                  <p className="text-[10px] text-muted-foreground">Progress Dashboard</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  1 day ago
+                </span>
               </div>
-
-              <div className="p-3 bg-background rounded-lg border border-border">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium">Issue Resolution Summary</span>
-                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-[9px]">
-                    Resolved
-                  </Badge>
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <MessageSquare className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  3 issues resolved this week • Average resolution time: 2.5 days
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Meeting minutes generated</p>
+                  <p className="text-[10px] text-muted-foreground">Meeting Planner</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  2 days ago
+                </span>
               </div>
-
-              <div className="p-3 bg-background rounded-lg border border-border">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium">Meeting Minutes - Coordination</span>
-                  <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20 text-[9px]">
-                    Shared
-                  </Badge>
+              <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Settings className="h-4 w-4 text-primary" />
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  Action items: 5 assigned • Follow-ups: 3 scheduled • Decisions: 8 made
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">Issue resolution summary</p>
+                  <p className="text-[10px] text-muted-foreground">Issue Resolution</p>
                 </div>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                  3 days ago
+                </span>
               </div>
             </CardContent>
           </Card>
