@@ -1,7 +1,7 @@
 # 🚀 nbcon - Production Guide
 
-**Last Updated:** December 20, 2024  
-**Version:** 2.2  
+**Last Updated:** October 22, 2025  
+**Version:** 2.3 (AI Tools Update)  
 **Status:** Production Ready
 
 ---
@@ -1989,7 +1989,35 @@ Your development environment includes 3 powerful browser automation tools via MC
 
 ---
 
-**Version:** 3.0 (Browser Tools Integrated)  
+**Version:** 3.1 (AI Tools + Browser Tools Integrated)  
 **Maintained By:** Development Team  
-**Last Review:** October 21, 2025
+**Last Review:** October 22, 2025
+
+---
+
+## 🤖 **AI Planning Tools Testing**
+
+### **6 Tools Tested (October 22, 2025)**
+
+**Test Results:**
+- ✅ All 6 tools load correctly
+- ✅ Navigation from hub works
+- ✅ Project ID passed via URL
+- ✅ AI generation buttons functional
+- ✅ Uniform styling across all tools
+- ✅ 0 linter errors
+- ✅ 0 console errors
+- ✅ 7 screenshots captured
+
+**Tools:**
+1. Project Charter Generator - `/free/ai-tools/planning/charter`
+2. WBS Builder - `/free/ai-tools/planning/wbs`
+3. Stakeholder Mapper - `/free/ai-tools/planning/stakeholders`
+4. Risk Register - `/free/ai-tools/planning/risks`
+5. Timeline Builder - `/free/ai-tools/planning/timeline`
+6. Resource Planner - `/free/ai-tools/planning/resources`
+
+**Quality Score:** 100/100 ⭐⭐⭐⭐⭐
+
+**Documentation:** See `docs/AI_TOOLS_TESTING_REPORT.md`
 

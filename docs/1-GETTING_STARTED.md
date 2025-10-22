@@ -1,8 +1,8 @@
 # 🚀 nbcon - Getting Started Guide
 
-**Last Updated:** December 20, 2024  
+**Last Updated:** October 22, 2025  
 **Status:** Production Ready  
-**Version:** 2.2
+**Version:** 2.3 (AI Tools Update)
 
 ---
 
@@ -71,13 +71,14 @@ Password: Qazwsx1234@
 ## 📊 Project Stats
 
 ```
-Total Files:        725+ source files
-Components:         590+ React components  
+Total Files:        735+ source files
+Components:         596+ React components  
 Database Tables:    55 tables
-Documentation:      4 essential guides
+Documentation:      8 essential guides (6 core + 2 AI tools)
 Tech Stack:         React 18 + TypeScript + Supabase + shadcn/ui
 Languages:          English + Arabic (RTL)
 Status:             100% Production Ready
+AI Tools:           6 interactive planning tools ✅ 🆕
 ```
 
 ---
@@ -475,9 +476,11 @@ formatDate(new Date())  // "Jan 15, 2024" (en) | "١٥ يناير ٢٠٢٤" (ar)
 13. **Help** - Support articles and contact options
 14. **Settings** - Account preferences and configuration
 
-### Recent Updates (December 2024)
+### Recent Updates (October 2025)
 
+**✅ AI Planning Tools** - 6 interactive tools: Charter, WBS, Stakeholders, Risks, Timeline, Resources 🆕  
 **✅ AI Assistant Integration** - Full OpenAI backend with 30 construction-specific prompts, role-based assistance  
+**✅ Uniform Design System** - Theme-agnostic styling across all AI tools  
 **✅ ScrollArea Component** - Fixed vertical scrolling with proper overflow handling  
 **✅ Edge Function Deployment** - AI chat function ready for production  
 **✅ TypeScript Fixes** - Resolved Deno import errors in Supabase functions  

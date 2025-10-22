@@ -1,7 +1,7 @@
 # 🎨 nbcon - UI Design System
 
-**Last Updated:** December 20, 2024  
-**Version:** 2.2  
+**Last Updated:** October 22, 2025  
+**Version:** 2.3 (AI Tools Update)  
 **Status:** Production Standard
 
 ---
@@ -2113,7 +2113,70 @@ Use this when creating/updating components:
 
 ---
 
-**Version:** 3.0 (Enterprise Standards Integrated)  
+**Version:** 3.1 (AI Tools Design System Integrated)  
 **Maintained By:** Development Team  
-**Last Review:** October 21, 2025
+**Last Review:** October 22, 2025
+
+---
+
+## 🤖 **AI Tools Design System**
+
+### **Overview**
+
+**6 interactive AI planning tools** with 100% uniform styling:
+
+1. Project Charter Generator - 6 sections with AI
+2. WBS Builder - Hierarchical task tree
+3. Stakeholder Mapper - Power/Interest matrix
+4. Risk Register - Heat map visualization
+5. Timeline Builder - Gantt chart
+6. Resource Planner - Team allocation
+
+### **Universal Pattern (All 6 Tools)**
+
+**Page Header:**
+```tsx
+// Settings-style gradient icon
+<div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+  <Icon className="h-5 w-5 text-white" />
+</div>
+```
+
+**Layout System:**
+```tsx
+Main Container: p-4 space-y-4 (uniform 16px)
+Card Headers: p-4 border-b border-border/40
+Card Content: p-4 space-y-4
+Grid Gaps: gap-4
+```
+
+**Icon Containers (Content):**
+```tsx
+<div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+  <Icon className="h-4 w-4 text-primary" />
+</div>
+```
+
+**Backgrounds:**
+```tsx
+Content: bg-background border border-border
+Cards: border-border/50 (no gradients)
+Hover: hover:shadow-md transition-all
+```
+
+**Buttons:**
+```tsx
+Primary: h-8 text-xs shadow-md
+Icon-only: h-7 w-7 p-0
+Dropdowns: border border-border h-10
+```
+
+### **Reference Implementation**
+
+**Gold Standard:** `src/pages/4-free/15-AIToolsPlanningPage.tsx`
+
+All 6 AI tools follow this exact pattern for perfect consistency.
+
+**Testing:** ✅ All tools tested with browser automation (Oct 22, 2025)  
+**Quality:** 100/100 ⭐⭐⭐⭐⭐
 

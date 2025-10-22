@@ -1,8 +1,8 @@
 # 🏗️ nbcon - Architecture Guide
 
-**Last Updated:** December 20, 2024  
+**Last Updated:** October 22, 2025  
 **Status:** Production Ready  
-**Version:** 2.2
+**Version:** 2.3 (AI Tools Update)
 
 ---
 
@@ -73,15 +73,26 @@ src/pages/
 │   ├── 8-SettingsPage.tsx
 │   └── others/              # Admin-specific features
 │
-├── 4-free/                  # Free Tier Portal (14 pages)
+├── 4-free/                  # Free Tier Portal (15 pages)
 │   ├── 1-DashboardPage.tsx
 │   ├── 2-ProfilePage.tsx
 │   ├── 3-BrowseEngineersPage.tsx
 │   ├── 4-PostJobPage.tsx
 │   ├── 7-LearningPage.tsx         # Udemy-style learning (redesigned Oct 2025)
+│   ├── 15-AIToolsPlanningPage.tsx # AI Planning tools hub 🆕
 │   ├── (... 9 more pages)
 │   └── others/              # Client-specific features
 │       ├── ai/
+│       ├── ai-tools/        # 6 interactive planning tools 🆕
+│       │   ├── tools/
+│       │   │   ├── ProjectCharterTool.tsx
+│       │   │   ├── WBSBuilderTool.tsx
+│       │   │   ├── StakeholderMapperTool.tsx
+│       │   │   ├── RiskRegisterTool.tsx
+│       │   │   ├── TimelineBuilderTool.tsx
+│       │   │   └── ResourcePlannerTool.tsx
+│       │   ├── components/
+│       │   └── data/
 │       ├── billing/
 │       ├── browse/
 │       ├── dashboard/
