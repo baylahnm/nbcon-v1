@@ -50,6 +50,18 @@ import CashFlowPlannerTool from "../../../../../4-free/others/features/ai-tools/
 import BudgetTrackerTool from "../../../../../4-free/others/features/ai-tools/tools/BudgetTrackerTool";
 import ValueEngineeringTool from "../../../../../4-free/others/features/ai-tools/tools/ValueEngineeringTool";
 import PaymentScheduleTool from "../../../../../4-free/others/features/ai-tools/tools/PaymentScheduleTool";
+import ExecutionCoordinationPage from "../../../../../4-free/17-ExecutionCoordinationPage";
+import DailySiteLogTool from "../../../../../4-free/others/features/ai-tools/tools/DailySiteLogTool";
+import ProgressTrackingTool from "../../../../../4-free/others/features/ai-tools/tools/ProgressTrackingTool";
+import ChangeOrderManagerTool from "../../../../../4-free/others/features/ai-tools/tools/ChangeOrderManagerTool";
+import MeetingPlannerTool from "../../../../../4-free/others/features/ai-tools/tools/MeetingPlannerTool";
+import IssueTrackerTool from "../../../../../4-free/others/features/ai-tools/tools/IssueTrackerTool";
+import QualityCompliancePage from "../../../../../4-free/18-QualityCompliancePage";
+import QualityChecklistTool from "../../../../../4-free/others/features/ai-tools/tools/QualityChecklistTool";
+import InspectionReportTool from "../../../../../4-free/others/features/ai-tools/tools/InspectionReportTool";
+import ComplianceTrackerTool from "../../../../../4-free/others/features/ai-tools/tools/ComplianceTrackerTool";
+import DefectManagerTool from "../../../../../4-free/others/features/ai-tools/tools/DefectManagerTool";
+import QualityMetricsTool from "../../../../../4-free/others/features/ai-tools/tools/QualityMetricsTool";
 import { DashboardPage as EnterpriseDashboardPage } from "../../../../../6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "../../../../../6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -236,6 +248,18 @@ export default function NewRoleRouter() {
               <Route path="budgeting/tracker" element={<BudgetTrackerTool />} />
               <Route path="budgeting/value" element={<ValueEngineeringTool />} />
               <Route path="budgeting/payments" element={<PaymentScheduleTool />} />
+              <Route path="execution" element={<ExecutionCoordinationPage />} />
+              <Route path="execution/daily-log" element={<DailySiteLogTool />} />
+              <Route path="execution/progress" element={<ProgressTrackingTool />} />
+              <Route path="execution/change-orders" element={<ChangeOrderManagerTool />} />
+              <Route path="execution/meetings" element={<MeetingPlannerTool />} />
+              <Route path="execution/issues" element={<IssueTrackerTool />} />
+              <Route path="quality" element={<QualityCompliancePage />} />
+              <Route path="quality/checklist" element={<QualityChecklistTool />} />
+              <Route path="quality/inspection" element={<InspectionReportTool />} />
+              <Route path="quality/compliance" element={<ComplianceTrackerTool />} />
+              <Route path="quality/defects" element={<DefectManagerTool />} />
+              <Route path="quality/metrics" element={<QualityMetricsTool />} />
             </Route>
           </Route>
 

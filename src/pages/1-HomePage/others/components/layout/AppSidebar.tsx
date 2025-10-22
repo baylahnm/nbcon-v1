@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useAuthStore } from '../../stores/auth';
 import { R } from '../../lib/routes';
 import { getUserDisplayName, getUserInitials, getUserProfileImage } from '../../lib/userUtils';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield, Crown, BarChart, LucideIcon, ChevronDown, ChevronRight, Rocket, Calculator } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield, Crown, BarChart, LucideIcon, ChevronDown, ChevronRight, Rocket, Calculator, ClipboardCheck } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import NbLogo from '../ui/nb-logo';
 
@@ -102,6 +102,8 @@ const makeGroupedMenu = (role?: string): MenuGroup[] => {
             { title: 'AI Assistant', url: R.client.ai, icon: Bot },
             { title: 'Project Planning', url: R.client.aiToolsPlanning, icon: Rocket },
             { title: 'Cost & Budgeting', url: '/free/ai-tools/budgeting', icon: Calculator },
+            { title: 'Execution & Coordination', url: '/free/ai-tools/execution', icon: ClipboardCheck },
+            { title: 'Quality & Compliance', url: '/free/ai-tools/quality', icon: Shield },
           ]
         },
         {
