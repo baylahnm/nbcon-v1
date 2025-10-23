@@ -17,7 +17,6 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-import { FloatingAIButton } from '../components/FloatingAIButton';
 
 interface Task {
   id: string;
@@ -265,8 +264,6 @@ export default function TimelineBuilderTool() {
           </CardContent>
         </Card>
 
-        {/* Floating AI Button */}
-        <FloatingAIButton />
         
       </div>
     </div>

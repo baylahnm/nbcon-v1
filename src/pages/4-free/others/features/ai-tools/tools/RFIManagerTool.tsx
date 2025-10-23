@@ -344,7 +344,7 @@ Return only the RFI response content, properly formatted with clear section head
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border/40">
+      <div className="flex gap-2">
         <Button
           variant={activeTab === 'create' ? 'default' : 'ghost'}
           onClick={() => setActiveTab('create')}

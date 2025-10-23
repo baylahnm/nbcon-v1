@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/pages/1-HomePage/oth
 import { Progress } from "@/pages/1-HomePage/others/components/ui/progress";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAiStore } from "@/pages/4-free/others/features/ai/store/useAiStore";
-import { FloatingAIButton } from "../components/FloatingAIButton";
 import {
   BarChart3,
   Sparkles,
@@ -375,7 +374,6 @@ export default function FinalReportTool() {
         </Card>
       </div>
 
-      <FloatingAIButton />
     </div>
   );
 }

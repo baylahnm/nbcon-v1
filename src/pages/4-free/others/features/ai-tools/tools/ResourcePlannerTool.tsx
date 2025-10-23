@@ -19,7 +19,6 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-import { FloatingAIButton } from '../components/FloatingAIButton';
 
 interface Resource {
   id: string;
@@ -300,8 +299,6 @@ export default function ResourcePlannerTool() {
           </CardContent>
         </Card>
 
-        {/* Floating AI Button */}
-        <FloatingAIButton />
         
       </div>
     </div>

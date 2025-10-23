@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
@@ -28,6 +28,7 @@ import {
   Camera,
   FileText,
   Settings,
+  ArrowLeft,
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
 import { toast } from 'sonner';
@@ -55,6 +56,7 @@ interface ChecklistCategory {
 
 export default function QualityChecklistTool() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const projectId = searchParams.get('project');
   const { sendMessage } = useAiStore();
   const [isGenerating, setIsGenerating] = useState(false);
@@ -273,11 +275,14 @@ export default function QualityChecklistTool() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="container mx-auto px-6 py-8 space-y-6">
+      <div className="p-4 space-y-4">
         
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => navigate('/free/ai-tools/quality')}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
             <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
               <ClipboardList className="h-5 w-5 text-white" />
             </div>
@@ -441,7 +446,7 @@ export default function QualityChecklistTool() {
         </Card>
 
         {/* Checklist Categories */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {checklistCategories.map((category) => (
             <Card key={category.id} className="border-border/50">
               <CardHeader className="p-4 border-b border-border/40">

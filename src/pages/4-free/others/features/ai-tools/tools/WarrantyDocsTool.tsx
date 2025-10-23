@@ -9,7 +9,6 @@ import { Label } from "@/pages/1-HomePage/others/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/pages/1-HomePage/others/components/ui/tabs";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAiStore } from "@/pages/4-free/others/features/ai/store/useAiStore";
-import { FloatingAIButton } from "../components/FloatingAIButton";
 import { Shield, Sparkles, ArrowLeft, Download, Phone, Mail, Clock, RefreshCw, Upload } from "lucide-react";
 
 type WarrantyItem = {
@@ -377,7 +376,6 @@ export default function WarrantyDocsTool() {
         </Card>
       </div>
 
-      <FloatingAIButton />
     </div>
   );
 }

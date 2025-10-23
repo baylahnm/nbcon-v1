@@ -20,7 +20,6 @@ import {
   Edit3
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-import { FloatingAIButton } from '../components/FloatingAIButton';
 
 interface WBSNode {
   id: string;
@@ -368,8 +367,6 @@ export default function WBSBuilderTool() {
 
       </div>
 
-      {/* Floating AI Button */}
-      <FloatingAIButton />
     </div>
   );
 }

@@ -23,7 +23,6 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-import { FloatingAIButton } from '../components/FloatingAIButton';
 
 interface CharterSection {
   id: string;
@@ -506,8 +505,6 @@ export default function ProjectCharterTool() {
 
       </div>
 
-      {/* Floating AI Button */}
-      <FloatingAIButton />
     </div>
   );
 }

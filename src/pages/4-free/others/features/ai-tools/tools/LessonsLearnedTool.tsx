@@ -9,7 +9,6 @@ import { Label } from "@/pages/1-HomePage/others/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/pages/1-HomePage/others/components/ui/tabs";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAiStore } from "@/pages/4-free/others/features/ai/store/useAiStore";
-import { FloatingAIButton } from "../components/FloatingAIButton";
 import {
   Lightbulb,
   Sparkles,
@@ -152,7 +151,7 @@ export default function LessonsLearnedTool() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="mx-auto max-w-6xl px-4 py-6 space-y-6">
+      <div className="p-4 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex items-start gap-3">
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => navigate(ROUTES.AI_TOOLS.CLOSURE)}>
@@ -452,7 +451,6 @@ export default function LessonsLearnedTool() {
         </Card>
       </div>
 
-      <FloatingAIButton />
     </div>
   );
 }

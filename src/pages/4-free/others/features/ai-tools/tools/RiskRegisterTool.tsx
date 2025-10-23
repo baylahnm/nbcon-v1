@@ -17,7 +17,6 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-import { FloatingAIButton } from '../components/FloatingAIButton';
 
 interface Risk {
   id: string;
@@ -373,8 +372,6 @@ export default function RiskRegisterTool() {
           </CardContent>
         </Card>
 
-        {/* Floating AI Button */}
-        <FloatingAIButton />
         
       </div>
     </div>
