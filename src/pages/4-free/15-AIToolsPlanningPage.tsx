@@ -126,7 +126,7 @@ const planningTools: AITool[] = [
     subtitle: 'Visual project timeline management',
     description: 'Create comprehensive Gantt charts with AI generation, drag-and-drop editing, and construction-specific features',
     icon: BarChart3,
-    route: '/free/ai-tools/planning/gantt',
+    route: 'gantt',
     features: 'AI Generation, Drag & Drop, Crew Management, Punch Lists',
     colorVariant: 'primary',
     status: 'available',
@@ -152,6 +152,9 @@ export default function AIToolsPlanningPage() {
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<string>('1');
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log("🔍 AIToolsPlanningPage loaded:", window.location.pathname);
+  }
 
   // Get selected project details
   const selectedProjectData = mockProjects.find(p => p.id === selectedProject);
@@ -200,19 +203,29 @@ export default function AIToolsPlanningPage() {
   };
 
   const handleToolClick = (route: string) => {
-    console.log('handleToolClick called with route:', route);
-    console.log('selectedProject:', selectedProject);
+    console.log('🎯 handleToolClick called with route:', route);
+    console.log('🎯 selectedProject:', selectedProject);
+    console.log('🎯 Route starts with /free/ai-tools/planning/?', route.startsWith('/free/ai-tools/planning/'));
+    console.log('🎯 Current location before navigation:', window.location.pathname);
+    
     if (!selectedProject) {
+      console.log('❌ No project selected, showing alert');
       // Show alert to select project first
       return;
     }
     setSelectedTool(route);
     // Navigate to tool detail page - all 6 tools now implemented
     if (route.startsWith('/free/ai-tools/planning/')) {
-      console.log('Navigating to:', `${route}?project=${selectedProject}`);
+      console.log('✅ Absolute route matches! Navigating to:', `${route}?project=${selectedProject}`);
       navigate(`${route}?project=${selectedProject}`);
+    } else if (route === 'gantt') {
+      console.log('✅ Gantt route detected! Navigating to:', `gantt?project=${selectedProject}`);
+      console.log('🎯 Full target URL will be: /free/ai-tools/planning/gantt?project=' + selectedProject);
+      navigate(`gantt?project=${selectedProject}`);
     } else {
-      console.log('Route does not match, navigating to AI assistant');
+      console.log('❌ Route does not match, navigating to AI assistant');
+      console.log('❌ Route was:', route);
+      console.log('❌ Expected: /free/ai-tools/planning/ or gantt');
       // For other tools, show coming soon (or navigate to AI assistant with prompt)
       navigate('/free/ai');
     }

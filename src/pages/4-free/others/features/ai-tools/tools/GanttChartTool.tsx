@@ -38,6 +38,9 @@ import { useGanttStore } from '../stores/useGanttStore';
 import { ROUTES } from '@/shared/constants/routes';
 
 export default function GanttChartTool() {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('🎯 GanttChartTool rendered!', window.location.pathname);
+  }
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('project') || '1';

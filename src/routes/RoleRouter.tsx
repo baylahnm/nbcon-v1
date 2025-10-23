@@ -156,7 +156,7 @@ export default function RoleRouter() {
         </Route>
 
         <Route path="/free" element={<ClientLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route index element={<ClientDashboardPage />} />
           <Route path="dashboard" element={<ClientDashboardPage />} />
           <Route path="browse" element={<BrowseEngineers />} />
           <Route path="myprojects" element={<JobsPage />} />
@@ -186,6 +186,7 @@ export default function RoleRouter() {
           <Route path="ai-tools">
             <Route index element={<Navigate to="planning" replace />} />
             <Route path="planning" element={<AIToolsPlanningPage />}>
+              <Route index element={<AIToolsPlanningPage />} />
               <Route path="gantt" element={<GanttChartTool />} />
             </Route>
             <Route path="budgeting" element={<CostBudgetingPage />} />
@@ -204,8 +205,7 @@ export default function RoleRouter() {
           <Route path="help" element={<HelpPage />} />
           <Route path="subscription" element={<ClientSubscriptionPage />} />
           <Route path="settings" element={<ClientSettingsPage />} />
-          <Route path="test-gantt" element={<GanttChartTool />} />
-          <Route path="gantt-test" element={<GanttChartTool />} />
+          <Route path="*" element={<Navigate to="/free/dashboard" replace />} />
         </Route>
 
         <Route path="/enterprise" element={<EnterpriseLayout />}>
