@@ -42,6 +42,7 @@ import WBSBuilderTool from "../../../../../4-free/others/features/ai-tools/tools
 import StakeholderMapperTool from "../../../../../4-free/others/features/ai-tools/tools/StakeholderMapperTool";
 import RiskRegisterTool from "../../../../../4-free/others/features/ai-tools/tools/RiskRegisterTool";
 import TimelineBuilderTool from "../../../../../4-free/others/features/ai-tools/tools/TimelineBuilderTool";
+import GanttChartTool from "../../../../../4-free/others/features/ai-tools/tools/GanttChartTool";
 import ResourcePlannerTool from "../../../../../4-free/others/features/ai-tools/tools/ResourcePlannerTool";
 import CostBudgetingPage from "../../../../../4-free/16-CostBudgetingPage";
 import BOQGeneratorTool from "../../../../../4-free/others/features/ai-tools/tools/BOQGeneratorTool";
@@ -252,6 +253,7 @@ export default function NewRoleRouter() {
               <Route path="planning/stakeholders" element={<StakeholderMapperTool />} />
               <Route path="planning/risks" element={<RiskRegisterTool />} />
               <Route path="planning/timeline" element={<TimelineBuilderTool />} />
+              <Route path="planning/gantt" element={<GanttChartTool />} />
               <Route path="planning/resources" element={<ResourcePlannerTool />} />
               <Route path="budgeting" element={<CostBudgetingPage />} />
               <Route path="budgeting/boq" element={<BOQGeneratorTool />} />
