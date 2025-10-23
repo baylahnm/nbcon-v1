@@ -126,7 +126,7 @@ const planningTools: AITool[] = [
     subtitle: 'Visual project timeline management',
     description: 'Create comprehensive Gantt charts with AI generation, drag-and-drop editing, and construction-specific features',
     icon: BarChart3,
-    route: 'gantt',
+    route: ROUTES.AI_TOOLS.PLANNING_GANTT,
     features: 'AI Generation, Drag & Drop, Crew Management, Punch Lists',
     colorVariant: 'primary',
     status: 'available',
@@ -218,10 +218,6 @@ export default function AIToolsPlanningPage() {
     if (route.startsWith('/free/ai-tools/planning/')) {
       console.log('✅ Absolute route matches! Navigating to:', `${route}?project=${selectedProject}`);
       navigate(`${route}?project=${selectedProject}`);
-    } else if (route === 'gantt') {
-      console.log('✅ Gantt route detected! Navigating to:', `gantt?project=${selectedProject}`);
-      console.log('🎯 Full target URL will be: /free/ai-tools/planning/gantt?project=' + selectedProject);
-      navigate(`gantt?project=${selectedProject}`);
     } else {
       console.log('❌ Route does not match, navigating to AI assistant');
       console.log('❌ Route was:', route);

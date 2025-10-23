@@ -38,6 +38,7 @@ export const ROUTES = {
     PLANNING_STAKEHOLDERS: '/free/ai-tools/planning/stakeholders',
     PLANNING_RISKS: '/free/ai-tools/planning/risks',
     PLANNING_TIMELINE: '/free/ai-tools/planning/timeline',
+    PLANNING_GANTT: '/free/ai-tools/planning/gantt',
     PLANNING_RESOURCES: '/free/ai-tools/planning/resources',
 
     // Budgeting Tools
