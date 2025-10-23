@@ -305,154 +305,117 @@ export default function ClosureHandoverPage() {
           </Card>
         </div>
 
-        {/* AI Tools Grid */}
-        <Card className="border-border/50">
-          <CardHeader className="p-4 border-b border-border/40">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                <Archive className="h-4 w-4 text-primary" />
-              </div>
-              <CardTitle className="text-base font-bold tracking-tight">Closure & Handover Tools</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {closureTools.map((tool) => {
-                const IconComponent = tool.icon;
-                return (
-                  <Card key={tool.id} className="border-border/50 hover:shadow-md transition-all">
-                    <CardHeader className="p-4 border-b border-border/40">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                          <IconComponent className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-base font-bold tracking-tight">
-                            {tool.title}
-                          </CardTitle>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {tool.subtitle}
-                          </p>
-                        </div>
+        {/* AI-Powered Closure Tools */}
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {closureTools.map((tool) => {
+              const IconComponent = tool.icon;
+              return (
+                <Card key={tool.id} className="border-border/50 hover:shadow-md transition-all">
+                  <CardHeader className="p-4 border-b border-border/40">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                        <IconComponent className="h-4 w-4 text-primary" />
                       </div>
-                    </CardHeader>
-                    <CardContent className="p-4 space-y-3">
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {tool.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <Badge 
-                          variant="outline" 
-                          className={`text-[9px] ${
-                            tool.status === 'completed' ? 'bg-green-500/10 text-green-600 border-green-500/20' :
-                            tool.status === 'in-progress' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' :
-                            'bg-muted/10 text-muted-foreground border-muted/20'
-                          }`}
-                        >
-                          {tool.status === 'completed' ? 'Completed' :
-                           tool.status === 'in-progress' ? 'In Progress' : 'Not Started'}
-                        </Badge>
-                        {tool.lastUsed && (
-                          <span className="text-[9px] text-muted-foreground">
-                            {tool.lastUsed}
-                          </span>
-                        )}
+                      <div className="flex-1">
+                        <CardTitle className="text-base font-bold tracking-tight">
+                          {tool.title}
+                        </CardTitle>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {tool.subtitle}
+                        </p>
                       </div>
-                      <Button 
-                        className="w-full h-8 text-xs"
-                        onClick={() => handleToolClick(tool)}
-                      >
-                        <IconComponent className="h-3.5 w-3.5 mr-1.5" />
-                        Launch Tool
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-2.5">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {tool.description}
+                    </p>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Layers className="h-3 w-3" />
+                      <span>{tool.features}</span>
+                    </div>
+                    <Button
+                      onClick={() => handleToolClick(tool)}
+                      className="w-full h-8 text-xs shadow-md"
+                    >
+                      Launch Tool →
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
 
-        {/* Recent Activities */}
-        <Card className="border-border/50">
-          <CardHeader className="p-4 border-b border-border/40">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                <Clock className="h-4 w-4 text-primary" />
+        {/* Recent Activity & Outputs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Recent Activities */}
+          <Card className="border-border/50">
+            <CardHeader className="p-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <Clock className="h-4 w-4 text-primary" />
+                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Recent Activities</CardTitle>
               </div>
-              <CardTitle className="text-base font-bold tracking-tight">Recent Activities</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="space-y-3">
+            </CardHeader>
+            <CardContent className="p-4 space-y-2">
               {recentActivities.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3 p-3 bg-background rounded-lg border border-border">
-                  <div className="bg-primary/10 p-1.5 rounded-lg">
-                    <CheckCircle className="h-3 w-3 text-primary" />
+                <div key={activity.id} className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <CheckCircle className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-medium">{activity.title}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">{activity.description}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[9px] text-muted-foreground">{activity.timestamp}</span>
-                      <Badge 
-                        variant="outline" 
-                        className={`text-[9px] ${
-                          activity.status === 'completed' ? 'bg-green-500/10 text-green-600 border-green-500/20' :
-                          'bg-amber-500/10 text-amber-600 border-amber-500/20'
-                        }`}
-                      >
-                        {activity.status}
-                      </Badge>
-                    </div>
+                    <p className="text-xs font-medium truncate">{activity.title}</p>
+                    <p className="text-[10px] text-muted-foreground">{activity.description}</p>
                   </div>
+                  <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+                    {activity.timestamp}
+                  </span>
                 </div>
               ))}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Recent Outputs */}
-        <Card className="border-border/50">
-          <CardHeader className="p-4 border-b border-border/40">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                <FileText className="h-4 w-4 text-primary" />
+          {/* Recent Outputs */}
+          <Card className="border-border/50">
+            <CardHeader className="p-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                  <FileText className="h-4 w-4 text-primary" />
+                </div>
+                <CardTitle className="text-base font-bold tracking-tight">Recent Outputs</CardTitle>
               </div>
-              <CardTitle className="text-base font-bold tracking-tight">Recent Outputs</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="space-y-3">
+            </CardHeader>
+            <CardContent className="p-4 space-y-2">
               {recentOutputs.map((output) => (
-                <div key={output.id} className="flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-lg">
+                <div key={output.id} className="p-3 bg-background rounded-lg border border-border hover:shadow-md transition-all cursor-pointer">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
                       <FileText className="h-4 w-4 text-primary" />
                     </div>
-                    <div>
-                      <h4 className="text-sm font-medium">{output.title}</h4>
-                      <p className="text-xs text-muted-foreground">{output.type} • {output.size} • {output.created}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium mb-0.5">{output.title}</p>
+                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                        <span>{output.type}</span>
+                        <span>•</span>
+                        <span>{output.created}</span>
+                        <span>•</span>
+                        <span>{output.size}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline" 
-                      className="bg-green-500/10 text-green-600 border-green-500/20 text-[9px]"
-                    >
-                      {output.status}
-                    </Badge>
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                      <Download className="h-3 w-3" />
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                      <Download className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>
               ))}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
 
-        {/* How It Works? */}
+        {/* How It Works Section */}
         <Card className="border-border/50">
           <CardHeader className="p-4 border-b border-border/40">
             <CardTitle className="text-base font-bold tracking-tight flex items-center gap-2">
@@ -492,6 +455,55 @@ export default function ClosureHandoverPage() {
                   Review generated outputs and complete project handover to stakeholders
                 </p>
               </div>
+            </div>
+
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="border-border/50">
+          <CardHeader className="p-4 border-b border-border/40">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                <Plus className="h-4 w-4 text-primary" />
+              </div>
+              <CardTitle className="text-base font-bold tracking-tight">Quick Actions</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(closureTools.find(t => t.id === 'closeout-checklist')!)}
+              >
+                <ClipboardCheck className="h-3.5 w-3.5 mr-1.5" />
+                Checklist
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(closureTools.find(t => t.id === 'as-built-docs')!)}
+              >
+                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                As-Built
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(closureTools.find(t => t.id === 'lessons-learned')!)}
+              >
+                <Lightbulb className="h-3.5 w-3.5 mr-1.5" />
+                Lessons
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => handleToolClick(closureTools.find(t => t.id === 'final-report')!)}
+              >
+                <FileBarChart className="h-3.5 w-3.5 mr-1.5" />
+                Report
+              </Button>
             </div>
           </CardContent>
         </Card>

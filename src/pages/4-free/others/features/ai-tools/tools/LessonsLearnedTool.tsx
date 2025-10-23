@@ -13,7 +13,7 @@ import { FloatingAIButton } from "../components/FloatingAIButton";
 import {
   Lightbulb,
   Sparkles,
-  ChevronLeft,
+  ArrowLeft,
   Download,
   Filter,
   Quote,
@@ -155,9 +155,8 @@ export default function LessonsLearnedTool() {
       <div className="mx-auto max-w-6xl px-4 py-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex items-start gap-3">
-            <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => navigate(ROUTES.AI_TOOLS.CLOSURE)}>
-              <ChevronLeft className="h-3.5 w-3.5 mr-1" />
-              Back to Closure Hub
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => navigate(ROUTES.AI_TOOLS.CLOSURE)}>
+              <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="flex items-center gap-3">
               <div className="bg-primary-gradient h-9 w-9 rounded-xl flex items-center justify-center shadow-md">
@@ -265,26 +264,56 @@ export default function LessonsLearnedTool() {
             <CardHeader className="p-4 border-b border-border/40">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold">Captured Lessons</CardTitle>
-                <TabsList className="hidden sm:grid grid-cols-6 h-8 text-[11px]">
-                  <TabsTrigger value="all" onClick={() => setActiveCategory("all")}>
+                <div className="hidden sm:flex gap-1">
+                  <Button
+                    variant={activeCategory === "all" ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 text-[11px] px-2"
+                    onClick={() => setActiveCategory("all")}
+                  >
                     All
-                  </TabsTrigger>
-                  <TabsTrigger value="planning" onClick={() => setActiveCategory("planning")}>
+                  </Button>
+                  <Button
+                    variant={activeCategory === "planning" ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 text-[11px] px-2"
+                    onClick={() => setActiveCategory("planning")}
+                  >
                     Planning
-                  </TabsTrigger>
-                  <TabsTrigger value="execution" onClick={() => setActiveCategory("execution")}>
+                  </Button>
+                  <Button
+                    variant={activeCategory === "execution" ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 text-[11px] px-2"
+                    onClick={() => setActiveCategory("execution")}
+                  >
                     Execution
-                  </TabsTrigger>
-                  <TabsTrigger value="quality" onClick={() => setActiveCategory("quality")}>
+                  </Button>
+                  <Button
+                    variant={activeCategory === "quality" ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 text-[11px] px-2"
+                    onClick={() => setActiveCategory("quality")}
+                  >
                     Quality
-                  </TabsTrigger>
-                  <TabsTrigger value="commercial" onClick={() => setActiveCategory("commercial")}>
+                  </Button>
+                  <Button
+                    variant={activeCategory === "commercial" ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 text-[11px] px-2"
+                    onClick={() => setActiveCategory("commercial")}
+                  >
                     Commercial
-                  </TabsTrigger>
-                  <TabsTrigger value="handover" onClick={() => setActiveCategory("handover")}>
+                  </Button>
+                  <Button
+                    variant={activeCategory === "handover" ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 text-[11px] px-2"
+                    onClick={() => setActiveCategory("handover")}
+                  >
                     Handover
-                  </TabsTrigger>
-                </TabsList>
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-4 space-y-4">

@@ -140,7 +140,7 @@ export default function CommunicationReportingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/10">
-      <div className="container mx-auto p-4 space-y-4">
+      <div className="p-4 space-y-4">
         
         {/* Page Header */}
         <div className="flex items-center justify-between pb-4 border-b border-border/40">

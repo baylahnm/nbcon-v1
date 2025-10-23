@@ -17,7 +17,7 @@ import {
   ClipboardCheck,
   CheckCircle2,
   Download,
-  ChevronLeft,
+  ArrowLeft,
   AlertCircle,
   RefreshCw,
 } from "lucide-react";
@@ -135,16 +135,17 @@ export default function CloseoutChecklistTool() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
-      <div className="mx-auto max-w-6xl px-4 py-6 space-y-6">
-        <div className="flex items-center justify-between gap-4">
+      <div className="p-4 space-y-4">
+        
+        {/* Page Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => navigate(ROUTES.AI_TOOLS.CLOSURE)}>
-              <ChevronLeft className="h-3.5 w-3.5 mr-1" />
-              Back to Closure Hub
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => navigate(ROUTES.AI_TOOLS.CLOSURE)}>
+              <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="flex items-center gap-2">
-              <div className="bg-primary-gradient h-9 w-9 rounded-xl flex items-center justify-center shadow-md">
-                <ClipboardCheck className="h-4 w-4 text-white" />
+              <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+                <ClipboardCheck className="h-5 w-5 text-white" />
               </div>
               <div>
                 <h1 className="text-base font-bold tracking-tight">Project Closeout Checklist</h1>
@@ -160,8 +161,8 @@ export default function CloseoutChecklistTool() {
                 Project #{projectId}
               </Badge>
             )}
-            <Button size="sm" className="h-8 text-xs">
-              <Download className="h-3.5 w-3.5 mr-1" />
+            <Button className="h-8 text-xs">
+              <Download className="h-3.5 w-3.5 mr-1.5" />
               Export Checklist
             </Button>
           </div>
