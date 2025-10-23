@@ -29,6 +29,18 @@ import ClientLearningPage from "@/pages/4-free/7-LearningPage";
 import ClientFinancePage from "@/pages/4-free/10-FinancePage";
 import { NewCoursePage } from "@/pages/5-engineer/others/features/learning/pages/NewCoursePage";
 import { ChatPage } from "@/pages/5-engineer/others/features/ai/ChatPage";
+// AI Tools Pages
+import AIToolsPlanningPage from "@/pages/4-free/15-AIToolsPlanningPage";
+import CostBudgetingPage from "@/pages/4-free/16-CostBudgetingPage";
+import ExecutionCoordinationPage from "@/pages/4-free/17-ExecutionCoordinationPage";
+import QualityCompliancePage from "@/pages/4-free/18-QualityCompliancePage";
+import CommunicationReportingPage from "@/pages/4-free/19-CommunicationReportingPage";
+import ClosureHandoverPage from "@/pages/4-free/20-ClosureHandoverPage";
+import CloseoutChecklistTool from "@/pages/4-free/others/features/ai-tools/tools/CloseoutChecklistTool";
+import AsBuiltDocsTool from "@/pages/4-free/others/features/ai-tools/tools/AsBuiltDocsTool";
+import LessonsLearnedTool from "@/pages/4-free/others/features/ai-tools/tools/LessonsLearnedTool";
+import WarrantyDocsTool from "@/pages/4-free/others/features/ai-tools/tools/WarrantyDocsTool";
+import FinalReportTool from "@/pages/4-free/others/features/ai-tools/tools/FinalReportTool";
 import { PaymentsContent } from "@/pages/6-enterprise/others/features/finance/components/PaymentsContent";
 import RankingPage from "@/pages/5-engineer/13-RankingPage";
 import EngineerSettingsPage from "@/pages/5-engineer/11-SettingsPage";
@@ -162,6 +174,22 @@ export default function RoleRouter() {
           <Route path="learning" element={<ClientLearningPage />} />
           <Route path="learning/course/:courseId" element={<NewCoursePage />} />
           <Route path="learning/certificates/:certificateId" element={<ClientLearningPage />} />
+          {/* AI Tools Routes */}
+          <Route path="ai-tools">
+            <Route index element={<Navigate to="planning" replace />} />
+            <Route path="planning" element={<AIToolsPlanningPage />} />
+            <Route path="budgeting" element={<CostBudgetingPage />} />
+            <Route path="execution" element={<ExecutionCoordinationPage />} />
+            <Route path="quality" element={<QualityCompliancePage />} />
+            <Route path="communication" element={<CommunicationReportingPage />} />
+            <Route path="closure" element={<ClosureHandoverPage />} />
+            {/* Individual Closure Tool Routes */}
+            <Route path="closure/closeout-checklist" element={<CloseoutChecklistTool />} />
+            <Route path="closure/as-built-docs" element={<AsBuiltDocsTool />} />
+            <Route path="closure/lessons-learned" element={<LessonsLearnedTool />} />
+            <Route path="closure/warranty-docs" element={<WarrantyDocsTool />} />
+            <Route path="closure/final-report" element={<FinalReportTool />} />
+          </Route>
           <Route path="help" element={<HelpPage />} />
           <Route path="subscription" element={<ClientSubscriptionPage />} />
           <Route path="settings" element={<ClientSettingsPage />} />

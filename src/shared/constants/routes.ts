@@ -72,6 +72,14 @@ export const ROUTES = {
     COMMUNICATION_MEETING_MINUTES: '/free/ai-tools/communication/meeting-minutes',
     COMMUNICATION_RFI_MANAGER: '/free/ai-tools/communication/rfi-manager',
     COMMUNICATION_PRESENTATION: '/free/ai-tools/communication/presentation-deck',
+
+    // Closure & Handover Tools
+    CLOSURE: '/free/ai-tools/closure',
+    CLOSURE_CLOSEOUT_CHECKLIST: '/free/ai-tools/closure/closeout-checklist',
+    CLOSURE_AS_BUILT_DOCS: '/free/ai-tools/closure/as-built-docs',
+    CLOSURE_LESSONS_LEARNED: '/free/ai-tools/closure/lessons-learned',
+    CLOSURE_WARRANTY_DOCS: '/free/ai-tools/closure/warranty-docs',
+    CLOSURE_FINAL_REPORT: '/free/ai-tools/closure/final-report',
   },
 
   // Engineer Portal

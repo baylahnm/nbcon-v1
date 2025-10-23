@@ -51,6 +51,12 @@ import BudgetTrackerTool from "../../../../../4-free/others/features/ai-tools/to
 import ValueEngineeringTool from "../../../../../4-free/others/features/ai-tools/tools/ValueEngineeringTool";
 import PaymentScheduleTool from "../../../../../4-free/others/features/ai-tools/tools/PaymentScheduleTool";
 import ExecutionCoordinationPage from "../../../../../4-free/17-ExecutionCoordinationPage";
+import ClosureHandoverPage from "../../../../../4-free/20-ClosureHandoverPage";
+import CloseoutChecklistTool from "../../../../../4-free/others/features/ai-tools/tools/CloseoutChecklistTool";
+import AsBuiltDocsTool from "../../../../../4-free/others/features/ai-tools/tools/AsBuiltDocsTool";
+import LessonsLearnedTool from "../../../../../4-free/others/features/ai-tools/tools/LessonsLearnedTool";
+import WarrantyDocsTool from "../../../../../4-free/others/features/ai-tools/tools/WarrantyDocsTool";
+import FinalReportTool from "../../../../../4-free/others/features/ai-tools/tools/FinalReportTool";
 import DailySiteLogTool from "../../../../../4-free/others/features/ai-tools/tools/DailySiteLogTool";
 import ProgressTrackingTool from "../../../../../4-free/others/features/ai-tools/tools/ProgressTrackingTool";
 import ChangeOrderManagerTool from "../../../../../4-free/others/features/ai-tools/tools/ChangeOrderManagerTool";
@@ -272,6 +278,12 @@ export default function NewRoleRouter() {
               <Route path="communication/meeting-minutes" element={<MeetingMinutesTool />} />
               <Route path="communication/rfi-manager" element={<RFIManagerTool />} />
               <Route path="communication/presentation-deck" element={<PresentationDeckTool />} />
+              <Route path="closure" element={<ClosureHandoverPage />} />
+              <Route path="closure/closeout-checklist" element={<CloseoutChecklistTool />} />
+              <Route path="closure/as-built-docs" element={<AsBuiltDocsTool />} />
+              <Route path="closure/lessons-learned" element={<LessonsLearnedTool />} />
+              <Route path="closure/warranty-docs" element={<WarrantyDocsTool />} />
+              <Route path="closure/final-report" element={<FinalReportTool />} />
             </Route>
           </Route>
 

@@ -105,6 +105,7 @@ const makeGroupedMenu = (role?: string): MenuGroup[] => {
             { title: 'Execution & Coordination', url: '/free/ai-tools/execution', icon: ClipboardCheck },
             { title: 'Quality & Compliance', url: '/free/ai-tools/quality', icon: Shield },
             { title: 'Communication & Reporting', url: '/free/ai-tools/communication', icon: FileText },
+            { title: 'Closure & Handover', url: '/free/ai-tools/closure', icon: Target },
           ]
         },
         {
