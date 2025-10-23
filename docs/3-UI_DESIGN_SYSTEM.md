@@ -1191,6 +1191,161 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 ```
 
+## 🛠️ AI Tools Design System (v2.3)
+
+### **AI Tools Pages - Perfect Consistency Standards**
+
+**All 4 AI Tools hub pages follow identical design patterns:**
+
+**Page Structure:**
+```tsx
+// Header with icon + title + description + action buttons
+<div className="flex items-center justify-between pb-6 border-b border-border/40">
+  <div className="flex items-center gap-3">
+    <div className="bg-primary-gradient h-10 w-10 rounded-xl shadow-md">
+      <Icon className="h-5 w-5 text-white" />
+    </div>
+    <div>
+      <h1 className="text-base font-bold tracking-tight">Page Title</h1>
+      <p className="text-xs text-muted-foreground">Page description</p>
+    </div>
+  </div>
+  <div className="flex gap-2">
+    <Button variant="outline" className="h-8 text-xs">Export All</Button>
+    <Button className="h-8 text-xs">New [Type] Plan</Button>
+  </div>
+</div>
+```
+
+**Project Selection Pattern:**
+```tsx
+// Two-column grid with project details
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <Card className="border-border/50">
+    <CardHeader className="p-4 border-b border-border/40">
+      <div className="flex items-center gap-3">
+        <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+          <Icon className="h-4 w-4 text-primary" />
+        </div>
+        <CardTitle className="text-base font-bold tracking-tight">Select Active Project</CardTitle>
+      </div>
+    </CardHeader>
+    <CardContent className="p-4">
+      {/* Project selection content */}
+    </CardContent>
+  </Card>
+</div>
+```
+
+**Tools Grid Pattern:**
+```tsx
+// Consistent tool cards with icon containers
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <Card className="border-border/50 hover:shadow-md transition-all">
+    <CardHeader className="p-4 border-b border-border/40">
+      <div className="flex items-center gap-3">
+        <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+          <Icon className="h-4 w-4 text-primary" />
+        </div>
+        <div>
+          <CardTitle className="text-base font-bold tracking-tight">Tool Name</CardTitle>
+          <p className="text-xs text-muted-foreground">Tool subtitle</p>
+        </div>
+      </div>
+    </CardHeader>
+    <CardContent className="p-4">
+      {/* Tool content */}
+    </CardContent>
+  </Card>
+</div>
+```
+
+**Recent Activities & Outputs Pattern:**
+```tsx
+// Two-column grid with consistent structure
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <Card className="border-border/50">
+    <CardHeader className="p-4 border-b border-border/40">
+      <div className="flex items-center gap-3">
+        <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+          <Icon className="h-4 w-4 text-primary" />
+        </div>
+        <CardTitle className="text-base font-bold tracking-tight">Recent Activities</CardTitle>
+      </div>
+    </CardHeader>
+    <CardContent className="p-4 space-y-2">
+      <div className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all">
+        <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+          <Icon className="h-4 w-4 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium truncate">Activity description</p>
+          <p className="text-[10px] text-muted-foreground">Activity type</p>
+        </div>
+        <span className="text-[9px] text-muted-foreground whitespace-nowrap">
+          Time ago
+        </span>
+      </div>
+    </CardContent>
+  </Card>
+</div>
+```
+
+**How It Works Section:**
+```tsx
+// Three-step process with gradient numbers
+<div className="space-y-4">
+  <div className="flex items-center gap-4 p-4 bg-background border border-border rounded-lg hover:shadow-md transition-all">
+    <div className="bg-primary-gradient h-10 w-10 rounded-xl shadow-md flex items-center justify-center">
+      <span className="text-xl font-bold text-white">1</span>
+    </div>
+    <div className="flex-1">
+      <h3 className="text-sm font-semibold">Step Title</h3>
+      <p className="text-xs text-muted-foreground">Step description</p>
+    </div>
+  </div>
+</div>
+```
+
+**Quick Actions Pattern:**
+```tsx
+// Four action buttons with consistent styling
+<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+  <Button className="h-8 text-xs">
+    <Icon className="h-3.5 w-3.5 mr-1.5" />
+    Action Name
+  </Button>
+</div>
+```
+
+### **Design System Standards for AI Tools**
+
+**Typography:**
+- Page titles: `text-base font-bold tracking-tight`
+- Subtitles: `text-xs text-muted-foreground`
+- Button text: `text-xs`
+- Activity text: `text-xs font-medium`
+- Timestamps: `text-[9px] text-muted-foreground`
+
+**Spacing:**
+- Container padding: `p-4`
+- Card gaps: `gap-4`
+- Section spacing: `space-y-4`
+- Icon container padding: `p-2`
+
+**Colors:**
+- Icon containers: `bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md`
+- Gradient step numbers: `bg-primary-gradient`
+- Theme-agnostic: No hard-coded colors
+- Works with all 11 themes
+
+**Hover Effects:**
+- Cards: `hover:shadow-md transition-all`
+- Activity items: `hover:shadow-sm transition-all`
+- Buttons: Standard button hover effects
+
+---
+
 ## 🔧 Form Component Updates (v2.1)
 
 ### SelectTrigger Default Styling

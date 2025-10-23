@@ -206,7 +206,7 @@ export default function AIToolsPlanningPage() {
       <div className="p-4 space-y-4">
         
         {/* Page Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
               <Rocket className="h-5 w-5 text-white" />
@@ -328,8 +328,8 @@ export default function AIToolsPlanningPage() {
                 <Card key={tool.id} className="border-border/50 hover:shadow-md transition-all">
                   <CardHeader className="p-4 border-b border-border/40">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl ring-1 shadow-md bg-primary/10 text-primary border-primary/20">
-                        <IconComponent className="h-4 w-4" />
+                      <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                        <IconComponent className="h-4 w-4 text-primary" />
                       </div>
                       <div className="flex-1">
                         <CardTitle className="text-base font-bold tracking-tight">
@@ -494,8 +494,8 @@ export default function AIToolsPlanningPage() {
         <Card className="border-border/50">
           <CardHeader className="p-4 border-b border-border/40">
             <CardTitle className="text-base font-bold tracking-tight flex items-center gap-2">
-              <Info className="h-4 w-4 text-primary" />
-              How AI-Powered Planning Works
+              <Rocket className="h-4 w-4 text-primary" />
+              How It Works?
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">

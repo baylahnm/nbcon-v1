@@ -64,6 +64,14 @@ export const ROUTES = {
     QUALITY_COMPLIANCE: '/free/ai-tools/quality/compliance',
     QUALITY_DEFECTS: '/free/ai-tools/quality/defects',
     QUALITY_METRICS: '/free/ai-tools/quality/metrics',
+
+    // Communication & Reporting Tools
+    COMMUNICATION: '/free/ai-tools/communication',
+    COMMUNICATION_CLIENT_EMAIL: '/free/ai-tools/communication/client-email',
+    COMMUNICATION_PROGRESS_REPORT: '/free/ai-tools/communication/progress-report',
+    COMMUNICATION_MEETING_MINUTES: '/free/ai-tools/communication/meeting-minutes',
+    COMMUNICATION_RFI_MANAGER: '/free/ai-tools/communication/rfi-manager',
+    COMMUNICATION_PRESENTATION: '/free/ai-tools/communication/presentation-deck',
   },
 
   // Engineer Portal

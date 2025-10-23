@@ -62,6 +62,12 @@ import InspectionReportTool from "../../../../../4-free/others/features/ai-tools
 import ComplianceTrackerTool from "../../../../../4-free/others/features/ai-tools/tools/ComplianceTrackerTool";
 import DefectManagerTool from "../../../../../4-free/others/features/ai-tools/tools/DefectManagerTool";
 import QualityMetricsTool from "../../../../../4-free/others/features/ai-tools/tools/QualityMetricsTool";
+import CommunicationReportingPage from "../../../../../4-free/19-CommunicationReportingPage";
+import ClientEmailTool from "../../../../../4-free/others/features/ai-tools/tools/ClientEmailTool";
+import ProgressReportTool from "../../../../../4-free/others/features/ai-tools/tools/ProgressReportTool";
+import MeetingMinutesTool from "../../../../../4-free/others/features/ai-tools/tools/MeetingMinutesTool";
+import RFIManagerTool from "../../../../../4-free/others/features/ai-tools/tools/RFIManagerTool";
+import PresentationDeckTool from "../../../../../4-free/others/features/ai-tools/tools/PresentationDeckTool";
 import { DashboardPage as EnterpriseDashboardPage } from "../../../../../6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "../../../../../6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -260,6 +266,12 @@ export default function NewRoleRouter() {
               <Route path="quality/compliance" element={<ComplianceTrackerTool />} />
               <Route path="quality/defects" element={<DefectManagerTool />} />
               <Route path="quality/metrics" element={<QualityMetricsTool />} />
+              <Route path="communication" element={<CommunicationReportingPage />} />
+              <Route path="communication/client-email" element={<ClientEmailTool />} />
+              <Route path="communication/progress-report" element={<ProgressReportTool />} />
+              <Route path="communication/meeting-minutes" element={<MeetingMinutesTool />} />
+              <Route path="communication/rfi-manager" element={<RFIManagerTool />} />
+              <Route path="communication/presentation-deck" element={<PresentationDeckTool />} />
             </Route>
           </Route>
 
