@@ -150,21 +150,21 @@ export function DashboardContent() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <Button className="h-9 text-xs">
+                  <Button className="h-8 text-xs">
                     <Plus className="h-3.5 w-3.5 mr-1.5" />
                     Start Project
                   </Button>
-                  <Button variant="outline" className="h-9 text-xs">
+                  <Button variant="outline" className="h-8 text-xs">
                     <Users className="h-3.5 w-3.5 mr-1.5" />
                     Find Engineers
                   </Button>
-                  <Button variant="ghost" className="h-9 text-xs" onClick={() => navigate('/free/ai')}>
+                  <Button variant="ghost" className="h-8 text-xs" onClick={() => navigate('/free/ai')}>
                     Open Full Chat
                   </Button>
                   {activeMessages && activeMessages.length > 0 && (
                     <Button 
                       variant="outline" 
-                      className="h-9 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-border hover:border-red-500" 
+                      className="h-8 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-border hover:border-red-500" 
                       onClick={handleClearChat}
                       title="Clear all chat messages"
                     >
@@ -208,7 +208,7 @@ export function DashboardContent() {
                 {/* 1. Project Initiation */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Project Initiation AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Project Initiation AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Rocket className="h-3 w-3" />
                         <span>Project Initiation</span>
@@ -238,7 +238,7 @@ export function DashboardContent() {
                 {/* 2. Strategic Planning */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Strategic Planning AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Strategic Planning AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Target className="h-3 w-3" />
                         <span>Strategic Planning</span>
@@ -268,7 +268,7 @@ export function DashboardContent() {
                 {/* 3. Budgeting & Finance */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Budgeting & Finance AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Budgeting & Finance AI prompts">
                       <div className="flex items-center gap-1.5">
                         <DollarSign className="h-3 w-3" />
                         <span>Budgeting & Finance</span>
@@ -298,7 +298,7 @@ export function DashboardContent() {
                 {/* 4. Execution & Coordination */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Execution & Coordination AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Execution & Coordination AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Users className="h-3 w-3" />
                         <span>Execution & Coordination</span>
@@ -328,7 +328,7 @@ export function DashboardContent() {
                 {/* 5. Quality & Compliance */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Quality & Compliance AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Quality & Compliance AI prompts">
                       <div className="flex items-center gap-1.5">
                         <CheckCircle className="h-3 w-3" />
                         <span>Quality & Compliance</span>
@@ -358,7 +358,7 @@ export function DashboardContent() {
                 {/* 6. Risk & Safety Management */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Risk & Safety Management AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Risk & Safety Management AI prompts">
                       <div className="flex items-center gap-1.5">
                         <AlertTriangle className="h-3 w-3" />
                         <span>Risk & Safety</span>
@@ -388,7 +388,7 @@ export function DashboardContent() {
                 {/* 7. Communication & Reporting */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Communication & Reporting AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Communication & Reporting AI prompts">
                       <div className="flex items-center gap-1.5">
                         <MessageCircle className="h-3 w-3" />
                         <span>Communication</span>
@@ -418,7 +418,7 @@ export function DashboardContent() {
                 {/* 8. Closure & Handover */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between h-9 text-xs" aria-label="Closure & Handover AI prompts">
+                    <Button variant="outline" className="justify-between h-8 text-xs" aria-label="Closure & Handover AI prompts">
                       <div className="flex items-center gap-1.5">
                         <Package className="h-3 w-3" />
                         <span>Closure & Handover</span>

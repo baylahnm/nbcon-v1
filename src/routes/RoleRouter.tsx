@@ -41,6 +41,7 @@ import AsBuiltDocsTool from "@/pages/4-free/others/features/ai-tools/tools/AsBui
 import LessonsLearnedTool from "@/pages/4-free/others/features/ai-tools/tools/LessonsLearnedTool";
 import WarrantyDocsTool from "@/pages/4-free/others/features/ai-tools/tools/WarrantyDocsTool";
 import FinalReportTool from "@/pages/4-free/others/features/ai-tools/tools/FinalReportTool";
+import GanttChartTool from "@/pages/4-free/others/features/ai-tools/tools/GanttChartTool";
 import { PaymentsContent } from "@/pages/6-enterprise/others/features/finance/components/PaymentsContent";
 import RankingPage from "@/pages/5-engineer/13-RankingPage";
 import EngineerSettingsPage from "@/pages/5-engineer/11-SettingsPage";
@@ -104,6 +105,12 @@ function LegacyRedirects({ fallback }: LegacyRedirectsProps = {}) {
 }
 export default function RoleRouter() {
   const role = useActiveRole();
+  const { isLoading, isInitialized } = useAuthStore();
+
+  // Wait for auth to be initialized before checking role
+  if (!isInitialized || isLoading) {
+    return <RouteFallback />;
+  }
 
   if (!role) {
     return <LegacyRedirects fallback="/auth/role" />;
@@ -145,6 +152,7 @@ export default function RoleRouter() {
           <Route path="subscription" element={<SubscriptionPage />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<EngineerSettingsPage />} />
+          <Route path="*" element={<Navigate to="/engineer/dashboard" replace />} />
         </Route>
 
         <Route path="/free" element={<ClientLayout />}>
@@ -177,22 +185,27 @@ export default function RoleRouter() {
           {/* AI Tools Routes */}
           <Route path="ai-tools">
             <Route index element={<Navigate to="planning" replace />} />
-            <Route path="planning" element={<AIToolsPlanningPage />} />
+            <Route path="planning" element={<AIToolsPlanningPage />}>
+              <Route path="gantt" element={<GanttChartTool />} />
+            </Route>
             <Route path="budgeting" element={<CostBudgetingPage />} />
             <Route path="execution" element={<ExecutionCoordinationPage />} />
             <Route path="quality" element={<QualityCompliancePage />} />
             <Route path="communication" element={<CommunicationReportingPage />} />
-            <Route path="closure" element={<ClosureHandoverPage />} />
-            {/* Individual Closure Tool Routes */}
-            <Route path="closure/closeout-checklist" element={<CloseoutChecklistTool />} />
-            <Route path="closure/as-built-docs" element={<AsBuiltDocsTool />} />
-            <Route path="closure/lessons-learned" element={<LessonsLearnedTool />} />
-            <Route path="closure/warranty-docs" element={<WarrantyDocsTool />} />
-            <Route path="closure/final-report" element={<FinalReportTool />} />
+            <Route path="closure" element={<ClosureHandoverPage />}>
+              {/* Individual Closure Tool Routes */}
+              <Route path="closeout-checklist" element={<CloseoutChecklistTool />} />
+              <Route path="as-built-docs" element={<AsBuiltDocsTool />} />
+              <Route path="lessons-learned" element={<LessonsLearnedTool />} />
+              <Route path="warranty-docs" element={<WarrantyDocsTool />} />
+              <Route path="final-report" element={<FinalReportTool />} />
+            </Route>
           </Route>
           <Route path="help" element={<HelpPage />} />
           <Route path="subscription" element={<ClientSubscriptionPage />} />
           <Route path="settings" element={<ClientSettingsPage />} />
+          <Route path="test-gantt" element={<GanttChartTool />} />
+          <Route path="gantt-test" element={<GanttChartTool />} />
         </Route>
 
         <Route path="/enterprise" element={<EnterpriseLayout />}>
@@ -221,6 +234,7 @@ export default function RoleRouter() {
           <Route path="finance/:paymentId" element={<FinancePage />} />
           <Route path="help" element={<EnterpriseHelpPage />} />
           <Route path="settings" element={<EnterpriseSettingsPage />} />
+          <Route path="*" element={<Navigate to="/enterprise/dashboard" replace />} />
         </Route>
 
         <Route path="/admin" element={<AdminLayout />}>
@@ -231,10 +245,10 @@ export default function RoleRouter() {
           <Route path="payments" element={<div />} />
           <Route path="risk" element={<div />} />
           <Route path="settings" element={<EngineerSettingsPage />} />
+          <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Route>
 
         <Route path="/403" element={<Forbidden />} />
-        <Route path="*" element={<Navigate to={`${ROLE_BASE[role]}/dashboard`} replace />} />
       </Routes>
       </Suspense>
     </RouteErrorBoundary>

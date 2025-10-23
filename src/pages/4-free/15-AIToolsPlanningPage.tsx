@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
@@ -121,6 +121,19 @@ const planningTools: AITool[] = [
     humanTask: 'Adjust dates and dependencies'
   },
   {
+    id: 'gantt',
+    title: 'Gantt Chart Builder',
+    subtitle: 'Visual project timeline management',
+    description: 'Create comprehensive Gantt charts with AI generation, drag-and-drop editing, and construction-specific features',
+    icon: BarChart3,
+    route: '/free/ai-tools/planning/gantt',
+    features: 'AI Generation, Drag & Drop, Crew Management, Punch Lists',
+    colorVariant: 'primary',
+    status: 'available',
+    aiCapability: 'AI generates complete project timeline from natural language',
+    humanTask: 'Refine timeline, assign resources, track progress'
+  },
+  {
     id: 'resources',
     title: 'Resource Planner',
     subtitle: 'Optimized resource allocation',
@@ -187,6 +200,8 @@ export default function AIToolsPlanningPage() {
   };
 
   const handleToolClick = (route: string) => {
+    console.log('handleToolClick called with route:', route);
+    console.log('selectedProject:', selectedProject);
     if (!selectedProject) {
       // Show alert to select project first
       return;
@@ -194,8 +209,10 @@ export default function AIToolsPlanningPage() {
     setSelectedTool(route);
     // Navigate to tool detail page - all 6 tools now implemented
     if (route.startsWith('/free/ai-tools/planning/')) {
+      console.log('Navigating to:', `${route}?project=${selectedProject}`);
       navigate(`${route}?project=${selectedProject}`);
     } else {
+      console.log('Route does not match, navigating to AI assistant');
       // For other tools, show coming soon (or navigate to AI assistant with prompt)
       navigate('/free/ai');
     }
@@ -583,6 +600,9 @@ export default function AIToolsPlanningPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Nested tool routes render here */}
+        <Outlet />
 
       </div>
 
