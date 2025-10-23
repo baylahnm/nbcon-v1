@@ -185,10 +185,8 @@ export default function RoleRouter() {
           {/* AI Tools Routes */}
           <Route path="ai-tools">
             <Route index element={<Navigate to="planning" replace />} />
-            <Route path="planning/*" element={<AIToolsPlanningPage />}>
-              <Route index element={<AIToolsPlanningPage />} />
-              <Route path="gantt" element={<GanttChartTool />} />
-            </Route>
+            <Route path="planning" element={<AIToolsPlanningPage />} />
+            <Route path="planning/gantt" element={<GanttChartTool />} />
             <Route path="budgeting" element={<CostBudgetingPage />} />
             <Route path="execution" element={<ExecutionCoordinationPage />} />
             <Route path="quality" element={<QualityCompliancePage />} />
@@ -202,10 +200,6 @@ export default function RoleRouter() {
               <Route path="final-report" element={<FinalReportTool />} />
             </Route>
           </Route>
-          {/* Absolute route to ensure direct access works reliably */}
-          <Route path="ai-tools/planning/gantt" element={<GanttChartTool />} />
-          {/* Absolute path for reliability */}
-          <Route path="ai-tools/planning/gantt" element={<GanttChartTool />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="subscription" element={<ClientSubscriptionPage />} />
           <Route path="settings" element={<ClientSettingsPage />} />
