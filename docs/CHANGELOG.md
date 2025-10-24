@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2025-10-24] - Unified Gantt Integration & Documentation Consolidation
+## [2025-10-24] - Unified Gantt Integration & UI Enhancements
 
 ### 🎯 **UNIFIED GANTT DATABASE INTEGRATION - COMPLETE**
 
-**Summary:** Connected Gantt Chart tool to real Supabase database, creating unified project data layer for all AI Planning Tools. Consolidated documentation from 16 files to 7 core guides.
+**Summary:** Connected Gantt Chart tool to real Supabase database, creating unified project data layer for all AI Planning Tools. Enhanced UI with horizontal scrolling, themed scrollbar, and improved spacing. Consolidated documentation from 16 files to 7 core guides.
 
 #### **Database Integration:**
 
@@ -58,6 +58,27 @@ gantt_currency TEXT DEFAULT 'SAR'
   - Empty state when no projects exist
   - Real-time project switching
   - Auto-load data on mount
+- **UI/UX Improvements (v2):**
+  - ✅ **XScroll Component Integration** - Horizontal scrolling with Learning page pattern
+  - ✅ **Themed Scrollbar** - Primary color scrollbar (12px height, 100% opacity)
+  - ✅ **Custom Scrollbar Styling** - `.gantt-chart-scroll` class with theme colors
+  - ✅ **Consistent Padding** - `p-1 pb-4` pattern matching Trending Courses section
+  - ✅ **Zero Row Gap** - `gap-0` on task rows for flush alignment
+  - ✅ **Responsive Toolbar** - Flex-wrap layout without horizontal scroll
+  - ✅ **Border Input** - Visible border on zoom selector dropdown
+  - ✅ **16px Page Spacing** - `px-4 py-4` uniform container padding
+
+**Gantt Chart Scrollbar Styling:**
+- **File:** `src/index.css`
+- **Added:** Custom `.gantt-chart-scroll` scrollbar styling
+- **Features:**
+  - ✅ Always-visible scrollbar (12px height)
+  - ✅ Primary theme color for thumb (100% opacity)
+  - ✅ Muted track with subtle border
+  - ✅ Hover effect: Darker primary with glow shadow
+  - ✅ Firefox support with custom scrollbar colors
+  - ✅ Theme-aware colors (adapts to all themes)
+- **Pattern:** Matches Learning page scrollbar implementation
 
 **AI Event Logging Fixed (TICKET #002):**
 - **Files:** All 4 aiClient.ts files (admin, client, engineer, enterprise portals)
