@@ -75,7 +75,6 @@ export default function WBSBuilderTool() {
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
   
   // State
-  const [activeView, setActiveView] = useState<'prompt' | 'visualization' | 'export'>('visualization');
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const [selectedNode, setSelectedNode] = useState<WBSNode | null>(null);
   const [showExportDialog, setShowExportDialog] = useState(false);
@@ -136,12 +135,6 @@ export default function WBSBuilderTool() {
     );
   }
 
-  // Helper: Get workflow button styling
-  const getWorkflowButtonClass = (view: typeof activeView) => {
-    return activeView === view
-      ? "justify-start h-9 px-3 bg-primary/10 text-primary hover:bg-primary/20"
-      : "justify-start h-9 px-3";
-  };
 
   // Helper: Build WBS tree from flat tasks
   const buildWBSTree = (): WBSNode[] => {
@@ -235,9 +228,13 @@ Create a hierarchical task structure suitable for project planning.`;
         description: "Review the generated structure in Visualization view",
       });
       
-      // Auto-switch to visualization and reload tasks
-      setActiveView('visualization');
+      // Reload tasks and scroll to visualization
       await loadProjectTasks(project.id);
+      
+      // Scroll to visualization section
+      setTimeout(() => {
+        document.getElementById('visualization-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 500);
       
       // Clear form
       setAiInput('');
@@ -509,37 +506,35 @@ Create a hierarchical task structure suitable for project planning.`;
             </div>
           </div>
 
-          {/* Three-Step Workflow - functional stepper */}
+          {/* Quick Navigation - Jump to sections */}
           <div className="flex flex-col gap-2">
+            <p className="text-xs font-medium text-muted-foreground mb-1">Quick Navigation</p>
             <Button
               variant="ghost"
-              className={getWorkflowButtonClass('prompt')}
-              onClick={() => setActiveView('prompt')}
-              aria-label="Switch to prompt input view"
-              aria-current={activeView === 'prompt' ? 'page' : undefined}
+              size="sm"
+              onClick={() => document.getElementById('prompt-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="w-full justify-start h-9"
             >
-              <Sparkles className="h-5 w-5 mr-3" />
-              <span className="text-sm font-medium">Prompt</span>
+              <Sparkles className="h-4 w-4 mr-2" />
+              <span className="text-sm">AI Generation</span>
             </Button>
             <Button
               variant="ghost"
-              className={getWorkflowButtonClass('visualization')}
-              onClick={() => setActiveView('visualization')}
-              aria-label="Switch to visualization view"
-              aria-current={activeView === 'visualization' ? 'page' : undefined}
+              size="sm"
+              onClick={() => document.getElementById('visualization-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="w-full justify-start h-9"
             >
-              <Network className="h-5 w-5 mr-3" />
-              <span className="text-sm font-medium">Visualization</span>
+              <Network className="h-4 w-4 mr-2" />
+              <span className="text-sm">WBS Tree</span>
             </Button>
             <Button
               variant="ghost"
-              className={getWorkflowButtonClass('export')}
-              onClick={() => setActiveView('export')}
-              aria-label="Switch to export view"
-              aria-current={activeView === 'export' ? 'page' : undefined}
+              size="sm"
+              onClick={() => document.getElementById('export-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="w-full justify-start h-9"
             >
-              <Download className="h-5 w-5 mr-3" />
-              <span className="text-sm font-medium">Export</span>
+              <Download className="h-4 w-4 mr-2" />
+              <span className="text-sm">Export Options</span>
             </Button>
           </div>
 
@@ -597,270 +592,329 @@ Create a hierarchical task structure suitable for project planning.`;
         </div>
       </aside>
 
-      {/* CENTER CANVAS - view-gated content */}
-      <main className="flex flex-1 flex-col p-6 gap-6 overflow-hidden">
+      {/* CENTER CANVAS - All sections in one scrollable page */}
+      <main className="flex flex-1 flex-col overflow-y-auto">
+        <div className="container mx-auto p-4 space-y-12 max-w-7xl">
         
-        {/* VIEW: PROMPT - AI Input Form */}
-        {activeView === 'prompt' && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-              {/* Hero Title - 56px line-height, tightened spacing */}
-              <div className="flex flex-col items-center text-center mb-16">
-                <h1 className="text-4xl sm:text-5xl font-black leading-[3.5rem] tracking-tight mb-6">
-                  Describe Your Project to Get Started
-                </h1>
-                <p className="max-w-2xl text-lg text-muted-foreground leading-relaxed">
-                  Provide our AI with the details, and we'll generate a comprehensive Work Breakdown Structure to kickstart your planning.
-                </p>
+        {/* SECTION 1: PROMPT - AI Input Form */}
+        <section id="prompt-section" className="scroll-mt-8">
+          <div className="space-y-6">
+            {/* Section Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold tracking-tight">AI Generation</h2>
+                  <p className="text-xs text-muted-foreground">Describe your project to generate a WBS</p>
+                </div>
               </div>
+            </div>
 
-              {/* Form - theme rhythm (8/16px multiples) */}
-              <div className="flex flex-col items-center gap-8">
-                {/* Project Description */}
-                <div className="w-full max-w-3xl">
-                  <label className="flex w-full flex-col gap-2">
-                    <span className="text-base font-medium">
-                      Project Description
-                    </span>
-                    <Textarea
-                      placeholder="e.g., Develop a mobile banking app with features for fund transfer, bill payment, and biometric login for iOS and Android..."
-                      value={aiInput}
-                      onChange={(e) => setAiInput(e.target.value)}
-                      disabled={isGenerating}
-                      className="min-h-48 rounded-xl border shadow-sm focus:shadow-md transition-shadow resize-y"
-                    />
-                  </label>
+            {/* Form Card */}
+            <Card className="border-border/50">
+              <CardHeader className="p-4 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <FileText className="h-4 w-4 text-primary" />
+                  </div>
+                  <CardTitle className="text-base font-bold tracking-tight">Project Details</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
+                {/* Description */}
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-muted-foreground">Project Description</label>
+                  <Textarea
+                    placeholder="e.g., Develop a mobile banking app with features for fund transfer, bill payment, and biometric login for iOS and Android..."
+                    value={aiInput}
+                    onChange={(e) => setAiInput(e.target.value)}
+                    disabled={isGenerating}
+                    className="min-h-32 resize-y"
+                  />
                 </div>
 
-                {/* Industry + Project Type - consistent 16px gutter */}
-                <div className="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
-                  <label className="flex flex-col gap-2">
-                    <span className="text-base font-medium">Industry</span>
+                {/* Industry + Project Type */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground">Industry (Optional)</label>
                     <Input
                       placeholder="e.g., Technology"
                       value={industry}
                       onChange={(e) => setIndustry(e.target.value)}
                       disabled={isGenerating}
-                      className="h-12 rounded-xl border shadow-sm"
                     />
-                  </label>
-                  <label className="flex flex-col gap-2">
-                    <span className="text-base font-medium">Project Type</span>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground">Project Type (Optional)</label>
                     <Input
                       placeholder="e.g., Mobile App Development"
                       value={projectType}
                       onChange={(e) => setProjectType(e.target.value)}
                       disabled={isGenerating}
-                      className="h-12 rounded-xl border shadow-sm"
                     />
-                  </label>
+                  </div>
                 </div>
 
-                {/* Generate Button - responsive width */}
-                <div className="w-full max-w-3xl">
+                {/* Generate Button */}
+                <div className="pt-2">
                   <Button
                     onClick={handleAIGenerate}
                     disabled={!aiInput.trim() || isGenerating}
-                    className="h-14 w-full rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transition-all"
+                    className="w-full h-9 shadow-md"
                   >
                     {isGenerating ? (
                       <>
-                        <Loader2 className="h-5 w-5 mr-3 animate-spin" />
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Generating WBS...
                       </>
                     ) : (
                       <>
-                        <Sparkles className="h-5 w-5 mr-3" />
+                        <Sparkles className="h-4 w-4 mr-2" />
                         Generate WBS
                       </>
                     )}
                   </Button>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
-        )}
+        </section>
 
-        {/* VIEW: VISUALIZATION - WBS Tree Canvas */}
-        {activeView === 'visualization' && (
-          <>
-            {/* Project Header */}
-            <div className="flex justify-between items-center shrink-0">
-              <div className="flex flex-col">
-                <h2 className="text-3xl font-black leading-tight tracking-tight">
-                  {project.name}
-                </h2>
-                <p className="text-base text-muted-foreground">
-                  {project.description || 'Work Breakdown Structure'}
-                </p>
+        {/* SECTION 2: VISUALIZATION - WBS Tree Canvas */}
+        <section id="visualization-section" className="scroll-mt-8">
+          <div className="space-y-6">
+            {/* Section Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+                  <Network className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold tracking-tight">WBS Visualization</h2>
+                  <p className="text-xs text-muted-foreground">{project.name}</p>
+                </div>
               </div>
-              <Button onClick={() => navigate(`/free/ai-tools/planning/gantt?project=${project.id}`)} className="h-9">
-                Save Project
+              <Button onClick={() => navigate(`/free/ai-tools/planning/gantt?project=${project.id}`)} size="sm" className="h-9">
+                Open in Gantt
               </Button>
             </div>
 
-        {/* WBS Canvas - Stitch: dotted background + zoom controls */}
-        <div className="relative flex-1 w-full rounded-xl overflow-hidden bg-background border border-border">
-          {/* Dotted grid background - theme-aware for dark mode */}
-          <div 
-            className="absolute inset-0 h-full w-full" 
-            style={{
-              backgroundImage: 'radial-gradient(hsl(var(--border)) 1px, transparent 1px)',
-              backgroundSize: '16px 16px'
-            }}
-          />
-
-          {/* Zoom Controls - top right */}
-          <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-background/95 backdrop-blur-sm border border-border rounded-lg p-2 shadow-lg">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleZoomOut}
-              aria-label="Zoom out"
-              className="h-9 w-9 p-0"
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-            <span className="text-sm font-medium text-muted-foreground min-w-12 text-center">
-              {zoomLevel}%
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleZoomIn}
-              aria-label="Zoom in"
-              className="h-9 w-9 p-0"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleZoomReset}
-              aria-label="Reset zoom"
-              className="h-9 w-9 p-0"
-            >
-              <RotateCcw className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* WBS Tree - vertical indented layout with zoom */}
-          <div 
-            id="wbs-tree-canvas"
-            className="relative p-10 h-full w-full overflow-auto transition-transform"
-            style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left' }}
-          >
-            {displayTree.map((rootNode) => (
-              <WBSTreeNode
-                key={rootNode.id}
-                node={rootNode}
-                level={0}
-                isExpanded={expandedNodes.has(rootNode.id)}
-                isSelected={selectedNode?.id === rootNode.id}
-                expandedNodes={expandedNodes}
-                selectedNode={selectedNode}
-                onToggle={toggleNode}
-                onSelect={(node) => {
-                  setSelectedNode(node);
+            {/* WBS Canvas - Stitch: dotted background + zoom controls */}
+            <div className="relative w-full h-[600px] rounded-xl overflow-hidden bg-background border border-border">
+              {/* Dotted grid background - theme-aware for dark mode */}
+              <div 
+                className="absolute inset-0 h-full w-full" 
+                style={{
+                  backgroundImage: 'radial-gradient(hsl(var(--border)) 1px, transparent 1px)',
+                  backgroundSize: '16px 16px'
                 }}
               />
-            ))}
 
-            {displayTree.length === 0 && searchQuery.trim() && (
-              <div className="text-center py-12">
-                <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">No matches found</h3>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-                  Try a different search term or clear the filter
-                </p>
-                <Button variant="outline" onClick={() => setSearchQuery('')} className="h-9">
-                  Clear Search
+              {/* Zoom Controls - top right */}
+              <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-background/95 backdrop-blur-sm border border-border rounded-lg p-2 shadow-lg">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleZoomOut}
+                  aria-label="Zoom out"
+                  className="h-9 w-9 p-0"
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="text-sm font-medium text-muted-foreground min-w-12 text-center">
+                  {zoomLevel}%
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleZoomIn}
+                  aria-label="Zoom in"
+                  className="h-9 w-9 p-0"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleZoomReset}
+                  aria-label="Reset zoom"
+                  className="h-9 w-9 p-0"
+                >
+                  <RotateCcw className="h-4 w-4" />
                 </Button>
               </div>
-            )}
 
-            {wbsTree.length === 0 && !searchQuery.trim() && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <Network className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-                  <p className="text-lg font-semibold text-muted-foreground">
-                    No WBS structure yet
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Add tasks in Gantt Tool to build your WBS
-                  </p>
+              {/* WBS Tree - vertical indented layout with zoom */}
+              <div 
+                id="wbs-tree-canvas"
+                className="relative p-10 h-full w-full overflow-auto transition-transform"
+                style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left' }}
+              >
+                {displayTree.map((rootNode) => (
+                  <WBSTreeNode
+                    key={rootNode.id}
+                    node={rootNode}
+                    level={0}
+                    isExpanded={expandedNodes.has(rootNode.id)}
+                    isSelected={selectedNode?.id === rootNode.id}
+                    expandedNodes={expandedNodes}
+                    selectedNode={selectedNode}
+                    onToggle={toggleNode}
+                    onSelect={(node) => {
+                      setSelectedNode(node);
+                    }}
+                  />
+                ))}
+
+                {displayTree.length === 0 && searchQuery.trim() && (
+                  <div className="text-center py-12">
+                    <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Search className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">No matches found</h3>
+                    <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
+                      Try a different search term or clear the filter
+                    </p>
+                    <Button variant="outline" onClick={() => setSearchQuery('')} className="h-9">
+                      Clear Search
+                    </Button>
+                  </div>
+                )}
+
+                {wbsTree.length === 0 && !searchQuery.trim() && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <Network className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+                      <p className="text-lg font-semibold text-muted-foreground">
+                        No WBS structure yet
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Add tasks in Gantt Tool to build your WBS
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: EXPORT - Export Preview */}
+        <section id="export-section" className="scroll-mt-8">
+          <div className="space-y-6">
+            {/* Section Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-border/40">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+                  <Download className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold tracking-tight">Export Options</h2>
+                  <p className="text-xs text-muted-foreground">Download your WBS in multiple formats</p>
                 </div>
               </div>
-            )}
-          </div>
-        </div>
-          </>
-        )}
+            </div>
 
-        {/* VIEW: EXPORT - Export Preview */}
-        {activeView === 'export' && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-4xl mx-auto py-12">
-              {/* Title */}
-              <div className="text-center mb-12">
-                <h1 className="text-4xl font-black mb-4">Export Work Breakdown Structure</h1>
-                <p className="text-lg text-muted-foreground">
-                  Preview your WBS before exporting to various formats
-                </p>
-              </div>
-
-              {/* Preview Card */}
-              <Card className="border-border/50 mb-8">
-                <CardHeader className="p-4 border-b border-border/40">
-                  <CardTitle className="text-base font-bold">WBS Preview</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4">
-                  {wbsTree.length > 0 ? (
-                    <div className="max-h-96 overflow-y-auto bg-muted/20 rounded-lg p-4">
-                      {wbsTree.map(node => (
-                        <div key={node.id} className="mb-2">
-                          <div className="flex items-center gap-2 p-2 bg-background rounded border border-border">
-                            <span className="font-bold text-sm">{node.id.substring(0, 8)}</span>
-                            <span className="flex-1">{node.title}</span>
-                            {node.duration && (
-                              <span className="text-xs text-muted-foreground">{node.duration}d</span>
-                            )}
-                          </div>
-                          {node.children.length > 0 && (
-                            <div className="ml-6 mt-1 space-y-1">
-                              {node.children.map(child => (
-                                <div key={child.id} className="flex items-center gap-2 p-2 bg-background rounded border border-border">
-                                  <span className="font-bold text-xs">{child.id.substring(0, 8)}</span>
-                                  <span className="flex-1 text-sm">{child.title}</span>
-                                </div>
-                              ))}
-                            </div>
+            {/* Preview Card */}
+            <Card className="border-border/50">
+              <CardHeader className="p-4 border-b border-border/40">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                    <FileText className="h-4 w-4 text-primary" />
+                  </div>
+                  <CardTitle className="text-base font-bold tracking-tight">WBS Preview</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                {wbsTree.length > 0 ? (
+                  <div className="max-h-96 overflow-y-auto bg-muted/20 rounded-lg p-4 space-y-2">
+                    {wbsTree.map(node => (
+                      <div key={node.id} className="space-y-1">
+                        <div className="flex items-center gap-2 p-2 bg-background rounded border border-border">
+                          <span className="font-bold text-sm">{node.id.substring(0, 8)}</span>
+                          <span className="flex-1">{node.title}</span>
+                          {node.duration && (
+                            <span className="text-xs text-muted-foreground">{node.duration}d</span>
                           )}
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No WBS structure to export. Add tasks first.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                        {node.children.length > 0 && (
+                          <div className="ml-6 space-y-1">
+                            {node.children.map(child => (
+                              <div key={child.id} className="flex items-center gap-2 p-2 bg-background rounded border border-border">
+                                <span className="font-bold text-xs">{child.id.substring(0, 8)}</span>
+                                <span className="flex-1 text-sm">{child.title}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <p className="font-medium">No WBS structure to export</p>
+                    <p className="text-sm mt-1">Generate tasks first or add them in the Gantt view</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-              {/* Export Button */}
+            {/* Export Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Button 
-                className="w-full h-9"
-                onClick={() => setShowExportDialog(true)}
+                variant="outline"
+                className="h-9"
+                onClick={() => handleExport('pdf')}
+                disabled={wbsTree.length === 0}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Export as PDF
+              </Button>
+              <Button 
+                variant="outline"
+                className="h-9"
+                onClick={() => handleExport('png')}
                 disabled={wbsTree.length === 0}
               >
                 <Download className="h-4 w-4 mr-2" />
-                Open Export Options
+                Export as PNG
+              </Button>
+              <Button 
+                variant="outline"
+                className="h-9"
+                onClick={() => handleExport('csv')}
+                disabled={wbsTree.length === 0}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Export as CSV
+              </Button>
+              <Button 
+                variant="outline"
+                className="h-9"
+                onClick={() => handleExport('json')}
+                disabled={wbsTree.length === 0}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export as JSON
               </Button>
             </div>
+
+            {/* Full Export Dialog */}
+            <Button 
+              className="w-full h-9"
+              onClick={() => setShowExportDialog(true)}
+              disabled={wbsTree.length === 0}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Open Full Export Options
+            </Button>
           </div>
-        )}
+        </section>
+
+        </div>
       </main>
 
       {/* RIGHT SIDEBAR - Stitch: 420px fixed width with node details */}
