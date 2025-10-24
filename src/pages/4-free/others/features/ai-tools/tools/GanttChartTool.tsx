@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { useGanttStore } from '../stores/useGanttStore';
 import { ROUTES } from '@/shared/constants/routes';
+import { GanttChartVisualization } from '../components/GanttChartVisualization';
 
 export default function GanttChartTool() {
   if (process.env.NODE_ENV !== 'production') {
@@ -400,135 +401,90 @@ export default function GanttChartTool() {
 
         {/* Gantt View */}
         <TabsContent value="gantt" className="space-y-4">
-          <Card className="border-border/50">
-            <CardHeader className="p-4 border-b border-border/40">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                    <BarChart3 className="h-4 w-4 text-primary" />
-                  </div>
-                  <CardTitle className="text-base font-bold tracking-tight">Project Timeline</CardTitle>
+          {/* Gantt Chart Visualization */}
+          {projectTasks.length > 0 ? (
+            <div className="overflow-x-auto">
+              <GanttChartVisualization
+                tasks={projectTasks}
+                onTaskClick={(taskId) => {
+                  const task = projectTasks.find(t => t.id === taskId);
+                  if (task) {
+                    setEditingTask(task);
+                    setShowTaskDialog(true);
+                  }
+                }}
+                onTaskUpdate={(taskId, updates) => {
+                  updateTask(taskId, updates);
+                }}
+              />
+            </div>
+          ) : (
+            <Card className="border-border/50">
+              <CardContent className="p-12 text-center">
+                <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <Select value={zoomLevel} onValueChange={(value: any) => setZoomLevel(value)}>
-                    <SelectTrigger className="w-24 h-8 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="day">Day</SelectItem>
-                      <SelectItem value="week">Week</SelectItem>
-                      <SelectItem value="month">Month</SelectItem>
-                      <SelectItem value="quarter">Quarter</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="space-y-3">
-                {projectTasks.map((task, index) => (
-                  <div 
-                    key={task.id} 
-                    className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border hover:shadow-sm transition-all group"
-                    draggable
-                    onDragStart={(e) => {
-                      e.dataTransfer.setData('text/plain', task.id);
-                      e.dataTransfer.effectAllowed = 'move';
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.dataTransfer.dropEffect = 'move';
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      const draggedTaskId = e.dataTransfer.getData('text/plain');
-                      if (draggedTaskId !== task.id) {
-                        // Handle task reordering logic here
-                        console.log(`Moving task ${draggedTaskId} to position of ${task.id}`);
-                      }
-                    }}
+                <h3 className="text-base font-semibold mb-2">No tasks yet</h3>
+                <p className="text-xs text-muted-foreground mb-6">
+                  Create your first task or use AI to generate a complete timeline
+                </p>
+                <div className="flex items-center gap-2 justify-center">
+                  <Button
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => setShowTaskDialog(true)}
                   >
-                    <div className="flex items-center gap-2">
-                      <GripVertical className="h-4 w-4 text-muted-foreground cursor-move group-hover:text-primary transition-colors" />
-                      <div className="w-4 h-4 border border-border rounded flex items-center justify-center">
-                        {task.is_milestone && <div className="w-2 h-2 bg-primary rounded-full" />}
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-medium truncate">{task.title}</h4>
-                        <Badge className={`text-[9px] ${getPriorityColor(task.priority)}`}>
-                          {task.priority}
-                        </Badge>
-                        {task.is_critical_path && (
-                          <Badge className="bg-red-500/10 text-red-600 border-red-500/20 text-[9px]">
-                            Critical
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
-                        <span>{task.start_date} - {task.end_date}</span>
-                        <span>{task.duration} days</span>
-                        <span>{task.progress}% complete</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() => {
-                          setEditingTask(task);
-                          setShowTaskDialog(true);
-                        }}
-                      >
-                        <Edit className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0"
-                        onClick={() => deleteTask(task.id)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Add Task
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => setShowAIGenerator(true)}
+                  >
+                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                    AI Generate
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Toolbar for Gantt Actions */}
+          {projectTasks.length > 0 && (
+            <Card className="border-border/50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs"
+                      onClick={() => setShowTaskDialog(true)}
+                    >
+                      <Plus className="h-3.5 w-3.5 mr-1.5" />
+                      Add Task
+                    </Button>
+                    <Select value={zoomLevel} onValueChange={(value: any) => setZoomLevel(value)}>
+                      <SelectTrigger className="w-24 h-8 text-xs">
+                        <SelectValue placeholder="Zoom" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="day">Day</SelectItem>
+                        <SelectItem value="week">Week</SelectItem>
+                        <SelectItem value="month">Month</SelectItem>
+                        <SelectItem value="quarter">Quarter</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                ))}
-                
-                {projectTasks.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <BarChart3 className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-base font-semibold mb-2">No tasks yet</h3>
-                    <p className="text-xs text-muted-foreground mb-6">
-                      Create your first task or use AI to generate a complete timeline
-                    </p>
-                    <div className="flex items-center gap-2 justify-center">
-                      <Button
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => setShowTaskDialog(true)}
-                      >
-                        <Plus className="h-3.5 w-3.5 mr-1.5" />
-                        Add Task
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => setShowAIGenerator(true)}
-                      >
-                        <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                        AI Generate
-                      </Button>
-                    </div>
+                  <div className="text-xs text-muted-foreground">
+                    {projectTasks.length} task{projectTasks.length !== 1 ? 's' : ''} • {criticalPathTasks.length} on critical path
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* Tasks Tab */}

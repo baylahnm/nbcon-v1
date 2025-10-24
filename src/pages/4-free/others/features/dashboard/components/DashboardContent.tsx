@@ -112,12 +112,7 @@ export function DashboardContent() {
           </Card>
         </header>
 
-        {/* Section 1: Quick Actions (Moved to Top) */}
-        <section role="region" aria-label="Quick Actions">
-          <ClientQuickActionsHub userRole={profile?.role} />
-        </section>
-
-        {/* Section 2: Overview Stats */}
+        {/* Section 1: Overview Stats */}
         <ClientOverviewStats />
 
         {/* AI Assistant (Prominent, Top) */}
@@ -456,6 +451,10 @@ export function DashboardContent() {
           </DialogContent>
         </Dialog>
 
+        {/* Section 2: Quick Actions (After AI Assistant) */}
+        <section role="region" aria-label="Quick Actions">
+          <ClientQuickActionsHub userRole={profile?.role} />
+        </section>
 
         {/* Section 3 & 4: Projects and Activity */}
         <div className="flex flex-col gap-4">
