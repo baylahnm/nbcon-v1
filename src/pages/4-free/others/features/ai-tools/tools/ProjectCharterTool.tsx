@@ -1,165 +1,148 @@
-import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
-import { Input } from '@/pages/1-HomePage/others/components/ui/input';
 import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea';
-import { Label } from '@/pages/1-HomePage/others/components/ui/label';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
+import { useToast } from '@/pages/1-HomePage/others/components/ui/use-toast';
 import { 
   FileText, 
   Sparkles, 
-  Save, 
+  Save,
   Download, 
   ChevronLeft,
   Target,
-  Users,
-  AlertCircle,
   CheckCircle2,
-  Clock,
-  Edit3,
-  RefreshCw
+  Loader2,
+  Briefcase,
+  ArrowLeft,
+  Layers,
+  AlertCircle
 } from 'lucide-react';
-import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-
-interface CharterSection {
-  id: string;
-  title: string;
-  description: string;
-  content: string;
-  aiGenerated: boolean;
-  isEditing: boolean;
-}
+import { useProjectStore } from '../../../stores/useProjectStore';
+import { useCharterStore } from '../stores/useCharterStore';
 
 export default function ProjectCharterTool() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const projectId = searchParams.get('project');
-  const { sendMessage, setComposerText } = useAiStore();
+  const { toast } = useToast();
+  
+  // Get selected project from unified store
+  const { getSelectedProject } = useProjectStore();
+  const project = getSelectedProject();
+  
+  // Get charter sections from charter store
+  const { 
+    sections, 
+    loadSections, 
+    updateSection, 
+    toggleComplete,
+    isLoading, 
+    getCompletionPercentage 
+  } = useCharterStore();
 
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [activeTab, setActiveTab] = useState('vision');
+  const [activeTab, setActiveTab] = useState<string>('0');
+  const [editingContent, setEditingContent] = useState<Record<string, string>>({});
 
-  // Charter sections state
-  const [sections, setSections] = useState<CharterSection[]>([
-    {
-      id: 'vision',
-      title: 'Vision & Objectives',
-      description: 'Define the project vision and key objectives',
-      content: '',
-      aiGenerated: false,
-      isEditing: false
-    },
-    {
-      id: 'scope',
-      title: 'Scope Boundaries',
-      description: 'What is included and excluded from the project',
-      content: '',
-      aiGenerated: false,
-      isEditing: false
-    },
-    {
-      id: 'success',
-      title: 'Success Criteria',
-      description: 'How will we measure project success',
-      content: '',
-      aiGenerated: false,
-      isEditing: false
-    },
-    {
-      id: 'stakeholders',
-      title: 'Key Stakeholders',
-      description: 'Who are the main stakeholders and their roles',
-      content: '',
-      aiGenerated: false,
-      isEditing: false
-    },
-    {
-      id: 'constraints',
-      title: 'Constraints & Assumptions',
-      description: 'Known limitations and assumptions',
-      content: '',
-      aiGenerated: false,
-      isEditing: false
-    },
-    {
-      id: 'deliverables',
-      title: 'Major Deliverables',
-      description: 'Key outputs and deliverables',
-      content: '',
-      aiGenerated: false,
-      isEditing: false
+  // Load charter sections when project selected
+  useEffect(() => {
+    if (project?.id) {
+      loadSections(project.id);
     }
-  ]);
+  }, [project?.id, loadSections]);
 
-  // Calculate completion
-  const completedSections = sections.filter(s => s.content.trim().length > 0).length;
-  const completionPercentage = Math.round((completedSections / sections.length) * 100);
+  // Empty state when no project selected
+  if (!project) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+        <div className="p-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate('/free/ai-tools/planning')}
+            className="mb-4 h-8 text-xs"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Planning Hub
+          </Button>
+          
+          <Card className="border-border/50 mt-8">
+            <CardContent className="p-12 text-center">
+              <div className="bg-muted/30 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Briefcase className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-base font-semibold mb-2">No Project Selected</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Please select or create a project to use the Charter Generator
+              </p>
+              <Button onClick={() => navigate('/free/ai-tools/planning')}>
+                <Layers className="h-4 w-4 mr-2" />
+                Select Project
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
-  // Handle AI generation for a section
-  const handleAIGenerate = async (sectionId: string) => {
-    setIsGenerating(true);
-    
-    const section = sections.find(s => s.id === sectionId);
-    if (!section) return;
+  // Handle content changes (local editing state)
+  const handleContentChange = (sectionId: string, content: string) => {
+    setEditingContent(prev => ({ ...prev, [sectionId]: content }));
+  };
 
-    // Create AI prompt based on section
-    const prompt = `Generate content for the "${section.title}" section of a project charter. ${section.description}. Make it professional and comprehensive for a construction project in Saudi Arabia. Project ID: ${projectId || 'N/A'}`;
+  // Save section content to database
+  const handleSaveSection = async (sectionId: string) => {
+    const content = editingContent[sectionId];
+    if (content === undefined) return;
 
     try {
-      // Call AI Assistant (opens chat with prompt)
-      await sendMessage(prompt);
+      await updateSection(sectionId, content);
+      toast({
+        title: 'Saved',
+        description: 'Section updated successfully'
+      });
       
-      // For now, use mock content (in production, AI response would be parsed and inserted)
-      const mockContent = `[AI Generated Content for ${section.title}]\n\nThis section provides comprehensive details about ${section.description.toLowerCase()}. The content is tailored for construction projects in Saudi Arabia, following PMI best practices and local regulations.\n\n• Key Point 1: Industry-specific considerations\n• Key Point 2: Regulatory compliance requirements\n• Key Point 3: Stakeholder engagement strategies\n\nThis content should be reviewed and customized to match your specific project requirements.`;
-      
-      // Update section with content
-      setSections(prev => prev.map(s => 
-        s.id === sectionId 
-          ? { ...s, content: mockContent, aiGenerated: true }
-          : s
-      ));
-
-      setIsGenerating(false);
+      // Clear editing state
+      setEditingContent(prev => {
+        const { [sectionId]: _, ...rest } = prev;
+        return rest;
+      });
     } catch (error) {
-      console.error('AI generation failed:', error);
-      setIsGenerating(false);
+      toast({
+        title: 'Error',
+        description: 'Failed to save section',
+        variant: 'destructive'
+      });
     }
   };
 
-  // Handle content edit
-  const handleContentChange = (sectionId: string, newContent: string) => {
-    setSections(prev => prev.map(s => 
-      s.id === sectionId 
-        ? { ...s, content: newContent, aiGenerated: false }
-        : s
-    ));
+  // Handle section complete toggle
+  const handleToggleComplete = async (sectionId: string) => {
+    try {
+      await toggleComplete(sectionId);
+      toast({
+        description: 'Status updated'
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update status',
+        variant: 'destructive'
+      });
+    }
   };
 
-  // Toggle edit mode
-  const toggleEdit = (sectionId: string) => {
-    setSections(prev => prev.map(s => 
-      s.id === sectionId 
-        ? { ...s, isEditing: !s.isEditing }
-        : s
-    ));
-  };
-
-  // Get current section
-  const currentSection = sections.find(s => s.id === activeTab);
-
-  // Save charter
-  const handleSave = () => {
-    console.log('Saving charter...', sections);
-    // In real implementation: Save to database
-  };
+  const completionPercentage = getCompletionPercentage();
+  const currentSection = sections[parseInt(activeTab)] || sections[0];
 
   // Export to PDF
   const handleExport = () => {
-    console.log('Exporting to PDF...', sections);
-    // In real implementation: Generate PDF
+    toast({
+      title: 'Export Started',
+      description: 'Generating PDF export...'
+    });
+    // TODO: Implement PDF generation
   };
 
   return (
@@ -182,7 +165,7 @@ export default function ProjectCharterTool() {
             </div>
             <div>
               <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
-                Project Charter Generator
+                {project.name} - Charter
                 <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
                   <Sparkles className="h-2.5 w-2.5 mr-1" />
                   AI-Powered
@@ -194,10 +177,6 @@ export default function ProjectCharterTool() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 text-xs" onClick={handleSave}>
-              <Save className="h-3.5 w-3.5 mr-1.5" />
-              Save Draft
-            </Button>
             <Button size="sm" className="h-8 text-xs shadow-md" onClick={handleExport}>
               <Download className="h-3.5 w-3.5 mr-1.5" />
               Export PDF
@@ -216,7 +195,7 @@ export default function ProjectCharterTool() {
                 <div>
                   <p className="text-sm font-bold">Charter Completion</p>
                   <p className="text-xs text-muted-foreground">
-                    {completedSections} of {sections.length} sections completed
+                    {sections.filter(s => s.is_completed).length} of {sections.length} sections completed
                   </p>
                 </div>
               </div>
@@ -229,7 +208,7 @@ export default function ProjectCharterTool() {
           </CardContent>
         </Card>
 
-        {/* Main Content - Tabs */}
+        {/* Main Content - Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4">
           
           {/* Left Sidebar - Section Navigation */}
@@ -238,39 +217,49 @@ export default function ProjectCharterTool() {
               <CardTitle className="text-base font-bold tracking-tight">Charter Sections</CardTitle>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="space-y-1">
-                {sections.map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => setActiveTab(section.id)}
-                    className={`w-full text-left p-3 rounded-lg transition-all ${
-                      activeTab === section.id
-                        ? 'bg-primary/10 border border-primary/20'
-                        : 'hover:bg-muted/50 border border-transparent'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-semibold mb-1 ${
-                          activeTab === section.id ? 'text-primary' : ''
-                        }`}>
-                          {section.title}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground truncate">
-                          {section.description}
-                        </p>
+              {/* Loading State */}
+              {isLoading && (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              )}
+              
+              {/* Sections List */}
+              {!isLoading && (
+                <div className="space-y-1">
+                  {sections.map((section, index) => (
+                    <button
+                      key={section.id}
+                      onClick={() => setActiveTab(index.toString())}
+                      className={`w-full text-left p-3 rounded-lg transition-all ${
+                        activeTab === index.toString()
+                          ? 'bg-primary/10 border border-primary/20'
+                          : 'hover:bg-muted/50 border border-transparent'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold mb-1 ${
+                            activeTab === index.toString() ? 'text-primary' : ''
+                          }`}>
+                            {section.section_name}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground truncate">
+                            {section.section_description}
+                          </p>
+                        </div>
+                        <div className="shrink-0">
+                          {section.is_completed ? (
+                            <CheckCircle2 className="h-4 w-4 text-primary" />
+                          ) : (
+                            <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30"></div>
+                          )}
+                        </div>
                       </div>
-                      <div className="shrink-0">
-                        {section.content.trim().length > 0 ? (
-                          <CheckCircle2 className="h-4 w-4 text-primary" />
-                        ) : (
-                          <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30"></div>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
+                    </button>
+                  ))}
+                </div>
+              )}
 
               <div className="mt-4 p-4 bg-background rounded-lg border border-border">
                 <p className="text-[10px] text-muted-foreground mb-2">Progress</p>
@@ -286,13 +275,13 @@ export default function ProjectCharterTool() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-base font-bold tracking-tight mb-1">
-                    {currentSection?.title}
+                    {currentSection?.section_name}
                   </CardTitle>
                   <p className="text-xs text-muted-foreground">
-                    {currentSection?.description}
+                    {currentSection?.section_description}
                   </p>
                 </div>
-                {currentSection?.aiGenerated && (
+                {currentSection?.ai_generated && (
                   <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
                     <Sparkles className="h-2.5 w-2.5 mr-1" />
                     AI Generated
@@ -302,150 +291,66 @@ export default function ProjectCharterTool() {
             </CardHeader>
 
             <CardContent className="p-4 space-y-4">
-              
-              {/* AI Generation Controls */}
-              {currentSection && currentSection.content.trim().length === 0 && (
-                <Card className="bg-background border-border">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20 shrink-0">
-                        <Sparkles className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-sm font-bold mb-1">Let AI Help You</h4>
-                        <p className="text-xs text-muted-foreground mb-3">
-                          AI can generate professional content for this section based on best practices and your project context.
-                        </p>
-                        <Button 
-                          size="sm" 
-                          className="h-8 text-xs"
-                          onClick={() => handleAIGenerate(currentSection.id)}
-                          disabled={isGenerating}
-                        >
-                          {isGenerating ? (
-                            <>
-                              <RefreshCw className="h-3.5 w-3.5 mr-1.5 animate-spin" />
-                              Generating...
-                            </>
-                          ) : (
-                            <>
-                              <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                              Generate with AI
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
               {/* Content Editor */}
               {currentSection && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="section-content" className="text-sm font-medium">
-                      Section Content
-                    </Label>
-                    {currentSection.content.trim().length > 0 && (
-                      <div className="flex items-center gap-2">
-                        {!currentSection.isEditing ? (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-7 text-xs"
-                            onClick={() => toggleEdit(currentSection.id)}
-                          >
-                            <Edit3 className="h-3 w-3 mr-1" />
-                            Edit
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            className="h-7 text-xs"
-                            onClick={() => toggleEdit(currentSection.id)}
-                          >
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Done Editing
-                          </Button>
-                        )}
-                      </div>
-                    )}
+                    <span className="text-sm font-medium">Section Content</span>
+                    <div className="flex items-center gap-2">
+                      {(editingContent[currentSection.id] !== undefined && 
+                        editingContent[currentSection.id] !== currentSection.content) && (
+                        <Button
+                          size="sm"
+                          className="h-7 text-xs"
+                          onClick={() => handleSaveSection(currentSection.id)}
+                        >
+                          <Save className="h-3 w-3 mr-1" />
+                          Save Changes
+                        </Button>
+                      )}
+                      {currentSection.content && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 text-xs"
+                          onClick={() => handleToggleComplete(currentSection.id)}
+                        >
+                          {currentSection.is_completed ? (
+                            <>
+                              <CheckCircle2 className="h-3 w-3 mr-1 text-primary" />
+                              Completed
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle className="h-3 w-3 mr-1" />
+                              Mark Complete
+                            </>
+                          )}
+                        </Button>
+                      )}
+                    </div>
                   </div>
 
-                  {currentSection.content.trim().length === 0 ? (
-                    <div className="border-2 border-dashed border-border/50 rounded-lg p-8 text-center">
-                      <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <FileText className="h-8 w-8 text-muted-foreground" />
-                      </div>
-                      <p className="text-sm font-semibold mb-1">No content yet</p>
-                      <p className="text-xs text-muted-foreground mb-4">
-                        Use AI to generate content or write your own
-                      </p>
-                      <div className="flex items-center justify-center gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="h-8 text-xs"
-                          onClick={() => toggleEdit(currentSection.id)}
-                        >
-                          <Edit3 className="h-3.5 w-3.5 mr-1.5" />
-                          Write Manually
-                        </Button>
-                        <Button 
-                          size="sm"
-                          className="h-8 text-xs"
-                          onClick={() => handleAIGenerate(currentSection.id)}
-                          disabled={isGenerating}
-                        >
-                          <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                          Generate with AI
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {currentSection.isEditing ? (
-                        <Textarea
-                          id="section-content"
-                          value={currentSection.content}
-                          onChange={(e) => handleContentChange(currentSection.id, e.target.value)}
-                          className="min-h-[300px] font-mono text-sm"
-                          placeholder={`Enter ${currentSection.title.toLowerCase()}...`}
-                        />
-                      ) : (
-                        <div className="p-4 bg-muted/20 rounded-lg border border-border/40 min-h-[300px]">
-                          <div className="prose prose-sm max-w-none">
-                            <pre className="whitespace-pre-wrap text-sm font-sans text-foreground">
-                              {currentSection.content}
-                            </pre>
-                          </div>
-                        </div>
-                      )}
+                  <Textarea
+                    id="section-content"
+                    value={editingContent[currentSection.id] ?? currentSection.content ?? ''}
+                    onChange={(e) => handleContentChange(currentSection.id, e.target.value)}
+                    onBlur={() => {
+                      // Auto-save on blur if content changed
+                      const content = editingContent[currentSection.id];
+                      if (content !== undefined && content !== currentSection.content) {
+                        handleSaveSection(currentSection.id);
+                      }
+                    }}
+                    placeholder={`Enter content for ${currentSection.section_name}...\n\nTip: You can use AI to generate professional content or write your own.`}
+                    className="min-h-[400px] font-sans text-sm resize-y"
+                  />
 
-                      {/* AI Regenerate Option */}
-                      {currentSection.aiGenerated && !currentSection.isEditing && (
-                        <div className="flex items-center justify-between p-4 bg-primary/10 rounded-lg border border-primary/20">
-                          <div className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-primary" />
-                            <p className="text-xs text-primary font-medium">
-                              AI-generated content
-                            </p>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-7 text-xs"
-                            onClick={() => handleAIGenerate(currentSection.id)}
-                            disabled={isGenerating}
-                          >
-                            <RefreshCw className="h-3 w-3 mr-1" />
-                            Regenerate
-                          </Button>
-                        </div>
-                      )}
-                    </>
-                  )}
+                  {/* Helper Text */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Changes are auto-saved when you click outside the text area</span>
+                    <span>{(editingContent[currentSection.id] ?? currentSection.content ?? '').length} characters</span>
+                  </div>
                 </div>
               )}
 
@@ -456,27 +361,29 @@ export default function ProjectCharterTool() {
                   variant="outline"
                   className="h-8 text-xs"
                   onClick={() => {
-                    const currentIndex = sections.findIndex(s => s.id === activeTab);
+                    const currentIndex = parseInt(activeTab);
                     if (currentIndex > 0) {
-                      setActiveTab(sections[currentIndex - 1].id);
+                      setActiveTab((currentIndex - 1).toString());
                     }
                   }}
-                  disabled={sections.findIndex(s => s.id === activeTab) === 0}
+                  disabled={parseInt(activeTab) === 0}
                 >
+                  <ChevronLeft className="h-3.5 w-3.5 mr-1.5" />
                   Previous Section
                 </Button>
                 <Button
                   size="sm"
                   className="h-8 text-xs"
                   onClick={() => {
-                    const currentIndex = sections.findIndex(s => s.id === activeTab);
+                    const currentIndex = parseInt(activeTab);
                     if (currentIndex < sections.length - 1) {
-                      setActiveTab(sections[currentIndex + 1].id);
+                      setActiveTab((currentIndex + 1).toString());
                     }
                   }}
-                  disabled={sections.findIndex(s => s.id === activeTab) === sections.length - 1}
+                  disabled={parseInt(activeTab) === sections.length - 1}
                 >
                   Next Section
+                  <ChevronLeft className="h-3.5 w-3.5 ml-1.5 rotate-180" />
                 </Button>
               </div>
             </CardContent>
@@ -493,10 +400,10 @@ export default function ProjectCharterTool() {
               <div className="flex-1">
                 <p className="text-xs font-semibold mb-1">💡 Pro Tips</p>
                 <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>Use AI to generate initial drafts, then customize to your needs</li>
-                  <li>All sections are auto-saved as you work</li>
-                  <li>Export to PDF when complete for stakeholder review</li>
-                  <li>Link charter to your project for easy access later</li>
+                  <li>All changes are auto-saved when you click outside the text area</li>
+                  <li>Mark sections as complete to track your progress</li>
+                  <li>Export to PDF when ready for stakeholder review</li>
+                  <li>Use descriptive, professional language for formal documentation</li>
                 </ul>
               </div>
             </div>
@@ -504,8 +411,6 @@ export default function ProjectCharterTool() {
         </Card>
 
       </div>
-
     </div>
   );
 }
-

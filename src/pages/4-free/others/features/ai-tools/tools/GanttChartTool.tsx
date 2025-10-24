@@ -35,6 +35,8 @@ import {
   Square
 } from 'lucide-react';
 import { useGanttStore } from '../stores/useGanttStore';
+import { useProjectStore } from '../../../stores/useProjectStore';
+import { CreateProjectDialog } from '../components/CreateProjectDialog';
 import { ROUTES } from '@/shared/constants/routes';
 import { GanttChartVisualization } from '../components/GanttChartVisualization';
 import XScroll from '@/pages/1-HomePage/others/components/ui/x-scroll';
@@ -82,6 +84,7 @@ export default function GanttChartTool() {
 
   const [aiPrompt, setAiPrompt] = useState('');
   const [showAIGenerator, setShowAIGenerator] = useState(false);
+  const [showCreateProjectDialog, setShowCreateProjectDialog] = useState(false);
   const [showTaskDialog, setShowTaskDialog] = useState(false);
   const [showResourceDialog, setShowResourceDialog] = useState(false);
   const [showChangeOrderDialog, setShowChangeOrderDialog] = useState(false);
@@ -321,15 +324,31 @@ export default function GanttChartTool() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Create your first Gantt project to get started with timeline management.
                 </p>
-                <Button onClick={() => setShowAIGenerator(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Project
-                </Button>
+                <div className="flex items-center justify-center gap-2">
+                  <Button onClick={() => setShowCreateProjectDialog(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Project
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowAIGenerator(true)}>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    AI Generate
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
+      
+      {/* Create Project Dialog */}
+      <CreateProjectDialog
+        open={showCreateProjectDialog}
+        onOpenChange={setShowCreateProjectDialog}
+        onSuccess={(project) => {
+          console.log('✅ Project created:', project.name);
+          loadUserProjects(); // Reload projects
+        }}
+      />
 
       {/* Project Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

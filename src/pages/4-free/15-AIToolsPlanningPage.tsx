@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
@@ -26,18 +26,14 @@ import {
   BarChart3,
   Network,
   DollarSign,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
 
 // Import shared components
 import { ROUTES } from '@/shared/constants/routes';
-
-// Mock projects data
-const mockProjects = [
-  { id: '1', name: 'NEOM Infrastructure Phase 2', status: 'planning', progress: 45 },
-  { id: '2', name: 'Riyadh Metro Extension', status: 'initiation', progress: 15 },
-  { id: '3', name: 'Al-Khobar Commercial Center', status: 'planning', progress: 68 },
-];
+import { useProjectStore } from './others/stores/useProjectStore';
+import { CreateProjectDialog } from './others/features/ai-tools/components/CreateProjectDialog';
 
 interface AITool {
   id: string;
@@ -150,14 +146,36 @@ const planningTools: AITool[] = [
 
 export default function AIToolsPlanningPage() {
   const navigate = useNavigate();
-  const [selectedProject, setSelectedProject] = useState<string>('1');
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  
+  // Use unified project store instead of mock data
+  const { 
+    projects, 
+    selectedProjectId, 
+    selectProject, 
+    loadUserProjects,
+    isLoading: projectsLoading 
+  } = useProjectStore();
+  
   if (process.env.NODE_ENV !== 'production') {
     console.log("🔍 AIToolsPlanningPage loaded:", window.location.pathname);
   }
 
-  // Get selected project details
-  const selectedProjectData = mockProjects.find(p => p.id === selectedProject);
+  // Load projects on mount
+  useEffect(() => {
+    loadUserProjects();
+  }, [loadUserProjects]);
+
+  // Auto-select first project if none selected
+  useEffect(() => {
+    if (!selectedProjectId && projects.length > 0) {
+      selectProject(projects[0].id);
+    }
+  }, [projects, selectedProjectId, selectProject]);
+
+  // Get selected project details (from database instead of mock)
+  const selectedProjectData = projects.find(p => p.id === selectedProjectId);
 
   // Theme-agnostic color system - All icons same color, containers vary by opacity
   const getColorClasses = (variant: 'primary' | 'secondary' | 'accent' | 'muted' | 'success' | 'warning') => {
@@ -204,11 +222,11 @@ export default function AIToolsPlanningPage() {
 
   const handleToolClick = (route: string) => {
     console.log('🎯 handleToolClick called with route:', route);
-    console.log('🎯 selectedProject:', selectedProject);
+    console.log('🎯 selectedProjectId:', selectedProjectId);
     console.log('🎯 Route starts with /free/ai-tools/planning/?', route.startsWith('/free/ai-tools/planning/'));
     console.log('🎯 Current location before navigation:', window.location.pathname);
     
-    if (!selectedProject) {
+    if (!selectedProjectId) {
       console.log('❌ No project selected, showing alert');
       // Show alert to select project first
       return;
@@ -216,8 +234,8 @@ export default function AIToolsPlanningPage() {
     setSelectedTool(route);
     // Navigate to tool detail page - all 6 tools now implemented
     if (route.startsWith('/free/ai-tools/planning/')) {
-      console.log('✅ Absolute route matches! Navigating to:', `${route}?project=${selectedProject}`);
-      navigate(`${route}?project=${selectedProject}`);
+      console.log('✅ Absolute route matches! Navigating to:', `${route}?project=${selectedProjectId}`);
+      navigate(`${route}?project=${selectedProjectId}`);
     } else {
       console.log('❌ Route does not match, navigating to AI assistant');
       console.log('❌ Route was:', route);
@@ -249,12 +267,25 @@ export default function AIToolsPlanningPage() {
               <Download className="h-3.5 w-3.5 mr-1.5" />
               Export All
             </Button>
-            <Button className="h-8 text-xs">
+            <Button 
+              className="h-8 text-xs"
+              onClick={() => setShowCreateDialog(true)}
+            >
               <Plus className="h-3.5 w-3.5 mr-1.5" />
               New Project
             </Button>
           </div>
         </div>
+        
+        {/* Create Project Dialog */}
+        <CreateProjectDialog
+          open={showCreateDialog}
+          onOpenChange={setShowCreateDialog}
+          onSuccess={(project) => {
+            selectProject(project.id);
+            console.log('✅ Project created and selected:', project.name);
+          }}
+        />
 
         {/* Top Widgets Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -269,41 +300,86 @@ export default function AIToolsPlanningPage() {
               </div>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
-              <Select value={selectedProject} onValueChange={setSelectedProject}>
-                <SelectTrigger className="border border-border h-10">
-                  <SelectValue placeholder="Choose a project to work on..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {mockProjects.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {selectedProjectData && (
-                <div className="p-4 bg-background rounded-lg border border-border space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium">{selectedProjectData.name}</span>
-                    <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
-                      Active
-                    </Badge>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Progress</span>
-                      <span className="font-medium">{selectedProjectData.progress}%</span>
-                    </div>
-                    <Progress value={selectedProjectData.progress} className="h-1.5" />
-                  </div>
-                  <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="text-muted-foreground">Status</span>
-                    <span className="font-bold text-primary">
-                      {selectedProjectData.status}
-                    </span>
-                  </div>
+              {/* Loading State */}
+              {projectsLoading && (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
+              )}
+
+              {/* No Projects State */}
+              {!projectsLoading && projects.length === 0 && (
+                <div className="text-center py-6 space-y-3">
+                  <div className="bg-muted/30 h-12 w-12 rounded-full flex items-center justify-center mx-auto">
+                    <Briefcase className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">No Projects Yet</p>
+                    <p className="text-xs text-muted-foreground">Create your first project to get started</p>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="h-8 text-xs"
+                    onClick={() => setShowCreateDialog(true)}
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Create Project
+                  </Button>
+                </div>
+              )}
+
+              {/* Project Selector */}
+              {!projectsLoading && projects.length > 0 && (
+                <>
+                  <Select 
+                    value={selectedProjectId || undefined} 
+                    onValueChange={selectProject}
+                  >
+                    <SelectTrigger className="border border-border h-10">
+                      <SelectValue placeholder="Choose a project to work on..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {selectedProjectData && (
+                    <div className="p-4 bg-background rounded-lg border border-border space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-semibold">{selectedProjectData.name}</h3>
+                        <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
+                          {selectedProjectData.status}
+                        </Badge>
+                      </div>
+                      {selectedProjectData.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {selectedProjectData.description}
+                        </p>
+                      )}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Progress</span>
+                          <span className="font-medium">{selectedProjectData.progress || 0}%</span>
+                        </div>
+                        <Progress value={selectedProjectData.progress || 0} className="h-1.5" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div className="text-xs">
+                          <span className="text-muted-foreground">Type: </span>
+                          <span className="font-medium capitalize">{selectedProjectData.project_type}</span>
+                        </div>
+                        <div className="text-xs">
+                          <span className="text-muted-foreground">Tasks: </span>
+                          <span className="font-medium">{selectedProjectData.task_count || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
@@ -378,7 +454,7 @@ export default function AIToolsPlanningPage() {
                     <Button
                       onClick={() => handleToolClick(tool.route)}
                       className="w-full h-8 text-xs shadow-md"
-                      disabled={!selectedProject}
+                      disabled={!selectedProjectId}
                     >
                       Launch Tool →
                     </Button>
