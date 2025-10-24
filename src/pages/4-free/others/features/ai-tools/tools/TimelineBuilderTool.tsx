@@ -9,12 +9,14 @@ import {
   Sparkles, 
   Save, 
   Download, 
-  ChevronLeft,
+  ArrowLeft,
   Plus,
   Clock,
   Target,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Briefcase,
+  Layers
 } from 'lucide-react';
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
 
@@ -104,17 +106,18 @@ export default function TimelineBuilderTool() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <Button
-              size="sm"
+              size="icon"
               variant="ghost"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 shrink-0"
               onClick={() => navigate('/free/ai-tools/planning')}
+              aria-label="Back to Planning Hub"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4" />
             </Button>
-            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md shrink-0">
               <CalendarIcon className="h-5 w-5 text-white" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
                 Timeline Builder
                 <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
@@ -128,15 +131,15 @@ export default function TimelineBuilderTool() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 text-xs">
+            <Button variant="outline" className="h-9">
               <Save className="h-3.5 w-3.5 mr-1.5" />
               Save
             </Button>
-            <Button size="sm" variant="outline" className="h-8 text-xs">
+            <Button variant="outline" className="h-9">
               <Download className="h-3.5 w-3.5 mr-1.5" />
               Export PDF
             </Button>
-            <Button size="sm" className="h-8 text-xs shadow-md" onClick={handleAIGenerate} disabled={isGenerating}>
+            <Button className="h-9 shadow-md" onClick={handleAIGenerate} disabled={isGenerating}>
               {isGenerating ? (
                 <>
                   <span className="h-3 w-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-1.5"></span>

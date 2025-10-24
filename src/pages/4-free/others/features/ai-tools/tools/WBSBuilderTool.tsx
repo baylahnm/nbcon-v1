@@ -60,11 +60,15 @@ export default function WBSBuilderTool() {
   const { toast } = useToast();
   
   // Sync URL ?project=<id> ↔ store
+  // This ensures navigating from Planning Hub with ?project=<id> auto-selects that project
   useProjectParamSync();
   
-  // Get selected project
+  // Get selected project - will be pre-populated from URL param via useProjectParamSync
   const { getSelectedProject } = useProjectStore();
   const project = getSelectedProject();
+  
+  // Project is guaranteed to match URL param or Planning Hub selection
+  // No additional selector needed - single source of truth via useProjectStore
   
   // Get tasks from Gantt store
   const { tasks, loadProjectTasks, generateGanttFromPrompt, updateTask } = useGanttStore();
@@ -96,33 +100,36 @@ export default function WBSBuilderTool() {
     load();
   }, [project?.id, loadProjectTasks]);
 
-  // Empty state (no project)
+  // Empty state (no project) - standardized across planning suite
   if (!project) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
         <div className="p-4">
+          {/* Back button - consistent with planning suite */}
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={() => navigate('/free/ai-tools/planning')}
-            className="mb-4 h-8 text-xs"
+            className="mb-4 h-9"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="h-3.5 w-3.5 mr-2" />
             Back to Planning Hub
           </Button>
           
-          <Card className="border-border/50 mt-8 p-12 text-center">
-            <div className="bg-muted/30 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Briefcase className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-base font-semibold mb-2">No Project Selected</h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Please select or create a project to use the WBS Builder
-            </p>
-            <Button onClick={() => navigate('/free/ai-tools/planning')}>
-              <Layers className="h-4 w-4 mr-2" />
-              Select Project
-            </Button>
+          <Card className="border-border/50 mt-8">
+            <CardContent className="p-12 text-center">
+              <div className="bg-muted/30 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Briefcase className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-base font-semibold mb-2">No Project Selected</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Please select or create a project to use the WBS Builder
+              </p>
+              <Button onClick={() => navigate('/free/ai-tools/planning')} className="h-9">
+                <Layers className="h-4 w-4 mr-2" />
+                Select Project
+              </Button>
+            </CardContent>
           </Card>
         </div>
       </div>
@@ -371,80 +378,83 @@ Create a hierarchical task structure suitable for project planning.`;
   if (tasks.length === 0) {
     return (
       <div className="flex h-screen w-full flex-col overflow-hidden">
-        {/* Top Bar - match Stitch */}
+        {/* Top Bar - consistent with planning suite */}
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-8">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/free/ai-tools/planning')}
-            className="h-8"
+            className="h-9"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Planning
+            <ArrowLeft className="h-3.5 w-3.5 mr-2" />
+            Back to Planning Hub
           </Button>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">{project.name}</span>
           </div>
         </header>
 
-        {/* Main Content - Stitch: centered hero layout with gradient */}
+        {/* Main Content - centered hero layout, theme rhythm spacing */}
         <main className="flex-1 overflow-y-auto bg-gradient-to-b from-muted/20 to-background">
-          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-            {/* Hero Title - Stitch: huge centered title */}
-            <div className="flex flex-col items-center text-center">
-              <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight">
+          <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+            {/* Hero Title - 56px max line-height, centered */}
+            <div className="flex flex-col items-center text-center mb-16">
+              <h1 className="text-4xl sm:text-5xl font-black leading-[3.5rem] tracking-tight mb-6">
                 Describe Your Project to Get Started
               </h1>
-              <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+              <p className="max-w-2xl text-lg text-muted-foreground leading-relaxed">
                 Provide our AI with the details, and we'll generate a comprehensive Work Breakdown Structure to kickstart your planning.
               </p>
             </div>
 
-            {/* Form - Stitch: large inputs with shadows */}
-            <div className="mt-12 flex flex-col items-center gap-8">
+            {/* Form - tightened spacing, 8/16 rhythm */}
+            <div className="flex flex-col items-center gap-8">
               {/* Project Description */}
               <div className="w-full max-w-3xl">
-                <label className="flex w-full flex-col">
-                  <p className="text-base font-medium pb-2">
+                <label className="flex w-full flex-col gap-2">
+                  <span className="text-base font-medium">
                     Project Description
-                  </p>
+                  </span>
                   <Textarea
                     placeholder="e.g., Develop a mobile banking app with features for fund transfer, bill payment, and biometric login for iOS and Android..."
                     value={aiInput}
                     onChange={(e) => setAiInput(e.target.value)}
+                    disabled={isGenerating}
                     className="min-h-48 rounded-xl border shadow-sm focus:shadow-md transition-shadow resize-y"
                   />
                 </label>
               </div>
 
-              {/* Industry + Project Type - Stitch: side-by-side */}
-              <div className="grid w-full max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
-                <label className="flex flex-col">
-                  <p className="text-base font-medium pb-2">Industry</p>
+              {/* Industry + Project Type - consistent gutters */}
+              <div className="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+                <label className="flex flex-col gap-2">
+                  <span className="text-base font-medium">Industry</span>
                   <Input
                     placeholder="e.g., Technology"
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
-                    className="h-14 rounded-xl shadow-sm focus:shadow-md transition-shadow"
+                    disabled={isGenerating}
+                    className="h-12 rounded-xl border shadow-sm"
                   />
                 </label>
-                <label className="flex flex-col">
-                  <p className="text-base font-medium pb-2">Project Type</p>
+                <label className="flex flex-col gap-2">
+                  <span className="text-base font-medium">Project Type</span>
                   <Input
-                    placeholder="e.g., Agile"
+                    placeholder="e.g., Mobile App Development"
                     value={projectType}
                     onChange={(e) => setProjectType(e.target.value)}
-                    className="h-14 rounded-xl shadow-sm focus:shadow-md transition-shadow"
+                    disabled={isGenerating}
+                    className="h-12 rounded-xl border shadow-sm"
                   />
                 </label>
               </div>
 
-              {/* Generate Button - Stitch: large button with shadow */}
-              <div className="mt-4">
+              {/* Generate Button - responsive width, mobile-first */}
+              <div className="w-full max-w-3xl">
                 <Button
                   onClick={handleAIGenerate}
                   disabled={!aiInput.trim() || isGenerating}
-                  className="h-14 px-8 text-lg font-bold tracking-wide shadow-lg hover:shadow-xl transition-all active:scale-95"
+                  className="h-14 w-full rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transition-all"
                 >
                   {isGenerating ? (
                     <>
@@ -477,23 +487,23 @@ Create a hierarchical task structure suitable for project planning.`;
       {/* LEFT SIDEBAR - Stitch: controls + stats */}
       <aside className="flex h-full w-72 shrink-0 flex-col justify-between border-r border-border bg-background p-4">
         <div className="flex flex-col gap-6">
-          {/* Back Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/free/ai-tools/planning')}
-            className="w-full justify-start h-8 text-xs"
-          >
-            <ArrowLeft className="h-3.5 w-3.5 mr-2" />
-            Back to Planning
-          </Button>
-
-          {/* Logo/Title */}
+          {/* Logo/Title with Back Button */}
           <div className="flex items-center gap-3 px-2">
-            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-full shadow-md">
+            {/* Back Button - icon only like other pages */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/free/ai-tools/planning')}
+              className="h-9 w-9 shrink-0"
+              aria-label="Back to Planning Hub"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-full shadow-md shrink-0">
               <Network className="h-5 w-5 text-white" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0 flex-1">
               <h1 className="text-base font-bold">WBS Builder</h1>
               <p className="text-sm text-muted-foreground truncate">{project.name}</p>
             </div>
@@ -551,14 +561,14 @@ Create a hierarchical task structure suitable for project planning.`;
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                className="flex-1 h-9 text-sm"
+                className="flex-1 h-9"
                 onClick={handleExpandAll}
               >
                 Expand All
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 h-9 text-sm"
+                className="flex-1 h-9"
                 onClick={handleCollapseAll}
               >
                 Collapse All
@@ -567,21 +577,21 @@ Create a hierarchical task structure suitable for project planning.`;
           </div>
         </div>
 
-        {/* Bottom Buttons - Stitch: Add Task + Export */}
+        {/* Bottom Buttons - Add Task + Export */}
         <div className="flex flex-col gap-2">
           <Button
-            className="h-11 text-base font-bold"
+            className="h-9"
             onClick={() => navigate(`/free/ai-tools/planning/gantt?project=${project.id}`)}
           >
-            <Plus className="h-5 w-5 mr-2" />
+            <Plus className="h-4 w-4 mr-2" />
             Add Task
           </Button>
           <Button
             variant="outline"
-            className="h-11 text-base font-bold"
+            className="h-9"
             onClick={() => setShowExportDialog(true)}
           >
-            <Share2 className="h-5 w-5 mr-2" />
+            <Share2 className="h-4 w-4 mr-2" />
             Export WBS
           </Button>
         </div>
@@ -593,37 +603,39 @@ Create a hierarchical task structure suitable for project planning.`;
         {/* VIEW: PROMPT - AI Input Form */}
         {activeView === 'prompt' && (
           <div className="flex-1 overflow-y-auto">
-            <div className="max-w-4xl mx-auto py-12">
-              {/* Hero Title */}
-              <div className="text-center mb-12">
-                <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight mb-4">
+            <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+              {/* Hero Title - 56px line-height, tightened spacing */}
+              <div className="flex flex-col items-center text-center mb-16">
+                <h1 className="text-4xl sm:text-5xl font-black leading-[3.5rem] tracking-tight mb-6">
                   Describe Your Project to Get Started
                 </h1>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="max-w-2xl text-lg text-muted-foreground leading-relaxed">
                   Provide our AI with the details, and we'll generate a comprehensive Work Breakdown Structure to kickstart your planning.
                 </p>
               </div>
 
-              {/* Form */}
-              <div className="space-y-6">
+              {/* Form - theme rhythm (8/16px multiples) */}
+              <div className="flex flex-col items-center gap-8">
                 {/* Project Description */}
-                <div>
-                  <label className="block text-base font-medium mb-2">
-                    Project Description
+                <div className="w-full max-w-3xl">
+                  <label className="flex w-full flex-col gap-2">
+                    <span className="text-base font-medium">
+                      Project Description
+                    </span>
+                    <Textarea
+                      placeholder="e.g., Develop a mobile banking app with features for fund transfer, bill payment, and biometric login for iOS and Android..."
+                      value={aiInput}
+                      onChange={(e) => setAiInput(e.target.value)}
+                      disabled={isGenerating}
+                      className="min-h-48 rounded-xl border shadow-sm focus:shadow-md transition-shadow resize-y"
+                    />
                   </label>
-                  <Textarea
-                    placeholder="e.g., Develop a mobile banking app with features for fund transfer, bill payment, and biometric login for iOS and Android..."
-                    value={aiInput}
-                    onChange={(e) => setAiInput(e.target.value)}
-                    disabled={isGenerating}
-                    className="min-h-48 rounded-xl border shadow-sm focus:shadow-md transition-shadow resize-y"
-                  />
                 </div>
 
-                {/* Industry + Project Type */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-base font-medium mb-2">Industry</label>
+                {/* Industry + Project Type - consistent 16px gutter */}
+                <div className="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+                  <label className="flex flex-col gap-2">
+                    <span className="text-base font-medium">Industry</span>
                     <Input
                       placeholder="e.g., Technology"
                       value={industry}
@@ -631,9 +643,9 @@ Create a hierarchical task structure suitable for project planning.`;
                       disabled={isGenerating}
                       className="h-12 rounded-xl border shadow-sm"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-base font-medium mb-2">Project Type</label>
+                  </label>
+                  <label className="flex flex-col gap-2">
+                    <span className="text-base font-medium">Project Type</span>
                     <Input
                       placeholder="e.g., Mobile App Development"
                       value={projectType}
@@ -641,27 +653,29 @@ Create a hierarchical task structure suitable for project planning.`;
                       disabled={isGenerating}
                       className="h-12 rounded-xl border shadow-sm"
                     />
-                  </div>
+                  </label>
                 </div>
 
-                {/* Generate Button */}
-                <Button
-                  onClick={handleAIGenerate}
-                  disabled={!aiInput.trim() || isGenerating}
-                  className="w-full h-14 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="h-5 w-5 mr-3 animate-spin" />
-                      Generating WBS...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-5 w-5 mr-3" />
-                      Generate WBS
-                    </>
-                  )}
-                </Button>
+                {/* Generate Button - responsive width */}
+                <div className="w-full max-w-3xl">
+                  <Button
+                    onClick={handleAIGenerate}
+                    disabled={!aiInput.trim() || isGenerating}
+                    className="h-14 w-full rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transition-all"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="h-5 w-5 mr-3 animate-spin" />
+                        Generating WBS...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-5 w-5 mr-3" />
+                        Generate WBS
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -680,7 +694,7 @@ Create a hierarchical task structure suitable for project planning.`;
                   {project.description || 'Work Breakdown Structure'}
                 </p>
               </div>
-              <Button onClick={() => navigate(`/free/ai-tools/planning/gantt?project=${project.id}`)}>
+              <Button onClick={() => navigate(`/free/ai-tools/planning/gantt?project=${project.id}`)} className="h-9">
                 Save Project
               </Button>
             </div>
@@ -703,7 +717,7 @@ Create a hierarchical task structure suitable for project planning.`;
               size="sm"
               onClick={handleZoomOut}
               aria-label="Zoom out"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0"
             >
               <Minus className="h-4 w-4" />
             </Button>
@@ -715,7 +729,7 @@ Create a hierarchical task structure suitable for project planning.`;
               size="sm"
               onClick={handleZoomIn}
               aria-label="Zoom in"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0"
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -724,7 +738,7 @@ Create a hierarchical task structure suitable for project planning.`;
               size="sm"
               onClick={handleZoomReset}
               aria-label="Reset zoom"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0"
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
@@ -761,7 +775,7 @@ Create a hierarchical task structure suitable for project planning.`;
                 <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
                   Try a different search term or clear the filter
                 </p>
-                <Button variant="outline" onClick={() => setSearchQuery('')}>
+                <Button variant="outline" onClick={() => setSearchQuery('')} className="h-9">
                   Clear Search
                 </Button>
               </div>
@@ -837,11 +851,11 @@ Create a hierarchical task structure suitable for project planning.`;
 
               {/* Export Button */}
               <Button 
-                className="w-full h-14 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl"
+                className="w-full h-9"
                 onClick={() => setShowExportDialog(true)}
                 disabled={wbsTree.length === 0}
               >
-                <Download className="h-5 w-5 mr-3" />
+                <Download className="h-4 w-4 mr-2" />
                 Open Export Options
               </Button>
             </div>
@@ -859,8 +873,9 @@ Create a hierarchical task structure suitable for project planning.`;
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full"
+                className="h-9 w-9 rounded-full"
                 onClick={() => setSelectedNode(null)}
+                aria-label="Close sidebar"
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -929,13 +944,13 @@ Create a hierarchical task structure suitable for project planning.`;
               <div className="flex gap-2 pt-4">
                 <Button
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 h-9"
                   onClick={() => setSelectedNode(null)}
                 >
                   Cancel
                 </Button>
                 <Button
-                  className="flex-1"
+                  className="flex-1 h-9"
                   onClick={async () => {
                     try {
                       await updateTask(selectedNode.id, {

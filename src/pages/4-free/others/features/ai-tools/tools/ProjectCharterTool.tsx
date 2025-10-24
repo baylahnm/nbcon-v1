@@ -64,9 +64,9 @@ export default function ProjectCharterTool() {
             variant="ghost" 
             size="sm" 
             onClick={() => navigate('/free/ai-tools/planning')}
-            className="mb-4 h-8 text-xs"
+            className="mb-4 h-9"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="h-3.5 w-3.5 mr-2" />
             Back to Planning Hub
           </Button>
           
@@ -157,17 +157,18 @@ export default function ProjectCharterTool() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <Button
-              size="sm"
+              size="icon"
               variant="ghost"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 shrink-0"
               onClick={() => navigate('/free/ai-tools/planning')}
+              aria-label="Back to Planning Hub"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4" />
             </Button>
-            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+            <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md shrink-0">
               <FileText className="h-5 w-5 text-white" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
                 {project.name} - Charter
                 <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">

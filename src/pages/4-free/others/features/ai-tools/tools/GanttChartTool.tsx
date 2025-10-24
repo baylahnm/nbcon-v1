@@ -237,35 +237,38 @@ export default function GanttChartTool() {
       
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-border/40">
-      <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 w-8 p-0"
-          onClick={() => navigate(ROUTES.AI_TOOLS.PLANNING)}
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-          <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 shrink-0"
+            onClick={() => navigate(ROUTES.AI_TOOLS.PLANNING)}
+            aria-label="Back to Planning Hub"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="bg-primary-gradient h-10 w-10 flex items-center justify-center rounded-xl shadow-md shrink-0">
             <BarChart3 className="h-5 w-5 text-white" />
           </div>
-          <div>
-            <h1 className="text-base font-bold tracking-tight">Gantt Chart Builder</h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-base font-bold tracking-tight">
+              {currentProject?.name || 'Gantt Chart Builder'} - Timeline
+            </h1>
             <p className="text-xs text-muted-foreground">
-              {currentProject?.name || 'Project Timeline Management'}
+              Project Timeline Management
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            className="h-8 text-xs"
+            className="h-9"
             onClick={() => setShowAIGenerator(true)}
           >
             <Sparkles className="h-3.5 w-3.5 mr-1.5" />
             AI Generate
           </Button>
-          <Button className="h-8 text-xs">
+          <Button className="h-9">
             <Download className="h-3.5 w-3.5 mr-1.5" />
             Export
           </Button>
