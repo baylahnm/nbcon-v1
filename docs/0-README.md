@@ -233,7 +233,7 @@ http://localhost:8080/auth
 
 # 4. Sign in
 Email: info@nbcon.org
-Password: Qazwsx1234@
+Password: 1234@
 ```
 
 ### Recent Updates (v2.7 - Phase 2 + QA Complete)

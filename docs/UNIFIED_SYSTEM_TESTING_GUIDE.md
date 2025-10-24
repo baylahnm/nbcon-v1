@@ -605,7 +605,7 @@ http://localhost:8080/free/ai-tools/planning
 **Test Account:**
 ```
 Email: info@nbcon.org
-Password: Qazwsx1234@
+Password: 1234@
 ```
 
 **What You Should See:**

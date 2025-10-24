@@ -154,7 +154,7 @@ Execute these 6 quick tests to verify the unified system works perfectly:
 
 **Steps:**
 ```
-1. Sign in as: info@nbcon.org / Qazwsx1234@
+1. Sign in as: info@nbcon.org / 1234@
 2. Create project: "Private Project A"
 3. Note the project in Planning Hub
 4. Click "Sign Out"

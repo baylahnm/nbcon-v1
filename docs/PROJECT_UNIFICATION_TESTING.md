@@ -32,7 +32,7 @@
 2. **Logged in as test user:**
    ```
    Email: info@nbcon.org
-   Password: Qazwsx1234@
+   Password: 1234@
    ```
 
 3. **Database accessible:**

@@ -178,7 +178,7 @@ Production Ready:        ✅ YES
 
 ### **Test:**
 - Planning Hub: http://localhost:8080/free/ai-tools/planning
-- Test Account: info@nbcon.org / Qazwsx1234@
+- Test Account: info@nbcon.org / 1234@
 
 ### **Documentation:**
 - **Quick Start:** `READY_FOR_TESTING.md`
@@ -361,7 +361,7 @@ TEST IT NOW! 🚀
 http://localhost:8080/free/ai-tools/planning
 
 **Test Account:**  
-info@nbcon.org / Qazwsx1234@
+info@nbcon.org / 1234@
 
 **GOOD LUCK!** 🎯
 

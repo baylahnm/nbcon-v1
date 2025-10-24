@@ -35,14 +35,14 @@ http://localhost:8080/auth
 
 # 4. Test with existing account
 Email: info@nbcon.org
-Password: Qazwsx1234@
+Password: 1234@
 ```
 
 ### For Testing
 
 **Test Accounts:**
-- **Engineer:** info@nbcon.org / Qazwsx1234@
-- **Client:** mahdi.n.baylah@outlook.com / Qazwsx1234@
+- **Engineer:** info@nbcon.org / 1234@
+- **Client:** mahdi.n.baylah@outlook.com / 1234@
 
 ---
 

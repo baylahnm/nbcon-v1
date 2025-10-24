@@ -254,8 +254,8 @@ const errorLog = errorMonitor.exportErrors();
 ### Test Accounts
 
 ```
-Engineer: info@nbcon.org / Qazwsx1234@
-Client:   mahdi.n.baylah@outlook.com / Qazwsx1234@
+Engineer: info@nbcon.org / 1234@
+Client:   mahdi.n.baylah@outlook.com / 1234@
 ```
 
 ### Test Case 1: Engineer Signup

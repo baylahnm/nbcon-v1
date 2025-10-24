@@ -45,7 +45,7 @@
 ### Test Account
 ```
 Email:    mahdi.n.baylah@outlook.com
-Password: Qazwsx1234@
+Password: 1234@
 Role:     client
 ```
 

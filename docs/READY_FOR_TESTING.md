@@ -377,7 +377,7 @@ WHERE project_id = '{your-project-id}';
 
 **START HERE:** `http://localhost:8080/free/ai-tools/planning`
 
-**Test Account:** `info@nbcon.org` / `Qazwsx1234@`
+**Test Account:** `info@nbcon.org` / `1234@`
 
 **Good luck and enjoy testing the new system!** 🚀
 
