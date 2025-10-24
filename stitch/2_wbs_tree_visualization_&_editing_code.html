@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI WBS Tool - Project Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style type="text/tailwindcss">
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#1A202C] dark:text-slate-200">
+<div class="flex h-screen w-full">
+<!-- Left Sidebar -->
+<aside class="flex h-full w-72 flex-col justify-between border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4">
+<div class="flex flex-col gap-6">
+<div class="flex gap-3 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="AI WBS Tool Logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBXjiZ-0upEjKGL1b_Mte3uUElWj7Izqo8WqRkJGoCooZ01ANuQmk_lKdg4lJbsxcD5a2yhfmvx5lsTJbXdSkA1Bxjw0n6crloEZjQlWTBJcIm9RhB9yqzXFHdPDqLpIsVBPNgqXbW9zS_8Y9Au7EV9OG-xRFrTowDlPqJe-s5vA09xAP6xTJKU9obaMYSJb5SNL1FcPaO6KOG3DWFrFv7zsogcZfdtP4hoC-Mmir1Dlbiuk7P81mnNQy3CenE2FwdJoeE8MaUYJl3k");'></div>
+<div class="flex flex-col">
+<h1 class="text-[#0d141b] dark:text-slate-50 text-base font-bold leading-normal">AI WBS Tool</h1>
+<p class="text-[#4c739a] dark:text-slate-400 text-sm font-normal leading-normal">project-planner.ai</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors" href="#">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<p class="text-sm font-medium leading-normal">Projects</p>
+</a>
+</div>
+<hr class="border-slate-200 dark:border-slate-800"/>
+<div class="flex flex-col gap-4">
+<label class="flex flex-col min-w-40 h-11 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-slate-100 dark:bg-slate-800">
+<div class="text-[#4c739a] flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-800 dark:text-slate-200 focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-slate-500 dark:placeholder:text-slate-400 pl-2 text-sm font-normal leading-normal" placeholder="Find a task..." value=""/>
+</div>
+</label>
+<div class="flex gap-2">
+<button class="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-slate-200 dark:hover:bg-slate-700">
+<span class="truncate">Expand All</span>
+</button>
+<button class="flex min-w-[84px] flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-medium leading-normal tracking-[0.015em] hover:bg-slate-200 dark:hover:bg-slate-700">
+<span class="truncate">Collapse All</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-11 px-5 bg-primary text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-white">add</span>
+<span class="truncate">Add Task</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-11 px-5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 gap-2 text-base font-bold leading-normal tracking-[0.015em] hover:bg-slate-200 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined">ios_share</span>
+<span class="truncate">Export WBS</span>
+</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex flex-1 flex-col p-6 gap-6">
+<div class="flex flex-wrap justify-between gap-3 items-center">
+<div class="flex min-w-72 flex-col gap-1">
+<p class="text-3xl font-black leading-tight tracking-[-0.033em]">QuantumLeap OS Development</p>
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">A next-generation operating system for quantum computing.</p>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="truncate">Save Project</span>
+</button>
+</div>
+<!-- WBS Canvas -->
+<div class="relative flex-1 w-full rounded-xl overflow-hidden bg-white dark:bg-[#1A202C] border border-slate-200 dark:border-slate-800">
+<div class="absolute inset-0 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#374151_1px,transparent_1px)] [background-size:16px_16px]"></div>
+<div class="relative p-10 h-full w-full">
+<!-- WBS Nodes would be rendered here -->
+<div class="absolute space-y-6" style="top: 2rem; left: 50%; transform: translateX(-50%);">
+<!-- Level 1 Node -->
+<div class="relative mx-auto flex w-64 items-center justify-between rounded-lg bg-[#0A3A67] p-3 text-white shadow-md">
+<span class="font-bold">1.0</span>
+<span class="font-medium">QuantumLeap OS</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</div>
+<!-- Connector to Level 2 -->
+<div class="absolute left-1/2 -bottom-6 h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+</div>
+<div class="absolute flex justify-center gap-16" style="top: 9rem; left: 50%; transform: translateX(-50%); width: 700px;">
+<!-- Level 2 Nodes -->
+<div class="relative text-center">
+<div class="relative mx-auto flex w-56 items-center justify-between rounded-lg bg-[#1E62A1] p-3 text-white shadow-md">
+<span class="font-bold">1.1</span>
+<span class="font-medium">Project Initiation</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</div>
+<!-- Connector to Level 3 -->
+<div class="absolute left-1/2 -bottom-6 h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+</div>
+<div class="relative text-center">
+<div class="relative mx-auto flex w-56 items-center justify-between rounded-lg bg-[#1E62A1] p-3 text-white shadow-md">
+<span class="font-bold">1.2</span>
+<span class="font-medium">Execution</span>
+<span class="material-symbols-outlined text-base">expand_less</span>
+</div>
+</div>
+<!-- Connecting lines -->
+<div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 h-0.5 w-[20rem] bg-slate-300 dark:bg-slate-600"></div>
+<div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+<div class="absolute top-[-1.5rem] left-[calc(50%-10rem)] h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+<div class="absolute top-[-1.5rem] left-[calc(50%+10rem)] h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+</div>
+<div class="absolute flex justify-center gap-4" style="top: 16rem; left: 18%; transform: translateX(-50%);">
+<!-- Level 3 Nodes -->
+<div class="relative text-center">
+<div class="relative flex w-48 items-center justify-between rounded-lg bg-[#4A90E2] p-2 text-white shadow-md">
+<span class="font-bold text-sm">1.1.1</span>
+<span class="font-medium text-sm">Define Scope</span>
+</div>
+</div>
+<div class="relative text-center">
+<div class="relative flex w-48 items-center justify-between rounded-lg bg-[#4A90E2] p-2 text-white shadow-md">
+<span class="font-bold text-sm">1.1.2</span>
+<span class="font-medium text-sm">Create Charter</span>
+</div>
+</div>
+<!-- Connecting lines -->
+<div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 h-0.5 w-[13rem] bg-slate-300 dark:bg-slate-600"></div>
+<div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+<div class="absolute top-[-1.5rem] left-[calc(50%-6.5rem)] h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+<div class="absolute top-[-1.5rem] left-[calc(50%+6.5rem)] h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+</div>
+<div class="absolute flex justify-center" style="top: 21rem; left: 18%; transform: translateX(-50%);">
+<!-- Level 4+ Node -->
+<div class="relative text-center">
+<div class="relative mx-auto flex w-44 items-center justify-between rounded-lg bg-slate-500 p-2 text-white shadow-md">
+<span class="font-bold text-xs">1.1.1.1</span>
+<span class="font-medium text-xs">Requirement Gathering</span>
+</div>
+<!-- Connector -->
+<div class="absolute left-1/2 -top-6 h-6 w-0.5 bg-slate-300 dark:bg-slate-600"></div>
+</div>
+</div>
+</div>
+<!-- Canvas Controls -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-md hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-md hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-md hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700">
+<span class="material-symbols-outlined">zoom_out_map</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Right Sidebar -->
+<aside class="flex h-full w-80 flex-col gap-6 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4">
+<!-- Selected Node Details -->
+<div class="flex flex-col gap-4">
+<h2 class="text-lg font-bold">Task Details</h2>
+<div class="flex flex-col gap-3">
+<div>
+<label class="text-xs font-medium text-slate-500 dark:text-slate-400">Task ID</label>
+<p class="text-sm p-2 rounded-md bg-slate-100 dark:bg-slate-800">1.1.2</p>
+</div>
+<div>
+<label class="text-xs font-medium text-slate-500 dark:text-slate-400" for="taskName">Task Name</label>
+<input class="form-input w-full rounded-md border-slate-300 dark:border-slate-700 bg-transparent text-sm focus:border-primary focus:ring-primary" id="taskName" type="text" value="Create Charter"/>
+</div>
+<div>
+<label class="text-xs font-medium text-slate-500 dark:text-slate-400" for="taskDescription">Description</label>
+<textarea class="form-textarea w-full rounded-md border-slate-300 dark:border-slate-700 bg-transparent text-sm focus:border-primary focus:ring-primary" id="taskDescription" rows="3">Draft and finalize the official project charter document.</textarea>
+</div>
+<div>
+<label class="text-xs font-medium text-slate-500 dark:text-slate-400" for="taskStatus">Status</label>
+<select class="form-select w-full rounded-md border-slate-300 dark:border-slate-700 bg-transparent text-sm focus:border-primary focus:ring-primary" id="taskStatus">
+<option>Not Started</option>
+<option selected="">In Progress</option>
+<option>Completed</option>
+</select>
+</div>
+</div>
+</div>
+<!-- AI Suggestions -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+<h2 class="text-lg font-bold text-primary">AI Suggestions</h2>
+</div>
+<div class="flex flex-col gap-2">
+<button class="flex w-full items-center gap-3 text-left p-2 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">splitscreen</span>
+<span class="text-sm font-medium">Decompose Task</span>
+</button>
+<button class="flex w-full items-center gap-3 text-left p-2 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">timer</span>
+<span class="text-sm font-medium">Estimate Duration</span>
+</button>
+<button class="flex w-full items-center gap-3 text-left p-2 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">warning</span>
+<span class="text-sm font-medium">Identify Risks</span>
+</button>
+</div>
+</div>
+<hr class="border-slate-200 dark:border-slate-800"/>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-2">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/10 dark:bg-primary/20 text-primary gap-2 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/20 dark:hover:bg-primary/30">
+<span class="material-symbols-outlined">add_circle_outline</span>
+<span class="truncate">Add Sub-task</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-red-500/10 text-red-600 dark:text-red-400 gap-2 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-red-500/20">
+<span class="material-symbols-outlined">delete</span>
+<span class="truncate">Delete Node</span>
+</button>
+</div>
+</aside>
+</div>
+</body></html>

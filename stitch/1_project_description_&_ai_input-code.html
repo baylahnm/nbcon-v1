@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProjectWBS AI - New Project</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<div class="flex h-full w-full">
+<!-- Side Navigation Bar -->
+<aside class="flex h-full w-64 shrink-0 flex-col justify-between border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark p-4">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3 px-2">
+<div class="text-primary size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor"></path></svg>
+</div>
+<h2 class="text-lg font-bold tracking-[-0.015em] text-gray-900 dark:text-white">ProjectWBS AI</h2>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCO_HIRFNoi-sTS8rgmDIYL6rCgXYb0HBeRcC9XOV3VYC1tZ5xCo-RLPbEoN_wztsv5Ks-jUc3-bMC-u5tnFpMPdlTOtMlhCgQPtuyHyfZPVCDFHfV45OGD3OWbA8q9uSMknhSgshf94ML4309glMfIJ7Uz5ZadOqUBDuIKoT8eHEVafVu90LxdMgSXCxY-RcWO5Lk_3JbSCRi97gD56B_lXjr0-nX7zkrHs_Wm3Pg1OxXZhNM_Si79MjP_FJzoCDr1eLSgBGqbKQnj");'></div>
+<div class="flex flex-col">
+<h1 class="text-sm font-medium leading-normal text-gray-900 dark:text-white">New Mobile App</h1>
+<p class="text-xs font-normal leading-normal text-gray-500 dark:text-gray-400">ID: 12345 | Status: Planning</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 bg-primary/10 dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-primary text-2xl">dashboard</span>
+<p class="text-sm font-medium text-primary">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-2xl">folder_open</span>
+<p class="text-sm font-medium text-gray-700 dark:text-gray-300">My Projects</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-2xl">account_tree</span>
+<p class="text-sm font-medium text-gray-700 dark:text-gray-300">WBS View</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-2xl">bar_chart_4_bars</span>
+<p class="text-sm font-medium text-gray-700 dark:text-gray-300">Gantt Chart</p>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-2xl">settings</span>
+<p class="text-sm font-medium text-gray-700 dark:text-gray-300">Settings</p>
+</a>
+</nav>
+</div>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">New Project</span>
+</button>
+</aside>
+<!-- Main Content Area -->
+<div class="flex h-full flex-1 flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex h-16 shrink-0 items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark px-8">
+<div class="flex-1"></div>
+<div class="flex flex-1 justify-end items-center gap-4">
+<label class="relative flex-col !h-10 w-full max-w-xs hidden sm:flex">
+<div class="absolute left-3 top-1/2 -translate-y-1/2">
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-gray-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border-none bg-gray-100 dark:bg-gray-800/50 h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 pl-10 pr-4 text-sm font-normal leading-normal" placeholder="Search projects..." value=""/>
+</label>
+<div class="flex items-center gap-2">
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</button>
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-2xl">help_outline</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDK9C3_uUToi6sIDYs1Zs8YX3CEcK0jFlqLyHmToDwDnax_blA4T3qUFl9lQ0d0GnRLgXuSfoKnuWtzanAruLMXCs5mq3SnxDlyAPHlKpGXpV7X1LEutMJJaUUZnjz0-xJ7BPo9l2uW2MVrLpJCt2K9LxyuLwDrQmZ65m3VINVVBB6HcbM4xWVV8-A62y-bDL_BSWtBh4LrS4btGZhPxB4UchczcaqOJXD8jPR68vTu3x_b1eJXoGUpGEcuITtfYUK3qaJsiWY34u2t");'></div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 overflow-y-auto bg-gradient-to-b from-[#E0F7FA]/30 dark:from-[#101922]/50 to-background-light dark:to-background-dark">
+<div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+<div class="flex flex-col items-center text-center">
+<div class="flex flex-wrap justify-center gap-3 p-4">
+<p class="text-4xl font-black leading-tight tracking-[-0.033em] text-gray-900 dark:text-white sm:text-5xl">Describe Your Project to Get Started</p>
+</div>
+<p class="mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">Provide our AI with the details, and we'll generate a comprehensive Work Breakdown Structure to kickstart your planning.</p>
+</div>
+<div class="mt-12 flex flex-col items-center gap-8">
+<div class="w-full max-w-3xl">
+<label class="flex w-full flex-col">
+<p class="text-base font-medium leading-normal pb-2 text-gray-800 dark:text-gray-200">Project Description</p>
+<textarea class="form-input flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-xl text-gray-900 dark:text-gray-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900/50 min-h-48 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-4 text-base font-normal leading-normal transition-shadow shadow-sm focus:shadow-md" placeholder="e.g., Develop a mobile banking app with features for fund transfer, bill payment, and biometric login for iOS and Android..."></textarea>
+</label>
+</div>
+<div class="grid w-full max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
+<label class="flex flex-col">
+<p class="text-base font-medium leading-normal pb-2 text-gray-800 dark:text-gray-200">Industry</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-gray-900 dark:text-gray-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900/50 h-14 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-4 text-base font-normal leading-normal shadow-sm focus:shadow-md transition-shadow" placeholder="e.g., Technology" value=""/>
+</label>
+<label class="flex flex-col">
+<p class="text-base font-medium leading-normal pb-2 text-gray-800 dark:text-gray-200">Project Type</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-gray-900 dark:text-gray-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900/50 h-14 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-4 text-base font-normal leading-normal shadow-sm focus:shadow-md transition-shadow" placeholder="e.g., Agile" value=""/>
+</label>
+</div>
+<div class="mt-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-xl h-14 px-8 bg-primary text-white text-lg font-bold leading-normal tracking-wide shadow-lg shadow-primary/30 transition-all hover:bg-blue-600 dark:hover:bg-blue-500 hover:shadow-xl hover:shadow-primary/40 active:scale-95">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span>Generate WBS</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</body></html>
