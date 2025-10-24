@@ -131,7 +131,7 @@ npm run dev
 
 **Status:** ✅ **PRODUCTION READY** (100/100 Quality Score)
 
-**6 Interactive AI Tools** for project planning, fully integrated with the AI Assistant:
+**6 Interactive AI Tools** for project planning, fully integrated with the AI Assistant and **unified database**:
 
 ```
 /free/ai-tools/planning           → Main planning hub
@@ -139,9 +139,18 @@ npm run dev
   ├── /wbs?project=X              → WBS Builder
   ├── /stakeholders?project=X     → Stakeholder Mapper
   ├── /risks?project=X            → Risk Register
-  ├── /timeline?project=X         → Timeline Builder
+  ├── /timeline?project=X         → Timeline Builder (Gantt Chart)
   └── /resources?project=X        → Resource Planner
 ```
+
+### Unified Database Integration ✅
+
+**Timeline Builder (Gantt Chart)** now uses real Supabase database:
+- ✅ Connected to `gantt_projects` and `gantt_tasks` tables
+- ✅ Row-Level Security enforced
+- ✅ All CRUD operations functional
+- ✅ Users see only their own projects
+- ✅ Project selector with real-time data loading
 
 ### All 6 Tools Built and Tested
 
@@ -169,11 +178,13 @@ npm run dev
 - **AI Integration:** Analyzes project for risks, suggests mitigation strategies
 - **Output:** Comprehensive risk register with heat map
 
-**5. Timeline Builder** ✅
-- **File:** `TimelineBuilderTool.tsx` (200 lines)
-- **Features:** Gantt chart visualization, critical path indicators, progress tracking
+**5. Timeline Builder (Gantt Chart)** ✅
+- **File:** `GanttChartTool.tsx` (integrated with real database)
+- **Features:** Gantt chart visualization, critical path indicators, progress tracking, **real-time database sync**
+- **Database:** Uses `gantt_projects` and `gantt_tasks` tables with RLS
 - **AI Integration:** Creates realistic timeline from WBS and constraints
-- **Output:** Project schedule with Gantt chart
+- **CRUD Operations:** Full create/read/update/delete with Supabase
+- **Output:** Project schedule with Gantt chart that persists across sessions
 
 **6. Resource Planner** ✅
 - **File:** `ResourcePlannerTool.tsx` (240 lines)
@@ -2208,5 +2219,127 @@ A: Improve system prompts, provide better context, use Research mode for complex
 **Testing:** 100/100 ⭐⭐⭐⭐⭐  
 **Status:** All complete, production ready
 
-**For complete AI Tools documentation:** See `docs/7-AI_TOOLS_COMPLETE.md`
+**Gantt Integration:** See section below for complete database integration guide
+
+---
+
+## 🔗 Gantt Chart - Unified Database Integration
+
+### Overview
+
+The Timeline Builder (Gantt Chart) is the first AI planning tool fully integrated with real Supabase database, creating a unified project data layer.
+
+**Status:** ✅ Production Ready (October 24, 2025)
+
+### Database Schema
+
+**gantt_projects Table:**
+```sql
+CREATE TABLE public.gantt_projects (
+  id UUID PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  start_date DATE,
+  end_date DATE,
+  created_by UUID NOT NULL REFERENCES profiles(user_id),
+  project_type TEXT DEFAULT 'construction',
+  status TEXT DEFAULT 'planning',
+  budget DECIMAL(15,2),
+  currency TEXT DEFAULT 'SAR',
+  location TEXT,
+  is_template BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+```
+
+**gantt_tasks Table:**
+```sql
+CREATE TABLE public.gantt_tasks (
+  id UUID PRIMARY KEY,
+  project_id UUID NOT NULL REFERENCES gantt_projects(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT,
+  start_date DATE,
+  end_date DATE,
+  duration INTEGER,
+  progress DECIMAL(5,2) DEFAULT 0,
+  parent_id UUID REFERENCES gantt_tasks(id),
+  is_milestone BOOLEAN DEFAULT false,
+  priority TEXT DEFAULT 'medium',
+  task_type TEXT DEFAULT 'task',
+  crew_size INTEGER DEFAULT 1,
+  estimated_hours DECIMAL(8,2),
+  cost_estimate DECIMAL(12,2),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+```
+
+### Row-Level Security
+
+**All Gantt tables enforce RLS:**
+- Users can only view/edit their own projects (created_by = auth.uid())
+- Task access verified through project ownership
+- Secure by default
+
+**Example RLS Policy:**
+```sql
+CREATE POLICY "Users can view their own gantt projects"
+ON gantt_projects FOR SELECT
+USING (auth.uid() = created_by);
+```
+
+### Testing the Gantt Tool
+
+**Quick Test (5 minutes):**
+
+1. **Navigate to Gantt Tool:**
+   ```
+   http://localhost:8080/free/ai-tools/planning/gantt
+   ```
+
+2. **Create Project:**
+   - Click "Create Project"
+   - Fill in: Name, Description, Start/End dates, Budget
+   - Submit form
+   - Verify project appears in selector
+
+3. **Add Tasks:**
+   - Select your project
+   - Click "Add Task"
+   - Fill in task details
+   - Verify task appears in Gantt chart
+
+4. **Verify Database:**
+   ```sql
+   SELECT * FROM gantt_projects WHERE created_by = auth.uid();
+   SELECT * FROM gantt_tasks ORDER BY created_at DESC LIMIT 10;
+   ```
+
+### Unified Projects Integration
+
+**New columns added to existing tables:**
+
+```sql
+-- client_projects and enterprise_projects now have:
+gantt_project_id UUID      -- Links to gantt_projects
+gantt_enabled BOOLEAN      -- Enable Gantt features
+gantt_start_date DATE      -- Override dates
+gantt_end_date DATE
+gantt_budget DECIMAL       -- Gantt-specific budget
+gantt_currency TEXT
+```
+
+**Purpose:** Allows existing projects to be enhanced with Gantt functionality without duplication.
+
+### Future Tool Integrations
+
+**Ready for Database Integration:**
+- **WBS Builder** → Use `gantt_tasks` hierarchical structure (parent_id)
+- **Resource Planner** → Use `gantt_resources` and `gantt_task_assignments` tables
+- **Risk Register** → Create dedicated `gantt_risks` table
+- **Stakeholder Mapper** → Create dedicated `gantt_stakeholders` table
+
+All tables already defined and ready in migration `20240101000011_gantt_tables.sql`
 

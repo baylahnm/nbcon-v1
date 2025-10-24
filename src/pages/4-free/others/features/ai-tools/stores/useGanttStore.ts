@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from "@/shared/supabase/client";
+import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
 
 // AI Generation Helper Functions
 const generateConstructionTasksFromPrompt = (prompt: string): CreateGanttTask[] => {
@@ -334,6 +336,10 @@ interface GanttStore {
   setViewMode: (mode: 'gantt' | 'calendar' | 'kanban') => void;
   setZoomLevel: (level: 'day' | 'week' | 'month' | 'quarter') => void;
   
+  // Data loading
+  loadUserProjects: () => Promise<void>;
+  loadProjectTasks: (projectId: string) => Promise<void>;
+  
   // Project actions
   createProject: (project: CreateGanttProject) => Promise<string>;
   updateProject: (projectId: string, updates: Partial<GanttProject>) => Promise<void>;
@@ -484,9 +490,9 @@ export const useGanttStore = create<GanttStore>()(
   persist(
     (set, get) => ({
       // Initial state
-      projects: sampleProjects,
-      tasks: sampleTasks,
-      dependencies: sampleDependencies,
+      projects: [],
+      tasks: [],
+      dependencies: [],
       resources: [],
       taskAssignments: [],
       changeOrders: [],
@@ -504,44 +510,148 @@ export const useGanttStore = create<GanttStore>()(
       setViewMode: (mode) => set({ viewMode: mode }),
       setZoomLevel: (level) => set({ zoomLevel: level }),
       
+      // Data loading
+      loadUserProjects: async () => {
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          const { data, error } = await supabase
+            .from('gantt_projects')
+            .select('*')
+            .eq('created_by', user.id)
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          set({ projects: data || [] });
+        } catch (error) {
+          console.error('Error loading projects:', error);
+          throw error;
+        }
+      },
+
+      loadProjectTasks: async (projectId) => {
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          // Verify user has access to the project
+          const { data: project, error: projectError } = await supabase
+            .from('gantt_projects')
+            .select('id')
+            .eq('id', projectId)
+            .eq('created_by', user.id)
+            .single();
+
+          if (projectError || !project) throw new Error('Project not found or access denied');
+
+          const { data, error } = await supabase
+            .from('gantt_tasks')
+            .select('*')
+            .eq('project_id', projectId)
+            .order('sort_order', { ascending: true });
+
+          if (error) throw error;
+
+          set({ tasks: data || [] });
+        } catch (error) {
+          console.error('Error loading tasks:', error);
+          throw error;
+        }
+      },
+      
       // Project actions
       createProject: async (projectData) => {
-        const newProject: GanttProject = {
-          id: `project-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          ...projectData,
-          created_by: 'current-user', // This should come from auth store
-          status: 'planning',
-          currency: projectData.currency || 'SAR',
-          is_template: projectData.is_template || false,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        
-        set(state => ({
-          projects: [...state.projects, newProject]
-        }));
-        
-        return newProject.id;
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          const { data, error } = await supabase
+            .from('gantt_projects')
+            .insert({
+              name: projectData.name,
+              description: projectData.description,
+              start_date: projectData.start_date,
+              end_date: projectData.end_date,
+              created_by: user.id,
+              project_type: projectData.project_type,
+              status: 'planning',
+              budget: projectData.budget,
+              currency: projectData.currency || 'SAR',
+              location: projectData.location,
+              is_template: projectData.is_template || false,
+              template_name: projectData.template_name
+            })
+            .select()
+            .single();
+
+          if (error) throw error;
+
+          // Update local state
+          set(state => ({
+            projects: [...state.projects, data]
+          }));
+
+          return data.id;
+        } catch (error) {
+          console.error('Error creating project:', error);
+          throw error;
+        }
       },
       
       updateProject: async (projectId, updates) => {
-        set(state => ({
-          projects: state.projects.map(project =>
-            project.id === projectId 
-              ? { ...project, ...updates, updated_at: new Date().toISOString() }
-              : project
-          )
-        }));
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          const { data, error } = await supabase
+            .from('gantt_projects')
+            .update(updates)
+            .eq('id', projectId)
+            .eq('created_by', user.id)
+            .select()
+            .single();
+
+          if (error) throw error;
+
+          // Update local state
+          set(state => ({
+            projects: state.projects.map(project =>
+              project.id === projectId ? data : project
+            )
+          }));
+        } catch (error) {
+          console.error('Error updating project:', error);
+          throw error;
+        }
       },
       
       deleteProject: async (projectId) => {
-        set(state => ({
-          projects: state.projects.filter(p => p.id !== projectId),
-          tasks: state.tasks.filter(t => t.project_id !== projectId),
-          dependencies: state.dependencies.filter(d => 
-            !state.tasks.some(t => t.id === d.from_task_id || t.id === d.to_task_id)
-          )
-        }));
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          const { error } = await supabase
+            .from('gantt_projects')
+            .delete()
+            .eq('id', projectId)
+            .eq('created_by', user.id);
+
+          if (error) throw error;
+
+          // Update local state
+          set(state => ({
+            projects: state.projects.filter(p => p.id !== projectId),
+            tasks: state.tasks.filter(t => t.project_id !== projectId),
+            dependencies: state.dependencies.filter(d => 
+              !state.tasks.some(t => t.id === d.from_task_id || t.id === d.to_task_id)
+            )
+          }));
+        } catch (error) {
+          console.error('Error deleting project:', error);
+          throw error;
+        }
       },
       
       duplicateProject: async (projectId, newName) => {
@@ -586,44 +696,130 @@ export const useGanttStore = create<GanttStore>()(
       
       // Task actions
       createTask: async (taskData) => {
-        const newTask: GanttTask = {
-          id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          ...taskData,
-          progress: 0,
-          sort_order: get().tasks.filter(t => t.project_id === taskData.project_id).length,
-          is_milestone: taskData.is_milestone || false,
-          is_critical_path: false,
-          priority: taskData.priority || 'medium',
-          task_type: taskData.task_type || 'task',
-          crew_size: taskData.crew_size || 1,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        
-        set(state => ({
-          tasks: [...state.tasks, newTask]
-        }));
-        
-        return newTask.id;
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          // Verify user has access to the project
+          const { data: project, error: projectError } = await supabase
+            .from('gantt_projects')
+            .select('id')
+            .eq('id', taskData.project_id)
+            .eq('created_by', user.id)
+            .single();
+
+          if (projectError || !project) throw new Error('Project not found or access denied');
+
+          const { data, error } = await supabase
+            .from('gantt_tasks')
+            .insert({
+              project_id: taskData.project_id,
+              title: taskData.title,
+              description: taskData.description,
+              start_date: taskData.start_date,
+              end_date: taskData.end_date,
+              duration: taskData.duration,
+              parent_id: taskData.parent_id,
+              is_milestone: taskData.is_milestone || false,
+              priority: taskData.priority || 'medium',
+              task_type: taskData.task_type || 'task',
+              crew_size: taskData.crew_size || 1,
+              estimated_hours: taskData.estimated_hours,
+              cost_estimate: taskData.cost_estimate,
+              sort_order: get().tasks.filter(t => t.project_id === taskData.project_id).length
+            })
+            .select()
+            .single();
+
+          if (error) throw error;
+
+          // Update local state
+          set(state => ({
+            tasks: [...state.tasks, data]
+          }));
+
+          return data.id;
+        } catch (error) {
+          console.error('Error creating task:', error);
+          throw error;
+        }
       },
       
       updateTask: async (taskId, updates) => {
-        set(state => ({
-          tasks: state.tasks.map(task =>
-            task.id === taskId 
-              ? { ...task, ...updates, updated_at: new Date().toISOString() }
-              : task
-          )
-        }));
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          // Verify user has access to the task's project
+          const { data: task, error: taskError } = await supabase
+            .from('gantt_tasks')
+            .select(`
+              id,
+              gantt_projects!inner(created_by)
+            `)
+            .eq('id', taskId)
+            .eq('gantt_projects.created_by', user.id)
+            .single();
+
+          if (taskError || !task) throw new Error('Task not found or access denied');
+
+          const { data, error } = await supabase
+            .from('gantt_tasks')
+            .update(updates)
+            .eq('id', taskId)
+            .select()
+            .single();
+
+          if (error) throw error;
+
+          // Update local state
+          set(state => ({
+            tasks: state.tasks.map(task =>
+              task.id === taskId ? data : task
+            )
+          }));
+        } catch (error) {
+          console.error('Error updating task:', error);
+          throw error;
+        }
       },
       
       deleteTask: async (taskId) => {
-        set(state => ({
-          tasks: state.tasks.filter(t => t.id !== taskId),
-          dependencies: state.dependencies.filter(d => 
-            d.from_task_id !== taskId && d.to_task_id !== taskId
-          )
-        }));
+        try {
+          const { user } = useAuthStore.getState();
+          if (!user) throw new Error('User not authenticated');
+
+          // Verify user has access to the task's project
+          const { data: task, error: taskError } = await supabase
+            .from('gantt_tasks')
+            .select(`
+              id,
+              gantt_projects!inner(created_by)
+            `)
+            .eq('id', taskId)
+            .eq('gantt_projects.created_by', user.id)
+            .single();
+
+          if (taskError || !task) throw new Error('Task not found or access denied');
+
+          const { error } = await supabase
+            .from('gantt_tasks')
+            .delete()
+            .eq('id', taskId);
+
+          if (error) throw error;
+
+          // Update local state
+          set(state => ({
+            tasks: state.tasks.filter(t => t.id !== taskId),
+            dependencies: state.dependencies.filter(d => 
+              d.from_task_id !== taskId && d.to_task_id !== taskId
+            )
+          }));
+        } catch (error) {
+          console.error('Error deleting task:', error);
+          throw error;
+        }
       },
       
       moveTask: async (taskId, newStartDate, newEndDate) => {

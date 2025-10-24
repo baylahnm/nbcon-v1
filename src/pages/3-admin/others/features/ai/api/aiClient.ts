@@ -347,17 +347,18 @@ class AiClient {
     mode: string;
     userId: string;
   }): Promise<void> {
-    try {
-      // TODO: Uncomment when ai_threads table is created
-      // const { error } = await supabase
-      //   .from('ai_threads')
-      //   .insert(thread);
-      // if (error) {
-      //   throw new Error(`Failed to save thread: ${error.message}`);
-      // }
-      console.log('saveThread called (table not yet created):', thread);
-    } catch (error) {
+    const { error} = await supabase
+      .from('ai_conversations')
+      .insert({
+        id: thread.id,
+        conversation_title: thread.title,
+        ai_service_mode: thread.mode,
+        user_id: thread.userId
+      });
+
+    if (error) {
       console.error('Failed to save thread:', error);
+      throw new Error(`Failed to save thread: ${error.message}`);
     }
   }
 
@@ -372,58 +373,55 @@ class AiClient {
     images?: any;
     userId: string;
   }): Promise<void> {
-    try {
-      // TODO: Uncomment when ai_messages table is created
-      // const { error } = await supabase
-      //   .from('ai_messages')
-      //   .insert(message);
-      // if (error) {
-      //   throw new Error(`Failed to save message: ${error.message}`);
-      // }
-      console.log('saveMessage called (table not yet created):', message);
-    } catch (error) {
+    const { error } = await supabase
+      .from('ai_messages')
+      .insert({
+        id: message.id,
+        conversation_id: message.threadId,
+        message_type: message.role,
+        content: message.content,
+        metadata: {
+          mode: message.mode,
+          attachments: message.attachments,
+          citations: message.citations,
+          images: message.images
+        }
+      });
+
+    if (error) {
       console.error('Failed to save message:', error);
+      throw new Error(`Failed to save message: ${error.message}`);
     }
   }
 
   async getThreads(userId: string): Promise<any[]> {
-    try {
-      // TODO: Uncomment when ai_threads table is created
-      // const { data, error } = await supabase
-      //   .from('ai_threads')
-      //   .select('*')
-      //   .eq('user_id', userId)
-      //   .order('updated_at', { ascending: false });
-      // if (error) {
-      //   throw new Error(`Failed to fetch threads: ${error.message}`);
-      // }
-      // return data || [];
-      console.log('getThreads called (table not yet created):', userId);
-      return [];
-    } catch (error) {
+    const { data, error } = await supabase
+      .from('ai_conversations')
+      .select('*')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false });
+
+    if (error) {
       console.error('Failed to fetch threads:', error);
-      return [];
+      throw new Error(`Failed to fetch threads: ${error.message}`);
     }
+
+    return data || [];
   }
 
   async getMessages(threadId: string): Promise<any[]> {
-    try {
-      // TODO: Uncomment when ai_messages table is created
-      // const { data, error } = await supabase
-      //   .from('ai_messages')
-      //   .select('*')
-      //   .eq('thread_id', threadId)
-      //   .order('created_at', { ascending: true });
-      // if (error) {
-      //   throw new Error(`Failed to fetch messages: ${error.message}`);
-      // }
-      // return data || [];
-      console.log('getMessages called (table not yet created):', threadId);
-      return [];
-    } catch (error) {
+    const { data, error } = await supabase
+      .from('ai_messages')
+      .select('*')
+      .eq('conversation_id', threadId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
       console.error('Failed to fetch messages:', error);
-      return [];
+      throw new Error(`Failed to fetch messages: ${error.message}`);
     }
+
+    return data || [];
   }
 
   async logEvent(event: {
@@ -435,20 +433,19 @@ class AiClient {
     if (!event.userId) {
       return;
     }
-    try {
-      // TODO: Uncomment when ai_events table is created
-      // const { error } = await supabase
-      //   .from('ai_events')
-      //   .insert({
-      //     ...event,
-      //     timestamp: new Date().toISOString(),
-      //   });
-      // if (error) {
-      //   console.error('Failed to log event:', error);
-      // }
-      console.log('logEvent called (table not yet created):', event);
-    } catch (error) {
-      console.error('Failed to log event:', error);
+    
+    const { error } = await supabase
+      .from('ai_events')
+      .insert({
+        user_id: event.userId,
+        session_id: event.sessionId,
+        event_type: event.type,
+        data: event.data
+      });
+
+    if (error) {
+      console.error('Failed to log AI event:', error);
+      // Don't throw - logging failures shouldn't break the app
     }
   }
 

@@ -61,6 +61,8 @@ export default function GanttChartTool() {
     setSelectedTask,
     setViewMode,
     setZoomLevel,
+    loadUserProjects,
+    loadProjectTasks,
     createProject,
     createTask,
     updateTask,
@@ -83,13 +85,45 @@ export default function GanttChartTool() {
   const [showChangeOrderDialog, setShowChangeOrderDialog] = useState(false);
   const [showPunchListDialog, setShowPunchListDialog] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Set selected project on mount
+  // Load user projects on mount
   useEffect(() => {
-    if (projectId && projectId !== selectedProject) {
-      setSelectedProject(projectId);
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        await loadUserProjects();
+      } catch (err) {
+        console.error('Error loading projects:', err);
+        setError('Failed to load projects. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [loadUserProjects]);
+
+  // Set selected project and load its tasks
+  useEffect(() => {
+    const loadProjectData = async () => {
+      if (projectId && projectId !== selectedProject) {
+        try {
+          setSelectedProject(projectId);
+          await loadProjectTasks(projectId);
+        } catch (err) {
+          console.error('Error loading project tasks:', err);
+          setError('Failed to load project tasks. Please try again.');
+        }
+      }
+    };
+
+    if (projectId && !isLoading) {
+      loadProjectData();
     }
-  }, [projectId, selectedProject, setSelectedProject]);
+  }, [projectId, selectedProject, setSelectedProject, loadProjectTasks, isLoading]);
 
   const currentProject = projects.find(p => p.id === selectedProject);
   const projectTasks = getTasksForProject(selectedProject || '');
@@ -136,6 +170,38 @@ export default function GanttChartTool() {
     await createPunchListItem(selectedProject, itemData);
     setShowPunchListDialog(false);
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="text-muted-foreground">Loading Gantt Chart...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <Alert className="max-w-md">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getTaskStatusColor = (status: string) => {
     switch (status) {
@@ -195,6 +261,73 @@ export default function GanttChartTool() {
           </Button>
         </div>
       </div>
+
+      {/* Project Selector */}
+      {projects.length > 0 && (
+        <Card className="border-border/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-bold">Select Project</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {projects.map((project) => (
+                <Card 
+                  key={project.id}
+                  className={`cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${
+                    selectedProject === project.id 
+                      ? 'ring-2 ring-primary border-primary/30' 
+                      : 'border-border/50 hover:border-primary/30'
+                  }`}
+                  onClick={() => {
+                    setSelectedProject(project.id);
+                    loadProjectTasks(project.id);
+                  }}
+                >
+                  <CardContent className="p-4">
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-sm">{project.name}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        {project.description || 'No description'}
+                      </p>
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge variant="outline" className="text-[10px]">
+                          {project.project_type}
+                        </Badge>
+                        <span className="text-muted-foreground">
+                          {project.status}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* No Projects State */}
+      {projects.length === 0 && !isLoading && (
+        <Card className="border-border/50">
+          <CardContent className="p-8 text-center">
+            <div className="space-y-4">
+              <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+                <BarChart3 className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-base mb-2">No Projects Found</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Create your first Gantt project to get started with timeline management.
+                </p>
+                <Button onClick={() => setShowAIGenerator(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Project
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Project Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

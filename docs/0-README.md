@@ -184,9 +184,9 @@ Bug fixing, database fixes, error handling, testing, deployment, bug reports, **
 - Future enhancement roadmap
 
 **Next Portal Docs:**
-- 8-ENGINEER_PORTAL.md 🔜
-- 9-ENTERPRISE_PORTAL.md 🔜
-- 10-ADMIN_PORTAL.md 🔜
+- 7-ENGINEER_PORTAL.md 🔜
+- 8-ENTERPRISE_PORTAL.md 🔜
+- 9-ADMIN_PORTAL.md 🔜
 
 ---
 
@@ -201,6 +201,7 @@ Bug fixing, database fixes, error handling, testing, deployment, bug reports, **
 | **Deploy AI function** | 5-AI_ASSISTANT_GUIDE.md → Setup Instructions |
 | **Monitor AI costs** | 5-AI_ASSISTANT_GUIDE.md → Cost Monitoring |
 | **Review AI Tools design** | 5-AI_ASSISTANT_GUIDE.md → Design System 🆕 |
+| **Setup Gantt with database** | 5-AI_ASSISTANT_GUIDE.md → Gantt Integration 🆕 |
 | **Understand the codebase** | 2-ARCHITECTURE_GUIDE.md → Account Isolation |
 | **Build a new page** | 2-ARCHITECTURE_GUIDE.md → UI Component Patterns |
 | **Follow design standards** | 3-UI_DESIGN_SYSTEM.md → Design Philosophy |
@@ -235,15 +236,15 @@ Email: info@nbcon.org
 Password: Qazwsx1234@
 ```
 
-### Recent Updates (v2.4)
+### Recent Updates (v2.5)
+- ✅ **Gantt Database Integration** - Timeline Builder connected to real Supabase database 🆕
+- ✅ **Unified Project Data Layer** - All AI tools can share project data 🆕
+- ✅ **AI Event Logging Fixed** - TICKET #002 resolved, all portals logging 🆕
 - ✅ **AI Tools Hub Pages** - 6 complete hub pages (Planning, Budgeting, Execution, Quality, Communication, Closure)
 - ✅ **Perfect Consistency** - All AI Tools pages have identical structure and styling
-- ✅ **Phase 6 Complete** - Closure & Handover tools with 5 specialized tools
 - ✅ **Browser Automation Testing** - Comprehensive testing with Playwright MCP
 - ✅ **AI Assistant Integration** - Full OpenAI backend with 30 construction-specific prompts
-- ✅ **Uniform Design System** - Theme-agnostic styling across all AI tools
-- ✅ **Edge Function Deployment** - AI chat function ready for production
-- ✅ **Database Schema** - AI tables ready with proper RLS policies
+- ✅ **Row-Level Security** - Users see only their own data across all tools 🆕
 
 ---
 
@@ -252,13 +253,13 @@ Password: Qazwsx1234@
 ```
 Total Files:        735+ source files
 Components:         596+ React components  
-Database Tables:    55 tables
-Documentation:      5 core guides + 1 portal-specific + AI Tools integrated
+Database Tables:    62 tables (55 existing + 7 Gantt tables) 🆕
+Documentation:      7 comprehensive guides (5 core + 1 AI + 1 Client portal)
 Tech Stack:         React 18 + TypeScript + Supabase + shadcn/ui
 Languages:          English + Arabic (RTL)
 Status:             100% Production Ready
-AI Integration:     OpenAI (gpt-4o) ✅ 30 prompts + 4 AI Tools hub pages 🆕
-Browser Tools:      Playwright MCP + Puppeteer + DevTools
+AI Integration:     OpenAI (gpt-4o) ✅ 30 prompts + Gantt DB integration 🆕
+Database Integration: Unified project data layer with RLS 🆕
 Portals Documented: Client (Free) ✅ | Engineer 🔜 | Enterprise 🔜 | Admin 🔜
 ```
 
@@ -326,10 +327,8 @@ docs/
 ├── 2-ARCHITECTURE_GUIDE.md       # System architecture & features + Structure Analysis
 ├── 3-UI_DESIGN_SYSTEM.md         # UI/UX patterns & components + Theme Migration + AI Tools Design
 ├── 4-PRODUCTION_GUIDE.md         # Production guide + Bug Reports + Fixes + Learning + Browser Tools
-├── 5-AI_ASSISTANT_GUIDE.md       # AI Assistant - Complete development guide
-├── 6-CLIENT_FREE_PORTAL.md       # Client Portal - SINGLE FILE ✅
-└── 7-AI_TOOLS_COMPLETE.md        # 🆕 AI Planning Tools - COMPLETE (6 tools) 🤖✨
-                                   # Everything: Implementation + Testing + Design System + Updates
+├── 5-AI_ASSISTANT_GUIDE.md       # AI Assistant + Gantt DB Integration - Complete guide 🤖✨
+└── 6-CLIENT_FREE_PORTAL.md       # Client Portal - SINGLE FILE ✅
 ```
 
 **Evolution:**
@@ -447,20 +446,20 @@ A: See 3-UI_DESIGN_SYSTEM.md → Component Examples
 
 ---
 
-**Documentation Version:** 4.2 (AI Tools Consolidated) ✨  
-**Core Guides:** **7 comprehensive guides** (5 core + 1 AI + 1 AI Tools) ✅  
+**Documentation Version:** 5.0 (Gantt Database Integration) ✨  
+**Core Guides:** **7 comprehensive guides** (5 core + 1 AI + 1 portal) ✅  
 **Portal Guides:** 1 of 4 complete (6-CLIENT_FREE_PORTAL ✅)  
-**Structure:** 7 guides + portal-specific (fully scalable)  
-**Consolidation:** Down from 14 files - **50% reduction** ✅  
-**Tickets Status:** 4/5 Closed ✅ | 1/5 Pending ⚠️  
+**Structure:** 7 guides total (fully consolidated)  
+**Consolidation:** Down from 16 files - **56% reduction** ✅  
+**Tickets Status:** 5/5 Closed ✅ (TICKET #002 resolved) 🎉  
 **Maintained By:** Development Team  
-**Last Review:** October 22, 2025
+**Last Review:** October 24, 2025
 
 **Quality:** Production-grade, comprehensive, ultra-consolidated ✅  
 **Coverage:** 
 - Getting Started: Auth + Database + AI basics ✅
-- AI Assistant: **Complete development guide** 🤖✨
-- AI Planning Tools: **6 interactive tools - COMPLETE DOCUMENTATION** 🛠️✨🆕
+- AI Assistant: **Complete development guide + Gantt DB integration** 🤖✨🆕
+- AI Planning Tools: **6 interactive tools - Gantt with real database** 🛠️✨🆕
 - UI Design: Patterns + **Enterprise Standards** + **Migration** + **AI Tools Design** ✅
 - Production: Bugs + Deployment + **Browser Tools** + **AI Tools Testing** ✅
 - Client Portal: 100% documented (1 file) ✅

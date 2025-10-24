@@ -359,10 +359,16 @@ class AiClient {
     userId: string;
   }): Promise<void> {
     const { error } = await supabase
-      .from('ai_threads')
-      .insert(thread);
+      .from('ai_conversations')
+      .insert({
+        id: thread.id,
+        conversation_title: thread.title,
+        ai_service_mode: thread.mode,
+        user_id: thread.userId
+      });
 
     if (error) {
+      console.error('Failed to save thread:', error);
       throw new Error(`Failed to save thread: ${error.message}`);
     }
   }
@@ -380,21 +386,34 @@ class AiClient {
   }): Promise<void> {
     const { error } = await supabase
       .from('ai_messages')
-      .insert(message);
+      .insert({
+        id: message.id,
+        conversation_id: message.threadId,
+        message_type: message.role,
+        content: message.content,
+        metadata: {
+          mode: message.mode,
+          attachments: message.attachments,
+          citations: message.citations,
+          images: message.images
+        }
+      });
 
     if (error) {
+      console.error('Failed to save message:', error);
       throw new Error(`Failed to save message: ${error.message}`);
     }
   }
 
   async getThreads(userId: string): Promise<any[]> {
     const { data, error } = await supabase
-      .from('ai_threads')
+      .from('ai_conversations')
       .select('*')
       .eq('user_id', userId)
       .order('updated_at', { ascending: false });
 
     if (error) {
+      console.error('Failed to fetch threads:', error);
       throw new Error(`Failed to fetch threads: ${error.message}`);
     }
 
@@ -405,10 +424,11 @@ class AiClient {
     const { data, error } = await supabase
       .from('ai_messages')
       .select('*')
-      .eq('thread_id', threadId)
+      .eq('conversation_id', threadId)
       .order('created_at', { ascending: true });
 
     if (error) {
+      console.error('Failed to fetch messages:', error);
       throw new Error(`Failed to fetch messages: ${error.message}`);
     }
 
@@ -424,15 +444,19 @@ class AiClient {
     if (!event.userId) {
       return;
     }
+    
     const { error } = await supabase
       .from('ai_events')
       .insert({
-        ...event,
-        timestamp: new Date().toISOString(),
+        user_id: event.userId,
+        session_id: event.sessionId,
+        event_type: event.type,
+        data: event.data
       });
 
     if (error) {
-      console.error('Failed to log event:', error);
+      console.error('Failed to log AI event:', error);
+      // Don't throw - logging failures shouldn't break the app
     }
   }
 
