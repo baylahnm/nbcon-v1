@@ -1,97 +1,125 @@
-import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useProjectParamSync } from '../hooks/useProjectParamSync';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
-import { Input } from '@/pages/1-HomePage/others/components/ui/input';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
-import { 
-  Users, 
-  Sparkles, 
-  Save, 
-  Download, 
+import { useToast } from '@/pages/1-HomePage/others/components/ui/use-toast';
+import {
+  Users,
   ChevronLeft,
-  Plus,
-  Trash2,
-  Edit3,
+  Loader2,
+  Briefcase,
+  ArrowLeft,
+  Layers,
+  Building2,
+  Mail,
   TrendingUp,
-  CheckCircle2
+  BarChart3
 } from 'lucide-react';
-import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
-
-interface Stakeholder {
-  id: string;
-  name: string;
-  role: string;
-  power: 'high' | 'low';
-  interest: 'high' | 'low';
-  engagementStrategy: string;
-}
+import { useProjectStore } from '../../../stores/useProjectStore';
+import { useStakeholderStore } from '../stores/useStakeholderStore';
 
 export default function StakeholderMapperTool() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const projectId = searchParams.get('project');
-  const { sendMessage } = useAiStore();
+  const { toast } = useToast();
   
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [stakeholders, setStakeholders] = useState<Stakeholder[]>([
-    {
-      id: '1',
-      name: 'Project Sponsor',
-      role: 'Executive Stakeholder',
-      power: 'high',
-      interest: 'high',
-      engagementStrategy: 'Closely manage - regular updates, decision involvement'
-    },
-    {
-      id: '2',
-      name: 'Construction Manager',
-      role: 'Key Stakeholder',
-      power: 'high',
-      interest: 'high',
-      engagementStrategy: 'Closely manage - daily coordination, resource allocation'
-    },
-    {
-      id: '3',
-      name: 'Local Community',
-      role: 'Affected Party',
-      power: 'low',
-      interest: 'high',
-      engagementStrategy: 'Keep informed - monthly updates, address concerns'
-    },
-    {
-      id: '4',
-      name: 'Regulatory Authority',
-      role: 'Compliance Stakeholder',
-      power: 'high',
-      interest: 'low',
-      engagementStrategy: 'Keep satisfied - ensure compliance, minimal engagement'
-    },
-  ]);
+  // Sync URL ?project=<id> ↔ store (bidirectional)
+  useProjectParamSync();
+  
+  // Get selected project from unified store
+  const { getSelectedProject } = useProjectStore();
+  const project = getSelectedProject();
+  
+  // Get stakeholders from stakeholder store
+  const { 
+    stakeholders, 
+    loadStakeholders, 
+    isLoading,
+    getByQuadrant
+  } = useStakeholderStore();
 
-  const handleAIGenerate = async () => {
-    setIsGenerating(true);
-    try {
-      const prompt = `Identify and analyze key stakeholders for a construction project. Project ID: ${projectId || 'N/A'}. For each stakeholder, provide: name, role, power level (high/low), interest level (high/low), and engagement strategy. Focus on Saudi construction projects with typical stakeholders like project sponsors, regulatory authorities, contractors, local community, etc.`;
-      await sendMessage(prompt);
-      setIsGenerating(false);
-      // Note: In production, parse AI response and update stakeholders state
-    } catch (error) {
-      console.error('AI generation failed:', error);
-      setIsGenerating(false);
+  // Load stakeholders when project selected
+  useEffect(() => {
+    if (project?.id) {
+      loadStakeholders(project.id);
     }
-  };
+  }, [project?.id, loadStakeholders]);
 
-  const getMatrixQuadrant = (power: string, interest: string) => {
-    if (power === 'high' && interest === 'high') return 'Closely Manage';
-    if (power === 'high' && interest === 'low') return 'Keep Satisfied';
-    if (power === 'low' && interest === 'high') return 'Keep Informed';
-    return 'Monitor';
-  };
+  // Empty state when no project selected
+  if (!project) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
+        <div className="p-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate('/free/ai-tools/planning')}
+            className="mb-4 h-8 text-xs"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Planning Hub
+          </Button>
+          
+          <Card className="border-border/50 mt-8">
+            <CardContent className="p-12 text-center">
+              <div className="bg-muted/30 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Briefcase className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-base font-semibold mb-2">No Project Selected</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Please select or create a project to use the Stakeholder Mapper
+              </p>
+              <Button onClick={() => navigate('/free/ai-tools/planning')}>
+                <Layers className="h-4 w-4 mr-2" />
+                Select Project
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
-  const getStakeholdersByQuadrant = (power: string, interest: string) => {
-    return stakeholders.filter(s => s.power === power && s.interest === interest);
-  };
+  // Get stakeholders by quadrant
+  const manageClosely = getByQuadrant('high', 'high');
+  const keepSatisfied = getByQuadrant('high', 'low');
+  const keepInformed = getByQuadrant('low', 'high');
+  const monitor = getByQuadrant('low', 'low');
+
+  // Calculate statistics
+  const totalStakeholders = stakeholders.length;
+  const withStrategy = stakeholders.filter(s => s.engagement_strategy).length;
+
+  // Render stakeholder card
+  const renderStakeholder = (stakeholder: typeof stakeholders[0]) => (
+    <Card key={stakeholder.id} className="border-border/50 hover:shadow-sm transition-all">
+      <CardContent className="p-3">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-bold truncate">{stakeholder.name}</h4>
+            {stakeholder.role && (
+              <p className="text-xs text-muted-foreground truncate">{stakeholder.role}</p>
+            )}
+          </div>
+        </div>
+        
+        {stakeholder.organization && (
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+            <Building2 className="h-3 w-3" />
+            <span className="truncate">{stakeholder.organization}</span>
+          </div>
+        )}
+
+        {stakeholder.engagement_strategy && (
+          <div className="pt-2 border-t border-border/40">
+            <p className="text-[10px] text-muted-foreground mb-1">Strategy:</p>
+            <p className="text-xs line-clamp-2">{stakeholder.engagement_strategy}</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
@@ -112,54 +140,27 @@ export default function StakeholderMapperTool() {
               <Users className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
-                Stakeholder Mapper
-                <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
-                  <Sparkles className="h-2.5 w-2.5 mr-1" />
-                  AI-Powered
-                </Badge>
+              <h1 className="text-base font-bold tracking-tight">
+                {project.name} - Stakeholders
               </h1>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Map stakeholders with power/interest matrix
+                Map and manage project stakeholders
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 text-xs">
-              <Save className="h-3.5 w-3.5 mr-1.5" />
-              Save
-            </Button>
-            <Button size="sm" variant="outline" className="h-8 text-xs">
-              <Download className="h-3.5 w-3.5 mr-1.5" />
-              Export PDF
-            </Button>
-            <Button size="sm" className="h-8 text-xs shadow-md" onClick={handleAIGenerate} disabled={isGenerating}>
-              {isGenerating ? (
-                <>
-                  <span className="h-3 w-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-1.5"></span>
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  AI Identify Stakeholders
-                </>
-              )}
-            </Button>
-          </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Statistics */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="border-border/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20">
                   <Users className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold tracking-tight">{stakeholders.length}</p>
-                  <p className="text-xs text-muted-foreground">Stakeholders</p>
+                  <p className="text-2xl font-bold tracking-tight">{totalStakeholders}</p>
+                  <p className="text-xs text-muted-foreground">Total</p>
                 </div>
               </div>
             </CardContent>
@@ -168,11 +169,11 @@ export default function StakeholderMapperTool() {
           <Card className="border-border/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                  <TrendingUp className="h-4 w-4 text-primary" />
+                <div className="bg-red-500/10 p-2 rounded-lg ring-1 ring-red-500/20">
+                  <TrendingUp className="h-4 w-4 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold tracking-tight">{getStakeholdersByQuadrant('high', 'high').length}</p>
+                  <p className="text-2xl font-bold tracking-tight">{manageClosely.length}</p>
                   <p className="text-xs text-muted-foreground">High Priority</p>
                 </div>
               </div>
@@ -182,13 +183,11 @@ export default function StakeholderMapperTool() {
           <Card className="border-border/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                <div className="bg-green-500/10 p-2 rounded-lg ring-1 ring-green-500/20">
+                  <BarChart3 className="h-4 w-4 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold tracking-tight">
-                    {stakeholders.filter(s => s.engagementStrategy).length}
-                  </p>
+                  <p className="text-2xl font-bold tracking-tight">{withStrategy}</p>
                   <p className="text-xs text-muted-foreground">With Strategy</p>
                 </div>
               </div>
@@ -198,12 +197,14 @@ export default function StakeholderMapperTool() {
           <Card className="border-border/50">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                  <Users className="h-4 w-4 text-primary" />
+                <div className="bg-blue-500/10 p-2 rounded-lg ring-1 ring-blue-500/20">
+                  <Building2 className="h-4 w-4 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold tracking-tight">4</p>
-                  <p className="text-xs text-muted-foreground">Categories</p>
+                  <p className="text-2xl font-bold tracking-tight">
+                    {new Set(stakeholders.map(s => s.organization).filter(Boolean)).size}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Organizations</p>
                 </div>
               </div>
             </CardContent>
@@ -216,174 +217,130 @@ export default function StakeholderMapperTool() {
             <CardTitle className="text-base font-bold tracking-tight">Power/Interest Matrix</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <div className="grid grid-cols-2 gap-4">
-              
-              {/* High Power / High Interest */}
-              <div className="p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-sm font-bold">Closely Manage</h3>
-                    <p className="text-[10px] text-muted-foreground">High Power • High Interest</p>
-                  </div>
-                  <Badge variant="outline" className="text-[9px] bg-primary/15 text-primary border-primary/25">
-                    {getStakeholdersByQuadrant('high', 'high').length}
-                  </Badge>
-                </div>
-                <div className="space-y-2">
-                  {getStakeholdersByQuadrant('high', 'high').map((stakeholder) => (
-                    <div key={stakeholder.id} className="p-3 bg-muted/30 rounded-lg border border-border/40">
-                      <p className="text-xs font-semibold">{stakeholder.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{stakeholder.role}</p>
-                    </div>
-                  ))}
-                </div>
+            {/* Loading State */}
+            {isLoading && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
+            )}
 
-              {/* High Power / Low Interest */}
-              <div className="p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-sm font-bold">Keep Satisfied</h3>
-                    <p className="text-[10px] text-muted-foreground">High Power • Low Interest</p>
-                  </div>
-                  <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
-                    {getStakeholdersByQuadrant('high', 'low').length}
-                  </Badge>
+            {/* Empty State */}
+            {!isLoading && stakeholders.length === 0 && (
+              <div className="text-center py-12">
+                <div className="bg-muted/30 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <div className="space-y-2">
-                  {getStakeholdersByQuadrant('high', 'low').map((stakeholder) => (
-                    <div key={stakeholder.id} className="p-3 bg-muted/30 rounded-lg border border-border/40">
-                      <p className="text-xs font-semibold">{stakeholder.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{stakeholder.role}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Low Power / High Interest */}
-              <div className="p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-sm font-bold">Keep Informed</h3>
-                    <p className="text-[10px] text-muted-foreground">Low Power • High Interest</p>
-                  </div>
-                  <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
-                    {getStakeholdersByQuadrant('low', 'high').length}
-                  </Badge>
-                </div>
-                <div className="space-y-2">
-                  {getStakeholdersByQuadrant('low', 'high').map((stakeholder) => (
-                    <div key={stakeholder.id} className="p-3 bg-muted/30 rounded-lg border border-border/40">
-                      <p className="text-xs font-semibold">{stakeholder.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{stakeholder.role}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Low Power / Low Interest */}
-              <div className="p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-sm font-bold">Monitor</h3>
-                    <p className="text-[10px] text-muted-foreground">Low Power • Low Interest</p>
-                  </div>
-                  <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/20">
-                    {getStakeholdersByQuadrant('low', 'low').length}
-                  </Badge>
-                </div>
-                <div className="text-center py-6">
-                  <p className="text-xs text-muted-foreground">No stakeholders in this quadrant</p>
-                </div>
-              </div>
-
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stakeholder List */}
-        <Card className="border-border/50">
-          <CardHeader className="p-4 border-b border-border/40">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-bold tracking-tight">All Stakeholders</CardTitle>
-              <Button size="sm" variant="outline" className="h-7 text-xs">
-                <Plus className="h-3 w-3 mr-1" />
-                Add Stakeholder
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4">
-            <div className="space-y-4">
-              {stakeholders.map((stakeholder) => (
-                <div key={stakeholder.id} className="p-4 bg-background rounded-lg border border-border hover:shadow-md transition-all">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md shrink-0">
-                        <Users className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-bold mb-1">{stakeholder.name}</h3>
-                        <p className="text-xs text-muted-foreground mb-2">{stakeholder.role}</p>
-                        
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="outline" className={`text-[9px] ${
-                            stakeholder.power === 'high' 
-                              ? 'bg-primary/15 text-primary border-primary/25' 
-                              : 'bg-primary/10 text-primary border-primary/20'
-                          }`}>
-                            {stakeholder.power === 'high' ? 'High Power' : 'Low Power'}
-                          </Badge>
-                          <Badge variant="outline" className={`text-[9px] ${
-                            stakeholder.interest === 'high' 
-                              ? 'bg-primary/15 text-primary border-primary/25' 
-                              : 'bg-primary/10 text-primary border-primary/20'
-                          }`}>
-                            {stakeholder.interest === 'high' ? 'High Interest' : 'Low Interest'}
-                          </Badge>
-                        </div>
-                        
-                        <div className="p-3 bg-muted/30 rounded-lg border border-border/40">
-                          <p className="text-[10px] text-muted-foreground mb-1">Engagement Strategy</p>
-                          <p className="text-xs">{stakeholder.engagementStrategy}</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-1">
-                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                        <Edit3 className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* AI Generation Prompt */}
-            {stakeholders.length === 0 && (
-              <div className="text-center py-12 bg-muted/20 rounded-lg border-2 border-dashed border-border/50">
-                <div className="bg-primary/10 p-3 rounded-xl ring-1 ring-primary/20 shadow-md w-fit mx-auto mb-4">
-                  <Sparkles className="h-6 w-6 text-primary" />
-                </div>
-                <p className="text-sm font-medium mb-1">No stakeholders yet</p>
-                <p className="text-xs text-muted-foreground mb-4">
-                  Use AI to identify stakeholders or add manually
+                <h3 className="text-base font-semibold mb-2">No Stakeholders Yet</h3>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Identify and map your project stakeholders
                 </p>
-                <Button className="h-8 text-xs shadow-md" onClick={handleAIGenerate}>
-                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                  Generate with AI
-                </Button>
+              </div>
+            )}
+
+            {/* 2x2 Matrix */}
+            {!isLoading && stakeholders.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Manage Closely (High Power, High Interest) */}
+                <Card className="bg-red-500/5 border-red-500/20">
+                  <CardHeader className="p-3 border-b border-red-500/20">
+                    <CardTitle className="text-sm font-bold text-red-600">
+                      Manage Closely
+                      <Badge className="ml-2 text-[9px] bg-red-500/10">
+                        {manageClosely.length}
+                      </Badge>
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">High Power • High Interest</p>
+                  </CardHeader>
+                  <CardContent className="p-3 space-y-2">
+                    {manageClosely.map(renderStakeholder)}
+                    {manageClosely.length === 0 && (
+                      <p className="text-xs text-center text-muted-foreground py-4">No stakeholders</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Keep Satisfied (High Power, Low Interest) */}
+                <Card className="bg-amber-500/5 border-amber-500/20">
+                  <CardHeader className="p-3 border-b border-amber-500/20">
+                    <CardTitle className="text-sm font-bold text-amber-600">
+                      Keep Satisfied
+                      <Badge className="ml-2 text-[9px] bg-amber-500/10">
+                        {keepSatisfied.length}
+                      </Badge>
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">High Power • Low Interest</p>
+                  </CardHeader>
+                  <CardContent className="p-3 space-y-2">
+                    {keepSatisfied.map(renderStakeholder)}
+                    {keepSatisfied.length === 0 && (
+                      <p className="text-xs text-center text-muted-foreground py-4">No stakeholders</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Keep Informed (Low Power, High Interest) */}
+                <Card className="bg-blue-500/5 border-blue-500/20">
+                  <CardHeader className="p-3 border-b border-blue-500/20">
+                    <CardTitle className="text-sm font-bold text-blue-600">
+                      Keep Informed
+                      <Badge className="ml-2 text-[9px] bg-blue-500/10">
+                        {keepInformed.length}
+                      </Badge>
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">Low Power • High Interest</p>
+                  </CardHeader>
+                  <CardContent className="p-3 space-y-2">
+                    {keepInformed.map(renderStakeholder)}
+                    {keepInformed.length === 0 && (
+                      <p className="text-xs text-center text-muted-foreground py-4">No stakeholders</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Monitor (Low Power, Low Interest) */}
+                <Card className="bg-green-500/5 border-green-500/20">
+                  <CardHeader className="p-3 border-b border-green-500/20">
+                    <CardTitle className="text-sm font-bold text-green-600">
+                      Monitor
+                      <Badge className="ml-2 text-[9px] bg-green-500/10">
+                        {monitor.length}
+                      </Badge>
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">Low Power • Low Interest</p>
+                  </CardHeader>
+                  <CardContent className="p-3 space-y-2">
+                    {monitor.map(renderStakeholder)}
+                    {monitor.length === 0 && (
+                      <p className="text-xs text-center text-muted-foreground py-4">No stakeholders</p>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             )}
           </CardContent>
         </Card>
 
-        
+        {/* Helper Text */}
+        <Card className="bg-gradient-to-r from-muted/50 to-muted/20 border-border/40">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20 shrink-0">
+                <Users className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold mb-1">💡 Stakeholder Matrix</p>
+                <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
+                  <li><strong>Manage Closely:</strong> High engagement, regular updates, involve in decisions</li>
+                  <li><strong>Keep Satisfied:</strong> Meet needs, inform of major changes</li>
+                  <li><strong>Keep Informed:</strong> Regular communication, address concerns</li>
+                  <li><strong>Monitor:</strong> Periodic updates, minimal effort</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
       </div>
     </div>
   );
 }
-

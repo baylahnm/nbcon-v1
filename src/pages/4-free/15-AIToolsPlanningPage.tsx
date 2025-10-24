@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
+import { useProjectParamSync } from './others/features/ai-tools/hooks/useProjectParamSync';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
@@ -148,6 +149,9 @@ export default function AIToolsPlanningPage() {
   const navigate = useNavigate();
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+
+  // Sync URL ?project=<id> ↔ store (bidirectional)
+  useProjectParamSync();
   
   // Use unified project store instead of mock data
   const { 

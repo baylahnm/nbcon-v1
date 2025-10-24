@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useProjectParamSync } from '../hooks/useProjectParamSync';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Textarea } from '@/pages/1-HomePage/others/components/ui/textarea';
@@ -26,6 +27,9 @@ import { useCharterStore } from '../stores/useCharterStore';
 export default function ProjectCharterTool() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Sync URL ?project=<id> ↔ store (bidirectional)
+  useProjectParamSync();
   
   // Get selected project from unified store
   const { getSelectedProject } = useProjectStore();

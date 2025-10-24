@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useProjectParamSync } from '../hooks/useProjectParamSync';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
@@ -46,8 +47,12 @@ export default function GanttChartTool() {
     console.log('🎯 GanttChartTool rendered!', window.location.pathname);
   }
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const projectId = searchParams.get('project') || '1';
+  
+  // Sync URL ?project=<id> ↔ store (bidirectional)
+  useProjectParamSync();
+  
+  // Get selected project from unified store
+  const { selectedProjectId } = useProjectStore();
   
   const {
     projects,
@@ -111,13 +116,13 @@ export default function GanttChartTool() {
     loadData();
   }, [loadUserProjects]);
 
-  // Set selected project and load its tasks
+  // Set selected project and load its tasks (use unified store's selected project)
   useEffect(() => {
     const loadProjectData = async () => {
-      if (projectId && projectId !== selectedProject) {
+      if (selectedProjectId && selectedProjectId !== selectedProject) {
         try {
-          setSelectedProject(projectId);
-          await loadProjectTasks(projectId);
+          setSelectedProject(selectedProjectId);
+          await loadProjectTasks(selectedProjectId);
         } catch (err) {
           console.error('Error loading project tasks:', err);
           setError('Failed to load project tasks. Please try again.');
@@ -125,10 +130,10 @@ export default function GanttChartTool() {
       }
     };
 
-    if (projectId && !isLoading) {
+    if (selectedProjectId && !isLoading) {
       loadProjectData();
     }
-  }, [projectId, selectedProject, setSelectedProject, loadProjectTasks, isLoading]);
+  }, [selectedProjectId, selectedProject, setSelectedProject, loadProjectTasks, isLoading]);
 
   const currentProject = projects.find(p => p.id === selectedProject);
   const projectTasks = getTasksForProject(selectedProject || '');
