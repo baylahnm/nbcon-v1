@@ -37,6 +37,7 @@ import {
 import { useGanttStore } from '../stores/useGanttStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { GanttChartVisualization } from '../components/GanttChartVisualization';
+import XScroll from '@/pages/1-HomePage/others/components/ui/x-scroll';
 
 export default function GanttChartTool() {
   if (process.env.NODE_ENV !== 'production') {
@@ -224,7 +225,7 @@ export default function GanttChartTool() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10 p-4 space-y-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/10 px-4 py-4 space-y-4">
       
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-border/40">
@@ -403,20 +404,24 @@ export default function GanttChartTool() {
         <TabsContent value="gantt" className="space-y-4">
           {/* Gantt Chart Visualization */}
           {projectTasks.length > 0 ? (
-            <div className="overflow-x-auto">
-              <GanttChartVisualization
-                tasks={projectTasks}
-                onTaskClick={(taskId) => {
-                  const task = projectTasks.find(t => t.id === taskId);
-                  if (task) {
-                    setEditingTask(task);
-                    setShowTaskDialog(true);
-                  }
-                }}
-                onTaskUpdate={(taskId, updates) => {
-                  updateTask(taskId, updates);
-                }}
-              />
+            <div className="gantt-chart-scroll">
+              <XScroll>
+                <div className="p-1 pb-4">
+                  <GanttChartVisualization
+                    tasks={projectTasks}
+                    onTaskClick={(taskId) => {
+                      const task = projectTasks.find(t => t.id === taskId);
+                      if (task) {
+                        setEditingTask(task);
+                        setShowTaskDialog(true);
+                      }
+                    }}
+                    onTaskUpdate={(taskId, updates) => {
+                      updateTask(taskId, updates);
+                    }}
+                  />
+                </div>
+              </XScroll>
             </div>
           ) : (
             <Card className="border-border/50">
@@ -455,8 +460,8 @@ export default function GanttChartTool() {
           {projectTasks.length > 0 && (
             <Card className="border-border/50">
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <Button
                       size="sm"
                       variant="outline"
@@ -467,7 +472,7 @@ export default function GanttChartTool() {
                       Add Task
                     </Button>
                     <Select value={zoomLevel} onValueChange={(value: any) => setZoomLevel(value)}>
-                      <SelectTrigger className="w-24 h-8 text-xs">
+                      <SelectTrigger className="w-24 h-8 text-xs border-input">
                         <SelectValue placeholder="Zoom" />
                       </SelectTrigger>
                       <SelectContent>

@@ -2173,6 +2173,40 @@ All colors MUST be HSL.
   display: none !important;
 }
 
+/* Force visible scrollbar for Gantt Chart page - Always show with full opacity and theme color */
+.gantt-chart-scroll [data-slot="scroll-area-viewport"] {
+  overflow-x: scroll !important; /* Force scrollbar to always show */
+}
+
+.gantt-chart-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+  height: 12px; /* Larger for better visibility */
+  display: block !important; /* Force display */
+}
+
+.gantt-chart-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.8);
+  border-radius: 6px;
+  border: 1px solid hsl(var(--border));
+}
+
+.gantt-chart-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 1) !important; /* 100% OPACITY - Theme color */
+  border-radius: 6px;
+  border: 2px solid hsl(var(--background));
+  min-width: 50px; /* Minimum thumb width for visibility */
+}
+
+.gantt-chart-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary-dark) / 1) !important; /* 100% OPACITY - Darker theme color */
+  box-shadow: 0 0 6px hsl(var(--primary) / 0.5);
+}
+
+/* Firefox - Gantt Chart page specific */
+.gantt-chart-scroll [data-slot="scroll-area-viewport"] {
+  scrollbar-width: auto !important; /* Show full scrollbar, not thin */
+  scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
+}
+
 /* Force visible scrollbar for Browse Engineers page - Always show with full opacity */
 .browse-engineers-scroll [data-slot="scroll-area-viewport"] {
   overflow-x: scroll !important; /* Force scrollbar to always show */

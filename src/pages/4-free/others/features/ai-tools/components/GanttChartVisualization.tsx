@@ -311,7 +311,7 @@ export function GanttChartVisualization({ tasks, onTaskClick, onTaskUpdate }: Ga
           }}
         />
 
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-0">
           {hierarchy.map(({ task, children }) => renderTaskRow(task, 0, children))}
           
           {tasks.length === 0 && (
