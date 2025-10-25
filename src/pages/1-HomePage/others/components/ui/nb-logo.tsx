@@ -13,7 +13,7 @@ const NbLogo = ({ className }: NbLogoProps) => {
       <span className={`text-primary-foreground font-bold relative inline-block ${isSmall ? 'text-sm' : 'text-2xl'}`}>
         n.
         <span 
-          className={`absolute italic font-bold transform -rotate-12 ${isSmall ? '-top-1 left-0 text-[6px]' : '-top-2 left-2 text-[11px]'}`}
+          className={`absolute italic font-bold transform -rotate-12 ${isSmall ? '-top-1 left-0 text-[6px]' : '-top-2 left-2 text-[8px]'}`}
           style={{ fontFamily: 'Quintessential, cursive' }}
         >
           pro
