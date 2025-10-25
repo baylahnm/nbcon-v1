@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
@@ -38,6 +38,10 @@ import {
 import { useAiStore } from '@/pages/4-free/others/features/ai/store/useAiStore';
 import { toast } from 'sonner';
 import { ROUTES, getRouteWithProject } from '@/shared/constants/routes';
+import { useProjectStore } from './others/stores/useProjectStore';
+import { useProjectParamSync } from './others/features/ai-tools/hooks/useProjectParamSync';
+import { CreateProjectDialog } from './others/features/ai-tools/components/CreateProjectDialog';
+import { Briefcase } from 'lucide-react';
 
 interface QualityTool {
   id: string;
@@ -53,18 +57,33 @@ interface QualityTool {
 
 export default function QualityCompliancePage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const projectId = searchParams.get('project');
   const { sendMessage } = useAiStore();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedProject, setSelectedProject] = useState('1');
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
-  // Sample project data
-  const projects = [
-    { id: '1', name: 'Riyadh Office Complex', status: 'active', progress: 65 },
-    { id: '2', name: 'Jeddah Residential Tower', status: 'planning', progress: 15 },
-    { id: '3', name: 'Dammam Industrial Facility', status: 'active', progress: 40 },
-  ];
+  // Sync URL ?project=<id> ↔ store (bidirectional)
+  useProjectParamSync();
+
+  // Use unified project store instead of mock data
+  const { 
+    projects, 
+    selectedProjectId, 
+    selectProject, 
+    loadUserProjects,
+    isLoading: projectsLoading 
+  } = useProjectStore();
+
+  // Load projects on mount
+  useEffect(() => {
+    loadUserProjects();
+  }, [loadUserProjects]);
+
+  // Auto-select first project if none selected
+  useEffect(() => {
+    if (!selectedProjectId && projects.length > 0) {
+      selectProject(projects[0].id);
+    }
+  }, [projects, selectedProjectId, selectProject]);
 
   const qualityTools: QualityTool[] = [
     {
@@ -125,13 +144,13 @@ export default function QualityCompliancePage() {
   ];
 
   const handleToolClick = (route: string) => {
-    navigate(getRouteWithProject(route, selectedProject));
+    navigate(getRouteWithProject(route, selectedProjectId || ''));
   };
 
   const handleAIGenerate = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `Generate quality and compliance insights for a construction project. Project ID: ${projectId || 'N/A'}. Provide recommendations for quality control, compliance monitoring, and defect prevention based on Saudi construction standards and SCE requirements.`;
+      const prompt = `Generate quality and compliance insights for a construction project. Project ID: ${selectedProjectId || 'N/A'}. Provide recommendations for quality control, compliance monitoring, and defect prevention based on Saudi construction standards and SCE requirements.`;
       await sendMessage(prompt);
       toast.success("AI has generated quality insights. Review recommendations below.");
     } catch (error) {
@@ -142,7 +161,7 @@ export default function QualityCompliancePage() {
     }
   };
 
-  const selectedProjectData = projects.find(p => p.id === selectedProject);
+  const selectedProjectData = projects.find(p => p.id === selectedProjectId);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
@@ -184,35 +203,60 @@ export default function QualityCompliancePage() {
               </div>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
-              <Select value={selectedProject} onValueChange={setSelectedProject}>
-                <SelectTrigger className="border border-border h-10">
-                  <SelectValue placeholder="Choose a project to work on..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {projects.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {selectedProjectData && (
-                <div className="p-4 bg-background rounded-lg border border-border space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium">{selectedProjectData.name}</span>
-                    <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
-                      {selectedProjectData.status}
-                    </Badge>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Progress</span>
-                      <span className="font-medium">{selectedProjectData.progress}%</span>
-                    </div>
-                    <Progress value={selectedProjectData.progress} className="h-1.5" />
-                  </div>
+              {projectsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
+              ) : projects.length === 0 ? (
+                <div className="text-center py-6 space-y-3">
+                  <div className="bg-muted/30 h-12 w-12 rounded-full flex items-center justify-center mx-auto">
+                    <Briefcase className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm font-medium">No Projects Yet</p>
+                  <p className="text-xs text-muted-foreground">Create your first project to get started</p>
+                  <Button onClick={() => setShowCreateDialog(true)} className="h-8 text-xs">
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Create Project
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Select value={selectedProjectId || ''} onValueChange={selectProject}>
+                    <SelectTrigger className="border border-border h-10">
+                      <SelectValue placeholder="Choose a project to work on..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {selectedProjectData && (
+                    <div className="p-4 bg-background rounded-lg border border-border space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium line-clamp-1">{selectedProjectData.name}</span>
+                        <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
+                          {selectedProjectData.status}
+                        </Badge>
+                      </div>
+                      {selectedProjectData.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {selectedProjectData.description}
+                        </p>
+                      )}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Progress</span>
+                          <span className="font-medium">{selectedProjectData.progress || 0}%</span>
+                        </div>
+                        <Progress value={selectedProjectData.progress || 0} className="h-1.5" />
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
@@ -288,7 +332,7 @@ export default function QualityCompliancePage() {
                     <Button
                       onClick={() => handleToolClick(tool.route)}
                       className="w-full h-8 text-xs shadow-md"
-                      disabled={!selectedProject}
+                      disabled={!selectedProjectId}
                     >
                       Launch Tool →
                     </Button>
@@ -521,6 +565,15 @@ export default function QualityCompliancePage() {
         </Card>
 
       </div>
+
+      {/* Create Project Dialog */}
+      <CreateProjectDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        onSuccess={(project) => {
+          selectProject(project.id);
+        }}
+      />
     </div>
   );
 }

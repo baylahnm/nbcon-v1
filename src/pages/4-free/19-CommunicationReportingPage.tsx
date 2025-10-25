@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
@@ -22,9 +22,14 @@ import {
   MessageCircle,
   FolderOpen,
   Layers,
-  Rocket
+  Rocket,
+  Briefcase,
+  Loader2,
 } from 'lucide-react';
 import { ROUTES } from '@/shared/constants/routes';
+import { useProjectStore } from './others/stores/useProjectStore';
+import { useProjectParamSync } from './others/features/ai-tools/hooks/useProjectParamSync';
+import { CreateProjectDialog } from './others/features/ai-tools/components/CreateProjectDialog';
 
 interface CommunicationTool {
   id: string;
@@ -84,38 +89,35 @@ const communicationTools: CommunicationTool[] = [
   }
 ];
 
-const mockProjects = [
-  {
-    id: '1',
-    name: 'Riyadh Metro Extension',
-    status: 'Active',
-    progress: 75,
-    client: 'Riyadh Development Authority',
-    deadline: '2025-06-30'
-  },
-  {
-    id: '2',
-    name: 'NEOM Smart City Infrastructure',
-    status: 'Planning',
-    progress: 25,
-    client: 'NEOM Company',
-    deadline: '2026-12-31'
-  },
-  {
-    id: '3',
-    name: 'Red Sea Tourism Development',
-    status: 'Active',
-    progress: 60,
-    client: 'Red Sea Global',
-    deadline: '2025-09-15'
-  }
-];
-
 export default function CommunicationReportingPage() {
   const navigate = useNavigate();
-  const [selectedProject, setSelectedProject] = useState<string>('1');
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
-  const selectedProjectData = mockProjects.find(p => p.id === selectedProject);
+  // Sync URL ?project=<id> ↔ store (bidirectional)
+  useProjectParamSync();
+
+  // Use unified project store instead of mock data
+  const { 
+    projects, 
+    selectedProjectId, 
+    selectProject, 
+    loadUserProjects,
+    isLoading: projectsLoading 
+  } = useProjectStore();
+
+  // Load projects on mount
+  useEffect(() => {
+    loadUserProjects();
+  }, [loadUserProjects]);
+
+  // Auto-select first project if none selected
+  useEffect(() => {
+    if (!selectedProjectId && projects.length > 0) {
+      selectProject(projects[0].id);
+    }
+  }, [projects, selectedProjectId, selectProject]);
+
+  const selectedProjectData = projects.find(p => p.id === selectedProjectId);
 
   const handleToolClick = (tool: CommunicationTool) => {
     navigate(tool.route);
@@ -179,39 +181,63 @@ export default function CommunicationReportingPage() {
             </CardHeader>
             <CardContent className="p-4">
               <div className="space-y-4">
-                <Select value={selectedProject} onValueChange={setSelectedProject}>
-                  <SelectTrigger className="border border-border h-10">
-                    <SelectValue placeholder="Choose a project to work on..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockProjects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                {selectedProjectData && (
-                  <div className="p-4 bg-background border border-border rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-sm font-semibold">{selectedProjectData.name}</h3>
-                      <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-[9px]">
-                        {selectedProjectData.status}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground mb-3">{selectedProjectData.client}</p>
-                    <div className="space-y-4">
-                      <div className="flex justify-between text-xs">
-                        <span>Progress</span>
-                        <span>{selectedProjectData.progress}%</span>
-                      </div>
-                      <Progress value={selectedProjectData.progress} className="h-2" />
-                    </div>
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      Deadline: {selectedProjectData.deadline}
-                    </p>
+                {projectsLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
+                ) : projects.length === 0 ? (
+                  <div className="text-center py-6 space-y-3">
+                    <div className="bg-muted/30 h-12 w-12 rounded-full flex items-center justify-center mx-auto">
+                      <Briefcase className="h-6 w-6 text-muted-foreground" />
+                    </div>
+                    <p className="text-sm font-medium">No Projects Yet</p>
+                    <p className="text-xs text-muted-foreground">Create your first project to get started</p>
+                    <Button onClick={() => setShowCreateDialog(true)} className="h-8 text-xs">
+                      <Plus className="h-3.5 w-3.5 mr-1.5" />
+                      Create Project
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Select value={selectedProjectId || ''} onValueChange={selectProject}>
+                      <SelectTrigger className="border border-border h-10">
+                        <SelectValue placeholder="Choose a project to work on..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    
+                    {selectedProjectData && (
+                      <div className="p-4 bg-background border border-border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-sm font-semibold line-clamp-1">{selectedProjectData.name}</h3>
+                          <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
+                            {selectedProjectData.status}
+                          </Badge>
+                        </div>
+                        {selectedProjectData.description && (
+                          <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{selectedProjectData.description}</p>
+                        )}
+                        <div className="space-y-4">
+                          <div className="flex justify-between text-xs">
+                            <span>Progress</span>
+                            <span>{selectedProjectData.progress || 0}%</span>
+                          </div>
+                          <Progress value={selectedProjectData.progress || 0} className="h-2" />
+                        </div>
+                        {selectedProjectData.end_date && (
+                          <p className="text-[10px] text-muted-foreground mt-2">
+                            End Date: {new Date(selectedProjectData.end_date).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </CardContent>
@@ -289,7 +315,7 @@ export default function CommunicationReportingPage() {
                     <Button
                       onClick={() => handleToolClick(tool)}
                       className="w-full h-8 text-xs shadow-md"
-                      disabled={!selectedProject}
+                      disabled={!selectedProjectId}
                     >
                       Launch Tool →
                     </Button>
@@ -497,6 +523,15 @@ export default function CommunicationReportingPage() {
         </Card>
 
       </div>
+
+      {/* Create Project Dialog */}
+      <CreateProjectDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        onSuccess={(project) => {
+          selectProject(project.id);
+        }}
+      />
     </div>
   );
 }

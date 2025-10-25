@@ -31,17 +31,14 @@ import {
   Target,
   Calendar,
   Rocket,
+  Loader2,
 } from 'lucide-react';
 
 // Import shared components
 import { ROUTES } from '@/shared/constants/routes';
-
-// Sample projects (same as planning page)
-const sampleProjects = [
-  { id: '1', name: 'Al-Khobar Commercial Center', progress: 68, budget: 850000 },
-  { id: '2', name: 'Riyadh Metro Extension Phase 3', progress: 25, budget: 2100000 },
-  { id: '3', name: 'NEOM Infrastructure Phase 2', progress: 42, budget: 3500000 },
-];
+import { useProjectStore } from './others/stores/useProjectStore';
+import { useProjectParamSync } from './others/features/ai-tools/hooks/useProjectParamSync';
+import { CreateProjectDialog } from './others/features/ai-tools/components/CreateProjectDialog';
 
 // 6 Cost & Budgeting Tools
 const budgetingTools = [
@@ -144,24 +141,41 @@ const recentOutputs = [
 
 export default function CostBudgetingPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [selectedProject, setSelectedProject] = useState<string>('1');
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
+  // Sync URL ?project=<id> ↔ store (bidirectional)
+  useProjectParamSync();
+
+  // Use unified project store instead of mock data
+  const { 
+    projects, 
+    selectedProjectId, 
+    selectProject, 
+    loadUserProjects,
+    isLoading: projectsLoading 
+  } = useProjectStore();
+
+  // Load projects on mount
   useEffect(() => {
-    // Get project from URL or default to first project
-    const projectId = searchParams.get('project') || sampleProjects[0].id;
-    setSelectedProject(projectId);
-  }, [searchParams]);
+    loadUserProjects();
+  }, [loadUserProjects]);
+
+  // Auto-select first project if none selected
+  useEffect(() => {
+    if (!selectedProjectId && projects.length > 0) {
+      selectProject(projects[0].id);
+    }
+  }, [projects, selectedProjectId, selectProject]);
 
   const handleToolClick = (route: string) => {
-    if (selectedProject) {
-      navigate(`${route}?project=${selectedProject}`);
+    if (selectedProjectId) {
+      navigate(`${route}?project=${selectedProjectId}`);
     } else {
       navigate(route);
     }
   };
 
-  const selectedProjectData = sampleProjects.find(p => p.id === selectedProject);
+  const selectedProjectData = projects.find(p => p.id === selectedProjectId);
   const completedTools = 3; // Sample: 3 out of 6 tools used
   const progressPercentage = (completedTools / budgetingTools.length) * 100;
 
@@ -206,41 +220,72 @@ export default function CostBudgetingPage() {
               </div>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
-              <Select value={selectedProject} onValueChange={setSelectedProject}>
-                <SelectTrigger className="border border-border h-10">
-                  <SelectValue placeholder="Choose a project to work on..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {sampleProjects.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {selectedProjectData && (
-                <div className="p-4 bg-background rounded-lg border border-border space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium">{selectedProjectData.name}</span>
-                    <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
-                      Active
-                    </Badge>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Progress</span>
-                      <span className="font-medium">{selectedProjectData.progress}%</span>
-                    </div>
-                    <Progress value={selectedProjectData.progress} className="h-1.5" />
-                  </div>
-                  <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="text-muted-foreground">Budget</span>
-                    <span className="font-bold text-primary">
-                      {selectedProjectData.budget.toLocaleString()} SAR
-                    </span>
-                  </div>
+              {projectsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
+              ) : projects.length === 0 ? (
+                <div className="text-center py-6 space-y-3">
+                  <div className="bg-muted/30 h-12 w-12 rounded-full flex items-center justify-center mx-auto">
+                    <Briefcase className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm font-medium">No Projects Yet</p>
+                  <p className="text-xs text-muted-foreground">Create your first project to get started</p>
+                  <Button onClick={() => setShowCreateDialog(true)} className="h-8 text-xs">
+                    <Plus className="h-3.5 w-3.5 mr-1.5" />
+                    Create Project
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Select value={selectedProjectId || ''} onValueChange={selectProject}>
+                    <SelectTrigger className="border border-border h-10">
+                      <SelectValue placeholder="Choose a project to work on..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {selectedProjectData && (
+                    <div className="p-4 bg-background rounded-lg border border-border space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium line-clamp-1">{selectedProjectData.name}</span>
+                        <Badge className="bg-primary/10 text-primary border-primary/20 text-[9px]">
+                          {selectedProjectData.status}
+                        </Badge>
+                      </div>
+                      {selectedProjectData.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {selectedProjectData.description}
+                        </p>
+                      )}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">Progress</span>
+                          <span className="font-medium">{selectedProjectData.progress || 0}%</span>
+                        </div>
+                        <Progress value={selectedProjectData.progress || 0} className="h-1.5" />
+                      </div>
+                      <div className="flex items-center justify-between text-xs pt-1">
+                        <span className="text-muted-foreground">Budget</span>
+                        <span className="font-bold text-primary">
+                          {(selectedProjectData.budget || 0).toLocaleString()} {selectedProjectData.currency || 'SAR'}
+                        </span>
+                      </div>
+                      {selectedProjectData.task_count !== undefined && (
+                        <div className="flex items-center justify-between text-xs pt-1">
+                          <span className="text-muted-foreground">Tasks</span>
+                          <span className="font-medium">{selectedProjectData.task_count}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
@@ -316,7 +361,7 @@ export default function CostBudgetingPage() {
                     <Button
                       onClick={() => handleToolClick(tool.route)}
                       className="w-full h-8 text-xs shadow-md"
-                      disabled={!selectedProject}
+                      disabled={!selectedProjectId}
                     >
                       Launch Tool →
                     </Button>
@@ -501,6 +546,15 @@ export default function CostBudgetingPage() {
         </Card>
 
       </div>
+
+      {/* Create Project Dialog */}
+      <CreateProjectDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        onSuccess={(project) => {
+          selectProject(project.id);
+        }}
+      />
     </div>
   );
 }
