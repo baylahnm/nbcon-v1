@@ -105,8 +105,6 @@ export default function WBSBuilderTool() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [isCanvasExpanded, setIsCanvasExpanded] = useState(false);
-  const [isToolbarExpanded, setIsToolbarExpanded] = useState(true);
   const [isDragEnabled, setIsDragEnabled] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
@@ -153,16 +151,6 @@ export default function WBSBuilderTool() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // ESC key to exit expanded canvas
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isCanvasExpanded) {
-        setIsCanvasExpanded(false);
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [isCanvasExpanded]);
 
   // Pre-fill AI input fields with existing project data
   useEffect(() => {
@@ -849,12 +837,108 @@ Create a hierarchical task structure suitable for project planning.`;
               </Button>
             </div>
 
-            {/* WBS Canvas - Stitch: dotted background + zoom controls */}
-            <div className={`relative w-full rounded-xl overflow-hidden bg-background border border-border transition-all duration-300 ${
-              isCanvasExpanded 
-                ? 'fixed inset-4 z-50 h-[calc(100vh-2rem)]' 
-                : 'h-[600px]'
-            }`}>
+            {/* Visualization Toolbar - relocated above canvas for always-visible controls */}
+            <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/30 border border-border/60 rounded-lg">
+              
+              {/* Search */}
+              <div className="flex items-center gap-1 bg-background rounded-md px-2 min-w-[200px] flex-1 md:flex-initial">
+                <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <Input
+                  type="text"
+                  placeholder="Search tasks..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-8 border-0 bg-transparent text-xs focus-visible:ring-0 focus-visible:ring-offset-0"
+                />
+              </div>
+
+              {/* Expand/Collapse All */}
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleExpandAll}
+                  className="h-8 text-xs px-2"
+                  title="Expand all nodes"
+                >
+                  <ChevronDown className="h-3.5 w-3.5 mr-1" />
+                  <span className="hidden sm:inline">Expand</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCollapseAll}
+                  className="h-8 text-xs px-2"
+                  title="Collapse all nodes"
+                >
+                  <ChevronRight className="h-3.5 w-3.5 mr-1" />
+                  <span className="hidden sm:inline">Collapse</span>
+                </Button>
+              </div>
+
+              <div className="h-4 w-px bg-border" />
+
+              {/* Drag & Drop Toggle */}
+              <Button
+                variant={isDragEnabled ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setIsDragEnabled(!isDragEnabled)}
+                className="h-8 text-xs px-3"
+                title={isDragEnabled ? "Drag & drop enabled" : "Enable drag & drop"}
+              >
+                <GripVertical className="h-3.5 w-3.5 mr-1" />
+                <span className="hidden sm:inline">{isDragEnabled ? 'Dragging' : 'Drag'}</span>
+              </Button>
+
+              <div className="h-4 w-px bg-border" />
+
+              {/* Zoom Controls */}
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  onClick={handleZoomOut}
+                  aria-label="Zoom out"
+                  className="h-8 w-8 p-0"
+                >
+                  <Minus className="h-3.5 w-3.5" />
+                </Button>
+                <span className="text-xs font-medium text-muted-foreground min-w-12 text-center">
+                  {zoomLevel}%
+                </span>
+                <Button
+                  variant="ghost"
+                  onClick={handleZoomIn}
+                  aria-label="Zoom in"
+                  className="h-8 w-8 p-0"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleZoomReset}
+                  aria-label="Reset zoom to 100%"
+                  className="h-8 w-8 p-0"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+
+              <div className="h-4 w-px bg-border hidden md:block" />
+
+              {/* Native Fullscreen Toggle */}
+              <Button
+                variant={isFullscreen ? "default" : "ghost"}
+                onClick={handleFullscreenToggle}
+                aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                className="hidden md:flex h-8 w-8 p-0"
+                title={isFullscreen ? "Exit fullscreen (ESC)" : "Fullscreen view"}
+              >
+                {isFullscreen ? <Minimize className="h-3.5 w-3.5" /> : <Maximize className="h-3.5 w-3.5" />}
+              </Button>
+            </div>
+
+            {/* WBS Canvas - dotted background */}
+            <div className="relative w-full h-[600px] rounded-xl overflow-hidden bg-background border border-border">
               {/* Dotted grid background - theme-aware for dark mode */}
               <div 
                 className="absolute inset-0 h-full w-full" 
@@ -863,118 +947,6 @@ Create a hierarchical task structure suitable for project planning.`;
                   backgroundSize: '16px 16px'
                 }}
               />
-
-              {/* Close button (only in expanded mode) - top left */}
-              {isCanvasExpanded && (
-                <Button
-                  variant="ghost"
-                  onClick={() => setIsCanvasExpanded(false)}
-                  aria-label="Exit fullscreen"
-                  className="absolute top-4 left-4 z-20 h-9 w-9 p-0 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-
-              {/* Enhanced Toolbar - top with search, expand/collapse, drag-drop, zoom, fullscreen */}
-              <div className="absolute top-4 left-16 right-16 z-10 flex flex-wrap items-center gap-2 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg p-2">
-                
-                {/* Search */}
-                <div className="flex items-center gap-1 bg-muted/50 rounded-md px-2 min-w-[200px]">
-                  <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                  <Input
-                    type="text"
-                    placeholder="Search tasks..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-8 border-0 bg-transparent text-xs focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </div>
-
-                {/* Expand/Collapse All */}
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleExpandAll}
-                    className="h-8 text-xs px-2"
-                    title="Expand all nodes"
-                  >
-                    <ChevronDown className="h-3.5 w-3.5 mr-1" />
-                    Expand
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleCollapseAll}
-                    className="h-8 text-xs px-2"
-                    title="Collapse all nodes"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5 mr-1" />
-                    Collapse
-                  </Button>
-                </div>
-
-                <div className="h-4 w-px bg-border" />
-
-                {/* Drag & Drop Toggle */}
-                <Button
-                  variant={isDragEnabled ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setIsDragEnabled(!isDragEnabled)}
-                  className="h-8 text-xs px-3"
-                  title={isDragEnabled ? "Drag & drop enabled" : "Enable drag & drop"}
-                >
-                  <GripVertical className="h-3.5 w-3.5 mr-1" />
-                  {isDragEnabled ? 'Dragging On' : 'Enable Drag'}
-                </Button>
-
-                <div className="h-4 w-px bg-border" />
-
-                {/* Zoom Controls */}
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    onClick={handleZoomOut}
-                    aria-label="Zoom out"
-                    className="h-8 w-8 p-0"
-                  >
-                    <Minus className="h-3.5 w-3.5" />
-                  </Button>
-                  <span className="text-xs font-medium text-muted-foreground min-w-12 text-center">
-                    {zoomLevel}%
-                  </span>
-                  <Button
-                    variant="ghost"
-                    onClick={handleZoomIn}
-                    aria-label="Zoom in"
-                    className="h-8 w-8 p-0"
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={handleZoomReset}
-                    aria-label="Reset zoom to 100%"
-                    className="h-8 w-8 p-0"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-
-                <div className="h-4 w-px bg-border hidden md:block" />
-
-                {/* Native Fullscreen Toggle */}
-                <Button
-                  variant={isFullscreen ? "default" : "ghost"}
-                  onClick={handleFullscreenToggle}
-                  aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-                  className="hidden md:flex h-8 w-8 p-0"
-                  title={isFullscreen ? "Exit fullscreen (ESC)" : "Fullscreen view"}
-                >
-                  {isFullscreen ? <Minimize className="h-3.5 w-3.5" /> : <Maximize className="h-3.5 w-3.5" />}
-                </Button>
-              </div>
 
               {/* WBS Tree - vertical indented layout with zoom and drag-drop */}
               <DndContext
@@ -985,7 +957,7 @@ Create a hierarchical task structure suitable for project planning.`;
                 <div 
                   id="wbs-tree-canvas"
                   className="relative h-full w-full overflow-auto transition-transform"
-                  style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left', padding: '50px 16px' }}
+                  style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left', padding: '24px 16px' }}
                 >
                   <SortableContext items={displayTree.map(n => n.id)} strategy={verticalListSortingStrategy}>
                     {displayTree.map((rootNode) => (
@@ -1013,9 +985,14 @@ Create a hierarchical task structure suitable for project planning.`;
                     <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Search className="h-8 w-8 text-muted-foreground" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">No matches found</h3>
-                    <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-                      Try a different search term or clear the filter
+                    <h3 className="text-lg font-semibold mb-2">
+                      No matches for "{searchQuery}"
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      Showing 0 of {wbsTree.length} total tasks
+                    </p>
+                    <p className="text-xs text-muted-foreground max-w-md mx-auto mb-6">
+                      Try searching for task names, IDs, or types
                     </p>
                     <Button variant="outline" onClick={() => setSearchQuery('')} className="h-9">
                       Clear Search
@@ -1437,43 +1414,64 @@ const WBSTreeNode = React.memo(({
   };
   
   /**
-   * Theme-aligned visual hierarchy following reference diagram
-   * Phase (L0) → Deliverable (L1) → Work Package (L2) → Task (L3+)
-   * Uses design system tokens for theme compatibility
+   * WBS 5-level theme hierarchy (pure theme tokens with opacity variants):
+   * L0 (Root/Project) → primary (brand green pill, 36px, centered)
+   * L1 (Phases) → secondary light (lighter gray box, 36px, centered)
+   * L2 (Work Packages) → secondary dark (darker gray box, 36px, centered)
+   * L3 (Tasks) → accent light (lighter accent box, 36px, left-aligned)
+   * L4+ (Subtasks) → accent dark (darker accent box, 32px, left-aligned)
    */
   const getLevelInfo = (lvl: number) => {
     switch (lvl) {
       case 0: return { 
-        label: 'PHASE',
-        // Primary color with foreground text, prominent border, large shadow
-        styles: 'bg-primary text-primary-foreground border-2 border-primary/30 shadow-lg',
-        typography: 'text-base font-semibold',
+        label: 'PROJECT',
+        // Brand primary green pill - centered, bold uppercase, 36px height
+        styles: 'bg-primary text-primary-foreground border-2 border-primary/30 shadow-lg rounded-full text-center',
+        typography: 'text-xs font-bold uppercase tracking-wider',
+        padding: 'py-2 px-6',
+        minWidth: 'min-w-[120px]',
         icon: Layers,
         badgeBg: 'bg-primary-foreground/20'
       };
       case 1: return { 
-        label: 'DELIVERABLE',
-        // Secondary/muted with foreground text, thick border
-        styles: 'bg-secondary text-secondary-foreground border-2 border-border hover:bg-secondary/80',
-        typography: 'text-sm font-semibold',
+        label: 'PHASE',
+        // Secondary light (lighter variant) - centered, bold uppercase, 36px height
+        styles: 'bg-secondary text-secondary-foreground border border-secondary/30 shadow-sm hover:bg-secondary/90 rounded-lg text-center',
+        typography: 'text-xs font-bold uppercase tracking-wider',
+        padding: 'py-2 px-6',
+        minWidth: 'min-w-[160px]',
         icon: Briefcase,
-        badgeBg: 'bg-secondary-foreground/10'
+        badgeBg: 'bg-secondary-foreground/15'
       };
       case 2: return { 
         label: 'WORK PACKAGE',
-        // Accent color with foreground text, standard border
-        styles: 'bg-accent text-accent-foreground border border-accent/40 hover:bg-accent/80',
+        // Secondary dark (darker variant) - centered, medium weight, 36px height
+        styles: 'bg-secondary/80 text-secondary-foreground border-2 border-secondary/40 shadow-md hover:bg-secondary/70 rounded-lg text-center',
         typography: 'text-sm font-medium',
+        padding: 'py-2 px-5',
+        minWidth: 'min-w-[140px]',
         icon: FileText,
-        badgeBg: 'bg-accent-foreground/15'
+        badgeBg: 'bg-secondary-foreground/20'
+      };
+      case 3: return { 
+        label: 'TASK',
+        // Accent light (lighter variant) - left-aligned, normal weight, 36px height
+        styles: 'bg-accent text-accent-foreground border border-accent/30 shadow-sm hover:bg-accent/90 rounded-md text-left',
+        typography: 'text-sm font-normal',
+        padding: 'py-2 px-4',
+        minWidth: 'min-w-[120px]',
+        icon: CheckCircle2,
+        badgeBg: 'bg-accent-foreground/10'
       };
       default: return { 
-        label: 'TASK',
-        // Muted background with dark text, subtle border
-        styles: 'bg-muted text-muted-foreground border border-border/60 hover:bg-muted/80',
-        typography: 'text-xs font-medium',
-        icon: CheckCircle2,
-        badgeBg: 'bg-muted-foreground/10'
+        label: 'SUBTASK',
+        // Accent dark (darker variant) - left-aligned, small text, 32px height
+        styles: 'bg-accent/80 text-accent-foreground border border-accent/40 shadow-sm hover:bg-accent/70 rounded-md text-left',
+        typography: 'text-xs font-normal',
+        padding: 'py-1.5 px-4',
+        minWidth: 'min-w-[110px]',
+        icon: Minus,
+        badgeBg: 'bg-accent-foreground/15'
       };
     }
   };
@@ -1481,18 +1479,34 @@ const WBSTreeNode = React.memo(({
   const levelInfo = getLevelInfo(level);
   const LevelIcon = levelInfo.icon;
   
-  // Reference diagram: 40px indent per level, 12px vertical spacing
+  // Reference diagram: 40px indent per level
   const indentPx = level * 40;
 
   return (
     <div 
       ref={setNodeRef} 
       style={{ ...style, marginLeft: `${indentPx}px` }} 
-      className={`mb-3 relative ${level > 0 ? 'before:absolute before:left-[-20px] before:top-0 before:bottom-0 before:w-px before:bg-border/40' : ''}`}
+      className="mb-2 relative"
     >
-      {/* Node card */}
+      {/* Tree connectors - orthogonal lines matching reference diagram (1.5px stroke) */}
+      {level > 0 && (
+        <>
+          {/* Vertical connector line (thicker for visibility) */}
+          <div 
+            className="absolute top-0 bottom-0 bg-border" 
+            style={{ left: '-20px', width: '1.5px' }}
+          />
+          {/* Horizontal branch to node (thicker for visibility) */}
+          <div 
+            className="absolute top-1/2 bg-border" 
+            style={{ left: '-20px', width: '20px', height: '1.5px', transform: 'translateY(-50%)' }}
+          />
+        </>
+      )}
+
+      {/* Node card with proper padding and min-width from levelInfo */}
       <div
-        className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${levelInfo.styles} ${levelInfo.typography} ${isSelected ? 'ring-2 ring-primary shadow-xl' : 'hover:shadow-lg'}`}
+        className={`group flex items-center gap-2 cursor-pointer transition-all duration-200 ${levelInfo.styles} ${levelInfo.typography} ${levelInfo.padding} ${levelInfo.minWidth} ${isSelected ? 'ring-2 ring-primary shadow-xl' : 'hover:shadow-lg'}`}
         onClick={() => !isEditing && onSelect(node)}
         role="button"
         tabIndex={0}
@@ -1507,17 +1521,19 @@ const WBSTreeNode = React.memo(({
           }
         }}
       >
-        {/* Drag Handle (visible when drag enabled) */}
-        {isDragEnabled && (
-          <div 
-            {...attributes} 
-            {...listeners}
-            className="shrink-0 cursor-grab active:cursor-grabbing hover:bg-foreground/10 rounded p-1 transition-colors"
-            aria-label="Drag to reorder"
-          >
-            <GripVertical className="h-4 w-4" />
-          </div>
-        )}
+        {/* Drag Handle - fixed width container to prevent layout shift */}
+        <div className="w-6 flex items-center justify-center shrink-0">
+          {isDragEnabled && (
+            <div 
+              {...attributes} 
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing hover:bg-foreground/10 rounded p-1 transition-colors"
+              aria-label="Drag to reorder"
+            >
+              <GripVertical className="h-4 w-4" />
+            </div>
+          )}
+        </div>
 
         {/* Expand/Collapse Button */}
         {hasChildren ? (
@@ -1526,34 +1542,20 @@ const WBSTreeNode = React.memo(({
               e.stopPropagation();
               onToggle(node.id);
             }}
-            className="shrink-0 hover:bg-foreground/10 rounded-md p-1.5 transition-colors"
+            className="shrink-0 hover:bg-foreground/10 rounded-md p-1 transition-colors"
             aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="h-3.5 w-3.5" />
             ) : (
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3.5 w-3.5" />
             )}
           </button>
         ) : (
-          <div className="w-8" />
+          <div className="w-6" />
         )}
 
-        {/* Level Icon & Label */}
-        <div className="flex flex-col items-center gap-0.5 shrink-0">
-          <LevelIcon className="h-4 w-4 opacity-80" />
-          <span className="text-[9px] font-bold tracking-wider opacity-70">{levelInfo.label}</span>
-        </div>
-
-        {/* Vertical Divider */}
-        <div className="h-10 w-px bg-current opacity-20 shrink-0" />
-
-        {/* Task ID */}
-        <span className="font-mono text-xs font-semibold opacity-75 shrink-0 min-w-[60px]">
-          {node.id.substring(0, 8)}
-        </span>
-
-        {/* Title */}
+        {/* Title - primary content */}
         <span className={`flex-1 truncate ${levelInfo.typography}`}>
           {node.title}
         </span>
@@ -1579,42 +1581,45 @@ const WBSTreeNode = React.memo(({
           </span>
         )}
 
-        {/* Inline Edit Toolbar (visible on hover or when editing) */}
-        {(isEditing || isSelected) && !isDragEnabled && (
+        {/* Inline Edit Toolbar (discoverable with opacity-60) */}
+        {isSelected && !isDragEnabled && (
           <div className="flex items-center gap-1 shrink-0">
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-7 w-7 opacity-60 group-hover:opacity-100 transition-opacity"
               onClick={(e) => {
                 e.stopPropagation();
                 onStartEdit(isEditing ? null : node.id);
               }}
               aria-label="Edit task"
+              title="Edit task"
             >
               <Edit2 className="h-3.5 w-3.5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-7 w-7 opacity-60 group-hover:opacity-100 transition-opacity"
               onClick={(e) => {
                 e.stopPropagation();
                 // Add child logic (future enhancement)
               }}
               aria-label="Add child task"
+              title="Add child task"
             >
               <PlusCircle className="h-3.5 w-3.5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+              className="h-7 w-7 opacity-60 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
               onClick={(e) => {
                 e.stopPropagation();
                 // Delete logic (future enhancement)
               }}
               aria-label="Delete task"
+              title="Delete task"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
@@ -1622,9 +1627,9 @@ const WBSTreeNode = React.memo(({
         )}
       </div>
 
-      {/* Render children recursively if expanded */}
+      {/* Render children recursively if expanded - 8px spacing matching reference */}
       {isExpanded && hasChildren && (
-        <div className="mt-3 space-y-3">
+        <div className="space-y-2">
           {node.children.map(child => (
             <WBSTreeNode
               key={child.id}
