@@ -33,11 +33,30 @@ import {
   Search,
   CheckCircle2,
   Maximize2,
-  ChevronLeft
+  ChevronLeft,
+  Edit2,
+  GripVertical,
+  Maximize,
+  Minimize
 } from 'lucide-react';
 import { useProjectStore } from '../../../stores/useProjectStore';
 import { useGanttStore } from '../stores/useGanttStore';
 import { WBSExportDialog } from '../components/WBSExportDialog';
+import { 
+  DndContext, 
+  closestCenter, 
+  KeyboardSensor, 
+  PointerSensor, 
+  useSensor, 
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core';
+import { 
+  SortableContext, 
+  verticalListSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface WBSNode {
   id: string;
@@ -88,6 +107,51 @@ export default function WBSBuilderTool() {
   const [zoomLevel, setZoomLevel] = useState(100);
   const [isCanvasExpanded, setIsCanvasExpanded] = useState(false);
   const [isToolbarExpanded, setIsToolbarExpanded] = useState(true);
+  const [isDragEnabled, setIsDragEnabled] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
+
+  // DND-Kit sensors for drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px movement to start drag (prevents accidental drags)
+      },
+    }),
+    useSensor(KeyboardSensor)
+  );
+
+  /**
+   * Native fullscreen toggle handler
+   * Uses browser Fullscreen API for true fullscreen experience
+   */
+  const handleFullscreenToggle = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (error) {
+      console.error('Fullscreen error:', error);
+      toast({ 
+        title: 'Fullscreen unavailable', 
+        description: 'Your browser may not support fullscreen mode',
+        variant: 'destructive' 
+      });
+    }
+  };
+
+  // Listen for fullscreen changes (user pressing ESC)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   // ESC key to exit expanded canvas
   useEffect(() => {
@@ -351,7 +415,10 @@ Create a hierarchical task structure suitable for project planning.`;
     }
   };
 
-  // Toggle node
+  /**
+   * Toggle a single node's expanded state
+   * @param nodeId - UUID of the node to toggle
+   */
   const toggleNode = (nodeId: string) => {
     setExpandedNodes(prev => {
       const next = new Set(prev);
@@ -362,6 +429,20 @@ Create a hierarchical task structure suitable for project planning.`;
       }
       return next;
     });
+  };
+
+  /**
+   * Recursively collect all node IDs from a tree
+   * Used for expand/collapse all operations
+   */
+  const collectAllNodeIds = (nodes: WBSNode[]): string[] => {
+    const ids: string[] = [];
+    const traverse = (node: WBSNode) => {
+      ids.push(node.id);
+      node.children.forEach(traverse);
+    };
+    nodes.forEach(traverse);
+    return ids;
   };
 
   // Expand/Collapse all
@@ -381,13 +462,42 @@ Create a hierarchical task structure suitable for project planning.`;
     setExpandedNodes(new Set());
   };
 
-  // Get node color based on level (Stitch colors)
-  const getNodeColor = (level: number) => {
-    switch (level) {
-      case 0: return '#0A3A67'; // Dark blue
-      case 1: return '#1E62A1'; // Medium blue
-      case 2: return '#4A90E2'; // Light blue
-      default: return '#6B7280'; // Gray (slate-500)
+  /**
+   * Drag-and-drop handler for task reordering
+   * Updates parent/sibling relationships in the database
+   * @param event - DragEndEvent from dnd-kit
+   */
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (!over || active.id === over.id) return;
+    
+    try {
+      // Find the dragged task and drop target
+      const draggedTask = tasks.find(t => t.id === active.id);
+      const targetTask = tasks.find(t => t.id === over.id);
+      
+      if (!draggedTask || !targetTask) return;
+      
+      // Update parent relationship
+      await updateTask(draggedTask.id, {
+        parent_id: targetTask.id
+      });
+      
+      // Reload tasks to reflect new hierarchy
+      await loadProjectTasks(project.id);
+      
+      toast({
+        title: 'Task moved successfully',
+        description: `"${draggedTask.title}" is now under "${targetTask.title}"`
+      });
+    } catch (error) {
+      console.error('Error moving task:', error);
+      toast({
+        title: 'Failed to move task',
+        description: 'Please try again',
+        variant: 'destructive'
+      });
     }
   };
 
@@ -766,85 +876,137 @@ Create a hierarchical task structure suitable for project planning.`;
                 </Button>
               )}
 
-              {/* Zoom Controls - top right - collapsible */}
-              <div className="absolute top-4 right-4 z-10 flex items-center bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg overflow-hidden transition-all duration-300" style={{ top: '16px', right: '16px' }}>
-                {/* Collapse/Expand Toggle */}
-                <Button
-                  variant="ghost"
-                  onClick={() => setIsToolbarExpanded(!isToolbarExpanded)}
-                  aria-label={isToolbarExpanded ? "Collapse toolbar" : "Expand toolbar"}
-                  className="h-9 w-9 p-0 shrink-0"
-                >
-                  <ChevronLeft className={`h-4 w-4 transition-transform duration-300 ${isToolbarExpanded ? '' : 'rotate-180'}`} />
-                </Button>
+              {/* Enhanced Toolbar - top with search, expand/collapse, drag-drop, zoom, fullscreen */}
+              <div className="absolute top-4 left-16 right-16 z-10 flex flex-wrap items-center gap-2 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg p-2">
                 
-                {/* Toolbar Controls - only visible when expanded */}
-                {isToolbarExpanded && (
-                  <>
-                    <div className="h-4 w-px bg-border" />
-                    <div className="flex items-center gap-2 px-2">
-                      <Button
-                        variant="ghost"
-                        onClick={handleZoomOut}
-                        aria-label="Zoom out"
-                        className="h-9 w-9 p-0"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="text-sm font-medium text-muted-foreground min-w-12 text-center">
-                        {zoomLevel}%
-                      </span>
-                      <Button
-                        variant="ghost"
-                        onClick={handleZoomIn}
-                        aria-label="Zoom in"
-                        className="h-9 w-9 p-0"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={handleZoomReset}
-                        aria-label="Reset zoom"
-                        className="h-9 w-9 p-0"
-                      >
-                        <RotateCcw className="h-4 w-4" />
-                      </Button>
-                      <div className="hidden md:block h-4 w-px bg-border" />
-                      <Button
-                        variant="ghost"
-                        onClick={() => setIsCanvasExpanded(!isCanvasExpanded)}
-                        aria-label={isCanvasExpanded ? "Exit fullscreen" : "Fullscreen view"}
-                        className="hidden md:flex h-9 w-9 p-0"
-                      >
-                        <Maximize2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </>
-                )}
+                {/* Search */}
+                <div className="flex items-center gap-1 bg-muted/50 rounded-md px-2 min-w-[200px]">
+                  <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                  <Input
+                    type="text"
+                    placeholder="Search tasks..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-8 border-0 bg-transparent text-xs focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                </div>
+
+                {/* Expand/Collapse All */}
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleExpandAll}
+                    className="h-8 text-xs px-2"
+                    title="Expand all nodes"
+                  >
+                    <ChevronDown className="h-3.5 w-3.5 mr-1" />
+                    Expand
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCollapseAll}
+                    className="h-8 text-xs px-2"
+                    title="Collapse all nodes"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5 mr-1" />
+                    Collapse
+                  </Button>
+                </div>
+
+                <div className="h-4 w-px bg-border" />
+
+                {/* Drag & Drop Toggle */}
+                <Button
+                  variant={isDragEnabled ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setIsDragEnabled(!isDragEnabled)}
+                  className="h-8 text-xs px-3"
+                  title={isDragEnabled ? "Drag & drop enabled" : "Enable drag & drop"}
+                >
+                  <GripVertical className="h-3.5 w-3.5 mr-1" />
+                  {isDragEnabled ? 'Dragging On' : 'Enable Drag'}
+                </Button>
+
+                <div className="h-4 w-px bg-border" />
+
+                {/* Zoom Controls */}
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    onClick={handleZoomOut}
+                    aria-label="Zoom out"
+                    className="h-8 w-8 p-0"
+                  >
+                    <Minus className="h-3.5 w-3.5" />
+                  </Button>
+                  <span className="text-xs font-medium text-muted-foreground min-w-12 text-center">
+                    {zoomLevel}%
+                  </span>
+                  <Button
+                    variant="ghost"
+                    onClick={handleZoomIn}
+                    aria-label="Zoom in"
+                    className="h-8 w-8 p-0"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleZoomReset}
+                    aria-label="Reset zoom to 100%"
+                    className="h-8 w-8 p-0"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+
+                <div className="h-4 w-px bg-border hidden md:block" />
+
+                {/* Native Fullscreen Toggle */}
+                <Button
+                  variant={isFullscreen ? "default" : "ghost"}
+                  onClick={handleFullscreenToggle}
+                  aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  className="hidden md:flex h-8 w-8 p-0"
+                  title={isFullscreen ? "Exit fullscreen (ESC)" : "Fullscreen view"}
+                >
+                  {isFullscreen ? <Minimize className="h-3.5 w-3.5" /> : <Maximize className="h-3.5 w-3.5" />}
+                </Button>
               </div>
 
-              {/* WBS Tree - vertical indented layout with zoom */}
-              <div 
-                id="wbs-tree-canvas"
-                className="relative h-full w-full overflow-auto transition-transform"
-                style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left', padding: '50px 16px' }}
+              {/* WBS Tree - vertical indented layout with zoom and drag-drop */}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
               >
-                {displayTree.map((rootNode) => (
-                  <WBSTreeNode
-                    key={rootNode.id}
-                    node={rootNode}
-                    level={0}
-                    isExpanded={expandedNodes.has(rootNode.id)}
-                    isSelected={selectedNode?.id === rootNode.id}
-                    expandedNodes={expandedNodes}
-                    selectedNode={selectedNode}
-                    onToggle={toggleNode}
-                    onSelect={(node) => {
-                      setSelectedNode(node);
-                    }}
-                  />
-                ))}
+                <div 
+                  id="wbs-tree-canvas"
+                  className="relative h-full w-full overflow-auto transition-transform"
+                  style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left', padding: '50px 16px' }}
+                >
+                  <SortableContext items={displayTree.map(n => n.id)} strategy={verticalListSortingStrategy}>
+                    {displayTree.map((rootNode) => (
+                      <WBSTreeNode
+                        key={rootNode.id}
+                        node={rootNode}
+                        level={0}
+                        isExpanded={expandedNodes.has(rootNode.id)}
+                        isSelected={selectedNode?.id === rootNode.id}
+                        expandedNodes={expandedNodes}
+                        selectedNode={selectedNode}
+                        onToggle={toggleNode}
+                        onSelect={(node) => {
+                          setSelectedNode(node);
+                        }}
+                        isDragEnabled={isDragEnabled}
+                        editingNodeId={editingNodeId}
+                        onStartEdit={setEditingNodeId}
+                      />
+                    ))}
+                  </SortableContext>
 
                 {displayTree.length === 0 && searchQuery.trim() && (
                   <div className="text-center py-12">
@@ -861,20 +1023,21 @@ Create a hierarchical task structure suitable for project planning.`;
                   </div>
                 )}
 
-                {wbsTree.length === 0 && !searchQuery.trim() && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <Network className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-                      <p className="text-lg font-semibold text-muted-foreground">
-                        No WBS structure yet
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        Add tasks in Gantt Tool to build your WBS
-                      </p>
+                  {wbsTree.length === 0 && !searchQuery.trim() && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <Network className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
+                        <p className="text-lg font-semibold text-muted-foreground">
+                          No WBS structure yet
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Add tasks in Gantt Tool to build your WBS
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </DndContext>
                 </div>
               </div>
         </section>
@@ -1236,6 +1399,9 @@ interface WBSTreeNodeProps {
   selectedNode: WBSNode | null;
   onToggle: (id: string) => void;
   onSelect: (node: WBSNode) => void;
+  isDragEnabled: boolean;
+  editingNodeId: string | null;
+  onStartEdit: (nodeId: string | null) => void;
 }
 
 const WBSTreeNode = React.memo(({ 
@@ -1246,54 +1412,94 @@ const WBSTreeNode = React.memo(({
   expandedNodes,
   selectedNode,
   onToggle, 
-  onSelect 
+  onSelect,
+  isDragEnabled,
+  editingNodeId,
+  onStartEdit
 }: WBSTreeNodeProps) => {
   const hasChildren = node.children.length > 0;
+  const isEditing = editingNodeId === node.id;
+
+  // DND-Kit sortable hook
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: node.id, disabled: !isDragEnabled });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
   
-  // Visual hierarchy: Phase → Deliverable → Work Package → Task
+  /**
+   * Theme-aligned visual hierarchy following reference diagram
+   * Phase (L0) → Deliverable (L1) → Work Package (L2) → Task (L3+)
+   * Uses design system tokens for theme compatibility
+   */
   const getLevelInfo = (lvl: number) => {
     switch (lvl) {
       case 0: return { 
         label: 'PHASE',
+        // Primary color with foreground text, prominent border, large shadow
         styles: 'bg-primary text-primary-foreground border-2 border-primary/30 shadow-lg',
+        typography: 'text-base font-semibold',
         icon: Layers,
         badgeBg: 'bg-primary-foreground/20'
       };
       case 1: return { 
         label: 'DELIVERABLE',
-        styles: 'bg-muted text-foreground border-2 border-border hover:bg-muted/80',
+        // Secondary/muted with foreground text, thick border
+        styles: 'bg-secondary text-secondary-foreground border-2 border-border hover:bg-secondary/80',
+        typography: 'text-sm font-semibold',
         icon: Briefcase,
-        badgeBg: 'bg-foreground/10'
+        badgeBg: 'bg-secondary-foreground/10'
       };
       case 2: return { 
         label: 'WORK PACKAGE',
-        styles: 'bg-accent/50 text-accent-foreground border border-accent/40 hover:bg-accent/60',
+        // Accent color with foreground text, standard border
+        styles: 'bg-accent text-accent-foreground border border-accent/40 hover:bg-accent/80',
+        typography: 'text-sm font-medium',
         icon: FileText,
         badgeBg: 'bg-accent-foreground/15'
       };
       default: return { 
         label: 'TASK',
-        styles: 'bg-background text-foreground border border-border/60 hover:bg-muted/30',
+        // Muted background with dark text, subtle border
+        styles: 'bg-muted text-muted-foreground border border-border/60 hover:bg-muted/80',
+        typography: 'text-xs font-medium',
         icon: CheckCircle2,
-        badgeBg: 'bg-foreground/8'
+        badgeBg: 'bg-muted-foreground/10'
       };
     }
   };
   
   const levelInfo = getLevelInfo(level);
   const LevelIcon = levelInfo.icon;
-  const indentPx = level * 28; // 28px per level for better hierarchy
+  
+  // Reference diagram: 40px indent per level, 12px vertical spacing
+  const indentPx = level * 40;
 
   return (
-    <div style={{ marginLeft: `${indentPx}px` }} className="mb-2.5">
+    <div 
+      ref={setNodeRef} 
+      style={{ ...style, marginLeft: `${indentPx}px` }} 
+      className={`mb-3 relative ${level > 0 ? 'before:absolute before:left-[-20px] before:top-0 before:bottom-0 before:w-px before:bg-border/40' : ''}`}
+    >
+      {/* Node card */}
       <div
-        className={`group flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-200 ${levelInfo.styles} ${isSelected ? 'ring-2 ring-primary shadow-xl scale-[1.02]' : 'hover:shadow-xl'}`}
-        onClick={() => onSelect(node)}
+        className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${levelInfo.styles} ${levelInfo.typography} ${isSelected ? 'ring-2 ring-primary shadow-xl' : 'hover:shadow-lg'}`}
+        onClick={() => !isEditing && onSelect(node)}
         role="button"
         tabIndex={0}
         aria-label={`${levelInfo.label}: ${node.title}, Level ${level + 1}`}
         aria-expanded={hasChildren ? isExpanded : undefined}
         aria-selected={isSelected}
+        aria-grabbed={isDragging}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -1301,6 +1507,18 @@ const WBSTreeNode = React.memo(({
           }
         }}
       >
+        {/* Drag Handle (visible when drag enabled) */}
+        {isDragEnabled && (
+          <div 
+            {...attributes} 
+            {...listeners}
+            className="shrink-0 cursor-grab active:cursor-grabbing hover:bg-foreground/10 rounded p-1 transition-colors"
+            aria-label="Drag to reorder"
+          >
+            <GripVertical className="h-4 w-4" />
+          </div>
+        )}
+
         {/* Expand/Collapse Button */}
         {hasChildren ? (
           <button
@@ -1336,7 +1554,7 @@ const WBSTreeNode = React.memo(({
         </span>
 
         {/* Title */}
-        <span className="font-semibold flex-1 truncate text-sm">
+        <span className={`flex-1 truncate ${levelInfo.typography}`}>
           {node.title}
         </span>
 
@@ -1360,11 +1578,53 @@ const WBSTreeNode = React.memo(({
             {node.children.length}
           </span>
         )}
+
+        {/* Inline Edit Toolbar (visible on hover or when editing) */}
+        {(isEditing || isSelected) && !isDragEnabled && (
+          <div className="flex items-center gap-1 shrink-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={(e) => {
+                e.stopPropagation();
+                onStartEdit(isEditing ? null : node.id);
+              }}
+              aria-label="Edit task"
+            >
+              <Edit2 className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Add child logic (future enhancement)
+              }}
+              aria-label="Add child task"
+            >
+              <PlusCircle className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Delete logic (future enhancement)
+              }}
+              aria-label="Delete task"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Render children recursively if expanded */}
       {isExpanded && hasChildren && (
-        <div className="mt-1 space-y-1">
+        <div className="mt-3 space-y-3">
           {node.children.map(child => (
             <WBSTreeNode
               key={child.id}
@@ -1376,6 +1636,9 @@ const WBSTreeNode = React.memo(({
               selectedNode={selectedNode}
               onToggle={onToggle}
               onSelect={onSelect}
+              isDragEnabled={isDragEnabled}
+              editingNodeId={editingNodeId}
+              onStartEdit={onStartEdit}
             />
           ))}
         </div>
