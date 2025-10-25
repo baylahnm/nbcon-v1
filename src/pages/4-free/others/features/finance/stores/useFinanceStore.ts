@@ -67,7 +67,9 @@ export const useFinanceStore = create<FinanceStore>((set, get) => ({
         return;
       }
 
-      const { data, error } = await supabase
+      // TODO: Regenerate Supabase types to include payments table
+      // For now, cast to any to bypass type checking
+      const { data, error } = await (supabase as any)
         .from('payments')
         .select('*')
         .eq('user_id', user.id)
@@ -80,7 +82,7 @@ export const useFinanceStore = create<FinanceStore>((set, get) => ({
       }
       
       set({ 
-        payments: data || [], 
+        payments: (data || []) as Payment[], 
         isLoading: false 
       });
       
@@ -104,7 +106,8 @@ export const useFinanceStore = create<FinanceStore>((set, get) => ({
         return;
       }
 
-      const { data, error } = await supabase
+      // TODO: Regenerate Supabase types to include invoices table
+      const { data, error } = await (supabase as any)
         .from('invoices')
         .select('*')
         .eq('user_id', user.id)
@@ -116,7 +119,7 @@ export const useFinanceStore = create<FinanceStore>((set, get) => ({
         throw new Error(`Failed to load invoices: ${error.message}`);
       }
       
-      set({ invoices: data || [] });
+      set({ invoices: (data || []) as Invoice[] });
       console.log(`[Finance] Loaded ${data?.length || 0} invoices`);
     } catch (error: any) {
       console.error('[Finance] Exception loading invoices:', error);

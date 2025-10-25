@@ -91,31 +91,86 @@ export const useJobsStore = create<JobsState>((set, get) => ({
   async load(role) {
     set({ loading: true, role, error: undefined, page: 1, selection: new Set() });
     try {
-      // TODO: replace with Supabase RPC list_jobs
-      // const { items, total, nextPage } = await jobsClient.list({ role, ...get().filters, sort:get().sort, page:1, perPage:get().perPage })
-      // MOCK for UI work:
-      const items: JobListItem[] = Array.from({ length: 8 }).map((_, i) => ({
-        id: `j${i+1}`,
-        code: `NB-${1040 + i}`,
-        title: i % 2 ? "Structural inspection — villa" : "Architectural schematic update",
-        category: i % 2 ? "Site Inspection" : "Architectural Design",
-        status: (["open","assigned","in_progress","in_review"] as JobStatus[])[i%4],
-        emergency: i % 5 === 0,
-        client_id: "me", client_name: "Acme Dev",
-        engineer_id: i % 3 ? `eng-${i}` : undefined, engineer_name: i % 3 ? "Eng. Basel" : undefined,
-        budget_min: 3000, budget_max: 12000, currency: "SAR",
-        city: "Riyadh",
-        bids_count: 2 + (i%4),
-        unread_msgs: i % 3,
-        milestones_done: i % 3, milestones_total: 3,
-        escrow_state: (["held","funded","released","disputed"] as EscrowState[])[i%4],
-        next_due: "2025-10-12",
-        updated_at: new Date().toISOString(),
+      // Load real jobs from Supabase
+      const { supabase } = await import('@/shared/supabase/client');
+      
+      // Build query based on filters
+      let query = (supabase as any)
+        .from('jobs')
+        .select(`
+          *,
+          client:profiles!jobs_client_id_fkey(user_id, first_name, last_name)
+        `, { count: 'exact' });
+
+      // Apply status filter
+      const { filters } = get();
+      if (filters.status && filters.status.length > 0) {
+        query = query.in('job_status', filters.status);
+      }
+
+      // Apply category filter
+      if (filters.category && filters.category.length > 0) {
+        query = query.in('category', filters.category);
+      }
+
+      // Apply budget filter
+      if (filters.budget && filters.budget.length === 2) {
+        query = query.gte('budget_min', filters.budget[0])
+                     .lte('budget_max', filters.budget[1]);
+      }
+
+      // Apply sorting
+      const { sort } = get();
+      if (sort === 'recent') {
+        query = query.order('created_at', { ascending: false });
+      } else if (sort === 'budget_high') {
+        query = query.order('budget_max', { ascending: false });
+      } else if (sort === 'budget_low') {
+        query = query.order('budget_min', { ascending: true });
+      }
+
+      // Pagination
+      const { page, perPage } = get();
+      const start = (page - 1) * perPage;
+      const end = start + perPage - 1;
+      query = query.range(start, end);
+
+      const { data, error, count } = await query;
+
+      if (error) throw error;
+
+      // Transform to JobListItem format
+      const items: JobListItem[] = (data || []).map((job: any) => ({
+        id: job.id,
+        code: `JOB-${job.id.substring(0, 8).toUpperCase()}`,
+        title: job.title,
+        category: job.category || 'General',
+        status: job.job_status as JobStatus,
+        emergency: job.urgency === 'emergency',
+        client_id: job.client_id,
+        client_name: job.client ? `${job.client.first_name} ${job.client.last_name}` : 'Client',
+        engineer_id: undefined,
+        engineer_name: undefined,
+        budget_min: Number(job.budget_min || 0),
+        budget_max: Number(job.budget_max || 0),
+        currency: job.currency || 'SAR',
+        city: job.location_city || 'N/A',
+        bids_count: 0, // TODO: Count from job_bids table
+        unread_msgs: 0, // TODO: Join with messages
+        milestones_done: 0,
+        milestones_total: 0,
+        escrow_state: 'held' as EscrowState,
+        next_due: job.expires_at || '',
+        updated_at: job.updated_at,
       }));
-      set({ list: items, total: 42, nextPage: true, loading: false });
-      // analytics example:
-      console.log("analytics", "jobs_list_view", { role, route: role==="engineer"?"/e/jobs":"/c/jobs" });
+
+      const total = count || 0;
+      const nextPage = total > end + 1;
+
+      set({ list: items, total, nextPage, loading: false });
+      console.log(`[Jobs] Loaded ${items.length} jobs (total: ${total})`);
     } catch (e:any) {
+      console.error('[Jobs] Error loading jobs:', e);
       set({ loading: false, error: e.message ?? "Failed to load jobs" });
     }
   },

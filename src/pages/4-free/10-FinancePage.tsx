@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/pages/1-HomePage
 import { InvoiceBuilder } from '@/pages/6-enterprise/others/features/finance/components/InvoiceBuilder';
 import QuotationPage from '@/pages/6-enterprise/others/features/finance/components/quotations/QuotationPage';
 import { useOutsideClick } from '@/pages/1-HomePage/others/hooks/use-outside-click';
+import { useFinanceStore } from './others/features/finance/stores/useFinanceStore';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -32,7 +33,8 @@ import {
   X,
   User,
   MapPin,
-  Building2
+  Building2,
+  Loader2
 } from 'lucide-react';
 
 interface Payment {
@@ -99,227 +101,37 @@ interface Milestone {
   engineer: string;
 }
 
-// Mock data
-const mockPayments: Payment[] = [
-  {
-    id: '1',
-    type: 'payment',
-    amount: 15000,
-    currency: 'SAR',
-    description: 'Payment for structural analysis - NEOM Infrastructure',
-    date: '2024-01-20',
-    status: 'completed',
-    project: 'NEOM Infrastructure Design',
-    engineer: 'Ahmed Al-Rashid',
-    method: 'bank_transfer',
-    invoice: 'INV-2024-001',
-    details: {
-      transactionId: 'TXN-2024-001-NEOM',
-      paidBy: 'NEOM Company - Finance Department',
-      milestone: 'Structural Design Phase 1 - Completion',
-      notes: 'Payment released after successful review and approval of structural calculations and design documents for Phase 1 of the NEOM Infrastructure project.'
-    }
-  },
-  {
-    id: '2',
-    type: 'payment',
-    amount: 8500,
-    currency: 'SAR',
-    description: 'Milestone payment - Project planning phase',
-    date: '2024-01-18',
-    status: 'completed',
-    project: 'Riyadh Metro Extension',
-    engineer: 'Sarah Johnson',
-    method: 'credit_card',
-    invoice: 'INV-2024-002',
-    details: {
-      transactionId: 'TXN-2024-002-RIYADH',
-      paidBy: 'Riyadh Development Authority',
-      milestone: 'Project Planning and Feasibility Study',
-      notes: 'Payment for completion of detailed planning phase including feasibility study, stakeholder consultation, and preliminary design documentation.'
-    }
-  },
-  {
-    id: '3',
-    type: 'fee',
-    amount: 1500,
-    currency: 'SAR',
-    description: 'Platform service fee',
-    date: '2024-01-18',
-    status: 'completed',
-    method: 'credit_card',
-    details: {
-      transactionId: 'TXN-2024-003-FEE',
-      paidBy: 'Auto-deducted from escrow account',
-      milestone: 'Q1 2024 Service Fee',
-      notes: 'Monthly platform service fee for access to engineer marketplace, project management tools, and support services.'
-    }
-  },
-  {
-    id: '4',
-    type: 'payment',
-    amount: 12000,
-    currency: 'SAR',
-    description: 'Consultation fee - Renewable Energy Project',
-    date: '2024-01-12',
-    status: 'pending',
-    project: 'ACWA Power Solar Farm',
-    engineer: 'Mohammed Al-Zahrani',
-    method: 'bank_transfer',
-    invoice: 'INV-2024-004',
-    details: {
-      transactionId: 'TXN-2024-004-ACWA',
-      paidBy: 'ACWA Power - Projects Division',
-      milestone: 'Initial Engineering Consultation',
-      notes: 'Consultation services for renewable energy solar farm project including site evaluation, equipment recommendations, and preliminary power system design.'
-    }
-  }
-];
-
-const mockInvoices: Invoice[] = [
-  {
-    id: 'inv1',
-    project: 'NEOM Infrastructure Design',
-    engineer: 'Ahmed Al-Rashid',
-    amount: 15000,
-    currency: 'SAR',
-    dueDate: '2024-02-20',
-    status: 'paid',
-    invoiceNumber: 'INV-2024-001',
-    createdAt: '2024-01-15'
-  },
-  {
-    id: 'inv2',
-    project: 'Riyadh Metro Extension',
-    engineer: 'Sarah Johnson',
-    amount: 8500,
-    currency: 'SAR',
-    dueDate: '2024-02-18',
-    status: 'paid',
-    invoiceNumber: 'INV-2024-002',
-    createdAt: '2024-01-13'
-  },
-  {
-    id: 'inv3',
-    project: 'ACWA Power Solar Farm',
-    engineer: 'Mohammed Al-Zahrani',
-    amount: 12000,
-    currency: 'SAR',
-    dueDate: '2024-02-12',
-    status: 'pending',
-    invoiceNumber: 'INV-2024-003',
-    createdAt: '2024-01-07',
-    details: {
-      description: 'Professional electrical engineering services for solar farm Phase 1 including power system design, equipment specification, and site assessment.',
-      paymentTerms: 'Net 30 days from invoice date',
-      notes: 'Payment includes engineering design services, technical documentation, and on-site consultation for the ACWA Power Solar Farm project.'
-    }
-  },
-  {
-    id: 'inv4',
-    project: 'Red Sea Resort Complex',
-    engineer: 'Fatima Al-Sabah',
-    amount: 25000,
-    currency: 'SAR',
-    dueDate: '2024-01-28',
-    status: 'overdue',
-    invoiceNumber: 'INV-2024-004',
-    createdAt: '2024-01-02',
-    details: {
-      description: 'Comprehensive HVAC system design and thermal analysis for the Red Sea Resort Complex. Includes detailed load calculations, equipment selection, and energy efficiency optimization.',
-      paymentTerms: 'Net 30 days from invoice date',
-      notes: 'URGENT: This invoice is now overdue. Payment required to proceed with Phase 2 of the project. Late fees may apply after 45 days overdue.'
-    }
-  }
-];
+// Mock data removed - now using real database via useFinanceStore
+// Quotations and Milestones: Keep as sample data for now (features not fully implemented)
+// These will be replaced when quotations/milestones features are built
 
 const mockQuotations: Quotation[] = [
   {
     id: 'qt1',
-    project: 'Jeddah Waterfront Development',
-    engineer: 'Hassan Al-Qahtani',
+    project: 'Sample: Waterfront Development',
+    engineer: 'Sample Engineer',
     amount: 45000,
     currency: 'SAR',
-    validUntil: '2024-02-28',
+    validUntil: '2024-12-31',
     status: 'pending',
-    quoteNumber: 'QT-2024-001',
+    quoteNumber: 'QT-SAMPLE-001',
     createdAt: '2024-01-20',
-    description: 'Structural engineering design and analysis for waterfront project'
-  },
-  {
-    id: 'qt2',
-    project: 'Dammam Port Expansion',
-    engineer: 'Layla Al-Mutairi',
-    amount: 32000,
-    currency: 'SAR',
-    validUntil: '2024-02-15',
-    status: 'accepted',
-    quoteNumber: 'QT-2024-002',
-    createdAt: '2024-01-15',
-    description: 'Marine engineering consultation and design review'
-  },
-  {
-    id: 'qt3',
-    project: 'Tabuk Solar Farm',
-    engineer: 'Omar Al-Rashid',
-    amount: 28000,
-    currency: 'SAR',
-    validUntil: '2024-01-25',
-    status: 'expired',
-    quoteNumber: 'QT-2024-003',
-    createdAt: '2024-01-08',
-    description: 'Renewable energy system design and optimization'
+    description: 'Sample quotation - Your real quotations will appear here'
   }
 ];
 
 const mockMilestones: Milestone[] = [
   {
     id: 'ms1',
-    project: 'NEOM Infrastructure Design',
-    name: 'Phase 1: Site Survey & Analysis',
+    project: 'Sample: Infrastructure Project',
+    name: 'Sample Milestone',
     amount: 50000,
     currency: 'SAR',
-    dueDate: '2024-02-01',
-    status: 'completed',
-    progress: 100,
-    description: 'Complete site survey and preliminary analysis',
-    engineer: 'Ahmed Al-Rashid'
-  },
-  {
-    id: 'ms2',
-    project: 'NEOM Infrastructure Design',
-    name: 'Phase 2: Structural Design',
-    amount: 75000,
-    currency: 'SAR',
-    dueDate: '2024-03-15',
-    status: 'in_progress',
-    progress: 65,
-    description: 'Detailed structural engineering design',
-    engineer: 'Ahmed Al-Rashid'
-  },
-  {
-    id: 'ms3',
-    project: 'Riyadh Metro Extension',
-    name: 'Phase 1: Environmental Impact Study',
-    amount: 35000,
-    currency: 'SAR',
-    dueDate: '2024-02-10',
+    dueDate: '2024-12-31',
     status: 'pending',
     progress: 0,
-    description: 'Environmental assessment and impact analysis',
-    engineer: 'Sarah Johnson'
-  },
-  {
-    id: 'ms4',
-    project: 'ACWA Power Solar Farm',
-    name: 'Phase 1: Design Consultation',
-    amount: 40000,
-    currency: 'SAR',
-    dueDate: '2024-02-20',
-    status: 'approved',
-    progress: 100,
-    description: 'Initial design consultation and feasibility study',
-    engineer: 'Mohammed Al-Zahrani'
+    description: 'Sample milestone - Your real milestones will appear here',
+    engineer: 'Sample Engineer'
   }
 ];
 
@@ -401,6 +213,20 @@ export default function FinancePage() {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Connect to real database
+  const { 
+    payments: dbPayments, 
+    invoices: dbInvoices,
+    isLoading: financeLoading,
+    error: financeError,
+    loadAll 
+  } = useFinanceStore();
+
+  // Load financial data on mount
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]);
+
   // Handle URL tab parameter
   useEffect(() => {
     const tabParam = searchParams.get('tab');
@@ -408,12 +234,41 @@ export default function FinancePage() {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
+  
   const [showInvoiceBuilder, setShowInvoiceBuilder] = useState(false);
   const [showQuotationBuilder, setShowQuotationBuilder] = useState(false);
   const [expandedPayment, setExpandedPayment] = useState<Payment | null>(null);
   const [expandedInvoice, setExpandedInvoice] = useState<Invoice | null>(null);
   const [expandedQuotation, setExpandedQuotation] = useState<Quotation | null>(null);
   const [expandedMilestone, setExpandedMilestone] = useState<Milestone | null>(null);
+
+  // Transform database payments to match UI interface
+  const payments: Payment[] = dbPayments.map(p => ({
+    id: p.id,
+    type: 'payment' as const,
+    amount: Number(p.amount),
+    currency: p.currency || 'SAR',
+    description: p.description || 'Payment',
+    date: new Date(p.created_at).toISOString().split('T')[0],
+    status: p.payment_status === 'succeeded' ? 'completed' as const : 
+            p.payment_status === 'processing' ? 'pending' as const : 'failed' as const,
+    method: (p.payment_method || 'bank_transfer') as 'bank_transfer' | 'credit_card' | 'paypal' | 'wallet',
+    details: p.metadata as any
+  }));
+
+  // Transform database invoices to match UI interface
+  const invoices: Invoice[] = dbInvoices.map(inv => ({
+    id: inv.id,
+    project: 'Project', // TODO: Join with jobs/projects table
+    engineer: 'Engineer', // TODO: Join with profiles table
+    amount: Number(inv.amount),
+    currency: inv.currency || 'SAR',
+    dueDate: inv.due_date || '',
+    status: inv.invoice_status === 'paid' ? 'paid' as const :
+            inv.invoice_status === 'open' ? 'pending' as const : 'overdue' as const,
+    invoiceNumber: inv.invoice_number,
+    createdAt: new Date(inv.created_at).toISOString().split('T')[0]
+  }));
   
   const expandedRef = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -446,15 +301,16 @@ export default function FinancePage() {
     setExpandedMilestone(null);
   });
 
-  const totalSpent = mockPayments
+  // Calculate financial stats from real data
+  const totalSpent = payments
     .filter(p => p.type === 'payment' && p.status === 'completed')
     .reduce((sum, p) => sum + p.amount, 0);
 
-  const totalFees = mockPayments
+  const totalFees = payments
     .filter(p => p.type === 'fee' && p.status === 'completed')
     .reduce((sum, p) => sum + p.amount, 0);
 
-  const pendingPayments = mockPayments
+  const pendingPayments = payments
     .filter(p => p.type === 'payment' && p.status === 'pending')
     .reduce((sum, p) => sum + p.amount, 0);
 
@@ -1158,21 +1014,53 @@ export default function FinancePage() {
             <TabsTrigger value="milestones" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">Milestones</TabsTrigger>
           </TabsList>
 
+          {/* Loading State */}
+          {financeLoading && (
+            <Card className="border-border/50 mt-4">
+              <CardContent className="py-16 text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Loading financial data...</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Empty State - No Data */}
+          {!financeLoading && payments.length === 0 && invoices.length === 0 && (
+            <Card className="border-border/50 mt-4">
+              <CardContent className="py-16 text-center space-y-4">
+                <div className="bg-muted/30 h-16 w-16 rounded-full flex items-center justify-center mx-auto">
+                  <DollarSign className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold mb-2">No Financial Activity Yet</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Your payments and invoices will appear here once you start working on projects
+                  </p>
+                </div>
+                <Button onClick={() => window.location.href = '/free/browse'} className="h-8 text-xs">
+                  <Building2 className="h-3.5 w-3.5 mr-1.5" />
+                  Browse Engineers
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Overview Tab - Separate Card */}
-          <TabsContent value="overview" className="m-0">
-            <Card className="border-border/50">
-              <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {/* Recent Payments */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-base">Recent Payments</h3>
-                      <Button variant="ghost" size="sm" className="h-7 text-xs">
-                        View All
-                      </Button>
-                    </div>
+          {!financeLoading && (payments.length > 0 || invoices.length > 0) && (
+            <TabsContent value="overview" className="m-0">
+              <Card className="border-border/50">
+                <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Recent Payments */}
                     <div className="space-y-3">
-                      {mockPayments.slice(0, 3).map((payment) => (
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-base">Recent Payments</h3>
+                        <Button variant="ghost" size="sm" className="h-7 text-xs">
+                          View All
+                        </Button>
+                      </div>
+                      <div className="space-y-3">
+                        {payments.slice(0, 3).map((payment) => (
                         <motion.div
                           key={payment.id}
                           layoutId={`payment-card-${payment.id}-${id}`}
@@ -1215,11 +1103,11 @@ export default function FinancePage() {
                     <div className="flex items-center justify-between">
                       <h3 className="font-bold text-base">Pending Invoices</h3>
                       <Badge className="bg-amber-500/10 text-amber-600 border-0 text-xs">
-                        {mockInvoices.filter(i => i.status === 'pending' || i.status === 'overdue').length}
+                        {invoices.filter(i => i.status === 'pending' || i.status === 'overdue').length}
                       </Badge>
                     </div>
                     <div className="space-y-3">
-                      {mockInvoices.filter(i => i.status === 'pending' || i.status === 'overdue').map((invoice) => (
+                      {invoices.filter(i => i.status === 'pending' || i.status === 'overdue').map((invoice) => (
                         <motion.div
                           key={invoice.id}
                           layoutId={`invoice-card-${invoice.id}-${id}`}
@@ -1259,7 +1147,7 @@ export default function FinancePage() {
                           </div>
                         </motion.div>
                       ))}
-                      {mockInvoices.filter(i => i.status === 'pending' || i.status === 'overdue').length === 0 && (
+                      {invoices.filter(i => i.status === 'pending' || i.status === 'overdue').length === 0 && (
                         <div className="text-center py-8">
                           <CheckCircle2 className="h-12 w-12 mx-auto text-green-500 mb-2" />
                           <p className="text-sm text-muted-foreground">All invoices paid!</p>
@@ -1270,10 +1158,12 @@ export default function FinancePage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+            </TabsContent>
+          )}
 
           {/* Payments Tab - Separate Card */}
-          <TabsContent value="payments" className="m-0">
+          {!financeLoading && (
+            <TabsContent value="payments" className="m-0">
             <Card className="border-border/50">
               <CardContent className="p-4 space-y-4 bg-background">
                 {/* Search & Make Payment Button */}
@@ -1297,7 +1187,7 @@ export default function FinancePage() {
 
                 {/* Payments List */}
                 <div className="space-y-3">
-                  {mockPayments.map((payment) => (
+                  {payments.map((payment) => (
                     <motion.div
                       key={payment.id}
                       layoutId={`payment-tab-card-${payment.id}-${id}`}
@@ -1382,10 +1272,12 @@ export default function FinancePage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+            </TabsContent>
+          )}
 
           {/* Invoices Tab - Separate Card */}
-          <TabsContent value="invoices" className="m-0">
+          {!financeLoading && (
+            <TabsContent value="invoices" className="m-0">
             <Card className="border-border/50">
               <CardContent className="p-4 space-y-4 bg-background">
                 {/* Search & Create Invoice Button */}
@@ -1409,7 +1301,7 @@ export default function FinancePage() {
                 </div>
 
                 <div className="space-y-3">
-                  {mockInvoices.map((invoice) => (
+                  {invoices.map((invoice) => (
                     <motion.div
                       key={invoice.id}
                       layoutId={`invoice-tab-card-${invoice.id}-${id}`}
@@ -1496,7 +1388,8 @@ export default function FinancePage() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+            </TabsContent>
+          )}
 
           {/* Quotations Tab - Separate Card */}
           <TabsContent value="quotations" className="m-0">

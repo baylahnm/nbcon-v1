@@ -7,6 +7,7 @@ import { Input } from '../1-HomePage/others/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
 import { Badge } from '../1-HomePage/others/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../1-HomePage/others/components/ui/select';
+import { useJobsStore } from './others/features/jobs/store/useJobsStore';
 import { 
   Briefcase, 
   MapPin, 
@@ -33,7 +34,8 @@ import {
   ArrowRight,
   Calculator,
   Target,
-  TrendingUp
+  TrendingUp,
+  Loader2
 } from 'lucide-react';
 
 // Import enhancement components
@@ -75,143 +77,46 @@ interface Job {
   budget?: number;
 }
 
-// Mock data
-const mockJobs: Job[] = [
-  {
-    id: '1',
-    title: 'Senior Structural Engineer',
-    company: 'Saudi Aramco',
-    location: 'Riyadh, Saudi Arabia',
-    type: 'full-time',
-    salary: {
-      min: 15000,
-      max: 25000,
-      currency: 'SAR'
-    },
-    description: 'Lead structural analysis and design for major infrastructure projects in the Kingdom.',
-    requirements: [
-      'Bachelor\'s degree in Civil/Structural Engineering',
-      'Minimum 8 years experience',
-      'SCE license required',
-      'Proficiency in STAAD.Pro, ETABS'
-    ],
-    postedDate: '2024-01-15',
-    deadline: '2024-02-15',
-    status: 'applied',
-    category: 'Structural Engineering',
-    experience: '8+ years',
-    isBookmarked: true,
-    skills: ['STAAD.Pro', 'ETABS', 'AutoCAD', 'Revit'],
-    clientRating: 4.8
-  },
-  {
-    id: '2',
-    title: 'Project Manager - Renewable Energy',
-    company: 'ACWA Power',
-    location: 'Jeddah, Saudi Arabia',
-    type: 'full-time',
-    salary: {
-      min: 12000,
-      max: 20000,
-      currency: 'SAR'
-    },
-    description: 'Manage large-scale renewable energy projects across the region. Lead multidisciplinary teams in delivering solar and wind energy projects from conception to completion. Coordinate with stakeholders, manage budgets exceeding $100M, and ensure compliance with Saudi Vision 2030 sustainability goals. Drive project excellence through agile methodologies and innovative solutions.',
-    requirements: [
-      'PMP certification preferred',
-      '5+ years project management experience',
-      'Renewable energy background',
-      'Strong leadership skills'
-    ],
-    postedDate: '2024-01-20',
-    deadline: '2024-02-20',
-    status: 'open',
-    category: 'Project Management',
-    experience: '5+ years',
-    isBookmarked: false,
-    skills: ['Project Management', 'Renewable Energy', 'Leadership', 'Agile'],
-    clientRating: 4.6
-  },
-  {
-    id: '3',
-    title: 'Electrical Design Engineer',
-    company: 'NEOM',
-    location: 'Tabuk, Saudi Arabia',
-    type: 'contract',
-    budget: 8000,
-    description: 'Design electrical systems for smart city infrastructure.',
-    requirements: [
-      'Electrical Engineering degree',
-      '3+ years design experience',
-      'AutoCAD Electrical proficiency',
-      'Smart grid knowledge preferred'
-    ],
-    postedDate: '2024-01-25',
-    deadline: '2024-02-25',
-    status: 'shortlisted',
-    category: 'Electrical Engineering',
-    experience: '3+ years',
-    isBookmarked: true,
-    skills: ['AutoCAD Electrical', 'Smart Grid', 'Power Systems', 'Design'],
-    clientRating: 4.9
-  },
-  {
-    id: '4',
-    title: 'HVAC Systems Engineer',
-    company: 'Saudi Electricity Company',
-    location: 'Riyadh, Saudi Arabia',
-    type: 'full-time',
-    salary: {
-      min: 13000,
-      max: 19000,
-      currency: 'SAR'
-    },
-    description: 'Design and oversee HVAC systems for commercial and residential buildings. Conduct load calculations, select equipment, and ensure energy efficiency compliance with Saudi Building Code standards. Collaborate with MEP teams and coordinate with contractors during installation phases.',
-    requirements: [
-      'Mechanical Engineering degree',
-      '5+ years HVAC design experience',
-      'Proficiency in HAP, Carrier E20-II software',
-      'Knowledge of ASHRAE standards',
-      'Saudi Building Code familiarity'
-    ],
-    postedDate: '2024-01-28',
-    deadline: '2024-02-28',
-    status: 'open',
-    category: 'Mechanical Engineering',
-    experience: '5+ years',
-    isBookmarked: false,
-    skills: ['HVAC Design', 'HAP', 'Carrier E20-II', 'Energy Efficiency', 'ASHRAE'],
-    clientRating: 4.7
-  },
-  {
-    id: '5',
-    title: 'Geotechnical Engineer',
-    company: 'Al-Rajhi Engineering Consultants',
-    location: 'Jeddah, Saudi Arabia',
-    type: 'contract',
-    budget: 12000,
-    description: 'Conduct soil investigations and foundation design for high-rise developments along the Red Sea coast. Perform site assessments, analyze soil samples, prepare geotechnical reports, and provide foundation recommendations for seismic zones.',
-    requirements: [
-      'Civil/Geotechnical Engineering degree',
-      '4+ years geotechnical experience',
-      'Field testing and laboratory analysis skills',
-      'Foundation design expertise',
-      'Report writing proficiency'
-    ],
-    postedDate: '2024-01-30',
-    deadline: '2024-03-01',
-    status: 'open',
-    category: 'Civil Engineering',
-    experience: '4+ years',
-    isBookmarked: false,
-    skills: ['Soil Investigation', 'Foundation Design', 'Geotechnical Analysis', 'Field Testing', 'AutoCAD'],
-    clientRating: 4.8
-  }
-];
+// Mock data removed - now using real database via useJobsStore
+// This page has been migrated to use the centralized jobs store
 
 const jobCategories = ['All', 'Structural Engineering', 'Project Management', 'Electrical Engineering', 'Mechanical Engineering', 'Civil Engineering'];
 
 export default function JobsPage() {
   const navigate = useNavigate();
+  
+  // Connect to real jobs database
+  const { list: jobListItems, loading: jobsLoading, load: loadJobs, error: jobsError } = useJobsStore();
+  
+  // Load jobs on mount
+  useEffect(() => {
+    loadJobs('engineer');
+  }, [loadJobs]);
+  
+  // Transform JobListItem to Job interface for compatibility
+  const mockJobs: Job[] = jobListItems.map(item => ({
+    id: item.id,
+    title: item.title,
+    company: item.client_name,
+    location: item.city,
+    type: 'full-time',
+    salary: {
+      min: item.budget_min,
+      max: item.budget_max,
+      currency: item.currency
+    },
+    description: `${item.category} position`,
+    requirements: [],
+    postedDate: new Date(item.updated_at).toLocaleDateString(),
+    deadline: item.next_due,
+    status: item.status === 'open' ? 'open' : item.status === 'assigned' ? 'applied' : 'shortlisted',
+    category: item.category,
+    experience: '5+ years',
+    isBookmarked: false,
+    skills: [],
+    clientRating: 4.5
+  }));
+  
   const [activeTab, setActiveTab] = useState('available');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');

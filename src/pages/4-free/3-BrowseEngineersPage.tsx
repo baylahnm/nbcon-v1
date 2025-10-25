@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Avatar, AvatarFallback, AvatarImage } from '../1-HomePage/others/components/ui/avatar';
 import { Progress } from '../1-HomePage/others/components/ui/progress';
 import { useOutsideClick } from '../1-HomePage/others/hooks/use-outside-click';
+import { useEngineersStore } from './others/features/browse/stores/useEngineersStore';
 import XScroll from '@/pages/1-HomePage/others/components/ui/x-scroll';
 import { 
   Users, 
@@ -36,7 +37,8 @@ import {
   Phone,
   Mail,
   GraduationCap,
-  FileText
+  FileText,
+  Loader2
 } from 'lucide-react';
 
 interface Engineer {
@@ -67,147 +69,48 @@ interface Engineer {
   languages?: string[];
 }
 
-// Mock data - enhanced with more engineers
-const mockEngineers: Engineer[] = [
-  {
-    id: '1',
-    name: 'Ahmed Al-Rashid',
-    title: 'Senior Structural Engineer',
-    company: 'Saudi Aramco',
-    location: 'Riyadh',
-    specialty: 'Structural Analysis',
-    experience: 12,
-    rating: 4.9,
-    reviews: 47,
-    verified: true,
-    sceLicense: 'SCE-12345',
-    hourlyRate: 150,
-    availability: 'available',
-    completedProjects: 89,
-    responseTime: '< 1 hour',
-    skills: ['STAAD.Pro', 'ETABS', 'AutoCAD', 'Revit', 'SAP2000'],
-    bio: 'Experienced structural engineer with expertise in high-rise buildings and infrastructure projects.',
-    isBookmarked: false,
-    matchScore: 95,
-    phone: '+966 50 123 4567',
-    email: 'ahmed.rashid@aramco.com',
-    certifications: ['SCE Licensed', 'P.E. (USA)', 'Chartered Engineer (UK)'],
-    education: 'Ph.D. Structural Engineering - King Fahd University',
-    languages: ['Arabic', 'English', 'French']
-  },
-  {
-    id: '2',
-    name: 'Fatima Al-Zahra',
-    title: 'Project Manager (PMP)',
-    company: 'Bechtel Corporation',
-    location: 'Jeddah',
-    specialty: 'Project Management',
-    experience: 8,
-    rating: 4.7,
-    reviews: 32,
-    verified: true,
-    hourlyRate: 120,
-    availability: 'available',
-    completedProjects: 56,
-    responseTime: '< 2 hours',
-    skills: ['PMP', 'Agile', 'Scrum', 'MS Project', 'Primavera'],
-    bio: 'Certified project manager specializing in large-scale construction projects.',
-    isBookmarked: true,
-    matchScore: 88
-  },
-  {
-    id: '3',
-    name: 'Mohammed Al-Zahrani',
-    title: 'Electrical Engineer',
-    company: 'ACWA Power',
-    location: 'Dammam',
-    specialty: 'Power Systems',
-    experience: 6,
-    rating: 4.8,
-    reviews: 28,
-    verified: true,
-    sceLicense: 'SCE-67890',
-    hourlyRate: 100,
-    availability: 'busy',
-    completedProjects: 42,
-    responseTime: '< 4 hours',
-    skills: ['AutoCAD Electrical', 'Power Systems', 'ETAP', 'Smart Grid'],
-    bio: 'Electrical engineer with focus on renewable energy and power distribution systems.',
-    isBookmarked: false,
-    matchScore: 78
-  },
-  {
-    id: '4',
-    name: 'Noura Al-Saud',
-    title: 'Environmental Consultant',
-    company: 'Red Sea Global',
-    location: 'Riyadh',
-    specialty: 'Environmental Engineering',
-    experience: 10,
-    rating: 4.9,
-    reviews: 41,
-    verified: true,
-    sceLicense: 'SCE-45678',
-    hourlyRate: 140,
-    availability: 'available',
-    completedProjects: 67,
-    responseTime: '< 1 hour',
-    skills: ['Environmental Impact', 'Sustainability', 'LEED', 'ISO 14001'],
-    bio: 'LEED-certified environmental consultant specializing in sustainable development.',
-    isBookmarked: true,
-    matchScore: 92
-  },
-  {
-    id: '5',
-    name: 'Khalid Al-Mansouri',
-    title: 'Mechanical Engineer',
-    company: 'SABIC',
-    location: 'Jubail',
-    specialty: 'HVAC Systems',
-    experience: 7,
-    rating: 4.6,
-    reviews: 24,
-    verified: true,
-    hourlyRate: 110,
-    availability: 'available',
-    completedProjects: 38,
-    responseTime: '< 3 hours',
-    skills: ['HVAC Design', 'AutoCAD MEP', 'Energy Modeling', 'CFD Analysis'],
-    bio: 'Mechanical engineer specializing in HVAC and energy-efficient building systems.',
-    isBookmarked: false,
-    matchScore: 85
-  },
-  {
-    id: '6',
-    name: 'Laila Al-Harbi',
-    title: 'Civil Engineer',
-    company: 'Saudi Binladin Group',
-    location: 'Mecca',
-    specialty: 'Infrastructure',
-    experience: 9,
-    rating: 4.8,
-    reviews: 36,
-    verified: true,
-    sceLicense: 'SCE-23456',
-    hourlyRate: 130,
-    availability: 'available',
-    completedProjects: 52,
-    responseTime: '< 2 hours',
-    skills: ['Civil3D', 'Road Design', 'Drainage Systems', 'Surveying'],
-    bio: 'Civil engineer with extensive experience in urban infrastructure and road networks.',
-    isBookmarked: false,
-    matchScore: 81
-  }
-];
+// Mock data removed - now using real database via useEngineersStore
+// This page has been migrated to use the centralized engineers store
 
 export default function BrowseEngineersPage() {
   const navigate = useNavigate();
+  
+  // Connect to real engineers database
+  const { engineers: dbEngineers, isLoading: engineersLoading, loadEngineers, error: engineersError } = useEngineersStore();
+  
+  // Load engineers on mount
+  useEffect(() => {
+    loadEngineers();
+  }, [loadEngineers]);
+  
+  // Transform database engineers to UI interface
+  const engineers: Engineer[] = dbEngineers.map(eng => ({
+    id: eng.id,
+    name: `${eng.first_name} ${eng.last_name}`,
+    title: eng.title,
+    location: eng.location_city || 'Saudi Arabia',
+    specialty: eng.specialty,
+    experience: eng.experience_years,
+    rating: 4.5, // TODO: Calculate from ratings table
+    reviews: 0, // TODO: Count from ratings table
+    avatar: eng.avatar_url,
+    verified: eng.is_verified,
+    sceLicense: eng.sce_license,
+    hourlyRate: eng.hourly_rate,
+    availability: 'available', // TODO: Check from availability table
+    completedProjects: 0, // TODO: Count from projects
+    responseTime: '< 2 hours',
+    skills: [], // TODO: Join with skills table
+    bio: eng.bio || '',
+    isBookmarked: false,
+    matchScore: 85
+  }));
+  
   const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
-  const [engineers, setEngineers] = useState(mockEngineers);
   const [expandedEngineer, setExpandedEngineer] = useState<Engineer | null>(null);
   
   const expandedRef = useRef<HTMLDivElement>(null);
@@ -290,10 +193,11 @@ export default function BrowseEngineersPage() {
   // Sort engineers by match score
   const sortedEngineers = [...filteredEngineers].sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
 
+  // Bookmark feature TODO: Implement with database
   const handleBookmark = (engineerId: string) => {
-    setEngineers(prev => prev.map(eng => 
-      eng.id === engineerId ? { ...eng, isBookmarked: !eng.isBookmarked } : eng
-    ));
+    console.log('[Engineers] Bookmark clicked for:', engineerId);
+    // TODO: Implement bookmark toggle in useEngineersStore
+    // For now, just log the action
   };
 
   return (
@@ -792,19 +696,19 @@ export default function BrowseEngineersPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
             <TabsTrigger value="all" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
-              All Engineers ({mockEngineers.length})
+              All Engineers ({engineers.length})
             </TabsTrigger>
             <TabsTrigger value="verified" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
-              SCE Verified ({mockEngineers.filter(e => e.verified).length})
+              SCE Verified ({engineers.filter(e => e.verified).length})
             </TabsTrigger>
             <TabsTrigger value="available" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               <Clock className="h-3.5 w-3.5 mr-1.5" />
-              Available ({mockEngineers.filter(e => e.availability === 'available').length})
+              Available ({engineers.filter(e => e.availability === 'available').length})
             </TabsTrigger>
             <TabsTrigger value="bookmarked" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
               <Bookmark className="h-3.5 w-3.5 mr-1.5" />
-              Saved ({mockEngineers.filter(e => e.isBookmarked).length})
+              Saved ({engineers.filter(e => e.isBookmarked).length})
             </TabsTrigger>
           </TabsList>
 
