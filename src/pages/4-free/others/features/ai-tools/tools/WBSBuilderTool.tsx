@@ -9,8 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/pages/1-HomePage/others/components/ui/use-toast';
 import { 
   Network, 
-  Sparkles,
-  Download,
+  Sparkles, 
+  Download, 
   ChevronDown,
   ChevronUp,
   ChevronRight,
@@ -31,7 +31,9 @@ import {
   X,
   Save,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  Maximize2,
+  ChevronLeft
 } from 'lucide-react';
 import { useProjectStore } from '../../../stores/useProjectStore';
 import { useGanttStore } from '../stores/useGanttStore';
@@ -84,6 +86,28 @@ export default function WBSBuilderTool() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [isCanvasExpanded, setIsCanvasExpanded] = useState(false);
+  const [isToolbarExpanded, setIsToolbarExpanded] = useState(true);
+
+  // ESC key to exit expanded canvas
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isCanvasExpanded) {
+        setIsCanvasExpanded(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isCanvasExpanded]);
+
+  // Pre-fill AI input fields with existing project data
+  useEffect(() => {
+    if (project) {
+      setAiInput(project.description || '');
+      setProjectType(project.project_type || '');
+      // Industry could be inferred from project_type or left empty
+    }
+  }, [project?.id]);
 
   // Load tasks with loading state
   useEffect(() => {
@@ -145,7 +169,7 @@ export default function WBSBuilderTool() {
       taskMap.set(task.id, {
         id: task.id,
         title: task.title,
-        level: 0,
+      level: 0,
         duration: task.duration,
         description: task.description || '',
         status: task.progress === 100 ? 'completed' : task.progress > 0 ? 'in-progress' : 'not-started',
@@ -420,13 +444,13 @@ Create a hierarchical task structure suitable for project planning.`;
                     className="min-h-48 rounded-xl border shadow-sm focus:shadow-md transition-shadow resize-y"
                   />
                 </label>
-              </div>
+          </div>
 
               {/* Industry + Project Type - consistent gutters */}
               <div className="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
                 <label className="flex flex-col gap-2">
                   <span className="text-base font-medium">Industry</span>
-                  <Input
+          <Input 
                     placeholder="e.g., Technology"
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
@@ -436,7 +460,7 @@ Create a hierarchical task structure suitable for project planning.`;
                 </label>
                 <label className="flex flex-col gap-2">
                   <span className="text-base font-medium">Project Type</span>
-                  <Input
+            <Input 
                     placeholder="e.g., Mobile App Development"
                     value={projectType}
                     onChange={(e) => setProjectType(e.target.value)}
@@ -464,9 +488,9 @@ Create a hierarchical task structure suitable for project planning.`;
                       Generate WBS
                     </>
                   )}
-                </Button>
-              </div>
-            </div>
+            </Button>
+          </div>
+        </div>
           </div>
         </main>
       </div>
@@ -569,8 +593,8 @@ Create a hierarchical task structure suitable for project planning.`;
                 Collapse All
               </Button>
             </div>
+            </div>
           </div>
-        </div>
 
         {/* Bottom Buttons - Add Task + Export */}
         <div className="flex flex-col gap-2">
@@ -580,7 +604,7 @@ Create a hierarchical task structure suitable for project planning.`;
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Task
-          </Button>
+            </Button>
           <Button
             variant="outline"
             className="h-9"
@@ -588,7 +612,7 @@ Create a hierarchical task structure suitable for project planning.`;
           >
             <Share2 className="h-4 w-4 mr-2" />
             Export WBS
-          </Button>
+            </Button>
         </div>
       </aside>
 
@@ -615,24 +639,35 @@ Create a hierarchical task structure suitable for project planning.`;
             {/* Form Card */}
             <Card className="border-border/50">
               <CardHeader className="p-4 border-b border-border/40">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
-                    <FileText className="h-4 w-4 text-primary" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+                      <FileText className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-base font-bold tracking-tight">Project Details</CardTitle>
+                      <p className="text-xs text-muted-foreground mt-0.5">Refine details or generate WBS for <span className="font-medium text-foreground">{project.name}</span></p>
+                    </div>
                   </div>
-                  <CardTitle className="text-base font-bold tracking-tight">Project Details</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="p-4 space-y-4">
                 {/* Description */}
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground">Project Description</label>
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Project Description 
+                    {project.description && <span className="ml-1 text-primary">(pre-filled from project)</span>}
+                  </label>
                   <Textarea
-                    placeholder="e.g., Develop a mobile banking app with features for fund transfer, bill payment, and biometric login for iOS and Android..."
+                    placeholder={project.description ? "Edit or refine the description..." : "Describe the project scope, objectives, and key deliverables..."}
                     value={aiInput}
                     onChange={(e) => setAiInput(e.target.value)}
                     disabled={isGenerating}
                     className="min-h-32 resize-y"
                   />
+                  {aiInput && !project.description && (
+                    <p className="text-xs text-muted-foreground">💡 Tip: Be specific about scope and deliverables for better WBS generation</p>
+                  )}
                 </div>
 
                 {/* Industry + Project Type */}
@@ -647,9 +682,12 @@ Create a hierarchical task structure suitable for project planning.`;
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-muted-foreground">Project Type (Optional)</label>
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Project Type
+                      {project.project_type && <span className="ml-1 text-primary">(from project)</span>}
+                    </label>
                     <Input
-                      placeholder="e.g., Mobile App Development"
+                      placeholder="e.g., Commercial Building"
                       value={projectType}
                       onChange={(e) => setProjectType(e.target.value)}
                       disabled={isGenerating}
@@ -664,22 +702,22 @@ Create a hierarchical task structure suitable for project planning.`;
                     disabled={!aiInput.trim() || isGenerating}
                     className="w-full h-9 shadow-md"
                   >
-                    {isGenerating ? (
-                      <>
+              {isGenerating ? (
+                <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         Generating WBS...
-                      </>
-                    ) : (
-                      <>
+                </>
+              ) : (
+                <>
                         <Sparkles className="h-4 w-4 mr-2" />
                         Generate WBS
-                      </>
-                    )}
-                  </Button>
-                </div>
+                </>
+              )}
+            </Button>
+          </div>
               </CardContent>
             </Card>
-          </div>
+        </div>
         </section>
 
         {/* SECTION 2: VISUALIZATION - WBS Tree Canvas */}
@@ -702,7 +740,11 @@ Create a hierarchical task structure suitable for project planning.`;
             </div>
 
             {/* WBS Canvas - Stitch: dotted background + zoom controls */}
-            <div className="relative w-full h-[600px] rounded-xl overflow-hidden bg-background border border-border">
+            <div className={`relative w-full rounded-xl overflow-hidden bg-background border border-border transition-all duration-300 ${
+              isCanvasExpanded 
+                ? 'fixed inset-4 z-50 h-[calc(100vh-2rem)]' 
+                : 'h-[600px]'
+            }`}>
               {/* Dotted grid background - theme-aware for dark mode */}
               <div 
                 className="absolute inset-0 h-full w-full" 
@@ -712,45 +754,81 @@ Create a hierarchical task structure suitable for project planning.`;
                 }}
               />
 
-              {/* Zoom Controls - top right */}
-              <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-background/95 backdrop-blur-sm border border-border rounded-lg p-2 shadow-lg">
+              {/* Close button (only in expanded mode) - top left */}
+              {isCanvasExpanded && (
                 <Button
                   variant="ghost"
-                  size="sm"
-                  onClick={handleZoomOut}
-                  aria-label="Zoom out"
-                  className="h-9 w-9 p-0"
+                  onClick={() => setIsCanvasExpanded(false)}
+                  aria-label="Exit fullscreen"
+                  className="absolute top-4 left-4 z-20 h-9 w-9 p-0 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg"
                 >
-                  <Minus className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
-                <span className="text-sm font-medium text-muted-foreground min-w-12 text-center">
-                  {zoomLevel}%
-                </span>
+              )}
+
+              {/* Zoom Controls - top right - collapsible */}
+              <div className="absolute top-4 right-4 z-10 flex items-center bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg overflow-hidden transition-all duration-300" style={{ top: '16px', right: '16px' }}>
+                {/* Collapse/Expand Toggle */}
                 <Button
                   variant="ghost"
-                  size="sm"
-                  onClick={handleZoomIn}
-                  aria-label="Zoom in"
-                  className="h-9 w-9 p-0"
+                  onClick={() => setIsToolbarExpanded(!isToolbarExpanded)}
+                  aria-label={isToolbarExpanded ? "Collapse toolbar" : "Expand toolbar"}
+                  className="h-9 w-9 p-0 shrink-0"
                 >
-                  <Plus className="h-4 w-4" />
+                  <ChevronLeft className={`h-4 w-4 transition-transform duration-300 ${isToolbarExpanded ? '' : 'rotate-180'}`} />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleZoomReset}
-                  aria-label="Reset zoom"
-                  className="h-9 w-9 p-0"
-                >
-                  <RotateCcw className="h-4 w-4" />
-                </Button>
+                
+                {/* Toolbar Controls - only visible when expanded */}
+                {isToolbarExpanded && (
+                  <>
+                    <div className="h-4 w-px bg-border" />
+                    <div className="flex items-center gap-2 px-2">
+                      <Button
+                        variant="ghost"
+                        onClick={handleZoomOut}
+                        aria-label="Zoom out"
+                        className="h-9 w-9 p-0"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="text-sm font-medium text-muted-foreground min-w-12 text-center">
+                        {zoomLevel}%
+                      </span>
+                      <Button
+                        variant="ghost"
+                        onClick={handleZoomIn}
+                        aria-label="Zoom in"
+                        className="h-9 w-9 p-0"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={handleZoomReset}
+                        aria-label="Reset zoom"
+                        className="h-9 w-9 p-0"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </Button>
+                      <div className="hidden md:block h-4 w-px bg-border" />
+                      <Button
+                        variant="ghost"
+                        onClick={() => setIsCanvasExpanded(!isCanvasExpanded)}
+                        aria-label={isCanvasExpanded ? "Exit fullscreen" : "Fullscreen view"}
+                        className="hidden md:flex h-9 w-9 p-0"
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* WBS Tree - vertical indented layout with zoom */}
               <div 
                 id="wbs-tree-canvas"
-                className="relative p-10 h-full w-full overflow-auto transition-transform"
-                style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left' }}
+                className="relative h-full w-full overflow-auto transition-transform"
+                style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left', padding: '50px 16px' }}
               >
                 {displayTree.map((rootNode) => (
                   <WBSTreeNode
@@ -797,8 +875,8 @@ Create a hierarchical task structure suitable for project planning.`;
                   </div>
                 )}
               </div>
-            </div>
-          </div>
+                </div>
+              </div>
         </section>
 
         {/* SECTION 3: EXPORT - Export Preview */}
@@ -815,21 +893,21 @@ Create a hierarchical task structure suitable for project planning.`;
                   <p className="text-xs text-muted-foreground">Download your WBS in multiple formats</p>
                 </div>
               </div>
-            </div>
+              </div>
 
             {/* Preview Card */}
-            <Card className="border-border/50">
+          <Card className="border-border/50">
               <CardHeader className="p-4 border-b border-border/40">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md">
                     <FileText className="h-4 w-4 text-primary" />
-                  </div>
+                </div>
                   <CardTitle className="text-base font-bold tracking-tight">WBS Preview</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="p-4">
+              <CardContent className="p-0">
                 {wbsTree.length > 0 ? (
-                  <div className="max-h-96 overflow-y-auto bg-muted/20 rounded-lg p-4 space-y-2">
+                  <div className="max-h-96 overflow-y-auto bg-muted/20 p-4 space-y-2">
                     {wbsTree.map(node => (
                       <div key={node.id} className="space-y-1">
                         <div className="flex items-center gap-2 p-2 bg-background rounded border border-border">
@@ -838,7 +916,7 @@ Create a hierarchical task structure suitable for project planning.`;
                           {node.duration && (
                             <span className="text-xs text-muted-foreground">{node.duration}d</span>
                           )}
-                        </div>
+              </div>
                         {node.children.length > 0 && (
                           <div className="ml-6 space-y-1">
                             {node.children.map(child => (
@@ -849,18 +927,18 @@ Create a hierarchical task structure suitable for project planning.`;
                             ))}
                           </div>
                         )}
-                      </div>
+                </div>
                     ))}
-                  </div>
+                </div>
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p className="font-medium">No WBS structure to export</p>
                     <p className="text-sm mt-1">Generate tasks first or add them in the Gantt view</p>
-                  </div>
+              </div>
                 )}
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
 
             {/* Export Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -900,7 +978,7 @@ Create a hierarchical task structure suitable for project planning.`;
                 <Download className="h-4 w-4 mr-2" />
                 Export as JSON
               </Button>
-            </div>
+                </div>
 
             {/* Full Export Dialog */}
             <Button 
@@ -911,10 +989,10 @@ Create a hierarchical task structure suitable for project planning.`;
               <Download className="h-4 w-4 mr-2" />
               Open Full Export Options
             </Button>
-          </div>
+                </div>
         </section>
 
-        </div>
+              </div>
       </main>
 
       {/* RIGHT SIDEBAR - Stitch: 420px fixed width with node details */}
@@ -933,7 +1011,7 @@ Create a hierarchical task structure suitable for project planning.`;
               >
                 <X className="h-5 w-5" />
               </Button>
-            </div>
+        </div>
 
             {/* Form Fields - Editable */}
             <div className="p-6 space-y-6">
@@ -992,7 +1070,7 @@ Create a hierarchical task structure suitable for project planning.`;
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
+                </div>
 
               {/* Save/Cancel Actions */}
               <div className="flex gap-2 pt-4">
@@ -1032,44 +1110,46 @@ Create a hierarchical task structure suitable for project planning.`;
               <hr className="border-border" />
             </div>
 
-            {/* AI Suggestions - Stitch: purple card with suggestions */}
+            {/* AI Suggestions - Theme-aware card */}
             <div className="px-6 pb-6">
-              <div className="rounded-xl bg-purple-50 dark:bg-purple-950/20 p-5 border border-purple-200 dark:border-purple-800/50">
+              <div className="rounded-xl bg-muted p-5 border border-border">
                 <div className="flex items-center gap-3 mb-4">
-                  <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                  <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-300">
-                    AI Assistant
-                  </h3>
+                  <div className="bg-primary/10 p-2 rounded-lg ring-1 ring-primary/20">
+                    <Sparkles className="h-4 w-4 text-primary" />
                 </div>
+                  <h3 className="text-base font-semibold">
+                    AI Suggestions
+                  </h3>
+              </div>
 
                 <div className="space-y-3">
                   {/* Suggestion 1 */}
-                  <div className="bg-background dark:bg-gray-800/50 p-3 rounded-lg flex items-start gap-3 justify-between">
+                  <div className="bg-background p-3 rounded-lg flex items-start gap-3 justify-between border border-border/50 hover:border-primary/30 transition-colors">
                     <div className="flex-1">
-                      <p className="text-xs font-semibold text-purple-600 dark:text-purple-400">
+                      <p className="text-xs font-semibold text-primary">
                         MISSING TASK
                       </p>
-                      <p className="text-sm mt-1">
+                      <p className="text-sm mt-1 text-foreground">
                         Add sub-task: "Competitor Analysis"
                       </p>
-                    </div>
+            </div>
                     <div className="flex items-center gap-1.5">
                       <Button size="sm" variant="outline" className="h-7 px-3 text-xs">
                         Add
-                      </Button>
+                </Button>
                       <Button size="icon" variant="ghost" className="h-7 w-7">
                         <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+                </Button>
+              </div>
+            </div>
 
                   {/* Suggestion 2 */}
-                  <div className="bg-background dark:bg-gray-800/50 p-3 rounded-lg flex items-start gap-3 justify-between">
+                  <div className="bg-background p-3 rounded-lg flex items-start gap-3 justify-between border border-border/50 hover:border-primary/30 transition-colors">
                     <div className="flex-1">
-                      <p className="text-xs font-semibold text-purple-600 dark:text-purple-400">
+                      <p className="text-xs font-semibold text-primary">
                         EFFORT ESTIMATION
                       </p>
-                      <p className="text-sm mt-1">
+                      <p className="text-sm mt-1 text-foreground">
                         Suggested duration: 12 days based on similar tasks.
                       </p>
                     </div>
@@ -1081,15 +1161,15 @@ Create a hierarchical task structure suitable for project planning.`;
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
-                  </div>
+      </div>
 
                   {/* Suggestion 3 */}
-                  <div className="bg-background dark:bg-gray-800/50 p-3 rounded-lg flex items-start gap-3 justify-between">
+                  <div className="bg-background p-3 rounded-lg flex items-start gap-3 justify-between border border-border/50 hover:border-primary/30 transition-colors">
                     <div className="flex-1">
-                      <p className="text-xs font-semibold text-purple-600 dark:text-purple-400">
+                      <p className="text-xs font-semibold text-primary">
                         RISK IDENTIFICATION
                       </p>
-                      <p className="text-sm mt-1">
+                      <p className="text-sm mt-1 text-foreground">
                         Potential Risk: 'Scope creep due to unclear requirements'.
                       </p>
                     </div>
@@ -1105,7 +1185,7 @@ Create a hierarchical task structure suitable for project planning.`;
                 </div>
               </div>
             </div>
-          </div>
+      </div>
 
           {/* Footer Actions - Stitch: Cancel + Save */}
           <div className="flex-shrink-0 p-6 border-t border-border bg-background">
@@ -1170,28 +1250,48 @@ const WBSTreeNode = React.memo(({
 }: WBSTreeNodeProps) => {
   const hasChildren = node.children.length > 0;
   
-  // Exact Stitch colors by level - preserved from design
-  const getNodeColor = (lvl: number) => {
+  // Visual hierarchy: Phase → Deliverable → Work Package → Task
+  const getLevelInfo = (lvl: number) => {
     switch (lvl) {
-      case 0: return { bg: '#0A3A67', text: 'text-white' }; // Dark blue
-      case 1: return { bg: '#1E62A1', text: 'text-white' }; // Medium blue
-      case 2: return { bg: '#4A90E2', text: 'text-white' }; // Light blue
-      default: return { bg: '#6B7280', text: 'text-white' }; // Gray
+      case 0: return { 
+        label: 'PHASE',
+        styles: 'bg-primary text-primary-foreground border-2 border-primary/30 shadow-lg',
+        icon: Layers,
+        badgeBg: 'bg-primary-foreground/20'
+      };
+      case 1: return { 
+        label: 'DELIVERABLE',
+        styles: 'bg-muted text-foreground border-2 border-border hover:bg-muted/80',
+        icon: Briefcase,
+        badgeBg: 'bg-foreground/10'
+      };
+      case 2: return { 
+        label: 'WORK PACKAGE',
+        styles: 'bg-accent/50 text-accent-foreground border border-accent/40 hover:bg-accent/60',
+        icon: FileText,
+        badgeBg: 'bg-accent-foreground/15'
+      };
+      default: return { 
+        label: 'TASK',
+        styles: 'bg-background text-foreground border border-border/60 hover:bg-muted/30',
+        icon: CheckCircle2,
+        badgeBg: 'bg-foreground/8'
+      };
     }
   };
   
-  const colors = getNodeColor(level);
-  const indentPx = level * 24; // 24px per level
+  const levelInfo = getLevelInfo(level);
+  const LevelIcon = levelInfo.icon;
+  const indentPx = level * 28; // 28px per level for better hierarchy
 
   return (
-    <div style={{ marginLeft: `${indentPx}px` }} className="mb-2">
+    <div style={{ marginLeft: `${indentPx}px` }} className="mb-2.5">
       <div
-        className={`flex items-center gap-3 p-3 rounded-lg shadow-md cursor-pointer transition-all hover:shadow-lg hover:scale-[1.01] ${colors.text} ${isSelected ? 'ring-2 ring-white/50' : ''}`}
-        style={{ backgroundColor: colors.bg }}
+        className={`group flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-200 ${levelInfo.styles} ${isSelected ? 'ring-2 ring-primary shadow-xl scale-[1.02]' : 'hover:shadow-xl'}`}
         onClick={() => onSelect(node)}
         role="button"
         tabIndex={0}
-        aria-label={`WBS node: ${node.title}, Level ${level + 1}`}
+        aria-label={`${levelInfo.label}: ${node.title}, Level ${level + 1}`}
         aria-expanded={hasChildren ? isExpanded : undefined}
         aria-selected={isSelected}
         onKeyDown={(e) => {
@@ -1201,14 +1301,14 @@ const WBSTreeNode = React.memo(({
           }
         }}
       >
-        {/* Expand/Collapse */}
+        {/* Expand/Collapse Button */}
         {hasChildren ? (
           <button
             onClick={(e) => {
               e.stopPropagation();
               onToggle(node.id);
             }}
-            className="shrink-0 hover:bg-white/20 rounded p-1 transition-colors"
+            className="shrink-0 hover:bg-foreground/10 rounded-md p-1.5 transition-colors"
             aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             {isExpanded ? (
@@ -1218,29 +1318,47 @@ const WBSTreeNode = React.memo(({
             )}
           </button>
         ) : (
-          <div className="w-6" />
+          <div className="w-8" />
         )}
 
-        {/* ID */}
-        <span className="font-bold text-sm opacity-90 shrink-0">
+        {/* Level Icon & Label */}
+        <div className="flex flex-col items-center gap-0.5 shrink-0">
+          <LevelIcon className="h-4 w-4 opacity-80" />
+          <span className="text-[9px] font-bold tracking-wider opacity-70">{levelInfo.label}</span>
+        </div>
+
+        {/* Vertical Divider */}
+        <div className="h-10 w-px bg-current opacity-20 shrink-0" />
+
+        {/* Task ID */}
+        <span className="font-mono text-xs font-semibold opacity-75 shrink-0 min-w-[60px]">
           {node.id.substring(0, 8)}
         </span>
 
         {/* Title */}
-        <span className="font-medium flex-1 truncate">
+        <span className="font-semibold flex-1 truncate text-sm">
           {node.title}
         </span>
 
         {/* Duration Badge */}
         {node.duration && (
-          <span className="text-xs opacity-90 bg-white/20 px-2 py-1 rounded shrink-0">
+          <span className={`text-xs font-medium ${levelInfo.badgeBg} px-2.5 py-1 rounded-full shrink-0`}>
             {node.duration}d
           </span>
         )}
 
         {/* Status Indicator */}
         {node.status === 'completed' && (
-          <CheckCircle2 className="h-4 w-4 opacity-90 shrink-0" />
+          <div className="flex items-center gap-1 shrink-0">
+            <CheckCircle2 className="h-4 w-4 text-success" />
+          </div>
+        )}
+        
+        {/* Child Count Indicator */}
+        {hasChildren && (
+          <span className={`text-[10px] font-bold ${levelInfo.badgeBg} px-1.5 py-0.5 rounded shrink-0`}>
+            {node.children.length}
+          </span>
         )}
       </div>
 

@@ -2414,6 +2414,16 @@ All colors MUST be HSL.
       hsl(var(--primary-dark)) 100%
     );
   }
+
+  /* Primary gradient - bottom to top variant */
+  .bg-primary-gradient-vertical {
+    background: linear-gradient(to top, 
+      hsl(var(--primary-light)) 0%, 
+      hsl(var(--primary)) 25%, 
+      hsl(var(--primary-dark)) 60%,
+      hsl(var(--primary-dark)) 100%
+    );
+  }
   
   /* Primary gradient text */
   .text-primary-gradient {
