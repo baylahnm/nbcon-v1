@@ -17,9 +17,6 @@ import { useProjectStore, type Project } from '../../../stores/useProjectStore';
 import { ClientOverviewStats } from './ClientOverviewStats';
 import { MessageBubble } from '../../ai/components/MessageBubble';
 import { useAiStore } from '../../ai/store/useAiStore';
-import { AgentSelector } from '../../ai/components/AgentSelector';
-import { isSpecializedAgentsEnabled } from '@/shared/config/featureFlags';
-import type { AIAgent } from '@/shared/types/ai-agents';
 
 /**
  * Quick action prompts for AI chat (Stitch-style)
@@ -57,8 +54,6 @@ export function DashboardContent() {
   const [showProjectDetail, setShowProjectDetail] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
-  const agentsEnabled = isSpecializedAgentsEnabled();
   
   /**
    * AI Chat Integration - Fully Synchronized
@@ -196,15 +191,6 @@ export function DashboardContent() {
     }
   };
 
-  /**
-   * Handle agent selection
-   * Navigates to specialized agent workspace
-   */
-  const handleAgentSelect = (agent: AIAgent) => {
-    setSelectedAgent(agent);
-    // Navigate to agent workspace (Phase 3)
-    navigate(`/free/ai/agents/${agent.discipline}`);
-  };
 
   // Get role display
   const getRoleDisplay = () => {
@@ -586,31 +572,6 @@ export function DashboardContent() {
               <div>
                 <ChatComposer isCompact />
               </div>
-
-              {/* Specialized AI Agents Section - Phase 3 */}
-              {agentsEnabled && (
-                <div className="pt-4 border-t border-border/40">
-                  <div className="mb-4 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-sm font-semibold text-foreground">Specialized AI Agents</h3>
-                      <p className="text-xs text-muted-foreground">Select a discipline-specific engineering assistant</p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 text-xs"
-                      onClick={() => navigate('/free/ai')}
-                    >
-                      View All →
-                    </Button>
-                  </div>
-                  <AgentSelector
-                    onSelectAgent={handleAgentSelect}
-                    selectedDiscipline={selectedAgent?.discipline}
-                    showStats={false}
-                  />
-                </div>
-              )}
             </div>
               </div>
                       </div>

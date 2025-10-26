@@ -308,10 +308,31 @@ export const useAiStore = create<AiState>()((set, get) => ({
   // Thread Management (Supabase-backed)
   // =====================================================
   newThread: async (mode = 'chat') => {
-    try {
-      const title = mode === 'chat' ? 'New Conversation' : `New ${mode} session`;
+    const state = get();
+    
+    // GUARD: Check if there's already an active empty "New Conversation" thread
+    // Reuse it instead of creating a duplicate
+    const title = mode === 'chat' ? 'New Conversation' : `New ${mode} session`;
+    
+    if (title === 'New Conversation') {
+      const existingEmptyThread = state.threads.find(
+        t => t.title === 'New Conversation' && 
+             (!state.messagesByThread[t.id] || state.messagesByThread[t.id].length === 0)
+      );
+      
+      if (existingEmptyThread) {
+        console.log('[useAiStore] Reusing existing empty thread:', existingEmptyThread.id);
+        set({
+          activeThreadId: existingEmptyThread.id,
+          mode,
+          activeServiceMode: SERVICE_MODES.includes(mode as ServiceMode) ? (mode as ServiceMode) : null,
+        });
+        return;
+      }
+    }
 
-      // Create thread in Supabase
+    try {
+      // Create thread in Supabase (RPC has duplicate prevention built-in)
       const { data, error } = await supabase.rpc('create_ai_thread', {
         p_title: title,
         p_mode: mode,
@@ -325,28 +346,42 @@ export const useAiStore = create<AiState>()((set, get) => ({
 
       if (data && data.length > 0) {
         const dbThread = data[0];
-        const newThread: Thread = mapConversationToThread(dbThread);
+        const serverThread: Thread = mapConversationToThread(dbThread);
         const isServiceMode = SERVICE_MODES.includes(mode as ServiceMode);
         const composerHint = isServiceMode
           ? SERVICE_MODE_CONFIG[mode as ServiceMode]?.composerHint ?? DEFAULT_HINT
           : DEFAULT_HINT;
 
-        set((state) => ({
-          threads: [newThread, ...state.threads],
-          activeThreadId: newThread.id,
-          messagesByThread: {
-            ...state.messagesByThread,
-            [newThread.id]: [],
-          },
-          mode,
-          activeServiceMode: isServiceMode ? (mode as ServiceMode) : null,
-          composer: {
-            ...state.composer,
-            hint: composerHint,
-          },
-        }));
+        // Check if thread already exists in state (RPC might return existing thread)
+        const threadExists = state.threads.some(t => t.id === serverThread.id);
+        
+        if (threadExists) {
+          // Just set it as active, don't add duplicate
+          console.log('[useAiStore] Thread already exists, activating:', serverThread.id);
+          set({
+            activeThreadId: serverThread.id,
+            mode,
+            activeServiceMode: isServiceMode ? (mode as ServiceMode) : null,
+          });
+        } else {
+          // Add new thread to state
+          set((state) => ({
+            threads: [serverThread, ...state.threads],
+            activeThreadId: serverThread.id,
+            messagesByThread: {
+              ...state.messagesByThread,
+              [serverThread.id]: [],
+            },
+            mode,
+            activeServiceMode: isServiceMode ? (mode as ServiceMode) : null,
+            composer: {
+              ...state.composer,
+              hint: composerHint,
+            },
+          }));
 
-        console.log('[useAiStore] Created new thread:', newThread.id);
+          console.log('[useAiStore] Created new thread:', serverThread.id);
+        }
       }
     } catch (error) {
       console.error('[useAiStore] newThread error:', error);
