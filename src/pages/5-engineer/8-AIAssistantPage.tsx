@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../1-HomePage/others/components/ui/card';
 import { Button } from '../1-HomePage/others/components/ui/button';
 import { Input } from '../1-HomePage/others/components/ui/input';
@@ -24,6 +25,10 @@ import {
   ThumbsUp,
   ThumbsDown
 } from 'lucide-react';
+import { AgentSelector } from '../4-free/others/features/ai/components/AgentSelector';
+import { AgentWorkspace } from '../4-free/others/features/ai/components/AgentWorkspace';
+import { isSpecializedAgentsEnabled, isAgentWorkspaceEnabled } from '@/shared/config/featureFlags';
+import type { AIAgent } from '@/shared/types/ai-agents';
 
 interface ChatMessage {
   id: string;
@@ -101,10 +106,21 @@ const mockChatHistory: ChatMessage[] = [
 ];
 
 export default function AIAssistantPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('chat');
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>(mockChatHistory);
+  
+  // Phase 3: Agent mode
+  const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
+  const agentsEnabled = isSpecializedAgentsEnabled();
+  const workspaceEnabled = isAgentWorkspaceEnabled();
+
+  const handleAgentSelect = (agent: AIAgent) => {
+    setSelectedAgent(agent);
+    setActiveTab('agent-workspace');
+  };
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -187,6 +203,15 @@ export default function AIAssistantPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="chat">Chat Assistant</TabsTrigger>
+          {agentsEnabled && (
+            <TabsTrigger value="agents">
+              <Sparkles className="h-4 w-4 mr-1.5" />
+              Specialized Agents
+            </TabsTrigger>
+          )}
+          {agentsEnabled && selectedAgent && workspaceEnabled && (
+            <TabsTrigger value="agent-workspace">Agent Workspace</TabsTrigger>
+          )}
           <TabsTrigger value="tools">AI Tools</TabsTrigger>
           <TabsTrigger value="templates">Templates</TabsTrigger>
         </TabsList>
@@ -282,6 +307,40 @@ export default function AIAssistantPage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Phase 3: Specialized Agents Tab */}
+        {agentsEnabled && (
+          <TabsContent value="agents" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Specialized Engineering Agents
+                </CardTitle>
+                <CardDescription>
+                  Select a discipline-specific AI agent for specialized assistance
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AgentSelector
+                  onSelectAgent={handleAgentSelect}
+                  selectedDiscipline={selectedAgent?.discipline}
+                  showStats={true}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        {/* Phase 3: Agent Workspace Tab */}
+        {agentsEnabled && selectedAgent && workspaceEnabled && (
+          <TabsContent value="agent-workspace" className="space-y-4">
+            <AgentWorkspace
+              agent={selectedAgent}
+              onClose={() => setSelectedAgent(null)}
+            />
+          </TabsContent>
+        )}
 
         {/* AI Tools Tab */}
         <TabsContent value="tools" className="space-y-4">

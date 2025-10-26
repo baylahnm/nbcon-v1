@@ -17,6 +17,9 @@ import { useProjectStore, type Project } from '../../../stores/useProjectStore';
 import { ClientOverviewStats } from './ClientOverviewStats';
 import { MessageBubble } from '../../ai/components/MessageBubble';
 import { useAiStore } from '../../ai/store/useAiStore';
+import { AgentSelector } from '../../ai/components/AgentSelector';
+import { isSpecializedAgentsEnabled } from '@/shared/config/featureFlags';
+import type { AIAgent } from '@/shared/types/ai-agents';
 
 /**
  * Quick action prompts for AI chat (Stitch-style)
@@ -54,6 +57,8 @@ export function DashboardContent() {
   const [showProjectDetail, setShowProjectDetail] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
+  const agentsEnabled = isSpecializedAgentsEnabled();
   
   /**
    * AI Chat Integration - Fully Synchronized
@@ -66,7 +71,7 @@ export function DashboardContent() {
    * - Messages sent here appear in /free/ai and vice versa
    * - All CRUD operations (create, read, update, delete) are synchronized
    */
-  const { settings, setComposerText, sendMessage, deleteThread, activeThreadId, messagesByThread, threads, setActiveThread, newThread } = useAiStore();
+  const { settings, setComposerText, sendMessage, deleteThread, activeThreadId, messagesByThread, threads, setActiveThread, newThread, isHydrated } = useAiStore();
   const activeMessages = activeThreadId ? (messagesByThread[activeThreadId] || []) : [];
   const activeThread = threads.find(t => t.id === activeThreadId);
   
@@ -89,17 +94,22 @@ export function DashboardContent() {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
   
+  // Ref to track if initial thread was created (prevent duplicate creation)
+  const initialThreadCreated = useRef(false);
+  
   // Load projects on mount
   useEffect(() => {
     loadUserProjects();
   }, [loadUserProjects]);
   
   // Ensure there's always an active thread for dashboard chat
+  // Only run after hydration completes to prevent duplicate thread creation
   useEffect(() => {
-    if (!activeThreadId && threads.length === 0) {
+    if (isHydrated && !initialThreadCreated.current && !activeThreadId && threads.length === 0) {
+      initialThreadCreated.current = true;
       newThread('chat');
     }
-  }, [activeThreadId, threads.length, newThread]);
+  }, [isHydrated, activeThreadId, threads.length]);
   
   // Auto-scroll to newest message when messages update
   useEffect(() => {
@@ -184,6 +194,16 @@ export function DashboardContent() {
     if (activeThreadId) {
       deleteThread(activeThreadId);
     }
+  };
+
+  /**
+   * Handle agent selection
+   * Navigates to specialized agent workspace
+   */
+  const handleAgentSelect = (agent: AIAgent) => {
+    setSelectedAgent(agent);
+    // Navigate to agent workspace (Phase 3)
+    navigate(`/free/ai/agents/${agent.discipline}`);
   };
 
   // Get role display
@@ -566,6 +586,31 @@ export function DashboardContent() {
               <div>
                 <ChatComposer isCompact />
               </div>
+
+              {/* Specialized AI Agents Section - Phase 3 */}
+              {agentsEnabled && (
+                <div className="pt-4 border-t border-border/40">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Specialized AI Agents</h3>
+                      <p className="text-xs text-muted-foreground">Select a discipline-specific engineering assistant</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={() => navigate('/free/ai')}
+                    >
+                      View All →
+                    </Button>
+                  </div>
+                  <AgentSelector
+                    onSelectAgent={handleAgentSelect}
+                    selectedDiscipline={selectedAgent?.discipline}
+                    showStats={false}
+                  />
+                </div>
+              )}
             </div>
               </div>
                       </div>

@@ -133,13 +133,44 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
   const [expandedActivityId, setExpandedActivityId] = useState<string | null>(null);
   const expandedCardRef = useRef<HTMLDivElement>(null);
 
-  const displayedActivities = activities.slice(0, maxItems);
+  // Dismissed activities (persisted in localStorage)
+  const [dismissedActivityIds, setDismissedActivityIds] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem('dismissedActivities');
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  // Filter out dismissed activities
+  const visibleActivities = activities.filter(a => !dismissedActivityIds.has(a.id));
+  const displayedActivities = visibleActivities.slice(0, maxItems);
 
   useOutsideClick(expandedCardRef, () => {
     if (expandedActivityId) {
       setExpandedActivityId(null);
     }
   });
+
+  // Handle dismiss activity
+  const handleDismissActivity = (activityId: string) => {
+    const newDismissed = new Set(dismissedActivityIds);
+    newDismissed.add(activityId);
+    setDismissedActivityIds(newDismissed);
+    
+    // Persist to localStorage
+    try {
+      localStorage.setItem('dismissedActivities', JSON.stringify(Array.from(newDismissed)));
+    } catch (error) {
+      console.error('Failed to persist dismissed activities:', error);
+    }
+
+    // Close expanded view if dismissing expanded activity
+    if (expandedActivityId === activityId) {
+      setExpandedActivityId(null);
+    }
+  };
 
   const getActivityIcon = (type: ActivityItem['type']) => {
     switch (type) {
@@ -189,7 +220,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
           </div>
           <div className="flex items-center gap-4">
             <Badge className="bg-primary-gradient text-primary-foreground border-0 shadow-sm shadow-primary/50 h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">
-              {displayedActivities.length}
+              {visibleActivities.length}
             </Badge>
             <Button
               variant="ghost"
@@ -240,7 +271,7 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                       <motion.div
                         layoutId={`card-content-${activity.id}`}
                         onClick={() => setExpandedActivityId(activity.id)}
-                        className="flex items-start gap-4 p-4 bg-gradient-to-br from-card to-card/80 rounded-xl border border-border/50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02]"
+                        className="flex items-start gap-4 p-4 bg-gradient-to-br from-card to-card/80 rounded-xl border border-border/50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:scale-[1.02] group/item"
                       >
                         <motion.div
                           layoutId={`icon-${activity.id}`}
@@ -263,19 +294,33 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                             <span>{activity.relativeTime}</span>
                           </motion.div>
                         </div>
-                        {activity.link && (
+                        <div className="flex items-center gap-1 shrink-0">
+                          {activity.link && (
+                            <Button 
+                              asChild
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-7 w-7 p-0 opacity-0 group-hover/item:opacity-100 transition-opacity"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Link to={activity.link}>
+                                <Eye className="h-3.5 w-3.5" />
+                              </Link>
+                            </Button>
+                          )}
                           <Button 
-                            asChild
                             variant="ghost" 
                             size="sm" 
-                            className="h-7 w-7 p-0 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => e.stopPropagation()}
+                            className="h-7 w-7 p-0 opacity-0 group-hover/item:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDismissActivity(activity.id);
+                            }}
+                            aria-label="Dismiss activity"
                           >
-                            <Link to={activity.link}>
-                              <Eye className="h-3.5 w-3.5" />
-                            </Link>
+                            <X className="h-3.5 w-3.5" />
                           </Button>
-                        )}
+                        </div>
                       </motion.div>
                     )}
 
@@ -481,6 +526,16 @@ export const ClientRecentActivityFeed = memo(function ClientRecentActivityFeed({
                                     </Link>
                                   </Button>
                                 )}
+                                <Button
+                                  variant="outline"
+                                  className="h-11 px-6 text-sm font-semibold"
+                                  onClick={() => {
+                                    handleDismissActivity(activity.id);
+                                  }}
+                                >
+                                  <X className="h-4 w-4 mr-2" />
+                                  Dismiss
+                                </Button>
                                 <Button
                                   variant="outline"
                                   className="h-11 px-6 text-sm font-semibold"

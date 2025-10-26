@@ -21,7 +21,29 @@ import {
   ThumbsUp,
   ThumbsDown,
   MoreVertical,
+  Building2,
+  Zap,
+  Hammer,
+  Wind,
+  MapPin,
+  Shield,
+  Plane,
+  Wrench,
+  Mountain,
 } from 'lucide-react';
+
+// Icon mapping (same as AgentSelector)
+const AGENT_ICONS: Record<string, any> = {
+  Building2,
+  Zap,
+  Hammer,
+  Wind,
+  MapPin,
+  Shield,
+  Plane,
+  Wrench,
+  Mountain,
+};
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';

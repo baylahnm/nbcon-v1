@@ -167,45 +167,58 @@ export async function invokeAgent(
   config?: AgentConfig
 ): Promise<AgentResponse> {
   try {
+    const startTime = Date.now();
+    
     // Build specialized prompt
     const prompt = buildAgentPrompt(agent, task, config);
     
-    // Call AI with agent's system prompt
+    // Call AI with agent's system prompt and context
     const { data, error } = await supabase.functions.invoke('ai-chat', {
       body: {
         message: prompt,
         role: 'engineer', // Agent sessions are engineering-focused
         mode: 'research', // Use research mode for technical accuracy
-        language: config?.user_preferences.language || 'en',
+        language: config?.user_preferences?.language || 'en',
         agentContext: {
           agent_id: agent.id,
           discipline: agent.discipline,
           session_id: sessionId,
+          workflow_id: task.type,
         },
       },
     });
     
-    if (error) throw error;
+    if (error) {
+      console.error('[AgentService] Edge function error:', error);
+      throw error;
+    }
+    
+    const processingTimeMs = Date.now() - startTime;
     
     // Parse response and extract structured data
     const output = parseAgentResponse(data.response, task.type);
     
     // Run QA safeguards
-    const validationResults = await validateOutput(output, agent.qa_safeguards);
+    const validationResults = await validateOutput(output, agent.qa_safeguards || []);
     
     // Check if human review required
     const requiresReview = validationResults.some(v => v.severity === 'error' || !v.passed);
     
-    // Log telemetry
-    await logAgentTelemetry({
+    // Log telemetry (non-blocking)
+    logAgentTelemetry({
       agent_id: agent.id,
       session_id: sessionId,
       event_type: 'agent_invoked',
-      duration_ms: data.processing_time_ms,
+      duration_ms: processingTimeMs,
       token_count: data.usage?.total_tokens,
       cost_usd: estimateCost(data.usage),
       workflow_stage: task.type,
-    });
+      metadata: {
+        task_inputs: Object.keys(task.inputs),
+        validation_passed: validationResults.filter(v => v.passed).length,
+        validation_failed: validationResults.filter(v => !v.passed).length,
+      },
+    }).catch(err => console.warn('[AgentService] Telemetry failed:', err));
     
     return {
       status: requiresReview ? 'requires_review' : 'success',
@@ -213,12 +226,23 @@ export async function invokeAgent(
       session_id: sessionId,
       output,
       validation_results: validationResults,
-      processing_time_ms: data.processing_time_ms || 0,
+      processing_time_ms: processingTimeMs,
       confidence_score: calculateConfidenceScore(validationResults),
       tokens_used: data.usage?.total_tokens,
     };
   } catch (error) {
     console.error('[AgentService] Error invoking agent:', error);
+    
+    // Log error telemetry
+    logAgentTelemetry({
+      agent_id: agent.id,
+      session_id: sessionId,
+      event_type: 'agent_error',
+      metadata: {
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+        task_type: task.type,
+      },
+    }).catch(() => {/* ignore telemetry errors */});
     
     return {
       status: 'error',
@@ -227,6 +251,7 @@ export async function invokeAgent(
       output: null,
       processing_time_ms: 0,
       confidence_score: 0,
+      error_message: error instanceof Error ? error.message : 'Agent invocation failed',
     };
   }
 }
@@ -506,10 +531,43 @@ export async function pushToProjectDashboard(
     trend?: 'improving' | 'stable' | 'degrading';
   }
 ): Promise<void> {
-  // Implementation depends on project_updates table structure
-  console.log('[AgentService] Dashboard update:', { projectId, update });
-  
-  // TODO: Implement when project_updates table is defined
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.warn('[AgentService] No user for dashboard update');
+      return;
+    }
+
+    // For now, log to project metadata (JSONB column)
+    // In production, create dedicated project_updates table
+    const { error } = await supabase
+      .from('gantt_projects')
+      .update({
+        // @ts-ignore - metadata column may not exist yet
+        metadata: {
+          last_agent_update: {
+            discipline: update.agent_discipline,
+            metric: update.metric,
+            value: update.current_value,
+            target: update.target_value,
+            trend: update.trend,
+            timestamp: new Date().toISOString(),
+          },
+        },
+      })
+      .eq('id', projectId)
+      .eq('created_by', user.id);
+
+    if (error) {
+      console.warn('[AgentService] Dashboard update failed:', error);
+      // Non-critical - don't throw
+    } else {
+      console.log('[AgentService] Dashboard updated:', { projectId, metric: update.metric });
+    }
+  } catch (error) {
+    console.warn('[AgentService] Unexpected error pushing update:', error);
+    // Non-critical - don't throw
+  }
 }
 
 /**

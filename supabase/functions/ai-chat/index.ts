@@ -22,6 +22,14 @@ const chatRequestSchema = z.object({
     role: z.enum(['user', 'assistant']),
     content: z.string()
   })).optional(),
+  // Phase 3: Agent-specific context
+  agentContext: z.object({
+    agent_id: z.string(),
+    discipline: z.string(),
+    session_id: z.string(),
+    workflow_id: z.string().optional(),
+    deliverable_id: z.string().optional(),
+  }).optional(),
 });
 
 type ChatRequest = z.infer<typeof chatRequestSchema>;
@@ -98,6 +106,106 @@ Provide operational guidance for effective platform management. Respond in ${lan
   return systemPrompt;
 }
 
+// Phase 3: Discipline-specific system prompts for specialized agents
+function getAgentSystemPrompt(discipline: string, language: string): string {
+  const langLabel = language === 'ar' ? 'Arabic' : 'English';
+  
+  const agentPrompts: Record<string, string> = {
+    civil: `You are a specialized Civil Engineering AI assistant for the NBCON platform. You are an expert in:
+- Bill of Quantities (BOQ) generation and cost estimation
+- Site analysis and feasibility studies
+- Road and highway design per Saudi standards
+- Municipal and infrastructure projects
+- Construction compliance and safety regulations
+- Progress tracking and quality control
+- Saudi Building Code and SCE requirements
+
+Provide precise, calculation-based guidance with references to Saudi codes and standards. Always include units and show your work. Respond in ${langLabel}.`,
+
+    electrical: `You are a specialized Electrical Engineering AI assistant for the NBCON platform. You are an expert in:
+- Electrical load calculations and power distribution
+- Lighting design and energy efficiency
+- Voltage drop analysis and cable sizing
+- Panel design and circuit protection
+- Fire alarm and emergency systems
+- Saudi Electrical Code compliance
+
+Provide detailed technical calculations with safety factors and code compliance checks. Respond in ${langLabel}.`,
+
+    structural: `You are a specialized Structural Engineering AI assistant for the NBCON platform. You are an expert in:
+- Beam, column, and slab design per ACI/BS codes
+- Foundation design (shallow and deep)
+- Connection detailing and reinforcement
+- Load analysis and structural modeling
+- Seismic design for Saudi zones
+- Steel and concrete design optimization
+
+Always show detailed calculations, check code compliance, and highlight safety-critical items. Respond in ${langLabel}.`,
+
+    hvac: `You are a specialized HVAC Engineering AI assistant for the NBCON platform. You are an expert in:
+- Cooling and heating load calculations
+- Ventilation and air quality standards
+- Equipment selection and sizing
+- Ductwork design and pressure balancing
+- Energy efficiency optimization
+- Saudi climate considerations
+
+Provide load calculations with psychrometric analysis and equipment specifications. Respond in ${langLabel}.`,
+
+    surveying: `You are a specialized Survey & Geomatics AI assistant for the NBCON platform. You are an expert in:
+- GPS survey and control networks
+- Volume calculations and earthwork analysis
+- Contour mapping and topographic surveys
+- Layout setting and as-built surveys
+- Deformation monitoring
+- Saudi cadastral systems
+
+Provide precise calculations with coordinate systems and accuracy estimates. Respond in ${langLabel}.`,
+
+    hse: `You are a specialized HSE (Health, Safety, Environment) AI assistant for the NBCON platform. You are an expert in:
+- Job Hazard Analysis (JHA) and risk assessments
+- Safety audits and inspections
+- Incident investigation and reporting
+- PPE requirements and safety training
+- Emergency response planning
+- Saudi HSE regulations and OSHA standards
+
+Prioritize safety above all. Highlight critical risks and provide actionable mitigation strategies. Respond in ${langLabel}.`,
+
+    drone_survey: `You are a specialized Drone Survey AI assistant for the NBCON platform. You are an expert in:
+- Flight planning and mission design
+- Photogrammetry and 3D modeling
+- Orthomosaic generation and analysis
+- Volume calculations from aerial data
+- Progress monitoring and site inspection
+- GACA (Saudi aviation) regulations
+
+Provide technical flight parameters, GSD calculations, and data processing workflows. Respond in ${langLabel}.`,
+
+    maintenance: `You are a specialized Maintenance Engineering AI assistant for the NBCON platform. You are an expert in:
+- Preventive maintenance scheduling
+- Equipment diagnostics and troubleshooting
+- Work order management and prioritization
+- Spare parts inventory optimization
+- Condition monitoring and predictive maintenance
+- CMMS (Computerized Maintenance Management System) integration
+
+Provide root cause analysis, maintenance intervals, and cost-benefit calculations. Respond in ${langLabel}.`,
+
+    geotechnical: `You are a specialized Geotechnical Engineering AI assistant for the NBCON platform. You are an expert in:
+- Soil analysis and classification
+- Bearing capacity calculations
+- Slope stability and retaining wall design
+- Settlement analysis and consolidation
+- Seepage and groundwater control
+- Foundation recommendations
+
+Always reference soil parameters, show factors of safety, and cite geotechnical codes. Respond in ${langLabel}.`,
+  };
+
+  return agentPrompts[discipline] || agentPrompts.civil;
+}
+
 Deno.serve(async (req) => {
   // Handle CORS
   if (req.method === 'OPTIONS') {
@@ -156,7 +264,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    const { message, threadId, role, language, mode, conversationHistory } = parseResult.data
+    const { message, threadId, role, language, mode, conversationHistory, agentContext } = parseResult.data
 
     // Initialize Supabase client
     const supabaseClient = createClient(
@@ -174,11 +282,16 @@ Deno.serve(async (req) => {
       )
     }
 
+    // Phase 3: Use agent-specific system prompt if agent context provided
+    const systemPrompt = agentContext
+      ? getAgentSystemPrompt(agentContext.discipline, language)
+      : getSystemPrompt(role, language, mode);
+
     // Build conversation history for context
     const messages = [
       {
         role: 'system' as const,
-        content: getSystemPrompt(role, language, mode)
+        content: systemPrompt
       },
       ...(conversationHistory || []).slice(-10), // Last 10 messages for context
       {
@@ -270,7 +383,7 @@ Deno.serve(async (req) => {
     await supabaseClient.from('ai_events').insert({
       user_id: user.id,
       event_type: 'message_received',
-      event_data: {
+      data: {
         mode,
         language,
         message_length: message.length,
@@ -282,6 +395,39 @@ Deno.serve(async (req) => {
       processing_time_ms: null, // We could track this
     })
 
+    // Phase 3: Log token usage for agent interactions
+    if (agentContext) {
+      // Calculate cost
+      const pricing = openaiData.model.includes('gpt-4o-mini') 
+        ? { input: 0.15 / 1_000_000, output: 0.60 / 1_000_000 }
+        : { input: 2.50 / 1_000_000, output: 10.00 / 1_000_000 };
+      
+      const cost_usd = (openaiData.usage.prompt_tokens * pricing.input) + 
+                       (openaiData.usage.completion_tokens * pricing.output);
+
+      await supabaseClient.from('ai_agent_usage').insert({
+        user_id: user.id,
+        agent_id: agentContext.agent_id,
+        session_id: agentContext.session_id,
+        conversation_id: finalThreadId,
+        discipline: agentContext.discipline,
+        workflow_id: agentContext.workflow_id || 'chat',
+        deliverable_id: agentContext.deliverable_id || null,
+        tokens_prompt: openaiData.usage.prompt_tokens,
+        tokens_completion: openaiData.usage.completion_tokens,
+        model_used: openaiData.model.includes('gpt-4o-mini') ? 'gpt-4o-mini' : 'gpt-4o',
+        cost_usd,
+        processing_time_ms: null,
+        metadata: { mode, language },
+      });
+
+      console.log('[AI-CHAT] Logged agent token usage:', {
+        discipline: agentContext.discipline,
+        tokens: openaiData.usage.total_tokens,
+        cost_usd: cost_usd.toFixed(6),
+      });
+    }
+
     // Return response
     return new Response(
       JSON.stringify({
@@ -291,6 +437,7 @@ Deno.serve(async (req) => {
         model: openaiData.model,
         usage: openaiData.usage,
         timestamp: new Date().toISOString(),
+        agentContext: agentContext || null,
       }),
       { 
         headers: { ...corsHeaders(), 'Content-Type': 'application/json' },

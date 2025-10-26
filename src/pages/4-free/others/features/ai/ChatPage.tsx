@@ -13,7 +13,8 @@ import {
   Star,
   Archive,
   Trash2,
-  MoreHorizontal
+  MoreHorizontal,
+  Sparkles
 } from 'lucide-react';
 import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
@@ -26,6 +27,10 @@ import { MessageBubble } from './components/MessageBubble';
 import { ThreadList } from './components/ThreadList';
 import { HijriBadge } from './components/HijriBadge';
 import { aiClient } from './api/aiClient';
+import { AgentSelector } from './components/AgentSelector';
+import { AgentWorkspace } from './components/AgentWorkspace';
+import { isSpecializedAgentsEnabled, isAgentWorkspaceEnabled } from '@/shared/config/featureFlags';
+import type { AIAgent } from '@/shared/types/ai-agents';
 
 interface ChatPageProps {
   onBack?: () => void;
@@ -49,6 +54,12 @@ export function ChatPage({ onBack }: ChatPageProps) {
   // Subscribe to threads and activeThreadId reactively - this will update when store changes
   const activeThread = threads.find((thread) => thread.id === activeThreadId) || null;
   const activeMessages = activeThreadId ? (messagesByThread[activeThreadId] || []) : [];
+  
+  // Phase 3: Agent mode state
+  const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
+  const [showAgentMode, setShowAgentMode] = useState(false);
+  const agentsEnabled = isSpecializedAgentsEnabled();
+  const workspaceEnabled = isAgentWorkspaceEnabled();
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -96,6 +107,17 @@ export function ChatPage({ onBack }: ChatPageProps) {
     console.log('Feedback:', messageId, type);
   };
 
+  // Phase 3: Agent handlers
+  const handleAgentSelect = (agent: AIAgent) => {
+    setSelectedAgent(agent);
+    setShowAgentMode(true);
+  };
+
+  const handleBackToChat = () => {
+    setShowAgentMode(false);
+    setSelectedAgent(null);
+  };
+
   // Get mode info
   const getModeInfo = () => {
     const modes = {
@@ -131,6 +153,31 @@ export function ChatPage({ onBack }: ChatPageProps) {
   const modeInfo = getModeInfo();
   const ModeIcon = modeInfo.icon;
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Phase 3: Show agent workspace if enabled and agent selected
+  if (agentsEnabled && workspaceEnabled && showAgentMode && selectedAgent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/10 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 text-xs"
+              onClick={handleBackToChat}
+            >
+              <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
+              Back to Chat
+            </Button>
+          </div>
+          <AgentWorkspace
+            agent={selectedAgent}
+            onClose={handleBackToChat}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-background">
@@ -230,6 +277,17 @@ export function ChatPage({ onBack }: ChatPageProps) {
                   {settings.rtl ? 'إيقاف' : 'Stop'}
                 </Button>
               )}
+              {/* Phase 3: Agents button */}
+              {agentsEnabled && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowAgentMode(!showAgentMode)}
+                >
+                  <Sparkles className="w-4 h-4 mr-1.5" />
+                  {showAgentMode ? 'Hide Agents' : 'Agents'}
+                </Button>
+              )}
               <Button variant="ghost" size="sm">
                 <Settings className="w-4 h-4" />
               </Button>
@@ -240,7 +298,16 @@ export function ChatPage({ onBack }: ChatPageProps) {
         {/* Messages Area */}
         <ScrollArea className="flex-1 p-4 h-0">
           <div className="space-y-4">
-            {activeMessages.length === 0 ? (
+            {/* Phase 3: Show Agent Selector if in agent mode */}
+            {agentsEnabled && showAgentMode && !selectedAgent ? (
+              <div className="py-8">
+                <h3 className="text-base font-bold tracking-tight mb-4">Select Specialized Agent</h3>
+                <AgentSelector
+                  onSelectAgent={handleAgentSelect}
+                  showStats={true}
+                />
+              </div>
+            ) : activeMessages.length === 0 ? (
               /* Empty State */
               <div className="flex flex-col items-center justify-center h-96 text-center">
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
@@ -259,6 +326,13 @@ export function ChatPage({ onBack }: ChatPageProps) {
                   <Button onClick={handleNewThread}>
                     {settings.rtl ? 'بدء محادثة جديدة' : 'Start New Chat'}
                   </Button>
+                  {/* Phase 3: Specialized agents button */}
+                  {agentsEnabled && (
+                    <Button variant="outline" onClick={() => setShowAgentMode(true)}>
+                      <Sparkles className="w-4 h-4 mr-1.5" />
+                      {settings.rtl ? 'وكلاء متخصصون' : 'Specialized Agents'}
+                    </Button>
+                  )}
                 </div>
               </div>
             ) : (
