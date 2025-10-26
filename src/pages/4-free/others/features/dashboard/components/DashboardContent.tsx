@@ -1,12 +1,14 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Bot, Plus, Rocket, Target, DollarSign, AlertTriangle, Calendar, Users, FileText, ClipboardList, Trash2, Briefcase, Clock, MapPin, X, ChevronRight, ChevronLeft, Loader2, TrendingUp, MessageCircle, Receipt, BarChart } from "lucide-react";
+import { Bot, Plus, Rocket, Target, DollarSign, AlertTriangle, Calendar, Users, FileText, ClipboardList, Trash2, Briefcase, Clock, MapPin, X, ChevronRight, ChevronLeft, Loader2, TrendingUp, MessageCircle, Receipt, BarChart, Search, Settings, MoreVertical, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../../1-HomePage/others/components/ui/avatar';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { ScrollArea } from '../../../../../1-HomePage/others/components/ui/scroll-area';
 import { Progress } from '../../../../../1-HomePage/others/components/ui/progress';
+import { Input } from '../../../../../1-HomePage/others/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../../1-HomePage/others/components/ui/tabs';
 import XScroll from '../../../../../1-HomePage/others/components/ui/x-scroll';
 import { ChatComposer } from '../../ai/components/ChatComposer';
 import { useAuthStore } from "../../../stores/auth";
@@ -50,10 +52,31 @@ export function DashboardContent() {
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showProjectDetail, setShowProjectDetail] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
-  // AI Store
-  const { settings, setComposerText, sendMessage, deleteThread, activeThreadId, messagesByThread } = useAiStore();
+  /**
+   * AI Chat Integration - Fully Synchronized
+   * 
+   * The dashboard chat is fully synchronized with /free/ai through shared Zustand store:
+   * - Same threads[] array (persisted across sessions)
+   * - Same messagesByThread{} object (all messages accessible)
+   * - Same activeThreadId state (current conversation)
+   * - Clicking a conversation in sidebar loads it immediately
+   * - Messages sent here appear in /free/ai and vice versa
+   * - All CRUD operations (create, read, update, delete) are synchronized
+   */
+  const { settings, setComposerText, sendMessage, deleteThread, activeThreadId, messagesByThread, threads, setActiveThread, newThread } = useAiStore();
   const activeMessages = activeThreadId ? (messagesByThread[activeThreadId] || []) : [];
+  const activeThread = threads.find(t => t.id === activeThreadId);
+  
+  // Filter threads based on search query
+  const filteredThreads = searchQuery.trim()
+    ? threads.filter(t => 
+        t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (messagesByThread[t.id] || []).some(m => m.content.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : threads;
   
   // Project Store
   const { projects, isLoading: projectsLoading, loadUserProjects } = useProjectStore();
@@ -70,6 +93,13 @@ export function DashboardContent() {
   useEffect(() => {
     loadUserProjects();
   }, [loadUserProjects]);
+  
+  // Ensure there's always an active thread for dashboard chat
+  useEffect(() => {
+    if (!activeThreadId && threads.length === 0) {
+      newThread('chat');
+    }
+  }, [activeThreadId, threads.length, newThread]);
   
   // Auto-scroll to newest message when messages update
   useEffect(() => {
@@ -182,50 +212,257 @@ export function DashboardContent() {
         {/* Top Header - Fixed Height */}
         <header className="h-14 sm:h-16 flex-shrink-0 border-b border-border/40 flex items-center justify-between px-3 sm:px-4 bg-background" role="banner">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-            <Avatar className="h-8 w-8 sm:h-10 sm:w-10 ring-2 ring-primary/20">
-                  <AvatarImage src={profile?.avatar_url || undefined} />
-              <AvatarFallback className="bg-primary-gradient text-white font-bold text-sm">
-                    {displayName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                  <div className="min-w-0">
-              <h1 className="text-sm sm:text-base font-bold tracking-tight truncate">AI Assistant</h1>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+              <Bot className="h-4 w-4 sm:h-5 sm:w-5" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-base font-bold tracking-tight truncate">{`Welcome back, ${displayName ?? "there"} 👋`}</h1>
               <p className="text-[10px] sm:text-xs text-muted-foreground truncate">Your copilot for managing projects</p>
+            </div>
+          </div>
+        </header>
+
+        {/* Overview Stats - Compact */}
+        <div className="flex-shrink-0 p-2 sm:p-4 bg-background">
+          <ClientOverviewStats />
+        </div>
+
+        {/* Chat Area - Responsive Grid Layout */}
+        <div className={`flex-1 grid grid-cols-1 gap-0 lg:gap-4 min-h-0 overflow-hidden p-0 lg:p-4 border-t border-border transition-all duration-300 ${isSidebarCollapsed ? 'lg:grid-cols-[64px_minmax(0,1fr)]' : 'lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]'}`}>
+          
+          {/* Left Sidebar: Conversation Plans */}
+          <aside className={`hidden lg:flex flex-col min-h-0 bg-background border border-border/40 rounded-lg overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'w-16' : ''}`}>
+            {isSidebarCollapsed ? (
+              /* Collapsed State - Narrow strip with expand button */
+              <div className="flex-shrink-0 flex items-center justify-center p-3 border-b border-border/40 bg-muted">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => setIsSidebarCollapsed(false)}
+                  aria-label="Expand sidebar"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              /* Expanded State - Full sidebar */
+              <>
+                {/* Sidebar Header */}
+                <div className="flex-shrink-0 flex items-center justify-between p-3 border-b border-border/40 bg-muted">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-8 w-8 p-0"
+                    onClick={() => setIsSidebarCollapsed(true)}
+                    aria-label="Collapse sidebar"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <div className="flex items-center gap-2 flex-1 mx-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <MessageCircle className="h-4 w-4 text-primary" />
+                    </div>
+                    <h2 className="text-sm font-semibold">Conversations</h2>
                   </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-8 w-8 p-0"
+                    onClick={() => newThread()}
+                    aria-label="New conversation"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
                 </div>
-          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-            <Button variant="ghost" size="sm" className="h-7 sm:h-8 text-[10px] sm:text-xs px-2 sm:px-3" onClick={() => navigate('/free/ai')}>
-              <ChevronRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
-              <span className="hidden sm:inline">Full Chat</span>
-              <span className="sm:hidden">Chat</span>
+
+            {/* Search */}
+            <div className="flex-shrink-0 p-3 border-b border-border/40">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search conversations..." 
+                  className="pl-9 h-9 text-xs"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <Tabs defaultValue="all" className="flex-1 flex flex-col min-h-0">
+              <div className="flex-shrink-0 px-3 pt-2 pb-2 border-b border-border/40">
+                <TabsList className="grid w-full grid-cols-2 h-9">
+                  <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
+                  <TabsTrigger value="starred" className="text-xs">Starred</TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="all" className="flex-1 min-h-0 overflow-y-auto p-3 space-y-2 mt-0">
+                {filteredThreads.length > 0 ? (
+                  filteredThreads.map((thread) => {
+                    const threadMessages = messagesByThread[thread.id] || [];
+                    const lastMessage = threadMessages[threadMessages.length - 1];
+                    const isActive = thread.id === activeThreadId;
+                    
+                    return (
+                      <Card 
+                        key={thread.id}
+                        className={`cursor-pointer transition-colors border-border/40 ${isActive ? 'bg-primary/5 border-primary/40' : 'hover:bg-muted/50'}`}
+                        onClick={() => setActiveThread(thread.id)}
+                      >
+                        <CardContent className="p-3 flex items-start gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Bot className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2 mb-0.5">
+                              <p className="text-xs font-medium text-foreground truncate">
+                                {thread.title.length > 30 ? `${thread.title.substring(0, 30)}...` : thread.title}
+                              </p>
+                              {threadMessages.length > 0 && (
+                                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 flex-shrink-0">
+                                  {threadMessages.length}
+                                </Badge>
+                              )}
+                            </div>
+                            {lastMessage && (
+                              <p className="text-[10px] text-muted-foreground line-clamp-1">
+                                {lastMessage.content}
+                              </p>
+                            )}
+                            <p className="text-[9px] text-muted-foreground mt-0.5">
+                              {new Date(thread.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </p>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 w-6 p-0 flex-shrink-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteThread(thread.id);
+                            }}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-xs">No conversations yet</p>
+                    <p className="text-[10px] mt-1">Start chatting to see your history</p>
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="starred" className="flex-1 min-h-0 overflow-y-auto p-3 space-y-2 mt-0">
+                {filteredThreads.filter(t => t.isStarred).length > 0 ? (
+                  filteredThreads.filter(t => t.isStarred).map((thread) => {
+                    const threadMessages = messagesByThread[thread.id] || [];
+                    const lastMessage = threadMessages[threadMessages.length - 1];
+                    const isActive = thread.id === activeThreadId;
+                    
+                    return (
+                      <Card 
+                        key={thread.id}
+                        className={`cursor-pointer transition-colors border-border/40 ${isActive ? 'bg-primary/5 border-primary/40' : 'hover:bg-muted/50'}`}
+                        onClick={() => setActiveThread(thread.id)}
+                      >
+                        <CardContent className="p-3 flex items-start gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Bot className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2 mb-0.5">
+                              <p className="text-xs font-medium text-foreground truncate">
+                                {thread.title.length > 30 ? `${thread.title.substring(0, 30)}...` : thread.title}
+                              </p>
+                              {threadMessages.length > 0 && (
+                                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 flex-shrink-0">
+                                  {threadMessages.length}
+                                </Badge>
+                              )}
+                            </div>
+                            {lastMessage && (
+                              <p className="text-[10px] text-muted-foreground line-clamp-1">
+                                {lastMessage.content}
+                              </p>
+                            )}
+                            <p className="text-[9px] text-muted-foreground mt-0.5">
+                              {new Date(thread.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </p>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-6 w-6 p-0 flex-shrink-0"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteThread(thread.id);
+                            }}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <p className="text-xs">No starred conversations yet</p>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+              </>
+            )}
+          </aside>
+
+          {/* Right Column: Conversation */}
+          <div className="flex flex-col min-h-0 overflow-hidden bg-background lg:border lg:border-border/40 lg:rounded-lg">
+            {/* Conversation Header */}
+            <div className="flex-shrink-0 flex items-center justify-between px-3 sm:px-4 py-3 border-b border-border/40 bg-muted">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Bot className="h-4 w-4 text-primary" />
+                </div>
+                <h2 className="text-sm font-semibold truncate">
+                  {activeThread ? (activeThread.title.length > 30 ? `${activeThread.title.substring(0, 30)}...` : activeThread.title) : 'New Conversation'}
+                </h2>
+                <Badge variant="outline" className="text-[9px] px-1.5 py-0 capitalize">
+                  {activeThread?.mode || 'Chat'}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Button variant="ghost" size="sm" className="h-7 sm:h-8 text-[10px] sm:text-xs px-2 sm:px-3" onClick={() => navigate('/free/ai')}>
+                  <ChevronRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
+                  <span className="hidden sm:inline">Full Chat</span>
+                  <span className="sm:hidden">Chat</span>
                   </Button>
                   {activeMessages && activeMessages.length > 0 && (
                     <Button 
                 variant="ghost" 
                 size="sm"
-                className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-destructive hover:text-destructive/90" 
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-destructive hover:text-destructive/90" 
                       onClick={handleClearChat}
                 aria-label="Clear chat"
                     >
-                <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </Button>
                   )}
                 </div>
-        </header>
-
-        {/* Overview Stats - Compact */}
-        <div className="flex-shrink-0 p-2 sm:p-4 bg-background border-b border-border/40">
-          <ClientOverviewStats />
         </div>
-
-        {/* Chat Area - Flex Container */}
-        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-          {/* AI Chat Conversation Area - Fills available space */}
-          <div 
-            className={`flex-1 overflow-y-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-4 min-h-0 bg-background border-t border-border ${activeMessages && activeMessages.length > 0 ? '' : 'flex items-center justify-center'}`} 
-            id="conversation-history"
-          >
-            <div className={`w-full pb-4 ${activeMessages && activeMessages.length > 0 ? 'space-y-4' : 'max-w-2xl mx-auto'}`}>
+        
+            {/* Messages Area */}
+            <div 
+              className={`flex-1 overflow-y-auto px-3 sm:px-4 py-3 sm:py-4 min-h-0 bg-background ${activeMessages && activeMessages.length > 0 ? '' : 'flex items-center justify-center'}`} 
+              id="conversation-history"
+            >
+              <div className={`w-full ${activeMessages && activeMessages.length > 0 ? 'space-y-4 max-w-3xl mx-auto' : 'max-w-2xl mx-auto'}`}>
               {activeMessages && activeMessages.length > 0 ? (
                 <>
                   {activeMessages.map((message: any) => (
@@ -244,25 +481,25 @@ export function DashboardContent() {
                   <div ref={messagesEndRef} />
                 </>
               ) : (
-                /* Empty state - vertically & horizontally centered */
-                <div className="text-center py-8 sm:py-12 px-4 sm:px-8 space-y-3 sm:space-y-4 rounded-lg bg-background/50 min-h-[280px] sm:min-h-[360px] md:min-h-[420px] flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Bot className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                  /* Empty state */
+                  <div className="text-center py-8 sm:py-12 px-4 sm:px-8 space-y-3 sm:space-y-4 rounded-lg bg-background/50 min-h-[280px] sm:min-h-[360px] md:min-h-[420px] flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                      <Bot className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                   </div>
                   <div>
-                    <p className="font-semibold text-sm sm:text-base text-foreground mb-1 sm:mb-2">Hello! How can I help you today?</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground px-4">
+                      <p className="font-semibold text-sm sm:text-base text-foreground mb-1 sm:mb-2">Hello! How can I help you today?</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground px-4">
                       You can ask me to start a new project, check the status of an existing one, or find qualified engineers. 
                       What would you like to do?
                     </p>
-                  </div>
+                    </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Composer Footer - Naturally positioned at bottom */}
-          <div className="flex-shrink-0 bg-background/98 backdrop-blur-xl border-t border-border/60 shadow-2xl">
+            {/* Composer Footer - Inside right column */}
+            <div className="flex-shrink-0 bg-background/98 backdrop-blur-xl border-t border-border/60 shadow-2xl">
             <div className="w-full p-3 sm:p-4">
               {/* Quick Action Pills (Horizontal Scroll with XScroll and Arrow Navigation) */}
               <div className="mb-3 sm:mb-4 relative dashboard-quick-actions-scroll">
@@ -307,21 +544,21 @@ export function DashboardContent() {
                       scrollBehavior: 'smooth',
                     }}
                   >
-                    {QUICK_ACTIONS.map((action, index) => {
-                      const Icon = action.icon;
-                      return (
+                  {QUICK_ACTIONS.map((action, index) => {
+                    const Icon = action.icon;
+                    return (
                         <div key={index} className="flex-shrink-0 snap-start">
-                          <button
+                      <button
                             className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 bg-background border border-border rounded-full hover:bg-accent transition-colors text-foreground whitespace-nowrap shadow-sm"
-                            onClick={() => handleQuickAction(action.prompt)}
-                          >
+                        onClick={() => handleQuickAction(action.prompt)}
+                      >
                             <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            {action.label}
-                          </button>
+                        {action.label}
+                      </button>
                         </div>
-                      );
-                    })}
-                  </div>
+                    );
+                  })}
+                </div>
                 </XScroll>
               </div>
 
@@ -330,8 +567,9 @@ export function DashboardContent() {
                 <ChatComposer isCompact />
               </div>
             </div>
-          </div>
-        </div>
+              </div>
+                      </div>
+                      </div>
 
         {/* Recent Projects Section - Sibling below chat container */}
         <div className="flex-shrink-0 border-t border-border p-3 sm:p-4 bg-background max-h-[30vh] sm:max-h-[35vh] overflow-y-auto">
@@ -390,8 +628,8 @@ export function DashboardContent() {
                 ))}
               </div>
             )}
-          </div>
         </div>
+      </div>
 
       {/* Right: Project Detail Panel (Stitch-style) */}
       {showProjectDetail && selectedProject && (

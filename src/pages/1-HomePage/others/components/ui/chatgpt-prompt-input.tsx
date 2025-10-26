@@ -44,7 +44,7 @@ const WrenchIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" h
 const FlaskConicalIcon = (props: React.SVGProps<SVGSVGElement>) => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>);
 
 const BadgeComponent = ({ children, variant = "outline", className = "" }: { children: React.ReactNode; variant?: string; className?: string }) => (
-  <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", variant === "default" ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/80" : "border-border text-foreground", className)}>
+  <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", variant === "default" ? "border-transparent bg-primary text-primary-foreground hover:bg-primary/80" : variant === "secondary" ? "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80" : "border-border text-foreground", className)}>
     {children}
   </span>
 );
@@ -56,7 +56,7 @@ const SeparatorComponent = ({ className = "" }: { className?: string }) => (
 const toolsList = [ 
   { 
     id: 'site-inspection', 
-    name: 'Site Inspection', 
+    name: 'Civil Engineer – Site Inspection', 
     icon: ClipboardCheckIcon,
     summary: 'Guide field engineers through capturing hazards, progress notes, and photographic evidence during construction site walks.',
     tools: [
@@ -72,7 +72,7 @@ const toolsList = [
   }, 
   { 
     id: 'electrical-design', 
-    name: 'Electrical Design', 
+    name: 'Electrical Engineer – Electrical Design', 
     icon: ZapIcon,
     summary: 'Assist with load calculations, protection coordination, and compliance for electrical distribution projects.',
     tools: [
@@ -88,7 +88,7 @@ const toolsList = [
   }, 
   { 
     id: 'structural-analysis', 
-    name: 'Structural Analysis', 
+    name: 'Structural Engineer – Structural Analysis', 
     icon: ColumnsIcon,
     summary: 'Support structural engineers with load combinations, design checks, and reinforcement guidance.',
     tools: [
@@ -104,7 +104,7 @@ const toolsList = [
   }, 
   { 
     id: 'hvac-design', 
-    name: 'HVAC Design', 
+    name: 'Mechanical Engineer – HVAC Design', 
     icon: AirVentIcon,
     summary: 'Help HVAC engineers size systems and document efficiency strategies for Saudi climates.',
     tools: [
@@ -120,7 +120,7 @@ const toolsList = [
   }, 
   { 
     id: 'surveying', 
-    name: 'Surveying', 
+    name: 'Survey Engineer – Surveying', 
     icon: MapPinIcon,
     summary: 'Coordinate land surveying missions, data validation, and deliverable packaging.',
     tools: [
@@ -136,7 +136,7 @@ const toolsList = [
   }, 
   { 
     id: 'hse-consulting', 
-    name: 'HSE Consulting', 
+    name: 'HSE Engineer – HSE Consulting', 
     icon: ShieldCheckIcon,
     summary: 'Develop health, safety, and environmental plans tailored to project hazards.',
     tools: [
@@ -152,7 +152,7 @@ const toolsList = [
   }, 
   { 
     id: 'drone-surveying', 
-    name: 'Drone Surveying', 
+    name: 'Drone Survey Engineer – Drone Surveying', 
     icon: DroneIcon,
     summary: 'Plan drone missions, manage regulatory approvals, and streamline post-processing.',
     tools: [
@@ -168,7 +168,7 @@ const toolsList = [
   }, 
   { 
     id: 'equipment-maintenance', 
-    name: 'Equipment Maintenance', 
+    name: 'Maintenance Engineer – Equipment Maintenance', 
     icon: WrenchIcon,
     summary: 'Coordinate diagnostics, spare parts, and downtime planning for heavy equipment.',
     tools: [
@@ -184,7 +184,7 @@ const toolsList = [
   }, 
   { 
     id: 'soil-testing', 
-    name: 'Soil Testing', 
+    name: 'Geotechnical Engineer – Soil Testing', 
     icon: FlaskConicalIcon,
     summary: 'Support geotechnical investigations from sampling plans to report drafts.',
     tools: [
@@ -278,52 +278,52 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, React.TextareaHTM
                   </TooltipTrigger>
                   <TooltipContent side="top" showArrow={true}><p>Service Agents</p></TooltipContent>
                 </Tooltip>
-                <PopoverContent side="top" align="start" className="w-72">
+                <PopoverContent side="top" align="start" className="w-auto min-w-[240px] max-w-[320px] p-3 border border-border/40">
                   <div className="flex flex-col gap-1">
-                    {toolsList.map(tool => ( 
-                      <Popover key={tool.id}>
-                        <PopoverTrigger asChild>
-                          <button className="flex w-full items-center gap-2 rounded-md p-2 text-left text-sm hover:bg-accent transition-colors"> 
-                            <tool.icon className="h-4 w-4 flex-shrink-0" /> 
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium">{tool.name}</div>
-                              <div className="text-xs text-muted-foreground">Click to view details</div>
-                            </div> 
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent side="right" align="start" className="w-96">
-                          <div className="space-y-3 p-4">
+                    {toolsList.map(tool => {
+                      // Extract specialist role (before " – ")
+                      const roleLabel = tool.name.split(' – ')[0];
+                      return (
+                        <Popover key={tool.id}>
+                          <PopoverTrigger asChild>
+                            <button className="flex w-full items-center gap-2 rounded-md p-2 text-left text-sm hover:bg-accent transition-colors"> 
+                              <tool.icon className="h-4 w-4 flex-shrink-0" /> 
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium">{roleLabel}</div>
+                                <div className="text-xs text-muted-foreground">Click to view details</div>
+                              </div> 
+                            </button>
+                          </PopoverTrigger>
+                        <PopoverContent side="right" align="start" sideOffset={12} className="w-80 border border-border/40">
+                          <div className="space-y-3 p-3">
                             {/* Header */}
-                            <div className="space-y-2">
+                            <div className="space-y-1.5">
                               <div className="flex items-center justify-between gap-2">
-                                <h3 className="text-base font-semibold">{tool.name}</h3>
-                                <BadgeComponent variant="outline" className="uppercase tracking-wide text-[10px]">
-                                  {tool.id}
-                                </BadgeComponent>
+                                <h3 className="text-sm font-semibold">{tool.name}</h3>
                               </div>
-                              <p className="text-sm text-muted-foreground leading-relaxed">
+                              <p className="text-xs text-muted-foreground leading-relaxed">
                                 {tool.summary}
                               </p>
                             </div>
 
                             {/* Capabilities */}
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-1.5">
                               {tool.tools.map((capability, idx) => (
-                                <BadgeComponent key={idx} variant="outline" className="text-xs">
+                                <BadgeComponent key={idx} variant="secondary" className="text-[9px] px-1.5 py-0">
                                   {capability.label}
                                 </BadgeComponent>
                               ))}
                             </div>
 
                             {/* Workflow Stages */}
-                            <div className="rounded-md border border-dashed border-muted-foreground/20 p-3">
-                              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
-                                Workflow Stages
+                            <div className="rounded-md border border-dashed border-muted-foreground/20 p-2.5">
+                              <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground mb-1.5">
+                                Workflow
                               </p>
-                              <div className="grid gap-1 text-sm text-muted-foreground">
+                              <div className="grid gap-0.5 text-xs text-muted-foreground">
                                 {tool.workflow.map((stage, index) => (
-                                  <div key={index} className="flex items-baseline gap-2">
-                                    <span className="text-xs font-semibold text-primary">{index + 1}.</span>
+                                  <div key={index} className="flex items-baseline gap-1.5">
+                                    <span className="text-[10px] font-semibold text-primary">{index + 1}.</span>
                                     <span>{stage.title}</span>
                                   </div>
                                 ))}
@@ -342,8 +342,9 @@ export const PromptBox = React.forwardRef<HTMLTextAreaElement, React.TextareaHTM
                             </div>
                           </div>
                         </PopoverContent>
-                      </Popover>
-                    ))}
+                        </Popover>
+                      );
+                    })}
                   </div>
                 </PopoverContent>
               </Popover>

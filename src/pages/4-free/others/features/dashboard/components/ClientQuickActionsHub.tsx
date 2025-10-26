@@ -1,14 +1,14 @@
 import { useRef, useState, useEffect, memo } from 'react';
-import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
+import { Popover, PopoverTrigger, PopoverContent } from '../../../../../1-HomePage/others/components/ui/popover';
 import XScroll from '../../../../../1-HomePage/others/components/ui/x-scroll';
 import {
-  Briefcase, Users, MapPin, MessageSquare, Calendar, FileText,
-  DollarSign, Settings, Zap, ChevronLeft, ChevronRight, Plus, 
-  ChevronUp, ChevronDown, Search, Building2
+  Zap, ChevronLeft, ChevronRight, ChevronUp, ChevronDown,
+  ClipboardCheck, Target, Columns, AirVent, MapPin, ShieldCheck, Plane, Wrench, FlaskConical
 } from 'lucide-react';
+import { SERVICE_MODE_CONFIG, type ServiceMode } from '../../ai/services/config';
 
 interface ClientQuickActionsHubProps {
   userRole?: string;
@@ -21,18 +21,80 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
   const [showRightArrow, setShowRightArrow] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Quick action items for client
-  const clientActions = [
-    { id: 'post-job', label: 'Post New Job', icon: Briefcase, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/job/new' },
-    { id: 'browse', label: 'Find Engineers', icon: Users, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/browse' },
-    { id: 'projects', label: 'My Projects', icon: Building2, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/myprojects' },
-    { id: 'quotes', label: 'View Quotes', icon: FileText, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/finance?tab=quotations' },
-    { id: 'payments', label: 'Finance', icon: DollarSign, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/finance' },
-    { id: 'messages', label: 'Messages', icon: MessageSquare, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/messages' },
-    { id: 'calendar', label: 'Calendar', icon: Calendar, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/calendar' },
-    { id: 'tracking', label: 'Track Progress', icon: MapPin, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/myprojects' },
-    { id: 'search', label: 'Search Jobs', icon: Search, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/jobs' },
-    { id: 'settings', label: 'Settings', icon: Settings, color: 'text-primary', bgColor: 'bg-primary/10', ringColor: 'ring-primary/20', to: '/free/settings' },
+  // Service mode agent items with specialist roles
+  const agentActions = [
+    { 
+      mode: 'site-inspection' as ServiceMode, 
+      label: 'Civil Engineer', 
+      icon: ClipboardCheck, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'electrical-design' as ServiceMode, 
+      label: 'Electrical Engineer', 
+      icon: Zap, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'structural-analysis' as ServiceMode, 
+      label: 'Structural Engineer', 
+      icon: Columns, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'hvac-design' as ServiceMode, 
+      label: 'Mechanical Engineer', 
+      icon: AirVent, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'surveying' as ServiceMode, 
+      label: 'Survey Engineer', 
+      icon: MapPin, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'hse-consulting' as ServiceMode, 
+      label: 'HSE Engineer', 
+      icon: ShieldCheck, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'drone-surveying' as ServiceMode, 
+      label: 'Drone Survey Engineer', 
+      icon: Plane, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'equipment-maintenance' as ServiceMode, 
+      label: 'Maintenance Engineer', 
+      icon: Wrench, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
+    { 
+      mode: 'soil-testing' as ServiceMode, 
+      label: 'Geotechnical Engineer', 
+      icon: FlaskConical, 
+      color: 'text-primary', 
+      bgColor: 'bg-primary/10', 
+      ringColor: 'ring-primary/20' 
+    },
   ];
 
   // Handle scroll event to update arrow visibility
@@ -119,7 +181,7 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Badge className="bg-primary-gradient text-primary-foreground border-0 shadow-sm shadow-primary/50 h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{clientActions.length}</Badge>
+              <Badge className="bg-primary-gradient text-primary-foreground border-0 shadow-sm shadow-primary/50 h-5 min-w-5 rounded-full px-2 font-mono tabular-nums text-xs">{agentActions.length}</Badge>
               <Button
                 variant="ghost"
                 size="sm"
@@ -178,26 +240,66 @@ export const ClientQuickActionsHub = memo(function ClientQuickActionsHub({ userR
                     scrollBehavior: 'smooth',
                   }}
                 >
-                  {clientActions.map((action) => (
-                    <Link
-                      key={action.id}
-                      to={action.to}
-                      className="min-w-[100px] shrink-0 snap-start"
-                    >
-                      <Button 
-                        variant="ghost"
-                        size="sm"
-                        className="h-auto min-w-[100px] p-4 flex flex-col items-center gap-4 bg-background hover:bg-background hover:scale-105 transition-transform"
-                      >
-                        <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor} transition-transform`}>
-                          <action.icon className={`h-4 w-4 ${action.color}`} />
-                        </div>
-                        <span className="text-xs font-medium text-foreground leading-tight">
-                          {action.label}
-                        </span>
-                      </Button>
-                    </Link>
-                  ))}
+                  {agentActions.map((action) => {
+                    const config = SERVICE_MODE_CONFIG[action.mode];
+                    return (
+                      <Popover key={action.mode}>
+                        <PopoverTrigger asChild>
+                          <div className="min-w-[100px] shrink-0 snap-start">
+                            <Button 
+                              variant="ghost"
+                              size="sm"
+                              className="h-auto min-w-[100px] p-4 flex flex-col items-center gap-4 bg-background hover:bg-background hover:scale-105 transition-transform cursor-pointer"
+                            >
+                              <div className={`${action.bgColor} h-[30px] w-[30px] flex items-center justify-center rounded-lg ring-1 ${action.ringColor} transition-transform`}>
+                                <action.icon className={`h-4 w-4 ${action.color}`} />
+                              </div>
+                              <span className="text-xs font-medium text-foreground leading-tight text-center">
+                                {action.label}
+                              </span>
+                            </Button>
+                          </div>
+                        </PopoverTrigger>
+                        <PopoverContent side="top" align="center" sideOffset={12} className="w-80 border border-border/40">
+                          <div className="space-y-3 p-3">
+                            {/* Header */}
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between gap-2">
+                                <h3 className="text-sm font-semibold">{action.label}</h3>
+                              </div>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                {config.summary}
+                              </p>
+                            </div>
+
+                            {/* Capabilities */}
+                            <div className="flex flex-wrap gap-1.5">
+                              {config.tools.map((tool, idx) => (
+                                <Badge key={idx} variant="secondary" className="text-[9px] px-1.5 py-0">
+                                  {tool.label}
+                                </Badge>
+                              ))}
+                            </div>
+
+                            {/* Workflow Stages */}
+                            <div className="rounded-md border border-dashed border-muted-foreground/20 p-2.5">
+                              <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground mb-1.5">
+                                Workflow
+                              </p>
+                              <div className="grid gap-0.5 text-xs text-muted-foreground">
+                                {config.workflow.map((stage, index) => (
+                                  <div key={stage.id} className="flex items-baseline gap-1.5">
+                                    <span className="text-[10px] font-semibold text-primary">{index + 1}.</span>
+                                    <span>{stage.title}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    );
+                  })}
                 </div>
               </XScroll>
             </div>

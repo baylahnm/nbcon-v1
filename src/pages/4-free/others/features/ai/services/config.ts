@@ -33,7 +33,7 @@ export type ServiceModeConfig = {
 
 export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
   "site-inspection": {
-    title: "Site Inspection",
+    title: "Civil Engineer – Site Inspection",
     summary:
       "Guide field engineers through capturing hazards, progress notes, and photographic evidence during construction site walks.",
     systemPrompt:
@@ -89,7 +89,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   "electrical-design": {
-    title: "Electrical Design",
+    title: "Electrical Engineer – Electrical Design",
     summary:
       "Assist with load calculations, protection coordination, and compliance for electrical distribution projects.",
     systemPrompt:
@@ -145,7 +145,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   "structural-analysis": {
-    title: "Structural Analysis",
+    title: "Structural Engineer – Structural Analysis",
     summary:
       "Support structural engineers with load combinations, design checks, and reinforcement guidance.",
     systemPrompt:
@@ -201,7 +201,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   "hvac-design": {
-    title: "HVAC Design",
+    title: "Mechanical Engineer – HVAC Design",
     summary:
       "Help HVAC engineers size systems and document efficiency strategies for Saudi climates.",
     systemPrompt:
@@ -257,7 +257,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   surveying: {
-    title: "Surveying",
+    title: "Survey Engineer – Surveying",
     summary:
       "Coordinate land surveying missions, data validation, and deliverable packaging.",
     systemPrompt:
@@ -313,7 +313,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   "hse-consulting": {
-    title: "HSE Consulting",
+    title: "HSE Engineer – HSE Consulting",
     summary:
       "Develop health, safety, and environmental plans tailored to project hazards.",
     systemPrompt:
@@ -369,7 +369,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   "drone-surveying": {
-    title: "Drone Surveying",
+    title: "Drone Survey Engineer – Drone Surveying",
     summary:
       "Plan drone missions, manage regulatory approvals, and streamline post-processing.",
     systemPrompt:
@@ -425,7 +425,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   "equipment-maintenance": {
-    title: "Equipment Maintenance",
+    title: "Maintenance Engineer – Equipment Maintenance",
     summary:
       "Coordinate diagnostics, spare parts, and downtime planning for heavy equipment.",
     systemPrompt:
@@ -481,7 +481,7 @@ export const SERVICE_MODE_CONFIG: Record<ServiceMode, ServiceModeConfig> = {
     ],
   },
   "soil-testing": {
-    title: "Soil Testing",
+    title: "Geotechnical Engineer – Soil Testing",
     summary:
       "Support geotechnical investigations from sampling plans to report drafts.",
     systemPrompt:
