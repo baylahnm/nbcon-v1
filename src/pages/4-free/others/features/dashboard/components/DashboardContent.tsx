@@ -297,10 +297,20 @@ export function DashboardContent() {
 
             {/* Tabs */}
             <Tabs defaultValue="all" className="flex-1 flex flex-col min-h-0">
-              <div className="flex-shrink-0 px-3 pt-2 pb-2 border-b border-border/40">
-                <TabsList className="grid w-full grid-cols-2 h-9">
-                  <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-                  <TabsTrigger value="starred" className="text-xs">Starred</TabsTrigger>
+              <div className="flex-shrink-0 px-3 pt-2 pb-2">
+                <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
+                  <TabsTrigger 
+                    value="all" 
+                    className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs"
+                  >
+                    All ({filteredThreads.length})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="starred" 
+                    className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs"
+                  >
+                    Starred ({threads.filter(t => t.isStarred).length})
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
