@@ -226,6 +226,41 @@
     pointer-events: none;
     z-index: 1;
   }
+
+/* Dashboard Quick Actions Scroll Styling */
+.quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+  height: 8px;
+}
+
+.quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 4px;
+}
+
+.quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.6);
+  border-radius: 4px;
+}
+
+.quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.8);
+}
+
+/* Firefox scrollbar for quick actions */
+.quick-actions-scroll [data-slot="scroll-area-viewport"] {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.6) hsl(var(--muted) / 0.3);
+}
+
+/* Stitch-style hide scrollbar for quick actions */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
   
   .kanban-scrollbar::-webkit-scrollbar-track {
     background: hsl(var(--card));
@@ -2165,6 +2200,41 @@ All colors MUST be HSL.
 
 /* Hide Radix UI's overlay scrollbar component */
 .learning-page-scroll [data-slot="scroll-area-scrollbar"] {
+  display: none !important; /* Hide the overlay scrollbar */
+}
+
+/* Dashboard Quick Actions custom scrollbar - ALWAYS VISIBLE */
+.dashboard-quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+  height: 10px; /* Slightly smaller for compact area */
+  display: block !important; /* Force display */
+}
+
+.dashboard-quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.6);
+  border-radius: 5px;
+  border: 1px solid hsl(var(--border) / 0.5);
+}
+
+.dashboard-quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.8) !important; /* 80% OPACITY for subtle look */
+  border-radius: 5px;
+  border: 2px solid hsl(var(--background));
+  min-width: 40px; /* Minimum thumb width for visibility */
+}
+
+.dashboard-quick-actions-scroll [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 1) !important; /* 100% OPACITY on hover */
+  box-shadow: 0 0 4px hsl(var(--primary) / 0.4);
+}
+
+/* Firefox - Dashboard Quick Actions specific */
+.dashboard-quick-actions-scroll [data-slot="scroll-area-viewport"] {
+  scrollbar-width: auto !important; /* Show full scrollbar, not thin */
+  scrollbar-color: hsl(var(--primary) / 0.8) hsl(var(--muted) / 0.6);
+}
+
+/* Hide Radix UI's overlay scrollbar component for Quick Actions */
+.dashboard-quick-actions-scroll [data-slot="scroll-area-scrollbar"] {
   display: none !important; /* Hide the overlay scrollbar */
 }
 

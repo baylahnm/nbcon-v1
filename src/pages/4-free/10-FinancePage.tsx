@@ -1164,7 +1164,7 @@ export default function FinancePage() {
           {/* Payments Tab - Separate Card */}
           <TabsContent value="payments" className="m-0">
             {!financeLoading && (
-            <Card className="border-border/50">
+              <Card className="border-border/50">
               <CardContent className="p-4 space-y-4 bg-background">
                 {/* Search & Make Payment Button */}
                 <div className="flex items-center gap-3">
@@ -1278,7 +1278,7 @@ export default function FinancePage() {
           {/* Invoices Tab - Separate Card */}
           <TabsContent value="invoices" className="m-0">
             {!financeLoading && (
-            <Card className="border-border/50">
+              <Card className="border-border/50">
               <CardContent className="p-4 space-y-4 bg-background">
                 {/* Search & Create Invoice Button */}
                 <div className="flex items-center gap-3">
