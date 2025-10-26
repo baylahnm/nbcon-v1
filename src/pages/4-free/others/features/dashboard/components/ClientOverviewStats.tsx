@@ -12,44 +12,9 @@ import {
   ChartTooltipContent,
   ChartConfig
 } from '../../../../../1-HomePage/others/components/ui/line-chart';
-import { Briefcase, Users, Clock, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
-
-// Chart data
-const projectsChartData = [
-  { month: "Jan", value: 4 },
-  { month: "Feb", value: 5 },
-  { month: "Mar", value: 4 },
-  { month: "Apr", value: 6 },
-  { month: "May", value: 5 },
-  { month: "Jun", value: 6 },
-];
-
-const engineersChartData = [
-  { month: "Jan", value: 18 },
-  { month: "Feb", value: 20 },
-  { month: "Mar", value: 19 },
-  { month: "Apr", value: 22 },
-  { month: "May", value: 23 },
-  { month: "Jun", value: 24 },
-];
-
-const quotesChartData = [
-  { month: "Jan", value: 12 },
-  { month: "Feb", value: 10 },
-  { month: "Mar", value: 14 },
-  { month: "Apr", value: 9 },
-  { month: "May", value: 11 },
-  { month: "Jun", value: 8 },
-];
-
-const spendingChartData = [
-  { month: "Jan", value: 850000 },
-  { month: "Feb", value: 920000 },
-  { month: "Mar", value: 1050000 },
-  { month: "Apr", value: 1100000 },
-  { month: "May", value: 1180000 },
-  { month: "Jun", value: 1245000 },
-];
+import { Briefcase, Users, Clock, DollarSign, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { useAuthStore } from '../../../stores/auth';
+import { fetchOverviewMetrics, type OverviewMetrics } from '../api/overviewStatsClient';
 
 const chartConfig = {
   value: {
@@ -57,166 +22,6 @@ const chartConfig = {
     color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig;
-
-// Stats card data
-const statsCards = [
-  {
-    id: "active-projects",
-    title: "Active Projects",
-    value: "6",
-    icon: Briefcase,
-    trend: "+15%",
-    trendDirection: "up" as const,
-    description: "Last 6 months trend",
-    chartData: projectsChartData,
-    expandedContent: () => (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          You currently have <strong>6 active projects</strong> in progress across Saudi Arabia. 
-          This represents a <strong>15% increase</strong> from last month, showing strong business growth.
-        </p>
-        <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
-          <div>
-            <p className="text-xs text-muted-foreground">In Progress</p>
-            <p className="text-xl font-bold">4</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Planning</p>
-            <p className="text-xl font-bold">2</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Avg. Duration</p>
-            <p className="text-xl font-bold">8 months</p>
-      </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Success Rate</p>
-            <p className="text-xl font-bold">94%</p>
-    </div>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Top projects: Al-Khobar Commercial Center (68%), NEOM Infrastructure Phase 2 (42%), Riyadh Metro Extension (25%)
-        </p>
-      </div>
-    ),
-  },
-  {
-    id: "total-engineers",
-    title: "Total Engineers",
-    value: "24",
-    icon: Users,
-    trend: "+8%",
-    trendDirection: "up" as const,
-    description: "Last 6 months trend",
-    chartData: engineersChartData,
-    expandedContent: () => (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Your network includes <strong>24 professional engineers</strong> with diverse specializations. 
-          The team has grown by <strong>8% this quarter</strong>, expanding your project capacity.
-        </p>
-        <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
-          <div>
-            <p className="text-xs text-muted-foreground">Structural</p>
-            <p className="text-xl font-bold">8</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Civil</p>
-            <p className="text-xl font-bold">6</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Mechanical</p>
-            <p className="text-xl font-bold">5</p>
-    </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Electrical</p>
-            <p className="text-xl font-bold">5</p>
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Average rating: 4.8/5.0 | All SCE verified | Avg. hourly rate: 125 SAR
-        </p>
-      </div>
-    ),
-  },
-  {
-    id: "pending-quotes",
-    title: "Pending Quotes",
-    value: "8",
-    icon: Clock,
-    trend: "-4",
-    trendDirection: "down" as const,
-    description: "Last 6 months trend",
-    chartData: quotesChartData,
-    expandedContent: () => (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          You have <strong>8 quotes pending review</strong> from engineers. 
-          The pending count decreased by <strong>4 quotes</strong> this month as you approved several proposals.
-        </p>
-        <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
-          <div>
-            <p className="text-xs text-muted-foreground">Awaiting Review</p>
-            <p className="text-xl font-bold">5</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Under Negotiation</p>
-            <p className="text-xl font-bold">3</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Avg. Response</p>
-            <p className="text-xl font-bold">2.3 days</p>
-    </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Avg. Quote</p>
-            <p className="text-xl font-bold">45K SAR</p>
-    </div>
-    </div>
-        <p className="text-xs text-muted-foreground">
-          Oldest quote: 5 days ago | Most recent: 2 hours ago | Average engineer rating: 4.7/5.0
-        </p>
-      </div>
-    ),
-  },
-  {
-    id: "total-spent",
-    title: "Total Spent (YTD)",
-    value: "1,245,000 SAR",
-    icon: DollarSign,
-    trend: "+22%",
-    trendDirection: "up" as const,
-    description: "Last 6 months trend",
-    chartData: spendingChartData,
-    expandedContent: () => (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Total spending this year reached <strong>1,245,000 SAR</strong>, representing a 
-          <strong>22% increase</strong> year-over-year due to expanded project portfolio.
-        </p>
-        <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
-          <div>
-            <p className="text-xs text-muted-foreground">Q1 2025</p>
-            <p className="text-xl font-bold">285K</p>
-              </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Q2 2025</p>
-            <p className="text-xl font-bold">395K</p>
-            </div>
-            <div>
-            <p className="text-xs text-muted-foreground">Q3 2025</p>
-            <p className="text-xl font-bold">565K</p>
-            </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Projected Q4</p>
-            <p className="text-xl font-bold">650K</p>
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Largest expense: NEOM Infrastructure (3.5M SAR) | Budget remaining: 2.1M SAR | On track: Yes
-        </p>
-      </div>
-    ),
-  },
-];
 
 const CloseIcon = () => {
   return (
@@ -243,9 +48,37 @@ const CloseIcon = () => {
 };
 
 export function ClientOverviewStats() {
-  const [active, setActive] = useState<(typeof statsCards)[number] | null>(null);
+  const { user } = useAuthStore();
+  const [metrics, setMetrics] = useState<OverviewMetrics | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [active, setActive] = useState<any | null>(null);
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
+
+  // Fetch live metrics on mount
+  useEffect(() => {
+    async function loadMetrics() {
+      if (!user?.id) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await fetchOverviewMetrics(user.id);
+        setMetrics(data);
+      } catch (err) {
+        console.error('Error loading overview metrics:', err);
+        setError('Failed to load metrics');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadMetrics();
+  }, [user?.id]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -265,6 +98,208 @@ export function ClientOverviewStats() {
   }, [active]);
 
   useOutsideClick(ref, () => setActive(null));
+
+  // Build stats cards from live metrics
+  const statsCards = metrics ? [
+    {
+      id: "active-projects",
+      title: "Active Projects",
+      value: String(metrics.activeProjects.count),
+      icon: Briefcase,
+      trend: `${metrics.activeProjects.trend > 0 ? '+' : ''}${metrics.activeProjects.trend}%`,
+      trendDirection: metrics.activeProjects.trend >= 0 ? "up" : "down",
+      description: "Last 6 months trend",
+      chartData: metrics.activeProjects.chartData,
+      expandedContent: () => (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            You currently have <strong>{metrics.activeProjects.count} active projects</strong> in progress across Saudi Arabia. 
+            This represents a <strong>{Math.abs(metrics.activeProjects.trend)}% {metrics.activeProjects.trend >= 0 ? 'increase' : 'decrease'}</strong> from last month.
+          </p>
+          <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+            <div>
+              <p className="text-xs text-muted-foreground">In Progress</p>
+              <p className="text-xl font-bold">{metrics.activeProjects.breakdown.inProgress}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Planning</p>
+              <p className="text-xl font-bold">{metrics.activeProjects.breakdown.planning}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Avg. Duration</p>
+              <p className="text-xl font-bold">{metrics.activeProjects.breakdown.avgDuration} months</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Success Rate</p>
+              <p className="text-xl font-bold">{metrics.activeProjects.breakdown.successRate}%</p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "total-engineers",
+      title: "Total Engineers",
+      value: String(metrics.totalEngineers.count),
+      icon: Users,
+      trend: `${metrics.totalEngineers.trend > 0 ? '+' : ''}${metrics.totalEngineers.trend}%`,
+      trendDirection: metrics.totalEngineers.trend >= 0 ? "up" : "down",
+      description: "Last 6 months trend",
+      chartData: metrics.totalEngineers.chartData,
+      expandedContent: () => (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Your network includes <strong>{metrics.totalEngineers.count} professional engineers</strong> with diverse specializations.
+          </p>
+          <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+            <div>
+              <p className="text-xs text-muted-foreground">Structural</p>
+              <p className="text-xl font-bold">{metrics.totalEngineers.breakdown.structural}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Civil</p>
+              <p className="text-xl font-bold">{metrics.totalEngineers.breakdown.civil}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Mechanical</p>
+              <p className="text-xl font-bold">{metrics.totalEngineers.breakdown.mechanical}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Electrical</p>
+              <p className="text-xl font-bold">{metrics.totalEngineers.breakdown.electrical}</p>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Average rating: {metrics.totalEngineers.breakdown.avgRating}/5.0 | Avg. hourly rate: {metrics.totalEngineers.breakdown.avgHourlyRate} SAR
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: "pending-quotes",
+      title: "Pending Quotes",
+      value: String(metrics.pendingQuotes.count),
+      icon: Clock,
+      trend: `${metrics.pendingQuotes.trend > 0 ? '+' : ''}${Math.round(metrics.pendingQuotes.trend)}%`,
+      trendDirection: metrics.pendingQuotes.trend >= 0 ? "up" : "down",
+      description: "Last 6 months trend",
+      chartData: metrics.pendingQuotes.chartData,
+      expandedContent: () => (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            You have <strong>{metrics.pendingQuotes.count} quotes pending review</strong> from engineers. 
+            This represents a <strong>{Math.abs(Math.round(metrics.pendingQuotes.trend))}% {metrics.pendingQuotes.trend >= 0 ? 'increase' : 'decrease'}</strong> from last month.
+          </p>
+          <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+            <div>
+              <p className="text-xs text-muted-foreground">Awaiting Review</p>
+              <p className="text-xl font-bold">{metrics.pendingQuotes.breakdown.awaitingReview}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Under Negotiation</p>
+              <p className="text-xl font-bold">{metrics.pendingQuotes.breakdown.underNegotiation}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Avg. Response</p>
+              <p className="text-xl font-bold">{metrics.pendingQuotes.breakdown.avgResponseDays} days</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Avg. Quote</p>
+              <p className="text-xl font-bold">{Math.round(metrics.pendingQuotes.breakdown.avgQuoteAmount / 1000)}K SAR</p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "total-spent",
+      title: "Total Spent (YTD)",
+      value: `${metrics.totalSpent.amount.toLocaleString()} SAR`,
+      icon: DollarSign,
+      trend: `${metrics.totalSpent.trend > 0 ? '+' : ''}${metrics.totalSpent.trend}%`,
+      trendDirection: metrics.totalSpent.trend >= 0 ? "up" : "down",
+      description: "Last 6 months trend",
+      chartData: metrics.totalSpent.chartData,
+      expandedContent: () => (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Total spending this year reached <strong>{metrics.totalSpent.amount.toLocaleString()} SAR</strong>.
+          </p>
+          <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+            <div>
+              <p className="text-xs text-muted-foreground">Q1 2025</p>
+              <p className="text-xl font-bold">{metrics.totalSpent.breakdown.q1}K</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Q2 2025</p>
+              <p className="text-xl font-bold">{metrics.totalSpent.breakdown.q2}K</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Q3 2025</p>
+              <p className="text-xl font-bold">{metrics.totalSpent.breakdown.q3}K</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Projected Q4</p>
+              <p className="text-xl font-bold">{metrics.totalSpent.breakdown.q4Projected}K</p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  ] : [];
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <section aria-label="Overview Statistics">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardHeader className="p-4 pb-2">
+                <div className="flex items-center gap-4">
+                  <div className="bg-muted h-[32px] w-[32px] rounded-lg" />
+                  <div className="h-4 bg-muted rounded w-24" />
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="space-y-4">
+                  <div className="h-6 bg-muted rounded w-16" />
+                  <div className="h-[60px] bg-muted rounded" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section aria-label="Overview Statistics">
+        <Card className="border-destructive/50">
+          <CardContent className="p-6 text-center">
+            <p className="text-sm text-destructive">{error}</p>
+            <p className="text-xs text-muted-foreground mt-2">Please refresh the page to try again.</p>
+          </CardContent>
+        </Card>
+      </section>
+    );
+  }
+
+  // No data state
+  if (!metrics || statsCards.length === 0) {
+    return (
+      <section aria-label="Overview Statistics">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <p className="text-sm text-muted-foreground">No metrics available</p>
+          </CardContent>
+        </Card>
+      </section>
+    );
+  }
 
   return (
     <section aria-label="Overview Statistics">
