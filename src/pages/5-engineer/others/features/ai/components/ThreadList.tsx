@@ -28,9 +28,11 @@ interface ThreadListProps {
   onThreadSelect?: (thread: Thread) => void;
   isCompact?: boolean;
   showArchived?: boolean;
+  searchQuery?: string;
+  filter?: 'all' | 'starred' | 'archived';
 }
 
-export function ThreadList({ onThreadSelect, isCompact = false, showArchived = false }: ThreadListProps) {
+export function ThreadList({ onThreadSelect, isCompact = false, showArchived = false, searchQuery: externalSearchQuery, filter: externalFilter }: ThreadListProps) {
   const {
     threads,
     activeThreadId,
@@ -42,8 +44,12 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
     settings
   } = useAiStore();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterMode, setFilterMode] = useState<'all' | 'starred' | 'archived'>('all');
+  const [internalSearchQuery, setInternalSearchQuery] = useState('');
+  const [internalFilterMode, setInternalFilterMode] = useState<'all' | 'starred' | 'archived'>('all');
+
+  // Use external or internal state
+  const searchQuery = externalSearchQuery !== undefined ? externalSearchQuery : internalSearchQuery;
+  const filterMode = externalFilter !== undefined ? externalFilter : internalFilterMode;
 
   // Filter threads
   const filteredThreads = threads.filter(thread => {
@@ -84,20 +90,21 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
     return labels[mode as keyof typeof labels] || mode;
   };
 
-  // Format relative time
+  // Format relative time (matches Messages pattern)
   const formatRelativeTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
 
-    if (diffInMinutes < 1) return settings.rtl ? 'الآن' : 'Now';
-    if (diffInMinutes < 60) return `${diffInMinutes}m`;
+    if (diffInMinutes < 1) return settings.rtl ? 'الآن' : 'just now';
+    if (diffInMinutes < 60) return `${diffInMinutes} ${settings.rtl ? 'دقيقة' : 'min ago'}`;
     
     const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours}h`;
+    if (diffInHours < 24) return `${diffInHours} ${settings.rtl ? 'ساعة' : 'hour ago'}`;
     
     const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays < 7) return `${diffInDays}d`;
+    if (diffInDays === 1) return settings.rtl ? 'أمس' : 'Yesterday';
+    if (diffInDays < 7) return `${diffInDays} ${settings.rtl ? 'أيام' : 'days ago'}`;
     
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
@@ -114,202 +121,71 @@ export function ThreadList({ onThreadSelect, isCompact = false, showArchived = f
   };
 
   return (
-    <div className={`flex flex-col h-full ${isCompact ? 'space-y-2' : 'space-y-4'}`}>
-      {/* Header */}
-      {!isCompact && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
-              {settings.rtl ? 'المحادثات' : 'Conversations'}
-            </h2>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleNewThread}
-            >
-              <Plus className="w-4 h-4 mr-1" />
-              {settings.rtl ? 'جديد' : 'New'}
-            </Button>
-          </div>
-
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder={settings.rtl ? 'البحث في المحادثات...' : 'Search conversations...'}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-
-          {/* Filters */}
-          <div className="flex gap-2">
-            <Button
-              variant={filterMode === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterMode('all')}
-            >
-              {settings.rtl ? 'الكل' : 'All'}
-            </Button>
-            <Button
-              variant={filterMode === 'starred' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilterMode('starred')}
-            >
-              <Star className="w-4 h-4 mr-1" />
-              {settings.rtl ? 'المفضلة' : 'Starred'}
-            </Button>
-            {showArchived && (
-              <Button
-                variant={filterMode === 'archived' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterMode('archived')}
-              >
-                <Archive className="w-4 h-4 mr-1" />
-                {settings.rtl ? 'المؤرشف' : 'Archived'}
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Threads List */}
-      <ScrollArea className="flex-1">
-        <div className="space-y-2">
-          {filteredThreads.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p className="text-sm">
-                {searchQuery 
-                  ? (settings.rtl ? 'لا توجد نتائج' : 'No results found')
-                  : (settings.rtl ? 'لا توجد محادثات' : 'No conversations yet')
-                }
-              </p>
-              {!searchQuery && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleNewThread}
-                  className="mt-2"
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  {settings.rtl ? 'بدء محادثة جديدة' : 'Start new conversation'}
-                </Button>
-              )}
+    <ScrollArea className="flex-1 h-full">
+      <div className="space-y-1">
+        {filteredThreads.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="h-8 w-8 text-muted-foreground" />
             </div>
-          ) : (
-            filteredThreads.map((thread) => (
-              <Card
-                key={thread.id}
-                className={`w-full cursor-pointer transition-colors hover:bg-muted/50 ${
-                  activeThreadId === thread.id ? 'bg-muted border-sidebar-border' : ''
-                } ${isCompact ? 'p-2' : 'p-3'}`}
-                onClick={() => handleThreadSelect(thread)}
-              >
-                <CardContent className="p-0">
-                  {isCompact ? (
-                    <div className="flex items-center justify-center">
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                        <MessageSquare className="w-4 h-4" />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-start gap-3">
-                      {/* Mode Icon */}
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                          {getModeIcon(thread.mode)}
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-sm">
-                              {thread.title.length > 10 
-                                ? `${thread.title.substring(0, 10)}...` 
-                                : thread.title
-                              }
-                            </h3>
-                            {thread.lastMessage && (
-                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                                {thread.lastMessage}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex items-center gap-1">
-                            <Badge variant="outline" className="text-xs">
-                              {getModeLabel(thread.mode)}
-                            </Badge>
-                            
-                            <div className="flex items-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  starThread(thread.id);
-                                }}
-                                className="h-6 w-6 p-0"
-                              >
-                                <Star className={`w-3 h-3 ${
-                                  thread.isStarred ? 'fill-yellow-400 text-yellow-400' : ''
-                                }`} />
-                              </Button>
-                              
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  archiveThread(thread.id);
-                                }}
-                                className="h-6 w-6 p-0"
-                              >
-                                <Archive className="w-3 h-3" />
-                              </Button>
-                              
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteThread(thread.id);
-                                }}
-                                className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Footer */}
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Clock className="w-3 h-3" />
-                            <span>{formatRelativeTime(thread.updatedAt)}</span>
-                            {settings.hijri && <HijriBadge date={thread.updatedAt} />}
-                          </div>
-                          
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <MessageSquare className="w-3 h-3" />
-                            <span>{thread.messageCount}</span>
-                          </div>
-                        </div>
-                      </div>
+            <p className="text-sm font-medium text-muted-foreground">
+              {searchQuery 
+                ? (settings.rtl ? 'لا توجد نتائج' : 'No conversations found')
+                : (settings.rtl ? 'لا توجد محادثات' : 'No conversations yet')
+              }
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {settings.rtl ? 'ابدأ محادثة جديدة للبدء' : 'Start a new conversation to begin'}
+            </p>
+          </div>
+        ) : (
+          filteredThreads.map((thread) => (
+            <div
+              key={thread.id}
+              onClick={() => handleThreadSelect(thread)}
+              className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                activeThreadId === thread.id
+                  ? 'bg-primary/10 ring-1 ring-primary/20'
+                  : 'hover:bg-muted/50'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                {/* Mode Icon Avatar */}
+                <div className="relative flex-shrink-0">
+                  <div className="h-11 w-11 rounded-full bg-primary/10 flex items-center justify-center">
+                    {getModeIcon(thread.mode)}
+                  </div>
+                  {thread.isStarred && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                      <Star className="w-2.5 h-2.5 fill-white text-white" />
                     </div>
                   )}
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
-      </ScrollArea>
-    </div>
+                </div>
+                
+                {!isCompact && (
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-0.5">
+                      <h4 className="font-semibold text-sm truncate">{thread.title}</h4>
+                      <span className="text-[10px] text-muted-foreground shrink-0">
+                        {formatRelativeTime(thread.updatedAt)}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mb-1">
+                      {getModeLabel(thread.mode)} • {thread.messageCount} {settings.rtl ? 'رسالة' : 'messages'}
+                    </p>
+                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 mb-1">
+                      {settings.hijri ? <HijriBadge date={thread.updatedAt} /> : new Date(thread.updatedAt).toLocaleDateString()}
+                    </Badge>
+                    {thread.lastMessage && (
+                      <p className="text-xs text-foreground/80 line-clamp-1">{thread.lastMessage}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </ScrollArea>
   );
 }

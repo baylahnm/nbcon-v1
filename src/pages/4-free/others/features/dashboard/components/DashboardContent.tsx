@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Bot, Plus, Rocket, Target, DollarSign, AlertTriangle, Calendar, Users, FileText, ClipboardList, Trash2, Briefcase, Clock, MapPin, X, ChevronRight, ChevronLeft, Loader2, TrendingUp, MessageCircle, Receipt, BarChart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from '../../../../../1-HomePage/others/components/ui/card';

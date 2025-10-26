@@ -20,6 +20,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../../1-HomePage
 import { Badge } from '../../../../1-HomePage/others/components/ui/badge';
 import { Separator } from '../../../../1-HomePage/others/components/ui/separator';
 import { ScrollArea } from '../../../../1-HomePage/others/components/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger } from '../../../../1-HomePage/others/components/ui/tabs';
+import { Input } from '../../../../1-HomePage/others/components/ui/input';
 import { useAiStore } from './store/useAiStore';
 import { ChatComposer } from './components/ChatComposer';
 import { MessageBubble } from './components/MessageBubble';
@@ -132,6 +134,10 @@ export function ChatPage({ onBack }: ChatPageProps) {
   const modeInfo = getModeInfo();
   const ModeIcon = modeInfo.icon;
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<'all' | 'starred'>('all');
+
+  const totalStarred = threads.filter(t => t.isStarred).length;
 
   return (
     <div className="flex h-screen bg-background">
@@ -140,30 +146,30 @@ export function ChatPage({ onBack }: ChatPageProps) {
         {/* Header */}
         <div className="p-4 border-b border-sidebar-border">
           <div className="flex items-center justify-between mb-4">
-            {!isCollapsed ? (
-              <h1 className="text-lg font-semibold flex items-center gap-2">
-                <Bot className="w-5 h-5 text-primary" />
-                {settings.rtl ? 'الذكاء الاصطناعي' : 'AI Assistant'}
-              </h1>
-            ) : (
-              <div className="flex justify-center w-full">
-                <Bot className="w-5 h-5 text-primary" />
-              </div>
-            )}
             <div className="flex items-center gap-2">
               {onBack && !isCollapsed && (
                 <Button variant="ghost" size="sm" onClick={onBack}>
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
               )}
-              <Button 
-                size="sm" 
-                variant="outline"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-              >
-                {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-              </Button>
+              {!isCollapsed ? (
+                <h1 className="text-lg font-semibold flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-primary" />
+                  {settings.rtl ? 'الذكاء الاصطناعي' : 'AI Assistant'}
+                </h1>
+              ) : (
+                <div className="flex justify-center w-full">
+                  <Bot className="w-5 h-5 text-primary" />
+                </div>
+              )}
             </div>
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+            >
+              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </Button>
           </div>
 
           {!isCollapsed && (
@@ -188,12 +194,41 @@ export function ChatPage({ onBack }: ChatPageProps) {
               </CardContent>
             </Card>
           )}
-
         </div>
+
+        {/* Search and Filters */}
+        {!isCollapsed && (
+          <div className="p-4 space-y-3 border-b border-sidebar-border">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={settings.rtl ? 'البحث في المحادثات...' : 'Search conversations...'}
+                className="pl-9 text-xs h-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Tabs value={filter} onValueChange={(v) => setFilter(v as 'all' | 'starred')} className="w-full">
+              <TabsList className="relative z-10 flex w-full rounded-xl bg-card border border-border pt-1 pr-1 pb-1 pl-1 gap-1 shadow-lg shadow-inner shadow-top">
+                <TabsTrigger value="all" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+                  {settings.rtl ? 'الكل' : 'All'} ({threads.length})
+                </TabsTrigger>
+                <TabsTrigger value="starred" className="relative z-10 flex-1 h-[36px] rounded-lg px-3 py-1 font-medium transition-all duration-200 text-muted-foreground data-[state=active]:bg-gradient-to-t data-[state=active]:from-primary data-[state=active]:to-primary-dark data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm data-[state=active]:shadow-primary/50 data-[state=active]:border-2 data-[state=active]:border-primary hover:text-foreground text-xs">
+                  {settings.rtl ? 'المفضلة' : 'Starred'} ({totalStarred})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        )}
 
         {/* Threads List */}
         <div className={`${isCollapsed ? 'p-2' : 'p-4'} flex-1`}>
-          <ThreadList onThreadSelect={handleThreadSelect} isCompact={isCollapsed} />
+          <ThreadList 
+            onThreadSelect={handleThreadSelect} 
+            isCompact={isCollapsed} 
+            searchQuery={searchQuery}
+            filter={filter}
+          />
         </div>
       </div>
 
