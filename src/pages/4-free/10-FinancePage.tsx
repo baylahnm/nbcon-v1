@@ -1046,8 +1046,8 @@ export default function FinancePage() {
           )}
 
           {/* Overview Tab - Separate Card */}
-          {!financeLoading && (payments.length > 0 || invoices.length > 0) && (
-            <TabsContent value="overview" className="m-0">
+          <TabsContent value="overview" className="m-0">
+            {!financeLoading && (payments.length > 0 || invoices.length > 0) && (
               <Card className="border-border/50">
                 <CardContent className="p-4 space-y-4 bg-background rounded-b-lg">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -1158,12 +1158,12 @@ export default function FinancePage() {
                 </div>
               </CardContent>
             </Card>
-            </TabsContent>
-          )}
+            )}
+          </TabsContent>
 
           {/* Payments Tab - Separate Card */}
-          {!financeLoading && (
-            <TabsContent value="payments" className="m-0">
+          <TabsContent value="payments" className="m-0">
+            {!financeLoading && (
             <Card className="border-border/50">
               <CardContent className="p-4 space-y-4 bg-background">
                 {/* Search & Make Payment Button */}
@@ -1272,12 +1272,12 @@ export default function FinancePage() {
                 </div>
               </CardContent>
             </Card>
-            </TabsContent>
-          )}
+            )}
+          </TabsContent>
 
           {/* Invoices Tab - Separate Card */}
-          {!financeLoading && (
-            <TabsContent value="invoices" className="m-0">
+          <TabsContent value="invoices" className="m-0">
+            {!financeLoading && (
             <Card className="border-border/50">
               <CardContent className="p-4 space-y-4 bg-background">
                 {/* Search & Create Invoice Button */}
@@ -1388,8 +1388,8 @@ export default function FinancePage() {
                 </div>
               </CardContent>
             </Card>
-            </TabsContent>
-          )}
+            )}
+          </TabsContent>
 
           {/* Quotations Tab - Separate Card */}
           <TabsContent value="quotations" className="m-0">
