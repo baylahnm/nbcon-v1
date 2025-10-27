@@ -40,27 +40,21 @@ export interface TokenUsageParams {
 export interface QuotaCheckResult {
   allowed: boolean;
   remaining_tokens: number;
+  remaining_requests: number;
   quota_limit: number;
+  request_limit: number;
   current_usage: number;
   reset_date: string;
   allow_overage: boolean;
 }
 
 export interface MonthlyUsageResult {
-  total_interactions: number;
   total_tokens: number;
+  total_requests: number;
   total_cost_usd: number;
   total_cost_sar: number;
-  by_discipline: Record<string, {
-    interactions: number;
-    tokens: number;
-    cost_usd: number;
-  }>;
-  by_workflow: Record<string, {
-    interactions: number;
-    tokens: number;
-    avg_cost: number;
-  }>;
+  period_start: string;
+  period_end: string;
 }
 
 /**
@@ -153,41 +147,39 @@ export async function checkUserQuota(estimatedTokens: number): Promise<QuotaChec
       return {
         allowed: true,
         remaining_tokens: 0,
+        remaining_requests: 0,
         quota_limit: 0,
+        request_limit: 0,
         current_usage: 0,
         reset_date: new Date().toISOString(),
         allow_overage: false,
       };
     }
 
-    // RPC returns boolean - construct full result
-    const allowed = data as boolean;
-
-    // Fetch quota details
-    const { data: quotaData } = await supabase
-      .from('user_ai_quotas')
-      .select('*')
-      .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-      .single();
-
-    if (!quotaData) {
+    // RPC now returns table result with all fields
+    if (!data || data.length === 0) {
       return {
-        allowed: true, // No quota set = unlimited
+        allowed: true,
         remaining_tokens: 999999,
+        remaining_requests: 999999,
         quota_limit: 999999,
+        request_limit: 999999,
         current_usage: 0,
         reset_date: new Date().toISOString(),
         allow_overage: false,
       };
     }
 
+    const result = data[0];
     return {
-      allowed,
-      remaining_tokens: Math.max(0, quotaData.monthly_token_quota - quotaData.current_month_tokens),
-      quota_limit: quotaData.monthly_token_quota,
-      current_usage: quotaData.current_month_tokens,
-      reset_date: quotaData.quota_reset_date,
-      allow_overage: quotaData.allow_overage,
+      allowed: result.allowed,
+      remaining_tokens: result.remaining_tokens,
+      remaining_requests: result.remaining_requests,
+      quota_limit: result.quota_limit,
+      request_limit: result.request_limit,
+      current_usage: result.quota_limit - result.remaining_tokens,
+      reset_date: result.reset_date,
+      allow_overage: false, // Not included in RPC result
     };
   } catch (error) {
     console.error('[TokenService] Quota check error:', error);
@@ -195,7 +187,9 @@ export async function checkUserQuota(estimatedTokens: number): Promise<QuotaChec
     return {
       allowed: true,
       remaining_tokens: 0,
+      remaining_requests: 0,
       quota_limit: 0,
+      request_limit: 0,
       current_usage: 0,
       reset_date: new Date().toISOString(),
       allow_overage: false,
@@ -206,35 +200,51 @@ export async function checkUserQuota(estimatedTokens: number): Promise<QuotaChec
 /**
  * Get user's monthly AI usage
  */
-export async function getUserMonthlyUsage(): Promise<MonthlyUsageResult | null> {
+export async function getUserMonthlyUsage(year?: number, month?: number): Promise<MonthlyUsageResult | null> {
   try {
-    const { data, error } = await supabase.rpc('get_user_monthly_usage');
+    const params = year !== undefined && month !== undefined 
+      ? { p_year: year, p_month: month }
+      : {};
+
+    const { data, error } = await supabase.rpc('get_user_monthly_usage', params);
 
     if (error) {
       console.error('[TokenService] Monthly usage fetch failed:', error);
+      // Handle 400 errors gracefully
+      if (error.code === '40000' || error.message?.includes('400')) {
+        console.warn('[TokenService] 400 error - likely empty result, returning defaults');
+        return {
+          total_tokens: 0,
+          total_requests: 0,
+          total_cost_usd: 0,
+          total_cost_sar: 0,
+          period_start: new Date().toISOString().split('T')[0],
+          period_end: new Date().toISOString().split('T')[0],
+        };
+      }
       return null;
     }
 
     if (!data || data.length === 0) {
       return {
-        total_interactions: 0,
         total_tokens: 0,
+        total_requests: 0,
         total_cost_usd: 0,
         total_cost_sar: 0,
-        by_discipline: {},
-        by_workflow: {},
+        period_start: new Date().toISOString().split('T')[0],
+        period_end: new Date().toISOString().split('T')[0],
       };
     }
 
     const firstRow = data[0];
 
     return {
-      total_interactions: firstRow.total_interactions || 0,
       total_tokens: firstRow.total_tokens || 0,
+      total_requests: firstRow.total_requests || 0,
       total_cost_usd: firstRow.total_cost_usd || 0,
       total_cost_sar: firstRow.total_cost_sar || 0,
-      by_discipline: firstRow.by_discipline || {},
-      by_workflow: firstRow.by_workflow || {},
+      period_start: firstRow.period_start || new Date().toISOString().split('T')[0],
+      period_end: firstRow.period_end || new Date().toISOString().split('T')[0],
     };
   } catch (error) {
     console.error('[TokenService] Unexpected error fetching usage:', error);

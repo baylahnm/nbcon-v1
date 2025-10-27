@@ -8,9 +8,11 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:8082',
+    baseURL: 'http://localhost:8081', // Match actual dev server port
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // Allow more time for auth redirects
+    actionTimeout: 15000,
   },
   projects: [
     {
@@ -20,8 +22,9 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:8082',
+    url: 'http://localhost:8081',
     reuseExistingServer: !process.env.CI,
+    timeout: 120000, // 2 minutes for dev server startup
   },
 });
 

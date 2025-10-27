@@ -632,6 +632,8 @@ return UsePortalSystem ? (
 - [x] TypeScript compilation passes
 - [x] ESLint validation passes
 
+**⚠️ Note:** E2E portal tests are currently **DISABLED by default** (feature flag) until at least one page is migrated to PortalLayout. This prevents false failures on legacy UI. Enable with `ENABLE_PORTAL_TESTS=true` after migrating first page (e.g., HelpPage).
+
 ### Migration Tests (Per Page)
 
 When migrating a page, verify:
