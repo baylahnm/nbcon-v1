@@ -482,15 +482,18 @@ export async function executeWorkflow(
 }
 
 /**
- * Execute individual tool action (stub for now)
+ * Execute individual tool action
+ * 
+ * Note: This is a stub implementation. In production, this would call
+ * Supabase Edge Functions or direct API endpoints for each tool.
  */
 async function executeToolAction(
   tool: AITool,
   action: string,
-  inputs: Record<string, any>
-): Promise<{ output: any; tokensUsed?: number; costUSD?: number }> {
-  // TODO: Implement actual tool execution via edge functions
-  // For now, return mock success
+  inputs: Record<string, unknown>
+): Promise<{ output: Record<string, unknown>; tokensUsed?: number; costUSD?: number }> {
+  // Stub implementation - returns mock success
+  // Production: Call Supabase Edge Function matching tool.handler
   console.log(`[Orchestrator] Executing ${tool.id} action: ${action}`);
   
   return {

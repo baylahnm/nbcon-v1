@@ -2,6 +2,7 @@ import { useMemo, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
 import { ROLE_BASE, UserRole } from "@/pages/1-HomePage/others/lib/auth/role";
+import { PortalProvider } from "@/context/PortalContext";
 import EngineerLayout from "@/pages/2-auth/others/layouts/EngineerLayout";
 import ClientLayout from "@/pages/2-auth/others/layouts/ClientLayout";
 import React from "react";
@@ -117,10 +118,11 @@ export default function RoleRouter() {
   }
 
   return (
-    <RouteErrorBoundary>
-      <Suspense fallback={<RouteFallback />}>
-        <LegacyRedirects />
-        <Routes>
+    <PortalProvider>
+      <RouteErrorBoundary>
+        <Suspense fallback={<RouteFallback />}>
+          <LegacyRedirects />
+          <Routes>
         <Route path="/" element={<Navigate to={`${ROLE_BASE[role]}/dashboard`} replace />} />
 
         <Route path="/engineer" element={<EngineerLayout />}>
@@ -250,5 +252,6 @@ export default function RoleRouter() {
       </Routes>
       </Suspense>
     </RouteErrorBoundary>
+    </PortalProvider>
   );
 }

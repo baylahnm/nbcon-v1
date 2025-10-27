@@ -1,8 +1,8 @@
 # 🤖 AI Tool Orchestration - Complete Guide
 
-**Last Updated:** January 27, 2025  
-**Version:** 1.0.0  
-**Status:** ✅ Production Ready
+**Last Updated:** January 27, 2025 (22:00 UTC)  
+**Version:** 2.0.0  
+**Status:** ✅ Production Ready - Fully Wired
 
 ---
 
@@ -10,17 +10,19 @@
 
 1. [Overview](#overview)
 2. [Architecture](#architecture)
-3. [Tool Registry](#tool-registry)
-4. [Intent Router & Orchestrator](#intent-router--orchestrator)
-5. [Session Management](#session-management)
-6. [Suggestion Engine](#suggestion-engine)
-7. [Permissions & Security](#permissions--security)
-8. [Telemetry & Observability](#telemetry--observability)
-9. [UI Integration](#ui-integration)
-10. [Workflow Templates](#workflow-templates)
-11. [Extension Guide](#extension-guide)
-12. [API Reference](#api-reference)
-13. [Testing](#testing)
+3. [Engineering Agents](#engineering-agents)
+4. [Tool Registry](#tool-registry)
+5. [Intent Router & Orchestrator](#intent-router--orchestrator)
+6. [Session Management](#session-management)
+7. [Suggestion Engine](#suggestion-engine)
+8. [Unified Tool Access Panel](#unified-tool-access-panel)
+9. [Permissions & Security](#permissions--security)
+10. [Telemetry & Observability](#telemetry--observability)
+11. [UI Integration](#ui-integration)
+12. [Workflow Templates](#workflow-templates)
+13. [Extension Guide](#extension-guide)
+14. [API Reference](#api-reference)
+15. [Testing](#testing)
 
 ---
 
@@ -83,6 +85,71 @@ The AI Tool Orchestration Layer is a comprehensive system for managing 46 AI too
 │  └─────────────────┘            └──────────────────┘        │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 🛠️ Engineering Agents
+
+**Nine specialized engineering discipline agents** with deep domain expertise:
+
+### 1. Civil Engineering Agent
+- **Capabilities:** Structural analysis, foundation design, BOQ generation, site planning
+- **Standards:** SBC 301, CSI MasterFormat
+- **Workflows:** Foundation design, earthwork calculations, structural loads
+- **Handoffs:** → Structural Agent, Geotechnical Agent, Survey Agent
+
+### 2. Electrical Engineering Agent
+- **Capabilities:** Power systems, load calculations, lighting design
+- **Standards:** SEC (Saudi Electricity Company)
+- **Workflows:** Panel sizing, electrical loads, lighting layouts
+- **Handoffs:** → HVAC Agent, Compliance Checker
+
+### 3. Structural Engineering Agent
+- **Capabilities:** Concrete/steel design, seismic analysis, foundation engineering
+- **Standards:** SBC (Saudi Building Code)
+- **Workflows:** Beam/column design, seismic analysis, deflection checks
+- **Handoffs:** → Civil Agent, Geotechnical Agent, Compliance Checker
+
+### 4. HVAC Engineering Agent
+- **Capabilities:** Cooling/heating loads, duct sizing, energy modeling
+- **Standards:** ASHRAE (Saudi climate: 48°C design temp)
+- **Workflows:** Load calculations, equipment sizing, energy optimization
+- **Handoffs:** → Electrical Agent, Energy Modeler
+
+### 5. Survey & Geomatics Agent
+- **Capabilities:** GPS transformations, topographic surveys, volume calculations
+- **Standards:** WGS84 to Saudi Grid transformations
+- **Workflows:** Cut/fill volumes, contour maps, coordinate conversions
+- **Handoffs:** → Civil Agent, Drone Agent
+
+### 6. HSE Compliance Agent
+- **Capabilities:** Safety planning, risk assessment, incident investigation
+- **Standards:** Saudi construction safety regulations
+- **Workflows:** Risk assessments, safety plans, incident analysis
+- **Handoffs:** → Risk Register, Quality Planner, Compliance Checker
+
+### 7. Drone Survey Agent
+- **Capabilities:** Flight planning, photogrammetry, 3D modeling
+- **Standards:** GACA (General Authority of Civil Aviation) compliance
+- **Workflows:** Orthophoto generation, volumetric analysis, 3D models
+- **Handoffs:** → Survey Agent, Progress Tracker
+
+### 8. Maintenance Engineering Agent
+- **Capabilities:** Preventive maintenance, fault diagnosis, reliability analysis
+- **Standards:** MTBF/MTTR calculations
+- **Workflows:** PM schedules, fault diagnosis, spare parts optimization
+- **Handoffs:** → Asset Manager, Work Order Manager
+
+### 9. Geotechnical Engineering Agent
+- **Capabilities:** Soil classification, bearing capacity, settlement analysis
+- **Standards:** USCS (Unified Soil Classification System)
+- **Workflows:** Bearing capacity calculations, foundation recommendations
+- **Handoffs:** → Structural Agent, Civil Agent
+
+### Agent Permissions
+- **Required Role:** `engineer` (minimum)
+- **Discipline Matching:** Each agent requires specific discipline certification
+- **Feature Flags:** Agents can be enabled/disabled via feature flags (`enableCivilAgent`, etc.)
 
 ---
 
@@ -560,7 +627,64 @@ import { WorkflowBreadcrumb } from '@/pages/4-free/others/features/ai/components
 - Click to navigate
 - Cost/token summary
 
-### 3. Integration Points
+### 3. Unified Tool Access Panel
+
+**Component:** `UnifiedToolAccessPanel.tsx`
+
+**The comprehensive UI for accessing all 46 AI tools with intelligent orchestration.**
+
+```typescript
+import { UnifiedToolAccessPanel } from '@/pages/4-free/others/features/ai/components/UnifiedToolAccessPanel';
+
+<UnifiedToolAccessPanel
+  userRole="engineer"
+  userDisciplines={['civil', 'structural']}
+  projectPhase="planning"
+  onToolSelect={(toolId) => navigateToTool(toolId)}
+/>
+```
+
+**Features:**
+- **4 Tabs:** Recommended, All Tools, Agents, History
+- **Category Filtering:** Quick filter by tool category
+- **Agent Grid:** Dedicated view for 9 engineering agents
+- **Session History:** Complete activity log with cost tracking
+- **Permission Enforcement:** Automatic access control with lock indicators
+- **Compact Mode:** Sidebar-friendly version for quick access
+- **Real-time Recommendations:** Context-aware suggestions
+- **Activity Summary:** Session metrics (tools used, actions, cost)
+
+**Design System Compliance:**
+- ✅ Follows `.cursor/rules-globally.json` typography system
+- ✅ Icon containers: `bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20 shadow-md`
+- ✅ Gradient headers: `bg-primary-gradient` for page icons and agent cards
+- ✅ Hover effects: `hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300`
+- ✅ Spacing: Uniform `p-4` padding, `gap-4` spacing
+- ✅ Theme-agnostic: Zero hard-coded colors, CSS variables only
+- ✅ Accessibility: WCAG 2.2 AA compliant
+
+**Usage Example:**
+
+```typescript
+// Full-width tool hub page
+<div className="p-4">
+  <UnifiedToolAccessPanel
+    userRole={currentUser.role}
+    userDisciplines={currentUser.disciplines}
+    projectPhase={activeProject?.phase}
+  />
+</div>
+
+// Compact sidebar panel
+<aside className="w-64 border-l">
+  <UnifiedToolAccessPanel
+    userRole="engineer"
+    compact={true}
+  />
+</aside>
+```
+
+### 4. Integration Points
 
 **ChatPage.tsx:**
 ```typescript

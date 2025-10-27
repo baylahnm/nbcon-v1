@@ -20,8 +20,8 @@ export interface ToolInteraction {
   id: string;
   toolId: string;
   action: string;
-  inputs: Record<string, any>;
-  outputs: Record<string, any>;
+  inputs: Record<string, unknown>;
+  outputs: Record<string, unknown>;
   tokensUsed: number;
   costUSD: number;
   duration: number; // milliseconds
@@ -48,8 +48,8 @@ export interface ToolSession {
   toolChain: string[]; // Sequence of tools used
   
   // Context
-  sharedContext: Record<string, any>; // Data shared across tools
-  pendingInputs: Record<string, any>; // Inputs waiting for next tool
+  sharedContext: Record<string, unknown>; // Data shared across tools
+  pendingInputs: Record<string, unknown>; // Inputs waiting for next tool
   
   // Workflow
   activeWorkflow: WorkflowPipeline | null;
@@ -81,7 +81,7 @@ interface SessionStoreState {
   appendInteraction: (interaction: Omit<ToolInteraction, 'id' | 'timestamp'>) => void;
   
   // Context management
-  updateSharedContext: (updates: Record<string, any>) => void;
+  updateSharedContext: (updates: Record<string, unknown>) => void;
   
   transferContext: (
     fromToolId: string,
@@ -89,7 +89,7 @@ interface SessionStoreState {
     fieldsToTransfer: string[]
   ) => void;
   
-  setPendingInputs: (inputs: Record<string, any>) => void;
+  setPendingInputs: (inputs: Record<string, unknown>) => void;
   
   // Workflow management
   setActiveWorkflow: (workflow: WorkflowPipeline | null) => void;
@@ -428,7 +428,7 @@ export const useSessionStore = create<SessionStoreState>()(
             currentPhase: sessionData.current_phase,
             activeTool: sessionData.active_tool,
             previousTool: sessionData.previous_tool,
-            interactions: (interactionsData || []).map((i: any) => ({
+            interactions: (interactionsData || []).map((i: Record<string, unknown>) => ({
               id: i.id,
               toolId: i.tool_id,
               action: i.action,

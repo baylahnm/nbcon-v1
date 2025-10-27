@@ -46,7 +46,7 @@ export interface TelemetryEvent {
   errorMessage?: string;
   
   // Context
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   
   // Timestamp
   timestamp: Date;
@@ -101,7 +101,7 @@ export async function logToolInvocation(
     tokensUsed?: number;
     costUSD?: number;
     errorMessage?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }
 ): Promise<void> {
   await logTelemetryEvent({
@@ -297,12 +297,12 @@ function getEmptyTelemetry() {
 /**
  * Telemetry middleware for orchestrator
  */
-export function withTelemetry<T extends (...args: any[]) => Promise<any>>(
+export function withTelemetry<T extends (...args: unknown[]) => Promise<unknown>>(
   fn: T,
   toolId: string,
   sessionId?: string
 ): T {
-  return (async (...args: any[]) => {
+  return (async (...args: unknown[]) => {
     const startTime = Date.now();
     let success = false;
     let error: string | undefined;
@@ -311,9 +311,9 @@ export function withTelemetry<T extends (...args: any[]) => Promise<any>>(
       const result = await fn(...args);
       success = true;
       return result;
-    } catch (err: any) {
+    } catch (err: unknown) {
       success = false;
-      error = err.message;
+      error = err instanceof Error ? err.message : 'Unknown error';
       throw err;
     } finally {
       const latency = Date.now() - startTime;
