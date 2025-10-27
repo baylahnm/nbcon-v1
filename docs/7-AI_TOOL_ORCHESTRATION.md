@@ -26,7 +26,7 @@
 
 ## 🎯 Overview
 
-The AI Tool Orchestration Layer is a comprehensive system for managing 43 AI tools and 9 specialized engineering agents across the nbcon platform.
+The AI Tool Orchestration Layer is a comprehensive system for managing 46 AI tools (including 9 specialized engineering agents) across the nbcon platform.
 
 ### What It Does
 
@@ -92,7 +92,7 @@ The AI Tool Orchestration Layer is a comprehensive system for managing 43 AI too
 
 ### Structure
 
-**43 AI Tools organized in 8 categories:**
+**46 AI Tools organized in 8 categories:**
 
 1. **AI Assistant (1 tool)**
    - Multi-mode chat interface
@@ -1086,7 +1086,7 @@ CREATE INDEX idx_interactions_tool ON ai_tool_interactions(tool_id);
 
 **Registry Coverage:**
 ```
-Total Tools: 43
+Total Tools: 46
 ├─ AI Assistant: 1
 ├─ Planning: 6
 ├─ Budgeting: 6
@@ -1094,7 +1094,7 @@ Total Tools: 43
 ├─ Quality: 6
 ├─ Communication: 6
 ├─ Closure: 6
-└─ Agents: 9
+└─ Engineering Agents: 9
 
 By Complexity:
 ├─ Low: 11 tools

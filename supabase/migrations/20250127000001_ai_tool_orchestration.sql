@@ -199,7 +199,7 @@ SELECT
   s.updated_at,
   EXTRACT(EPOCH FROM (s.updated_at - s.created_at)) / 60 AS duration_minutes,
   array_length(s.tool_chain, 1) AS tools_used,
-  p.full_name AS user_name,
+  CONCAT(p.first_name, ' ', p.last_name) AS user_name,
   p.role AS user_role
 FROM public.ai_tool_sessions s
 JOIN public.profiles p ON s.user_id = p.user_id
