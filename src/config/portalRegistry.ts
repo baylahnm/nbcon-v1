@@ -16,7 +16,9 @@ import type {
   NavigationGroup,
   UserRole,
   PortalCategory,
+  SubscriptionTier,
 } from './portalTypes';
+import { tierMeetsRequirement } from '@/shared/services/subscriptionService';
 
 // ============================================================================
 // CLIENT PORTAL (15 Pages)
@@ -1077,7 +1079,7 @@ function getAllPagesFromPortal(portal: PortalDefinition): PageDefinition[] {
 export function hasPageAccess(
   page: PageDefinition,
   userRole: UserRole,
-  userSubscription?: string,
+  userSubscription?: SubscriptionTier,
   enabledFeatures?: string[]
 ): boolean {
   // Check role
@@ -1085,15 +1087,12 @@ export function hasPageAccess(
     return false;
   }
   
-  // Check subscription (if required)
+  // Check subscription tier (if required)
   if (page.permissions.requiredSubscription) {
-    if (!userSubscription) return false;
+    const currentTier = userSubscription || 'free';
     
-    const required = Array.isArray(page.permissions.requiredSubscription)
-      ? page.permissions.requiredSubscription
-      : [page.permissions.requiredSubscription];
-    
-    if (!required.includes(userSubscription as never)) {
+    // Use tierMeetsRequirement to check tier hierarchy
+    if (!tierMeetsRequirement(currentTier, page.permissions.requiredSubscription)) {
       return false;
     }
   }

@@ -99,7 +99,7 @@ export function usePortalAccess(): UsePortalAccessReturn {
       canAccessFinance: ['client', 'engineer', 'enterprise'].includes(user.role),
       canAccessAnalytics: ['enterprise'].includes(user.role),
       canManageTeams: ['enterprise'].includes(user.role),
-      subscriptionTier: 'free' as SubscriptionTier, // TODO: Get from user profile
+      subscriptionTier: user.subscriptionTier || 'free',
     };
   }, [user]);
   

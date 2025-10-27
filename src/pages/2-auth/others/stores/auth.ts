@@ -1,6 +1,7 @@
 ﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '@/shared/supabase/client';
+import { getUserSubscription } from '@/shared/services/subscriptionService';
 
 const STORAGE_KEY = 'nbcon_user';
 
@@ -19,6 +20,12 @@ export interface AuthenticatedUser {
   email_confirmed_at?: string | null;
   source?: 'mock' | 'supabase';
   phone_confirmed_at?: string | null;
+  // Subscription fields
+  subscriptionTier?: 'free' | 'basic' | 'pro' | 'enterprise';
+  subscriptionStatus?: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'unpaid';
+  subscriptionPeriodEnd?: Date;
+  subscriptionFeatures?: string[];
+  subscriptionLimits?: Record<string, number>;
 }
 
 export interface EngineerProfileDetails {
@@ -66,6 +73,7 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
   setInitialized: (initialized: boolean) => void;
   updateUser: (updates: Partial<AuthenticatedUser>) => void;
+  loadSubscriptionData: () => Promise<void>;
 }
 
 const safeLocalStorageSet = (user: AuthenticatedUser | null) => {
@@ -248,6 +256,71 @@ export const useAuthStore = create<AuthState>()(
         });
         safeLocalStorageSet(normalizedUser);
       },
+
+      loadSubscriptionData: async () => {
+        const currentUser = get().user;
+        if (!currentUser) {
+          console.warn('[Auth Store] Cannot load subscription - no user');
+          return;
+        }
+
+        try {
+          console.log('[Auth Store] Loading subscription data for user:', currentUser.id);
+          const subscription = await getUserSubscription(currentUser.id);
+          
+          if (subscription) {
+            const updatedUser: AuthenticatedUser = {
+              ...currentUser,
+              subscriptionTier: subscription.tier,
+              subscriptionStatus: subscription.status,
+              subscriptionPeriodEnd: subscription.periodEnd,
+              subscriptionFeatures: subscription.features,
+              subscriptionLimits: subscription.limits,
+            };
+            
+            const normalizedUser = normalizeUser(updatedUser);
+            const currentProfile = get().profile;
+            const baseProfile = createProfileFromUser(normalizedUser);
+            const updatedProfile: UserProfile = {
+              ...baseProfile,
+              ...currentProfile,
+            };
+            
+            set({ user: normalizedUser, profile: updatedProfile });
+            safeLocalStorageSet(normalizedUser);
+            
+            console.log('[Auth Store] Subscription loaded:', {
+              tier: subscription.tier,
+              status: subscription.status,
+              features: subscription.features.length,
+            });
+          } else {
+            // No active subscription - default to free
+            console.log('[Auth Store] No subscription found - defaulting to free tier');
+            const updatedUser: AuthenticatedUser = {
+              ...currentUser,
+              subscriptionTier: 'free',
+              subscriptionStatus: 'active',
+              subscriptionFeatures: [],
+              subscriptionLimits: {},
+            };
+            
+            const normalizedUser = normalizeUser(updatedUser);
+            const currentProfile = get().profile;
+            const baseProfile = createProfileFromUser(normalizedUser);
+            const updatedProfile: UserProfile = {
+              ...baseProfile,
+              ...currentProfile,
+            };
+            
+            set({ user: normalizedUser, profile: updatedProfile });
+            safeLocalStorageSet(normalizedUser);
+          }
+        } catch (error) {
+          console.error('[Auth Store] Failed to load subscription:', error);
+          // Fail gracefully - keep user logged in with free tier
+        }
+      },
     }),
     {
       name: 'nbcon-auth-storage',
@@ -421,6 +494,15 @@ export const initializeAuth = () => {
         
         console.log('[AUTH INIT] Created minimal user with role:', finalRole);
         setUser(minimalUser);
+        
+        // Load subscription data after user is set
+        console.log('[AUTH INIT] Loading subscription data...');
+        useAuthStore.getState().loadSubscriptionData().then(() => {
+          console.log('[AUTH INIT] Subscription data loaded');
+        }).catch((error) => {
+          console.error('[AUTH INIT] Failed to load subscription:', error);
+        });
+        
         setLoading(false);
         setInitialized(true);
     } else {
