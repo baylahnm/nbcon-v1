@@ -3,12 +3,13 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'next-themes';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { useAuthStore } from '../../stores/auth';
 import { R } from '../../lib/routes';
 import { getUserDisplayName, getUserInitials, getUserProfileImage } from '../../lib/userUtils';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield, Crown, BarChart, LucideIcon, ChevronDown, ChevronRight, Rocket, Calculator, ClipboardCheck } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield, Crown, BarChart, LucideIcon, ChevronDown, ChevronRight, Rocket, Calculator, ClipboardCheck, Gift, UserPlus, Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import NbLogo from '../ui/nb-logo';
 
@@ -422,15 +423,142 @@ export function AppSidebar() {
                 )}
               </Button>
             </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" className="w-56" align={collapsed ? "center" : "start"} alignOffset={12}>
-                <DropdownMenuItem onClick={() => navigate(profile?.role === 'engineer' ? R.engineer.profile : profile?.role === 'client' ? R.client.profile : R.enterprise.settings)}>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
+              <DropdownMenuContent 
+                side="top" 
+                className="w-[280px] max-h-[calc(100vh-64px)] overflow-y-auto" 
+                align={collapsed ? "center" : "start"} 
+                alignOffset={12}
+              >
+                {/* Account Header */}
+                <div className="my-2 flex items-center gap-2 px-1.5">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground font-medium">
+                      {getUserDisplayName(profile).charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col justify-center gap-[2px] leading-none">
+                    <p className="text-sm font-medium">{getUserDisplayName(profile)}</p>
+                    <p className="text-xs text-muted-foreground">{profile?.email}</p>
+                  </div>
+                </div>
+
+                {/* Turn Pro Banner */}
+                <div className="px-1.5 pb-1.5">
+                  <div className="flex w-full items-center justify-between rounded-md bg-muted px-3 py-2">
+                    <span className="flex items-center gap-1 text-sm">
+                      <Crown className="h-4 w-4" />
+                      Turn Pro
+                    </span>
+                    <Button 
+                      size="sm" 
+                      className="h-7 bg-primary hover:bg-primary/80 text-xs"
+                      onClick={() => navigate('/subscription')}
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Credits Widget */}
+                <div className="flex flex-col gap-1 px-1.5 pb-1.5 pt-1">
+                  <div className="flex flex-col gap-2.5 rounded-xl bg-muted p-4 md:rounded-md md:p-3">
+                    <div className="flex items-center justify-between cursor-pointer transition-all duration-150 ease-in-out hover:opacity-80">
+                      <p className="text-base font-medium md:text-sm">Credits</p>
+                      <div className="flex items-center gap-px">
+                        <p className="text-base font-normal md:text-sm">Upgrade</p>
+                        <ChevronRight className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div className="flex w-full items-center gap-2">
+                      <div className="relative h-2.5 flex-1 overflow-hidden rounded-lg bg-muted-foreground/20"></div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-2 w-2 rounded-full bg-muted-foreground"></div>
+                      <p className="text-base text-muted-foreground md:text-sm">Free credits reset on 01 Feb</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Settings & Invite Buttons */}
+                <div className="flex flex-row gap-1.5 px-1.5 pb-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1 h-8 gap-2 bg-muted hover:bg-accent"
+                    onClick={() => navigate('/settings')}
+                  >
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1 h-8 gap-2 bg-muted hover:bg-accent"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    Invite
+                  </Button>
+                </div>
+
+                <DropdownMenuSeparator className="-mx-1 my-1" />
+
+                {/* Workspaces Section */}
+                <div className="flex items-center justify-between px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Workspaces (1)</span>
+                </div>
+
+                <div className="flex max-h-[300px] w-full flex-col overflow-y-auto">
+                  <DropdownMenuItem className="gap-2 py-1.5">
+                    <Avatar className="h-[26px] w-[26px] rounded-lg">
+                      <AvatarFallback className="rounded-lg bg-primary font-medium text-white">
+                        {getUserDisplayName(profile).charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="min-w-0 truncate text-sm">{getUserDisplayName(profile)}'s Workspace</p>
+                    <span className="rounded-full px-2 py-px text-[10px] font-medium uppercase bg-muted text-muted-foreground ml-auto">
+                      {profile?.role || 'FREE'}
+                    </span>
+                    <Check className="h-4 w-4 ml-1" />
+                  </DropdownMenuItem>
+                </div>
+
+                <DropdownMenuItem className="gap-3.5 px-3 py-2.5">
+                  <Plus className="h-4 w-4" />
+                  <p>Create new workspace</p>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
+
+                <DropdownMenuSeparator className="-mx-1 my-1" />
+
+                {/* Footer Actions */}
+                <DropdownMenuItem className="gap-2">
+                  <Gift className="h-4 w-4" />
+                  <span>Get free credits</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem 
+                  className="gap-2"
+                  onClick={() => navigate('/help')}
+                >
+                  <HelpCircle className="h-5 w-5" />
+                  <p>Help Center</p>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem className="gap-2 justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-5 w-5 rounded-full bg-gradient-to-r from-foreground to-foreground/70" />
+                    <p>Appearance</p>
+                  </div>
+                  <ChevronRight className="h-5 w-5 ml-auto" />
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator className="-mx-1 my-1" />
+
+                <DropdownMenuItem 
+                  className="gap-2 text-foreground" 
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="h-5 w-5" />
+                  <p>Sign out</p>
                 </DropdownMenuItem>
               </DropdownMenuContent>
           </DropdownMenu>
