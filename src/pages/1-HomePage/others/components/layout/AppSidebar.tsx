@@ -9,9 +9,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useAuthStore } from '../../stores/auth';
 import { R } from '../../lib/routes';
 import { getUserDisplayName, getUserInitials, getUserProfileImage } from '../../lib/userUtils';
-import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield, Crown, BarChart, LucideIcon, ChevronDown, ChevronRight, Rocket, Calculator, ClipboardCheck, Gift, UserPlus, Check } from 'lucide-react';
+import { Home, Search, Plus, Briefcase, MessageSquare, DollarSign, BarChart3, Settings, HelpCircle, LogOut, User, MapPin, Users, Building2, FileText, Moon, Sun, Monitor, Clock, Upload, Calendar, BookOpen, Bot, TrendingUp, UserCheck, Package, Target, Building, Truck, Trophy, FolderOpen, Shield, Crown, BarChart, LucideIcon, ChevronDown, ChevronRight, Rocket, Calculator, ClipboardCheck, Gift, UserPlus, Check, Zap } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import NbLogo from '../ui/nb-logo';
+import { usePortalCredits } from '@/hooks/usePortalCredits';
 
 interface MenuItem {
   title: string;
@@ -329,6 +330,7 @@ export function AppSidebar() {
     profile,
     signOut
   } = useAuthStore();
+  const credits = usePortalCredits();
   const {
     setTheme,
     theme
@@ -459,22 +461,84 @@ export function AppSidebar() {
                   </div>
                 </div>
 
-                {/* Credits Widget */}
-                <div className="flex flex-col gap-1 px-1.5 pb-1.5 pt-1">
+                {/* Credits Widget - Live Data */}
+                <div className="flex flex-col gap-1 px-1.5 pb-1.5 pt-1" data-testid="credits-widget">
                   <div className="flex flex-col gap-2.5 rounded-xl bg-muted p-4 md:rounded-md md:p-3">
-                    <div className="flex items-center justify-between cursor-pointer transition-all duration-150 ease-in-out hover:opacity-80">
-                      <p className="text-base font-medium md:text-sm">Credits</p>
-                      <div className="flex items-center gap-px">
-                        <p className="text-base font-normal md:text-sm">Upgrade</p>
-                        <ChevronRight className="h-4 w-4" />
+                    {/* Header with status badge */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <p className="text-base font-medium md:text-sm">Credits</p>
+                        {!credits.isLoading && (
+                          <span 
+                            className={cn(
+                              "text-xs font-medium",
+                              credits.statusColor
+                            )}
+                            data-testid="credits-status-badge"
+                          >
+                            {credits.statusBadge}
+                          </span>
+                        )}
+                      </div>
+                      {credits.canUpgrade && !credits.isLoading && (
+                        <button 
+                          className="flex items-center gap-px hover:opacity-80 transition-all"
+                          onClick={() => navigate('/subscription')}
+                          data-testid="credits-upgrade-button"
+                        >
+                          <p className="text-base font-normal md:text-sm text-foreground">Upgrade</p>
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Usage Stats */}
+                    {!credits.isLoading && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">
+                          {credits.tokensUsed.toLocaleString()} / {credits.tokensLimit.toLocaleString()} tokens
+                        </span>
+                        <span className={cn("font-medium", credits.statusColor)} data-testid="credits-percentage">
+                          {credits.usagePercentage.toFixed(0)}%
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Progress Bar */}
+                    <div className="flex w-full items-center gap-2">
+                      <div className="relative h-2.5 flex-1 overflow-hidden rounded-lg bg-muted-foreground/20">
+                        {!credits.isLoading && (
+                          <div 
+                            className={cn(
+                              "h-full transition-all duration-300",
+                              credits.status === 'exceeded' ? 'bg-red-500' :
+                              credits.status === 'critical' ? 'bg-red-500' :
+                              credits.status === 'warning' ? 'bg-yellow-500' :
+                              'bg-green-500'
+                            )}
+                            style={{ width: `${Math.min(credits.usagePercentage, 100)}%` }}
+                            data-testid="credits-progress-bar"
+                          />
+                        )}
                       </div>
                     </div>
-                    <div className="flex w-full items-center gap-2">
-                      <div className="relative h-2.5 flex-1 overflow-hidden rounded-lg bg-muted-foreground/20"></div>
-                    </div>
+
+                    {/* Cost Summary */}
+                    {!credits.isLoading && credits.costUSD > 0 && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">Cost this month</span>
+                        <span className="font-medium" data-testid="credits-cost">
+                          ${credits.costUSD.toFixed(4)} USD
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Reset Date */}
                     <div className="flex items-center gap-1.5">
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground"></div>
-                      <p className="text-base text-muted-foreground md:text-sm">Free credits reset on 01 Feb</p>
+                      <Zap className="h-3 w-3 text-muted-foreground" />
+                      <p className="text-base text-muted-foreground md:text-sm" data-testid="credits-reset-date">
+                        {credits.isLoading ? 'Loading...' : `Credits reset on ${new Date(credits.resetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
+                      </p>
                     </div>
                   </div>
                 </div>

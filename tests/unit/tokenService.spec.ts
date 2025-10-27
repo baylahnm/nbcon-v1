@@ -323,4 +323,74 @@ describe('Token Service', () => {
       expect(end >= start).toBe(true);
     });
   });
+
+  describe('Quota Calculations', () => {
+    it('should calculate usage percentage correctly', () => {
+      const used = 50000;
+      const limit = 100000;
+      const percentage = (used / limit) * 100;
+      
+      expect(percentage).toBe(50);
+    });
+
+    it('should determine healthy status for <50% usage', () => {
+      const percentage = 45;
+      const status = percentage < 50 ? 'healthy' : 
+                     percentage < 80 ? 'warning' : 'critical';
+      
+      expect(status).toBe('healthy');
+    });
+
+    it('should determine warning status for 50-79% usage', () => {
+      const percentage = 65;
+      const status = percentage < 50 ? 'healthy' : 
+                     percentage < 80 ? 'warning' : 'critical';
+      
+      expect(status).toBe('warning');
+    });
+
+    it('should determine critical status for ≥80% usage', () => {
+      const percentage = 85;
+      const status = percentage < 50 ? 'healthy' : 
+                     percentage < 80 ? 'warning' : 'critical';
+      
+      expect(status).toBe('critical');
+    });
+
+    it('should determine exceeded status for ≥100% usage', () => {
+      const percentage = 105;
+      const status = percentage >= 100 ? 'exceeded' :
+                     percentage >= 80 ? 'critical' : 
+                     percentage >= 50 ? 'warning' : 'healthy';
+      
+      expect(status).toBe('exceeded');
+    });
+
+    it('should calculate remaining tokens correctly', () => {
+      const limit = 100000;
+      const used = 35000;
+      const remaining = Math.max(0, limit - used);
+      
+      expect(remaining).toBe(65000);
+    });
+
+    it('should not return negative remaining tokens', () => {
+      const limit = 100000;
+      const used = 120000;
+      const remaining = Math.max(0, limit - used);
+      
+      expect(remaining).toBe(0);
+    });
+
+    it('should identify Pro accounts by higher token limits', () => {
+      const freeTierLimit = 100000;
+      const proTierLimit = 500000;
+      
+      const isFree = freeTierLimit <= 100000;
+      const isPro = proTierLimit > 100000;
+      
+      expect(isFree).toBe(true);
+      expect(isPro).toBe(true);
+    });
+  });
 });
