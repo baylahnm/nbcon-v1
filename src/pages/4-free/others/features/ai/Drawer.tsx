@@ -149,14 +149,6 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="h-6 w-6 p-0"
-            >
-              <ArrowRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
               onClick={onClose}
               className="h-6 w-6 p-0"
             >
@@ -165,31 +157,47 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
           </div>
         </div>
 
-        {/* Mode Badge and Clear Chat */}
+        {/* Mode Badge, Clear Chat, and Open in AI */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
-              <ModeIcon className={`w-3 h-3 mr-1 ${modeInfo.color}`} />
-              {modeInfo.label}
-            </Badge>
+            {/* Clear Chat Button */}
+            {lastMessages.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => activeThreadId && deleteThread(activeThreadId)}
+                className="h-7 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300"
+                title="Clear all chat messages"
+              >
+                <Trash2 className="h-3 w-3 mr-1" />
+                Clear Chat
+              </Button>
+            )}
+            
+            {/* Open in AI Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOpenFull}
+              className="h-7 px-2 text-xs"
+            >
+              {settings.rtl ? 'افتح في الذكاء الاصطناعي' : 'Open in AI'}
+            </Button>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="h-6 w-6 p-0"
+            >
+              <ArrowRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+            </Button>
             {settings.hijri && activeThread && (
               <HijriBadge date={activeThread.updatedAt} isCompact />
             )}
           </div>
-          
-          {/* Clear Chat Button */}
-          {lastMessages.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => activeThreadId && deleteThread(activeThreadId)}
-              className="h-7 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300"
-              title="Clear all chat messages"
-            >
-              <Trash2 className="h-3 w-3 mr-1" />
-              Clear Chat
-            </Button>
-          )}
         </div>
 
       </div>
@@ -308,22 +316,7 @@ export function AiDrawer({ isOpen, onClose, onOpenFull }: AiDrawerProps) {
           </div>
         )}
 
-        {/* Footer */}
-        <div className="p-4 border-t border-sidebar-border bg-muted/30">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleOpenFull}
-              className="flex-1"
-            >
-              <ArrowRight className="w-4 h-4 mr-2" />
-              {settings.rtl ? 'Ã™ÂÃ˜ÂªÃ˜Â­ Ã™ÂÃ™Å  Ã˜Â§Ã™â€žÃ˜Â°Ã™Æ’Ã˜Â§Ã˜Â¡ Ã˜Â§Ã™â€žÃ˜Â§Ã˜ÂµÃ˜Â·Ã™â€ Ã˜Â§Ã˜Â¹Ã™Å ' : 'Open in AI'}
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   );
 }
-

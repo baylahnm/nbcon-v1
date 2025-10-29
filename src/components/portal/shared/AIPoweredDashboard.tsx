@@ -467,37 +467,26 @@ export function AIPoweredDashboard({
           </p>
           
           {/* Large Chat Input - Full ChatComposer with Agents */}
-          <div className="w-full max-w-3xl">
-            <form 
-              className="p-4"
-              onSubmit={(e) => {
+          <PromptBox
+            className="w-full max-w-3xl mx-auto"
+            placeholder="Ask AI to create a project, find engineers, or generate reports..."
+            onChange={(e) => setAiMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (aiMessage.trim()) {
                   onSendMessage?.(aiMessage);
                   setAiMessage('');
                 }
-              }}
-            >
-              <PromptBox
-                placeholder="Ask AI to create a project, find engineers, or generate reports..."
-                onChange={(e) => setAiMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (aiMessage.trim()) {
-                      onSendMessage?.(aiMessage);
-                      setAiMessage('');
-                    }
-                  }
-                }}
-              />
-            </form>
-            
-            {/* Quick Actions Bar - Horizontally Scrollable */}
-            <div className="mt-4">
-              <ScrollArea>
-                <div className="dashboard-quick-actions-scroll">
-                  <div className="flex space-x-2 p-1 pb-4">
+              }
+            }}
+          />
+          
+          {/* Quick Actions Bar - Horizontally Scrollable */}
+          <div className="mt-4 w-full">
+            <ScrollArea>
+              <div className="dashboard-quick-actions-scroll">
+                <div className="flex space-x-2 p-1 pb-4">
                     <Button
                       type="button"
                       variant="outline"
@@ -608,12 +597,11 @@ export function AIPoweredDashboard({
                       <FileText className="h-4 w-4" />
                       <span>Generate report</span>
                     </Button>
-                      </div>
                   </div>
-                </ScrollArea>
-          </div>
-                    </div>
-                  </div>
+                </div>
+              </ScrollArea>
+            </div>
+        </div>
       </section>
 
       {/* Conversations History - Horizontal Carousel */}

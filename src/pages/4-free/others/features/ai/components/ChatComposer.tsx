@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { Button } from '../../../../../1-HomePage/others/components/ui/button';
 import { PromptBox } from '../../../../../1-HomePage/others/components/ui/chatgpt-prompt-input';
-import { Card } from '../../../../../1-HomePage/others/components/ui/card';
 import { Badge } from '../../../../../1-HomePage/others/components/ui/badge';
 import { Progress } from '../../../../../1-HomePage/others/components/ui/progress';
 import { useAiStore } from '../store/useAiStore';
@@ -192,48 +191,44 @@ export function ChatComposer({ isCompact = false, onSend }: ChatComposerProps) {
       )}
 
       {/* Composer */}
-      <Card className="p-2">
-        <div className="space-y-3">
-          {/* Attachments */}
-          {composer.files.length > 0 && (
-            <AttachmentStrip
-              attachments={composer.files}
-              onRemove={removeAttachment}
-              isCompact={isCompact}
-            />
-          )}
+      <div className="p-3 space-y-3 bg-card">
+        {/* Attachments */}
+        {composer.files.length > 0 && (
+          <AttachmentStrip
+            attachments={composer.files}
+            onRemove={removeAttachment}
+            isCompact={isCompact}
+          />
+        )}
 
-          {/* Voice Recording Indicator */}
-          {isRecording && (
-            <div className="flex items-center gap-2 p-2 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-sm text-destructive">
-                Recording... {formatDuration(recordingDuration)}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={stopRecording}
-                className="ml-auto"
-              >
-                <MicOff className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
+        {/* Voice Recording Indicator */}
+        {isRecording && (
+          <div className="flex items-center gap-2 p-2 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            <span className="text-sm text-destructive">
+              Recording... {formatDuration(recordingDuration)}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={stopRecording}
+              className="ml-auto"
+            >
+              <MicOff className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
 
-          {/* Main Input Area - ChatGPT Style */}
-          <form onSubmit={(e) => { e.preventDefault(); handleSend(); }}>
-            <PromptBox
-              ref={textareaRef}
-              value={composer.text}
-              onChange={(e) => setComposerText(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={placeholder}
-              disabled={isGenerating}
-            />
-          </form>
-        </div>
-      </Card>
+        {/* Main Input Area - ChatGPT Style */}
+        <PromptBox
+          ref={textareaRef}
+          value={composer.text}
+          onChange={(e) => setComposerText(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={placeholder}
+          disabled={isGenerating}
+        />
+      </div>
 
       {/* Hidden File Input */}
       <input

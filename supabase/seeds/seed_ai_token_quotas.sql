@@ -102,11 +102,15 @@ BEGIN
     SELECT 
       p.user_id,
       p.role,
-      COALESCE(s.subscription_tier, 'free') as tier
+      COALESCE(sp.plan_type, 'free') as tier
     FROM public.profiles p
-    LEFT JOIN public.subscriptions s ON s.user_id = p.user_id AND s.status = 'active'
+    LEFT JOIN public.subscriptions s 
+      ON s.user_id = p.user_id 
+      AND s.subscription_status = 'active'
+    LEFT JOIN public.subscription_plans sp 
+      ON sp.id = s.plan_id
   LOOP
-    -- Map subscription tier to quota tier
+    -- Map subscription plan_type to quota tier
     v_tier := COALESCE(v_user.tier, 'free');
     
     -- Initialize quota
@@ -152,11 +156,19 @@ SECURITY DEFINER
 SET search_path = public
 LANGUAGE plpgsql
 AS $$
+DECLARE
+  v_plan_type TEXT;
 BEGIN
   -- Only update if subscription is now active
-  IF NEW.status = 'active' THEN
-    PERFORM public.initialize_user_quota(NEW.user_id, NEW.subscription_tier);
-    RAISE NOTICE 'Updated quota for user % to tier %', NEW.user_id, NEW.subscription_tier;
+  IF NEW.subscription_status = 'active' THEN
+    -- Get plan type from subscription_plans
+    SELECT plan_type INTO v_plan_type
+    FROM public.subscription_plans
+    WHERE id = NEW.plan_id;
+    
+    -- Initialize quota with plan type
+    PERFORM public.initialize_user_quota(NEW.user_id, COALESCE(v_plan_type, 'free'));
+    RAISE NOTICE 'Updated quota for user % to tier %', NEW.user_id, v_plan_type;
   END IF;
   
   RETURN NEW;
@@ -168,7 +180,7 @@ DROP TRIGGER IF EXISTS trigger_update_quota_on_subscription ON public.subscripti
 
 -- Create trigger on subscription insert/update
 CREATE TRIGGER trigger_update_quota_on_subscription
-AFTER INSERT OR UPDATE OF subscription_tier, status ON public.subscriptions
+AFTER INSERT OR UPDATE OF plan_id, subscription_status ON public.subscriptions
 FOR EACH ROW
 EXECUTE FUNCTION public.update_quota_on_subscription_change();
 
