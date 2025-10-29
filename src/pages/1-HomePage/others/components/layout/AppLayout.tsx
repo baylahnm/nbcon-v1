@@ -1,8 +1,9 @@
 import { ReactNode, useEffect, useState, lazy, Suspense } from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '../ui/sidebar';
-import { AppSidebar } from '../layout/AppSidebar';
+import { TierAwareAppSidebar } from '@/components/navigation/TierAwareAppSidebar';
 import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
+import { usePortalAccess } from '@/hooks/usePortalAccess';
 import { Loader2, Bot } from 'lucide-react';
 import { Button } from '../ui/button';
 import { ThemeToggle } from '../ui/theme-toggle';
@@ -26,6 +27,7 @@ export function AppLayout({
     isLoading,
     isInitialized
   } = useAuthStore();
+  const { userPermissions, isLoading: permissionsLoading } = usePortalAccess();
   const navigate = useNavigate();
   
   // AI Drawer state - placeholder for now
@@ -59,14 +61,16 @@ export function AppLayout({
       }
     }
   }, [user, profile, isInitialized, isLoading, navigate]);
-  if (isLoading || !isInitialized) {
+  if (isLoading || !isInitialized || permissionsLoading) {
     return <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-2xl mb-4 shadow-glow">
             <span className="text-2xl font-bold text-primary-foreground">nb</span>
           </div>
           <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
-          <p className="text-muted-foreground">Loading nbocn...</p>
+          <p className="text-muted-foreground">
+            {permissionsLoading ? 'Loading permissions...' : 'Loading nbocn...'}
+          </p>
         </div>
       </div>;
   }
@@ -75,11 +79,11 @@ export function AppLayout({
   }
   return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-subtle">
-        <AppSidebar />
+        <TierAwareAppSidebar />
         <SidebarInset className="flex-1 flex flex-col">
           {/* Header */}
           <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-sidebar-border">
-            <div className="flex items-center justify-between px-4 py-[12px]">
+            <div className="flex items-center justify-between px-4 py-[12px] bg-[hsl(var(--background))]">
               <div className="flex items-center gap-3">
                 <SidebarTrigger />
                 <div>

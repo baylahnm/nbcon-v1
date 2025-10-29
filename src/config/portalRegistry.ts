@@ -652,11 +652,12 @@ const ENTERPRISE_PAGES: PageDefinition[] = [
     description: 'Enterprise licensing and user seat management',
     path: '/enterprise/subscription',
     icon: 'CreditCard',
-    component: 'src/pages/6-enterprise/16-SubscriptionPage.tsx',
+    // TEMPORARY: Using settings redirect until unified subscription page is built
+    component: 'src/components/portal/shared/SubscriptionManagement.tsx',
     permissions: { allowedRoles: ['enterprise'] },
     category: 'business',
     order: 14,
-    showInSidebar: true,
+    showInSidebar: false, // Hide until implemented
   },
   {
     id: 'enterprise-contracts',

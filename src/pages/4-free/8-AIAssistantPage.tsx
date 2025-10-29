@@ -4,6 +4,7 @@ import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Input } from '@/pages/1-HomePage/others/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/pages/1-HomePage/others/components/ui/tabs';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { FeatureGate } from '@/components/portal/shared/FeatureGate';
 import { 
   Bot, 
   Send, 
@@ -152,8 +153,13 @@ export default function AIAssistantPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
+    <FeatureGate
+      requiredTier="basic"
+      featureName="AI Assistant"
+      featureDescription="Chat with AI for project insights, technical assistance, and intelligent recommendations"
+    >
+      <div className="container mx-auto p-6 space-y-6">
+        {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -364,6 +370,7 @@ export default function AIAssistantPage() {
         </TabsContent>
       </Tabs>
     </div>
+    </FeatureGate>
   );
 }
 

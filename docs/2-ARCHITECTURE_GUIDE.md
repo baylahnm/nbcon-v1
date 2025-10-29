@@ -1121,10 +1121,155 @@ Your structure is **excellent** if:
 
 ---
 
+## 🧭 **Unified Sidebar Navigation System**
+
+### Overview
+
+All portal navigation is centralized in `src/config/menuConfig.ts` with tier-aware filtering.
+
+**Key Features:**
+- ✅ Single source of truth for all navigation
+- ✅ Role-based filtering (client/engineer/enterprise/admin)
+- ✅ Tier-based locking (free/basic/pro/enterprise)
+- ✅ Visual indicators for premium features
+- ✅ Upgrade prompts on locked item clicks
+
+### Menu Configuration Structure
+
+```typescript
+// src/config/menuConfig.ts
+
+interface MenuItem {
+  id: string;
+  label: string;
+  description?: string;
+  icon: LucideIcon;
+  route: string;
+  
+  // Access Control
+  roles: UserRole[];              // ['client'] or ['engineer', 'client']
+  requiredTier?: SubscriptionTier; // 'basic' | 'pro' | 'enterprise' (undefined = free)
+  featureKey?: string;             // Optional feature flag
+  
+  // UI Metadata
+  badge?: string | number;
+  isNew?: boolean;
+  isBeta?: boolean;
+  comingSoon?: boolean;
+}
+
+interface MenuSection {
+  id: string;
+  label: string;
+  items: MenuItem[];
+  collapsible?: boolean;
+  defaultExpanded?: boolean;
+}
+```
+
+### Usage Example
+
+**1. Define Menu Items:**
+```typescript
+export const CLIENT_MENU: MenuSection[] = [
+  {
+    id: 'ai-tools',
+    label: 'AI Tools',
+    defaultExpanded: true,
+    items: [
+      {
+        id: 'ai-assistant',
+        label: 'AI Assistant',
+        icon: Bot,
+        route: '/free/ai',
+        roles: ['client'],
+        requiredTier: 'basic', // ← Locked for free users
+      },
+    ],
+  },
+];
+```
+
+**2. Render in Sidebar:**
+```typescript
+import { getMenuForRole } from '@/config/menuConfig';
+import { SidebarSection } from '@/components/navigation';
+
+const menu = getMenuForRole('client');
+const currentTier = userPermissions.subscriptionTier || 'free';
+
+{menu.map(section => (
+  <SidebarSection
+    key={section.id}
+    section={section}
+    currentTier={currentTier}
+    onLockedClick={handleUpgradePrompt}
+  />
+))}
+```
+
+**3. Visual States:**
+- **Unlocked:** Normal icon, full color, clickable
+- **Locked:** 🔒 icon, tier badge, dimmed, shows upgrade prompt on click
+- **Active:** Highlighted background, bold text
+- **Coming Soon:** Disabled, "Soon" badge
+
+### Components
+
+**SidebarItem** (`src/components/navigation/SidebarItem.tsx`)
+- Renders individual menu item
+- Shows locked state for insufficient tier
+- Handles navigation and upgrade prompts
+
+**SidebarSection** (`src/components/navigation/SidebarSection.tsx`)
+- Groups related menu items
+- Supports collapsible sections
+- Renders all child items
+
+**SidebarUpgradePrompt** (`src/components/navigation/SidebarUpgradePrompt.tsx`)
+- Modal shown when locked item clicked
+- Displays feature details
+- Navigates to subscription page
+
+**TierAwareAppSidebar** (`src/components/navigation/TierAwareAppSidebar.tsx`)
+- Main sidebar component
+- Integrates all pieces
+- Uses `usePortalAccess()` for tier detection
+
+### Helper Functions
+
+```typescript
+getMenuForRole(role)              // Get menu for specific role
+getAllMenuItems(role)             // Flatten all items
+findMenuItemByRoute(role, route)  // Find item by route
+countLockedItems(role, tier)      // Count locked items
+```
+
+### Testing
+
+**Unit Tests:** `tests/unit/menuFiltering.test.ts` (18 tests)
+- Menu retrieval by role
+- Tier filtering logic
+- Locked item counting
+- Menu structure validation
+
+**Integration Tests:** `tests/integration/sidebarTierGating.test.tsx` (12 tests)
+- SidebarItem rendering (locked/unlocked)
+- SidebarSection collapsing
+- Upgrade prompt interaction
+
+**E2E Tests:** `tests/e2e/sidebarTierGating.spec.ts` (10 scenarios)
+- Free user locked indicators
+- Pro user full access
+- Upgrade flow validation
+- Active route highlighting
+
+---
+
 ## 📚 **Related Documentation**
 
+- **Sidebar Design** → 3-UNIFIED_SIDEBAR_DESIGN.md
 - **Getting Started** → 1-GETTING_STARTED.md
-- **UI/UX Design Patterns** → 3-UI_DESIGN_SYSTEM.md
 - **Production & Bug Fixing** → 4-PRODUCTION_GUIDE.md
 
 ---

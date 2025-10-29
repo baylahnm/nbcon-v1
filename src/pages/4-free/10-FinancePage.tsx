@@ -11,6 +11,7 @@ import { InvoiceBuilder } from '@/pages/6-enterprise/others/features/finance/com
 import QuotationPage from '@/pages/6-enterprise/others/features/finance/components/quotations/QuotationPage';
 import { useOutsideClick } from '@/pages/1-HomePage/others/hooks/use-outside-click';
 import { useFinanceStore } from './others/features/finance/stores/useFinanceStore';
+import { FeatureGate } from '@/components/portal/shared/FeatureGate';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -939,6 +940,11 @@ export default function FinancePage() {
         )}
       </AnimatePresence>
 
+      <FeatureGate
+        requiredTier="pro"
+        featureName="Finance Management"
+        featureDescription="Access invoices, payments, financial reports, and advanced budgeting tools"
+      >
       <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
         <div className="w-full max-w-full p-4 space-y-4 overflow-x-hidden">
           {/* Header */}
@@ -1674,6 +1680,7 @@ export default function FinancePage() {
         </Sheet>
       </div>
     </div>
+      </FeatureGate>
     </>
   );
 }

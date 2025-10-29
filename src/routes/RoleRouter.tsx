@@ -19,7 +19,8 @@ import { MessagesPage } from "@/pages/5-engineer/4-MessagesPage";
 import ClientMessagesPage from "@/pages/4-free/9-MessagesPage";
 import ProfilePage from "@/pages/5-engineer/15-ProfilePage";
 import ClientSettingsPage from "@/pages/4-free/12-SettingsPage";
-import ClientSubscriptionPage from "@/pages/4-free/14-SubscriptionPage";
+// REMOVED: Subscription pages deleted during cleanup - using unified subscription component
+// import ClientSubscriptionPage from "@/pages/4-free/14-SubscriptionPage";
 import ClientProfilePage from "@/pages/4-free/2-ProfilePage";
 import HelpPage from "@/pages/5-engineer/10-HelpPage";
 import MyNetwork from "@/pages/5-engineer/6-NetworkPage";
@@ -47,7 +48,8 @@ import { PaymentsContent } from "@/pages/6-enterprise/others/features/finance/co
 import RankingPage from "@/pages/5-engineer/13-RankingPage";
 import EngineerSettingsPage from "@/pages/5-engineer/11-SettingsPage";
 import ReportsPage from "@/pages/5-engineer/14-ReportsPage";
-import SubscriptionPage from "@/pages/5-engineer/16-SubscriptionPage";
+// REMOVED: Subscription pages deleted during cleanup - using unified subscription component
+// import SubscriptionPage from "@/pages/5-engineer/16-SubscriptionPage";
 import { DashboardPage as EnterpriseDashboardPage } from "@/pages/6-enterprise/1-DashboardPage";
 import { TeamProjectsPage } from "@/pages/6-enterprise/4-TeamPage";
 const AnalyticsPage = React.lazy(() =>
@@ -151,7 +153,8 @@ export default function RoleRouter() {
           <Route path="finance" element={<PaymentsContent />} />
           <Route path="finance/:paymentId" element={<PaymentsContent />} />
           <Route path="reports" element={<ReportsPage />} />
-          <Route path="subscription" element={<SubscriptionPage />} />
+          {/* TEMPORARY: Redirect to settings until unified subscription page is built */}
+          <Route path="subscription" element={<Navigate to="/engineer/settings" replace />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="settings" element={<EngineerSettingsPage />} />
           <Route path="*" element={<Navigate to="/engineer/dashboard" replace />} />
@@ -203,7 +206,8 @@ export default function RoleRouter() {
             </Route>
           </Route>
           <Route path="help" element={<HelpPage />} />
-          <Route path="subscription" element={<ClientSubscriptionPage />} />
+          {/* TEMPORARY: Redirect to settings until unified subscription page is built */}
+          <Route path="subscription" element={<Navigate to="/free/settings" replace />} />
           <Route path="settings" element={<ClientSettingsPage />} />
           <Route path="*" element={<Navigate to="/free/dashboard" replace />} />
         </Route>

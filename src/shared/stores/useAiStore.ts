@@ -163,8 +163,37 @@ interface AiState {
   unsubscribeFromRealtime: () => void;
 }
 
+// Database conversation type (from Supabase RPC)
+interface DbConversation {
+  id: string;
+  conversation_title?: string;
+  ai_service_mode?: string;
+  created_at: string;
+  updated_at?: string;
+  is_active: boolean;
+  context_data?: {
+    isStarred?: boolean;
+    lastMessage?: string;
+  };
+}
+
+// Database message type (from Supabase RPC)
+interface DbMessage {
+  id: string;
+  conversation_id: string;
+  message_type: string;
+  content?: string;
+  created_at: string;
+  metadata?: {
+    mode?: string;
+    attachments?: Attachment[];
+    citations?: Citation[];
+    images?: GeneratedImage[];
+  };
+}
+
 // Helper function to map DB conversation to Thread
-const mapConversationToThread = (conv: any): Thread => ({
+const mapConversationToThread = (conv: DbConversation): Thread => ({
   id: conv.id,
   title: conv.conversation_title || 'New Conversation',
   mode: (conv.ai_service_mode || 'chat') as AiMode,
@@ -177,7 +206,7 @@ const mapConversationToThread = (conv: any): Thread => ({
 });
 
 // Helper function to map DB message to Message
-const mapDbMessageToMessage = (msg: any): Message => ({
+const mapDbMessageToMessage = (msg: DbMessage): Message => ({
   id: msg.id,
   threadId: msg.conversation_id,
   role: msg.message_type === 'user' ? 'user' : 'assistant',
@@ -231,7 +260,8 @@ export const useAiStore = create<AiState>()((set, get) => ({
 
     try {
       // Fetch all threads using RPC
-      const { data: threadsData, error: threadsError } = await supabase.rpc('get_ai_threads');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: threadsData, error: threadsError } = await (supabase.rpc as any)('get_ai_threads');
 
       if (threadsError) {
         console.error('[useAiStore] Error fetching threads:', threadsError);
@@ -243,13 +273,14 @@ export const useAiStore = create<AiState>()((set, get) => ({
       const threads: Thread[] = (threadsData || []).map(mapConversationToThread);
 
       // If there's an active thread, fetch its messages
-      let messagesByThread: Record<string, Message[]> = {};
+      const messagesByThread: Record<string, Message[]> = {};
       
       if (threads.length > 0) {
         const firstThread = threads[0];
         
         // Fetch messages for the first thread
-        const { data: messagesData, error: messagesError } = await supabase.rpc(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: messagesData, error: messagesError } = await (supabase.rpc as any)(
           'get_thread_messages',
           { thread_id: firstThread.id }
         );
@@ -333,7 +364,8 @@ export const useAiStore = create<AiState>()((set, get) => ({
 
     try {
       // Create thread in Supabase (RPC has duplicate prevention built-in)
-      const { data, error } = await supabase.rpc('create_ai_thread', {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase.rpc as any)('create_ai_thread', {
         p_title: title,
         p_mode: mode,
         p_type: 'general',
@@ -402,7 +434,8 @@ export const useAiStore = create<AiState>()((set, get) => ({
       set({ isLoading: true });
 
       try {
-        const { data: messagesData, error } = await supabase.rpc('get_thread_messages', {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: messagesData, error } = await (supabase.rpc as any)('get_thread_messages', {
           thread_id: threadId,
         });
 
@@ -446,6 +479,44 @@ export const useAiStore = create<AiState>()((set, get) => ({
   sendMessage: async (content: string, attachments?: Attachment[]) => {
     const state = get();
     
+    // === QUOTA ENFORCEMENT ===
+    // Check user's quota before allowing AI invocation
+    try {
+      const { checkUserQuota } = await import('@/shared/services/tokenService');
+      const estimatedTokens = Math.ceil(content.length / 4); // Rough estimate: 1 token ≈ 4 chars
+      
+      const quotaCheck = await checkUserQuota(estimatedTokens);
+      
+      if (!quotaCheck.allowed) {
+        console.warn('[AI Store] Quota exceeded:', {
+          remaining: quotaCheck.remaining_tokens,
+          limit: quotaCheck.quota_limit
+        });
+        
+        // Add assistant message to inform user about quota
+        const currentThreadId = get().activeThreadId || '';
+        const currentMode = get().mode;
+        get().addMessage({
+          role: 'assistant',
+          threadId: currentThreadId,
+          mode: currentMode,
+          content: `⚠️ **Quota Limit Reached**\n\nYou've used ${quotaCheck.quota_limit.toLocaleString()} of your ${quotaCheck.quota_limit.toLocaleString()} monthly AI tokens.\n\n**Remaining:** ${quotaCheck.remaining_tokens.toLocaleString()} tokens\n**Reset Date:** ${new Date(quotaCheck.reset_date).toLocaleDateString()}\n\nUpgrade your plan to continue using AI features.`,
+        });
+        
+        return; // Block message sending
+      }
+      
+      console.log('[AI Store] Quota check passed:', {
+        remaining: quotaCheck.remaining_tokens,
+        limit: quotaCheck.quota_limit,
+        percentage: ((quotaCheck.quota_limit - quotaCheck.remaining_tokens) / quotaCheck.quota_limit * 100).toFixed(1) + '%'
+      });
+    } catch (error) {
+      console.error('[AI Store] Quota check failed:', error);
+      // Allow message to proceed if quota check fails (graceful degradation)
+    }
+    // === END QUOTA ENFORCEMENT ===
+    
     // Create thread if none active
     if (!state.activeThreadId) {
       await get().newThread(state.mode);
@@ -477,7 +548,8 @@ export const useAiStore = create<AiState>()((set, get) => ({
 
     try {
       // Save user message to Supabase
-      await supabase.rpc('add_thread_message', {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.rpc as any)('add_thread_message', {
         p_thread_id: threadId,
         p_message_type: 'user',
         p_content: content,
@@ -546,7 +618,8 @@ export const useAiStore = create<AiState>()((set, get) => ({
       }
 
       // Save assistant message to Supabase
-      await supabase.rpc('add_thread_message', {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.rpc as any)('add_thread_message', {
         p_thread_id: threadId,
         p_message_type: 'assistant',
         p_content: data.response,

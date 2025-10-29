@@ -9,12 +9,15 @@
  */
 
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { LucideIcon, Lock } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
+import { cn } from '@/pages/1-HomePage/others/lib/utils';
 import type { UserRole } from '@/shared/types/auth';
+import { usePortalAccess } from '@/hooks/usePortalAccess';
+import { tierMeetsRequirement } from '@/shared/services/subscriptionService';
+import type { SubscriptionTier } from '@/config/portalTypes';
 
 // ============================================================================
 // TYPES
@@ -48,6 +51,7 @@ export interface QuickActionConfig {
   variant?: 'default' | 'outline' | 'ghost';
   badge?: string;
   disabled?: boolean;
+  requiredTier?: SubscriptionTier; // Tier required to access this action
 }
 
 /**
@@ -71,6 +75,7 @@ export interface DashboardConfig {
   quickActions: QuickActionConfig[];
   mainContent: React.ReactNode;
   widgets: WidgetConfig[];
+  subscriptionTier?: SubscriptionTier; // Override tier for testing/preview
 }
 
 // ============================================================================
@@ -155,31 +160,57 @@ function StatCard({ stat }: StatCardProps) {
 
 interface QuickActionProps {
   action: QuickActionConfig;
+  currentTier: SubscriptionTier;
 }
 
-function QuickAction({ action }: QuickActionProps) {
+function QuickAction({ action, currentTier }: QuickActionProps) {
+  const isLocked = action.requiredTier && !tierMeetsRequirement(currentTier, action.requiredTier);
+  
   return (
     <Button
-      onClick={action.onClick}
+      onClick={isLocked ? undefined : action.onClick}
       variant={action.variant || 'outline'}
-      className="h-auto flex-col items-start gap-2 p-4 hover:bg-accent hover:border-accent"
-      disabled={action.disabled}
+      className={cn(
+        "h-auto flex-col items-start gap-2 p-4",
+        isLocked ? "opacity-60 cursor-not-allowed" : "hover:bg-accent hover:border-accent"
+      )}
+      disabled={action.disabled || isLocked}
       data-testid={`dashboard-action-${action.id}`}
+      title={isLocked ? `Requires ${action.requiredTier} tier or higher` : undefined}
     >
       <div className="flex items-center gap-2 w-full">
-        <div className="bg-primary/10 p-2 rounded-xl ring-1 ring-primary/20">
-          <action.icon className="h-4 w-4 text-primary" />
+        <div className={cn(
+          "p-2 rounded-xl ring-1",
+          isLocked ? "bg-muted/50 ring-muted" : "bg-primary/10 ring-primary/20"
+        )}>
+          {isLocked ? (
+            <Lock className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <action.icon className="h-4 w-4 text-primary" />
+          )}
         </div>
-        {action.badge && (
+        {isLocked && (
+          <Badge className="ml-auto bg-amber-500/10 text-amber-600 border-amber-500/20 text-[9px]">
+            {action.requiredTier}
+          </Badge>
+        )}
+        {!isLocked && action.badge && (
           <Badge className="ml-auto bg-primary/10 text-primary border-primary/20 text-[9px]">
             {action.badge}
           </Badge>
         )}
       </div>
       <div className="text-left w-full">
-        <p className="text-sm font-medium">{action.label}</p>
+        <p className={cn("text-sm font-medium", isLocked && "text-muted-foreground")}>
+          {action.label}
+        </p>
         {action.description && (
           <p className="text-xs text-muted-foreground mt-0.5">{action.description}</p>
+        )}
+        {isLocked && (
+          <p className="text-[10px] text-amber-600 mt-1">
+            Upgrade to unlock
+          </p>
         )}
       </div>
     </Button>
@@ -239,6 +270,7 @@ export interface UnifiedDashboardProps {
  * 
  * Provides consistent layout, spacing, and design system across portals.
  * Role-specific content is injected via config props.
+ * Supports tier-based feature gating for quick actions.
  * 
  * @example
  * ```tsx
@@ -247,7 +279,10 @@ export interface UnifiedDashboardProps {
  *   pageTitle: 'Dashboard',
  *   pageIcon: LayoutDashboard,
  *   stats: [...],
- *   quickActions: [...],
+ *   quickActions: [
+ *     { id: 'post-job', label: 'Post Job', icon: Plus, onClick: () => {} },
+ *     { id: 'advanced-analytics', label: 'Analytics', icon: Chart, onClick: () => {}, requiredTier: 'pro' },
+ *   ],
  *   mainContent: <ActiveProjectsList />,
  *   widgets: [...],
  * };
@@ -256,10 +291,25 @@ export interface UnifiedDashboardProps {
  * ```
  */
 export function UnifiedDashboard({ config, className }: UnifiedDashboardProps) {
+  const { userPermissions } = usePortalAccess();
+  const currentTier = config.subscriptionTier || userPermissions.subscriptionTier || 'free';
+
+  // Filter quick actions based on subscription tier
+  const visibleActions = config.quickActions; // Show all, lock those requiring higher tiers
+
   return (
     <div className={cn('p-4 space-y-4', className)} data-testid={`dashboard-${config.role}`}>
       {/* Page Header */}
       <PageHeader title={config.pageTitle} icon={config.pageIcon} />
+
+      {/* Subscription Tier Badge */}
+      {currentTier && currentTier !== 'free' && (
+        <div className="flex justify-end">
+          <Badge className="bg-primary/10 text-primary border-primary/20 capitalize">
+            {currentTier} Tier
+          </Badge>
+        </div>
+      )}
 
       {/* Overview Stats Grid */}
       {config.stats.length > 0 && (
@@ -274,7 +324,7 @@ export function UnifiedDashboard({ config, className }: UnifiedDashboardProps) {
       )}
 
       {/* Quick Actions Hub */}
-      {config.quickActions.length > 0 && (
+      {visibleActions.length > 0 && (
         <Card>
           <CardContent className="p-4">
             <h2 className="text-base font-semibold mb-4">Quick Actions</h2>
@@ -282,8 +332,8 @@ export function UnifiedDashboard({ config, className }: UnifiedDashboardProps) {
               className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
               data-testid="dashboard-quick-actions"
             >
-              {config.quickActions.map((action) => (
-                <QuickAction key={action.id} action={action} />
+              {visibleActions.map((action) => (
+                <QuickAction key={action.id} action={action} currentTier={currentTier} />
               ))}
             </div>
           </CardContent>

@@ -34,8 +34,9 @@ import { ChatPage } from "../../../../../5-engineer/others/features/ai/ChatPage"
 import { PaymentsContent } from "../../../../../6-enterprise/others/features/finance/components/PaymentsContent";
 import RankingPage from "../../../../../5-engineer/13-RankingPage";
 import ReportsPage from "../../../../../5-engineer/14-ReportsPage";
-import SubscriptionPage from "../../../../../5-engineer/16-SubscriptionPage";
-import ClientSubscriptionPage from "../../../../../4-free/14-SubscriptionPage";
+// REMOVED: Subscription pages deleted during cleanup - using unified subscription component
+// import SubscriptionPage from "../../../../../5-engineer/16-SubscriptionPage";
+// import ClientSubscriptionPage from "../../../../../4-free/14-SubscriptionPage";
 import AIToolsPlanningPage from "../../../../../4-free/15-AIToolsPlanningPage";
 import ProjectCharterTool from "../../../../../4-free/others/features/ai-tools/tools/ProjectCharterTool";
 import WBSBuilderTool from "../../../../../4-free/others/features/ai-tools/tools/WBSBuilderTool";
@@ -211,7 +212,8 @@ export default function NewRoleRouter() {
             <Route path="payments/:paymentId" element={<PaymentsContent />} />
             <Route path="finance" element={<PaymentsContent />} />
             <Route path="reports" element={<ReportsPage />} />
-            <Route path="subscription" element={<SubscriptionPage />} />
+            {/* TEMPORARY: Redirect to settings until unified subscription page is built */}
+            <Route path="subscription" element={<Navigate to="/engineer/settings" replace />} />
             <Route path="help" element={<HelpPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
@@ -244,7 +246,8 @@ export default function NewRoleRouter() {
             <Route path="learning/course/:courseId" element={<ClientLearningPage />} />
             <Route path="learning/certificates/:certificateId" element={<ClientLearningPage />} />
             <Route path="help" element={<HelpPage />} />
-            <Route path="subscription" element={<ClientSubscriptionPage />} />
+            {/* TEMPORARY: Redirect to settings until unified subscription page is built */}
+            <Route path="subscription" element={<Navigate to="/free/settings" replace />} />
             <Route path="settings" element={<ClientSettingsPage />} />
             <Route path="ai-tools">
               <Route path="planning" element={<AIToolsPlanningPage />} />

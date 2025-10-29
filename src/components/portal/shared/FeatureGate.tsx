@@ -11,9 +11,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Crown, Zap } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/pages/1-HomePage/others/components/ui/card';
+import { Button } from '@/pages/1-HomePage/others/components/ui/button';
+import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { usePortalAccess } from '@/hooks/usePortalAccess';
 import { tierMeetsRequirement, formatTierName, getUpgradePath } from '@/shared/services/subscriptionService';
 import type { SubscriptionTier } from '@/config/portalTypes';

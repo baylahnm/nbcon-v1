@@ -3,9 +3,34 @@
  * Phase 3: Token Usage Analytics
  * 
  * Tracks AI token usage, enforces quotas, calculates costs
+ * Includes mock data fallback for development
  */
 
 import { supabase } from '../supabase/client';
+
+// Mock data for development/testing
+const MOCK_QUOTA_DATA = {
+  used: 12500,
+  limit: 50000,
+  remaining: 37500,
+  percentage: 25,
+  resetDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
+  status: 'healthy' as const,
+};
+
+const MOCK_MONTHLY_USAGE = {
+  total_tokens: 12500,
+  total_requests: 45,
+  total_cost_usd: 0.15,
+  total_cost_sar: 0.56,
+  period_start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
+  period_end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0],
+};
+
+// Development flag - set to true to use mock data
+// Default: false (use real database)
+// Enable for local dev: VITE_USE_MOCK_TOKENS=true in .env.local
+const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_TOKENS === 'true';
 
 // Pricing constants (as of Jan 2025)
 const PRICING = {
@@ -137,6 +162,7 @@ export function calculateCost(
  */
 export async function checkUserQuota(estimatedTokens: number): Promise<QuotaCheckResult> {
   try {
+    // @ts-expect-error - check_user_quota RPC exists but not in generated types yet
     const { data, error } = await supabase.rpc('check_user_quota', {
       p_estimated_tokens: estimatedTokens,
     });
@@ -201,11 +227,18 @@ export async function checkUserQuota(estimatedTokens: number): Promise<QuotaChec
  * Get user's monthly AI usage
  */
 export async function getUserMonthlyUsage(year?: number, month?: number): Promise<MonthlyUsageResult | null> {
+  // Use mock data in development
+  if (USE_MOCK_DATA) {
+    console.log('[TokenService] Using mock monthly usage data for development');
+    return MOCK_MONTHLY_USAGE;
+  }
+
   try {
     const params = year !== undefined && month !== undefined 
       ? { p_year: year, p_month: month }
       : {};
 
+    // @ts-expect-error - get_user_monthly_usage RPC exists but not in generated types yet
     const { data, error } = await supabase.rpc('get_user_monthly_usage', params);
 
     if (error) {
@@ -263,10 +296,44 @@ export async function getQuotaStatus(): Promise<{
   resetDate: string;
   status: 'healthy' | 'warning' | 'critical' | 'exceeded';
 } | null> {
+  // Use mock data in development (if explicitly enabled)
+  if (USE_MOCK_DATA) {
+    console.log('[TokenService] 🎭 Using mock quota data (VITE_USE_MOCK_TOKENS=true)');
+    return MOCK_QUOTA_DATA;
+  }
+
   try {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
+    if (!user) {
+      console.log('[TokenService] ❌ No authenticated user');
+      return null;
+    }
 
+    // Try to use the RPC function first (preferred for production)
+    // @ts-expect-error - get_user_quota_status RPC exists but not in generated types yet
+    const { data: rpcData, error: rpcError } = await supabase.rpc('get_user_quota_status');
+
+    if (!rpcError && rpcData && rpcData.length > 0) {
+      const quota = rpcData[0] as any;
+      console.log('[TokenService] ✅ Got quota from RPC:', { 
+        used: quota.used, 
+        limit: quota.limit,
+        percentage: quota.percentage 
+      });
+      
+      return {
+        used: quota.used || 0,
+        limit: quota.limit || 10000,
+        remaining: quota.remaining || 10000,
+        percentage: quota.percentage || 0,
+        resetDate: quota.reset_date || new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
+        status: quota.status || 'healthy',
+      };
+    }
+
+    // Fallback: Direct table query
+    console.log('[TokenService] ⚠️  RPC failed, using direct table query');
+    // @ts-expect-error - user_ai_quotas table exists but not in generated types yet
     const { data, error } = await supabase
       .from('user_ai_quotas')
       .select('*')
@@ -274,37 +341,40 @@ export async function getQuotaStatus(): Promise<{
       .single();
 
     if (error || !data) {
-      // No quota record = unlimited
+      console.log('[TokenService] ⚠️  No quota record found, returning default limits');
+      // No quota record = return default free tier
       return {
         used: 0,
-        limit: 100000, // Default limit
-        remaining: 100000,
+        limit: 10000, // Free tier default
+        remaining: 10000,
         percentage: 0,
         resetDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
         status: 'healthy',
       };
     }
 
-    const used = data.current_month_tokens;
-    const limit = data.monthly_token_quota;
+    const used = (data as any).current_month_tokens || 0;
+    const limit = (data as any).monthly_token_quota || 10000;
     const remaining = Math.max(0, limit - used);
-    const percentage = (used / limit) * 100;
+    const percentage = limit > 0 ? (used / limit) * 100 : 0;
 
     let status: 'healthy' | 'warning' | 'critical' | 'exceeded' = 'healthy';
     if (percentage >= 100) status = 'exceeded';
     else if (percentage >= 90) status = 'critical';
     else if (percentage >= 75) status = 'warning';
 
+    console.log('[TokenService] ✅ Got quota from table:', { used, limit, percentage: percentage.toFixed(1) });
+
     return {
       used,
       limit,
       remaining,
       percentage,
-      resetDate: data.quota_reset_date,
+      resetDate: (data as any).quota_reset_date || new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
       status,
     };
   } catch (error) {
-    console.error('[TokenService] Error fetching quota status:', error);
+    console.error('[TokenService] ❌ Error fetching quota status:', error);
     return null;
   }
 }
