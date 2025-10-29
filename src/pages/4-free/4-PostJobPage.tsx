@@ -5,6 +5,9 @@ import { Input } from '../1-HomePage/others/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../1-HomePage/others/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
 import { Badge } from '../1-HomePage/others/components/ui/badge';
+import { FeatureGate } from '@/components/portal/shared/FeatureGate';
+import { usePortalAccess } from '@/hooks/usePortalAccess';
+import { canCreateProject } from '@/shared/services/projectLimitService';
 import { 
   Stepper, 
   StepperItem, 
@@ -89,6 +92,8 @@ const locations = [
 
 export default function PostJobPage() {
   const [activeTab, setActiveTab] = useState('basic');
+  const { userPermissions, isAuthenticated } = usePortalAccess();
+  const [projectLimitError, setProjectLimitError] = useState<string | null>(null);
   
   // Helper functions for step navigation
   const getStepNumber = (tab: string): number => {
@@ -212,17 +217,52 @@ export default function PostJobPage() {
            formData.experience;
   };
 
-  const handleSubmit = () => {
-    if (isFormValid()) {
-      // Handle form submission
-      console.log('Submitting job:', formData);
-      // Redirect or show success message
+  const handleSubmit = async () => {
+    if (!isFormValid()) return;
+    
+    // Check project creation limits
+    if (isAuthenticated) {
+      const limitCheck = await canCreateProject(
+        undefined, // Will use current user
+        userPermissions.subscriptionTier
+      );
+      
+      if (!limitCheck.allowed) {
+        setProjectLimitError(limitCheck.message || 'Project limit reached');
+        return;
+      }
     }
+    
+    // Handle form submission
+    console.log('Submitting job:', formData);
+    setProjectLimitError(null);
+    // Redirect or show success message
   };
 
   return (
+    <FeatureGate
+      requiredTier="basic"
+      featureName="Post New Job"
+      featureDescription="Create and publish job postings to find the perfect engineer for your project"
+    >
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="p-4 space-y-4">
+      
+      {/* Project Limit Error */}
+      {projectLimitError && (
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardHeader className="p-4">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-destructive" />
+              <CardTitle className="text-sm">Project Limit Reached</CardTitle>
+            </div>
+            <CardDescription className="text-destructive">
+              {projectLimitError}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
+      
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-border/40">
         <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -769,6 +809,7 @@ export default function PostJobPage() {
       </Stepper>
       </div>
     </div>
+    </FeatureGate>
   );
 }
 

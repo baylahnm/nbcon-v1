@@ -379,8 +379,39 @@ pnpm exec vitest run tests/integration/portalAccess.spec.ts
 
 ---
 
+## 📊 Latest Diagnostic Results
+
+**Test Date:** 2025-10-29  
+**Build Commit:** `fd3c82c`  
+**Method:** Static Code Analysis
+
+### Tier Pass Rates
+
+| Tier | Pass Rate | Status |
+|------|-----------|--------|
+| Free | 77.8% (7/9) | 🟢 |
+| Basic | 88.9% (8/9) | 🟢 |
+| Pro | 80.0% (8/10) | 🟢 |
+| Enterprise | 83.3% (10/12) | 🟢 |
+
+**System Average:** 🎯 **82.5%**
+
+### Critical Findings
+
+1. ✅ **Navigation Gating:** 100% active (40 pages)
+2. 🟡 **Content Gates:** 40% coverage (4/10 pages)
+3. ❌ **Project Limits:** 0% integrated (service exists)
+4. ✅ **Upgrade Prompts:** Working correctly
+
+### Detailed Results
+
+See [DIAGNOSTIC_SUMMARY.md](DIAGNOSTIC_SUMMARY.md) for complete tier-by-tier analysis.
+
+---
+
 **See Also:**  
 - [Tier Descriptions](tiers.md) for expected feature access  
 - [Navigation System](navigation.md) for menu validation  
-- [Integration Guide](integration.md) for fixing issues
+- [Integration Guide](integration.md) for fixing issues  
+- [DIAGNOSTIC_SUMMARY.md](DIAGNOSTIC_SUMMARY.md) for full results
 
