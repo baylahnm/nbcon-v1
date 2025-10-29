@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from '../ui/sidebar';
 import { TierAwareAppSidebar } from '@/components/navigation/TierAwareAppSidebar';
 import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
 import { usePortalAccess } from '@/hooks/usePortalAccess';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 import { Loader2, Bot } from 'lucide-react';
 import { Button } from '../ui/button';
 import { ThemeToggle } from '../ui/theme-toggle';
@@ -38,13 +39,13 @@ export function AppLayout({
     location.pathname.startsWith(route)
   );
 
-  // Get AI route based on role
+  // Get AI route based on subscription tier
   const getAIRoute = () => {
-    switch (profile?.role) {
-      case 'engineer':
-        return R.engineer.ai;
-      case 'client':
-        return R.client.ai;
+    const tier = user?.subscriptionTier || 'free';
+    switch (tier) {
+      case 'basic':
+      case 'pro':
+        return R.client.ai; // Basic/Pro users use client AI
       case 'enterprise':
         return R.enterprise.ai;
       default:
@@ -121,37 +122,45 @@ export function AppLayout({
             {children || <Outlet />}
           </main>
           
-          {/* AI Drawer - Only show on dashboard routes */}
+          {/* AI Drawer - Only show on dashboard routes, based on subscription tier */}
           {isDashboardRoute && isAiDrawerOpen && (
             <Suspense fallback={<div className="hidden" />}>
-              {user?.role === 'client' && (
-                <ClientAiDrawer
-                  isOpen={isAiDrawerOpen}
-                  onClose={() => setIsAiDrawerOpen(false)}
-                  onOpenFull={() => navigate(getAIRoute())}
-                />
-              )}
-              {user?.role === 'engineer' && (
-                <EngineerAiDrawer
-                  isOpen={isAiDrawerOpen}
-                  onClose={() => setIsAiDrawerOpen(false)}
-                  onOpenFull={() => navigate(getAIRoute())}
-                />
-              )}
-              {user?.role === 'enterprise' && (
-                <EnterpriseAiDrawer
-                  isOpen={isAiDrawerOpen}
-                  onClose={() => setIsAiDrawerOpen(false)}
-                  onOpenFull={() => navigate(getAIRoute())}
-                />
-              )}
-              {user?.role === 'admin' && (
-                <AdminAiDrawer
-                  isOpen={isAiDrawerOpen}
-                  onClose={() => setIsAiDrawerOpen(false)}
-                  onOpenFull={() => navigate(getAIRoute())}
-                />
-              )}
+              {(() => {
+                const tier = user?.subscriptionTier || 'free';
+                // Admin role check (keep separate from subscription tiers)
+                if (user?.role === 'admin') {
+                  return (
+                    <AdminAiDrawer
+                      isOpen={isAiDrawerOpen}
+                      onClose={() => setIsAiDrawerOpen(false)}
+                      onOpenFull={() => navigate(getAIRoute())}
+                    />
+                  );
+                }
+                // Subscription tier-based drawer selection
+                switch (tier) {
+                  case 'enterprise':
+                    return (
+                      <EnterpriseAiDrawer
+                        isOpen={isAiDrawerOpen}
+                        onClose={() => setIsAiDrawerOpen(false)}
+                        onOpenFull={() => navigate(getAIRoute())}
+                      />
+                    );
+                  case 'basic':
+                  case 'pro':
+                    return (
+                      <ClientAiDrawer
+                        isOpen={isAiDrawerOpen}
+                        onClose={() => setIsAiDrawerOpen(false)}
+                        onOpenFull={() => navigate(getAIRoute())}
+                      />
+                    );
+                  default:
+                    // Free tier: minimal or no drawer
+                    return null;
+                }
+              })()}
             </Suspense>
           )}
         </SidebarInset>

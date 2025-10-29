@@ -21,11 +21,11 @@ import {
   getPageByPath,
 } from '@/config/portalRegistry';
 import type { UserRole } from '@/shared/types/auth';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 import type {
   PageDefinition,
   PortalDefinition,
   PagePermissions,
-  SubscriptionTier,
 } from '@/config/portalTypes';
 
 /**
@@ -79,7 +79,7 @@ export function usePortalAccess(): UsePortalAccessReturn {
   
   const userRole = user?.role || null;
   
-  // Memoized permission checks
+  // Memoized permission checks based on subscription tier
   const userPermissions = useMemo(() => {
     if (!user) {
       return {
@@ -89,17 +89,20 @@ export function usePortalAccess(): UsePortalAccessReturn {
         canAccessFinance: false,
         canAccessAnalytics: false,
         canManageTeams: false,
+        subscriptionTier: 'free' as SubscriptionTier,
       };
     }
     
+    const tier = user.subscriptionTier || 'free';
+    
     return {
-      canAccessAITools: ['client', 'engineer', 'enterprise'].includes(user.role),
-      canManageProjects: ['client', 'enterprise'].includes(user.role),
-      canPostJobs: ['client', 'enterprise'].includes(user.role),
-      canAccessFinance: ['client', 'engineer', 'enterprise'].includes(user.role),
-      canAccessAnalytics: ['enterprise'].includes(user.role),
-      canManageTeams: ['enterprise'].includes(user.role),
-      subscriptionTier: user.subscriptionTier || 'free',
+      canAccessAITools: ['basic', 'pro', 'enterprise'].includes(tier),
+      canManageProjects: ['pro', 'enterprise'].includes(tier),
+      canPostJobs: ['basic', 'pro', 'enterprise'].includes(tier),
+      canAccessFinance: ['pro', 'enterprise'].includes(tier),
+      canAccessAnalytics: tier === 'enterprise',
+      canManageTeams: tier === 'enterprise',
+      subscriptionTier: tier as SubscriptionTier,
     };
   }, [user]);
   
