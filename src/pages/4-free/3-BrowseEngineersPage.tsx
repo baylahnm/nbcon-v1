@@ -12,6 +12,7 @@ import { Progress } from '../1-HomePage/others/components/ui/progress';
 import { useOutsideClick } from '../1-HomePage/others/hooks/use-outside-click';
 import { useEngineersStore } from './others/features/browse/stores/useEngineersStore';
 import XScroll from '@/pages/1-HomePage/others/components/ui/x-scroll';
+import { FeatureGate } from '@/components/portal/shared/FeatureGate';
 import { 
   Users, 
   Search, 
@@ -201,6 +202,11 @@ export default function BrowseEngineersPage() {
   };
 
   return (
+    <FeatureGate
+      requiredTier="basic"
+      featureName="Browse Engineers"
+      featureDescription="Search and connect with verified Saudi engineers for your projects"
+    >
     <>
       {/* Expanded Engineer Modal */}
       <AnimatePresence>
@@ -943,5 +949,6 @@ export default function BrowseEngineersPage() {
       </div>
     </div>
     </>
+    </FeatureGate>
   );
 }

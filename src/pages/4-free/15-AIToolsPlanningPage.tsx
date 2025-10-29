@@ -7,6 +7,7 @@ import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { Progress } from '@/pages/1-HomePage/others/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/pages/1-HomePage/others/components/ui/select';
 import { Alert, AlertDescription } from '@/pages/1-HomePage/others/components/ui/alert';
+import { FeatureGate } from '@/components/portal/shared/FeatureGate';
 import { 
   Rocket, 
   Target, 
@@ -250,6 +251,11 @@ export default function AIToolsPlanningPage() {
   };
 
   return (
+    <FeatureGate
+      requiredTier="pro"
+      featureName="AI Project Planning Tools"
+      featureDescription="Access 7 AI-powered planning tools including Charter Generator, WBS Builder, Timeline Builder, and more"
+    >
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/10">
       <div className="p-4 space-y-4">
         
@@ -696,5 +702,6 @@ export default function AIToolsPlanningPage() {
       </div>
 
     </div>
+    </FeatureGate>
   );
 }
