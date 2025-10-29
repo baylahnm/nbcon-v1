@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../1-HomePage/others/compon
 import { Progress } from '../1-HomePage/others/components/ui/progress';
 import { useAuthStore } from './others/stores/auth';
 import { getUserDisplayName } from '@/pages/1-HomePage/others/lib/userUtils';
+import { FeatureGate } from '@/components/portal/shared/FeatureGate';
 import { 
   Users, 
   Search, 
@@ -386,6 +387,17 @@ export default function NetworkPage() {
 
   const displayName = getUserDisplayName(profile);
 
+  return (
+    <FeatureGate
+      requiredTier="basic"
+      featureName="Network"
+      featureDescription="Connect with other professionals, engineers, and clients to expand your network and discover collaboration opportunities"
+    >
+      {renderContent()}
+    </FeatureGate>
+  );
+
+  function renderContent() {
   // Filter connections
   const filteredConnections = mockConnections.filter(connection => {
     const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -901,4 +913,5 @@ export default function NetworkPage() {
       </div>
     </div>
   );
+  }
 }

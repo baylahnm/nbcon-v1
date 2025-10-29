@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../1-HomePage/others/compon
 import { ScrollArea } from '../1-HomePage/others/components/ui/scroll-area';
 import { Separator } from '../1-HomePage/others/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '../1-HomePage/others/components/ui/tabs';
+import { FeatureGate } from '@/components/portal/shared/FeatureGate';
 
 interface Conversation {
   id: string;
@@ -163,7 +164,12 @@ export default function MessagesPage() {
   const totalUnread = sampleConversations.reduce((sum, conv) => sum + conv.unread, 0);
 
   return (
-    <div className="flex h-screen bg-background">
+    <FeatureGate
+      requiredTier="basic"
+      featureName="Messages"
+      featureDescription="Communicate directly with engineers and clients to discuss projects, share updates, and collaborate effectively"
+    >
+      <div className="flex h-screen bg-background">
 
       {/* Sidebar */}
       <div className={`${isCollapsed ? 'w-20' : 'w-80'} border-r border-sidebar-border bg-muted/30 flex flex-col transition-all duration-300`}>
@@ -467,5 +473,6 @@ export default function MessagesPage() {
         )}
       </div>
     </div>
+    </FeatureGate>
   );
 }
