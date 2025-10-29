@@ -16,7 +16,7 @@ import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { usePortalAccess } from '@/hooks/usePortalAccess';
 import { tierMeetsRequirement, formatTierName, getUpgradePath } from '@/shared/services/subscriptionService';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // ============================================================================
 // TYPES

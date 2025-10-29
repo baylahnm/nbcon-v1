@@ -9,6 +9,7 @@
  */
 
 import type { UserRole } from '@/shared/types/auth';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 import type { ComponentType, LazyExoticComponent } from 'react';
 
 /**
@@ -25,11 +26,6 @@ export type PortalCategory =
   | 'development'
   | 'business'
   | 'support';
-
-/**
- * Subscription tier levels
- */
-export type SubscriptionTier = 'free' | 'basic' | 'pro' | 'enterprise';
 
 /**
  * Page permission configuration
@@ -174,21 +170,8 @@ export interface PortalAnalyticsEvent {
 }
 
 /**
- * Export all types
+ * Re-export SubscriptionTier for convenience
+ * (Primary import should be from @/shared/types/subscription)
  */
-export type {
-  UserRole,
-  PortalCategory,
-  SubscriptionTier,
-  PagePermissions,
-  PageBadge,
-  PageDefinition,
-  NavigationGroup,
-  PortalDefinition,
-  PortalRegistry,
-  PortalNavItem,
-  BreadcrumbItem,
-  QuickAction,
-  PortalAnalyticsEvent,
-};
+export type { SubscriptionTier } from '@/shared/types/subscription';
 

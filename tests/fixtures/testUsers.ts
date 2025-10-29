@@ -7,11 +7,14 @@
  * @created October 29, 2025
  */
 
+import type { SubscriptionTier } from '../../src/shared/types/subscription';
+import type { UserRole } from '../../src/shared/types/auth';
+
 export interface TestUser {
   email: string;
   password: string;
-  tier: 'free' | 'basic' | 'pro' | 'enterprise';
-  role: 'client' | 'engineer' | 'enterprise';
+  tier: SubscriptionTier;
+  role: UserRole;
   expectedDashboard: string;
 }
 
@@ -61,7 +64,7 @@ export const TEST_USERS: Record<string, TestUser> = {
 /**
  * Get test user by tier
  */
-export function getTestUser(tier: 'free' | 'basic' | 'pro' | 'enterprise'): TestUser {
+export function getTestUser(tier: SubscriptionTier): TestUser {
   return TEST_USERS[tier];
 }
 
@@ -86,8 +89,8 @@ export const TIER_LEVELS = {
  * Check if user tier meets requirement
  */
 export function userMeetsTierRequirement(
-  userTier: 'free' | 'basic' | 'pro' | 'enterprise',
-  requiredTier: 'free' | 'basic' | 'pro' | 'enterprise'
+  userTier: SubscriptionTier,
+  requiredTier: SubscriptionTier
 ): boolean {
   return TIER_LEVELS[userTier] >= TIER_LEVELS[requiredTier];
 }

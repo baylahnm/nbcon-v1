@@ -21,7 +21,7 @@ import {
 import { cn } from '@/pages/1-HomePage/others/lib/utils';
 import { tierMeetsRequirement } from '@/shared/services/subscriptionService';
 import type { MenuItem } from '@/config/menuConfig';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // ============================================================================
 // TYPES

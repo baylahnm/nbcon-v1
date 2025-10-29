@@ -17,7 +17,7 @@ import {
   getProjectUpgradeTier,
   formatProjectLimitStatus,
 } from '@/shared/services/projectLimitService';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // Mock Supabase
 vi.mock('@/shared/supabase/client', () => ({

@@ -8,6 +8,8 @@
  * @created January 27, 2025
  */
 
+import type { SubscriptionTier } from './subscription';
+
 export type UserRole = 'engineer' | 'client' | 'enterprise' | 'admin';
 
 export const ROLE_BASE_PATHS: Record<UserRole, string> = {
@@ -41,6 +43,6 @@ export interface UserPermissions {
   canAccessFinance: boolean;
   canAccessAnalytics: boolean;
   canManageTeams: boolean;
-  subscriptionTier?: 'free' | 'basic' | 'pro' | 'enterprise';
+  subscriptionTier?: SubscriptionTier;
 }
 

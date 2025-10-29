@@ -44,7 +44,7 @@ import {
   Rocket,
 } from 'lucide-react';
 import type { UserRole } from '@/shared/types/auth';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // ============================================================================
 // TYPES

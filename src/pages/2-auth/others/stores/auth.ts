@@ -1,5 +1,6 @@
 ﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { SubscriptionTier, SubscriptionStatus } from '@/shared/types/subscription';
 import { supabase } from '@/shared/supabase/client';
 import { getUserSubscription } from '@/shared/services/subscriptionService';
 
@@ -21,8 +22,8 @@ export interface AuthenticatedUser {
   source?: 'mock' | 'supabase';
   phone_confirmed_at?: string | null;
   // Subscription fields
-  subscriptionTier?: 'free' | 'basic' | 'pro' | 'enterprise';
-  subscriptionStatus?: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'unpaid';
+  subscriptionTier?: SubscriptionTier;
+  subscriptionStatus?: SubscriptionStatus;
   subscriptionPeriodEnd?: Date;
   subscriptionFeatures?: string[];
   subscriptionLimits?: Record<string, number>;

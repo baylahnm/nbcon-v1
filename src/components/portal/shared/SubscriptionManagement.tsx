@@ -31,7 +31,7 @@ import { getUserSubscription, getUserSubscriptionTier } from '@/shared/services/
 import { getUserMonthlyUsage, type MonthlyUsageResult } from '@/shared/services/tokenService';
 import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
 import { cn } from '@/pages/1-HomePage/others/lib/utils';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // Define SubscriptionDetails locally (not exported from service)
 interface SubscriptionDetails {

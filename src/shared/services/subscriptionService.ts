@@ -7,35 +7,23 @@
  */
 
 import { supabase } from '../supabase/client';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { 
+  SubscriptionTier, 
+  SubscriptionStatus,
+  UserSubscription as UserSubscriptionType,
+  QuotaCheckResult as QuotaCheckType
+} from '@/shared/types/subscription';
 
 // ============================================================================
-// TYPES
+// RE-EXPORT TYPES FROM CENTRALIZED LOCATION
 // ============================================================================
 
-export interface UserSubscription {
-  id: string;
-  userId: string;
-  planId: string;
-  tier: SubscriptionTier;
-  status: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'unpaid';
-  periodStart: Date;
-  periodEnd: Date;
-  trialEnd: Date | null;
-  features: string[];
-  limits: Record<string, number>;
-  stripeSubscriptionId: string | null;
-  stripeCustomerId: string | null;
-}
-
-export interface QuotaCheckResult {
-  allowed: boolean;
-  used: number;
-  limit: number;
-  remaining: number;
-  resetDate: Date;
-  feature: string;
-}
+export type { 
+  UserSubscription, 
+  QuotaCheckResult,
+  SubscriptionTier,
+  SubscriptionStatus
+} from '@/shared/types/subscription';
 
 // ============================================================================
 // TIER MAPPING

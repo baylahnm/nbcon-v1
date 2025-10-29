@@ -13,7 +13,7 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '@/pages/1-HomePage/others/lib/utils';
 import { SidebarItem } from './SidebarItem';
 import type { MenuSection, MenuItem } from '@/config/menuConfig';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // ============================================================================
 // TYPES

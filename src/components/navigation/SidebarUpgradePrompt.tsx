@@ -23,7 +23,7 @@ import { Button } from '@/pages/1-HomePage/others/components/ui/button';
 import { Badge } from '@/pages/1-HomePage/others/components/ui/badge';
 import { formatTierName } from '@/shared/services/subscriptionService';
 import type { MenuItem } from '@/config/menuConfig';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // ============================================================================
 // TYPES

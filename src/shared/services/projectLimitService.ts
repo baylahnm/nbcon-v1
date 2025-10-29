@@ -8,7 +8,7 @@
  */
 
 import { supabase } from '../supabase/client';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier, ProjectLimitCheck } from '@/shared/types/subscription';
 
 // ============================================================================
 // PROJECT LIMIT CONSTANTS
@@ -22,18 +22,10 @@ export const PROJECT_LIMITS: Record<SubscriptionTier, number> = {
 };
 
 // ============================================================================
-// TYPES
+// RE-EXPORT TYPES
 // ============================================================================
 
-export interface ProjectLimitCheck {
-  allowed: boolean;
-  currentCount: number;
-  limit: number;
-  remaining: number;
-  tier: SubscriptionTier;
-  upgradeRequired?: SubscriptionTier;
-  message?: string;
-}
+export type { ProjectLimitCheck } from '@/shared/types/subscription';
 
 // ============================================================================
 // PROJECT COUNTING

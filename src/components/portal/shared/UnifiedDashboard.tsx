@@ -17,7 +17,7 @@ import { cn } from '@/pages/1-HomePage/others/lib/utils';
 import type { UserRole } from '@/shared/types/auth';
 import { usePortalAccess } from '@/hooks/usePortalAccess';
 import { tierMeetsRequirement } from '@/shared/services/subscriptionService';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 // ============================================================================
 // TYPES
