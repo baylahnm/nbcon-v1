@@ -9,7 +9,7 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:8081';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
 // Test users with different subscription tiers
 const TEST_USERS = {
@@ -35,13 +35,24 @@ const TEST_USERS = {
   }
 };
 
-// Helper function to login
+// Helper function to login  
 async function login(page: Page, email: string, password: string) {
   await page.goto(`${BASE_URL}/auth`);
+  await page.waitForLoadState('domcontentloaded');
+  
+  // Wait for auth form
+  await page.waitForSelector('input[type="email"]', { state: 'visible', timeout: 10000 });
+  
+  // Fill credentials
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', password);
-  await page.click('button:has-text("Sign In")');
-  await page.waitForURL(/\/(free|engineer|enterprise)\/dashboard/, { timeout: 30000 });
+  
+  // Submit form using Enter key (more reliable than button click)
+  await page.press('input[type="password"]', 'Enter');
+  
+  // Wait for dashboard navigation
+  await page.waitForURL(/\/(free|engineer|enterprise)\/dashboard/, { timeout: 60000 });
+  await page.waitForLoadState('networkidle', { timeout: 15000 });
 }
 
 test.describe('Subscription Feature Gating', () => {
