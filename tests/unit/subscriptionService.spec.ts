@@ -15,7 +15,7 @@ import {
   getTierColor,
   getTierBadgeColor,
 } from '@/shared/services/subscriptionService';
-import type { SubscriptionTier } from '@/config/portalTypes';
+import type { SubscriptionTier } from '@/shared/types/subscription';
 
 describe('SubscriptionService', () => {
   describe('tierMeetsRequirement', () => {
