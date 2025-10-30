@@ -204,3 +204,30 @@ git commit -m "refactor(access): migrate role-based gating to subscription-tier 
 
 **Migration completed successfully. System is production-ready with full subscription-tier-based access control.** ✅
 
+---
+
+## 🔄 v1.8.5 Update - Role Column Deprecation
+
+**Date:** January 27, 2025  
+**Status:** Deprecated (Not Removed)
+
+### Database Changes
+- ✅ Added `is_admin BOOLEAN` column to `profiles` table
+- ✅ Created index `idx_profiles_is_admin`
+- ✅ Updated `get_user_role()` function to use `is_admin` flag
+- ⚠️ `role` column **deprecated but not removed** (backward compatibility)
+
+### Why Role Column Still Exists
+30+ legacy RLS policies across 8+ migration files still reference `profiles.role = 'admin'`. Removing the column now would break existing access control policies.
+
+**Migration Status:**
+- **Code:** Migrated to use `subscriptionTier` and `is_admin`
+- **Database:** `is_admin` column added, `role` column deprecated
+- **RLS Policies:** Still reference `role` column (blocking removal)
+
+**Next Steps:**
+- v1.8.5: Deprecate `role`, document backward compatibility
+- v1.9.0: Update all RLS policies to use `is_admin`, drop `role` column
+
+See `V1_8_5_MIGRATION_STATUS.md` for detailed migration plan.
+
