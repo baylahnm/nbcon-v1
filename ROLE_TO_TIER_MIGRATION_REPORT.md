@@ -231,3 +231,25 @@ git commit -m "refactor(access): migrate role-based gating to subscription-tier 
 
 See `V1_8_5_MIGRATION_STATUS.md` for detailed migration plan.
 
+---
+
+## 🔄 v1.8.6 Update - Codebase adopts is_admin flag
+
+**Date:** January 27, 2025  
+**Status:** Complete
+
+### Code Changes
+- ✅ Added `is_admin?: boolean` to `AuthenticatedUser` in shared types and auth store
+- ✅ Updated admin checks to prefer `is_admin` with fallback to legacy `role === 'admin'`
+- ✅ Kept role-based values only for display/identity where present
+
+### Example
+```tsx
+const isAdmin = (user && 'is_admin' in user && user.is_admin) || user?.role === 'admin';
+```
+
+### Outcome
+- No breaking changes; backward compatible
+- Tier gating remains driven by `subscriptionTier`
+- Ready for v1.9.0 RLS policy refactor and eventual removal of `profiles.role`
+

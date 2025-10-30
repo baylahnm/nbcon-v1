@@ -87,11 +87,11 @@ USING (get_user_role() = 'admin' OR ...);
 | `is_admin` column | ✅ Created | Added to profiles table |
 | Index on `is_admin` | ✅ Created | `idx_profiles_is_admin` |
 | `get_user_role()` function | ✅ Updated | Now uses `is_admin` |
-| Codebase migration | ❌ Not started | Need to search and replace |
+| Codebase migration | ✅ Complete | Code uses `is_admin` + `subscriptionTier` |
 | RLS policies | ⚠️ Blocked | 30+ policies still reference role |
-| Type definitions | ❌ Pending | Need to update auth types |
-| Auth stores | ❌ Pending | Need to update to use is_admin |
-| Test updates | ❌ Pending | Need to update test fixtures |
+| Type definitions | ✅ Complete | `is_admin` added |
+| Auth stores | ✅ Complete | Reads `is_admin` flag |
+| Test updates | ✅ Partial | Fixtures updated; E2E verified |
 | Role column | ❌ Cannot drop | Blocked by legacy policies |
 
 ---
