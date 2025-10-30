@@ -148,3 +148,19 @@ ALTER TABLE profiles DROP COLUMN IF EXISTS role;
 
 **Recommendation:** Proceed with codebase updates to use `is_admin`, but keep `role` column for now. Plan full RLS migration for v1.9.0.
 
+---
+
+## v1.9.0 RLS Migration Verification
+- Applied: `20250301000001_update_rls_use_is_admin.sql` (guarded) — success
+- Policies scan: 0 references to `role='admin'` in pg_policies (public)
+- Typecheck, unit tests, Playwright admin suite: clean
+- Rollback created: `20250301000002_revert_rls_to_role.sql`
+
+Next:
+- Schedule migration to drop `profiles.role` (post-verification)
+- Prepare maintenance window and backup plan
+
+### Final Note
+- Remaining `role='admin'` references are confined to historical migration files; live RLS uses `is_admin` exclusively.
+- The `profiles.role` drop migration is prepared and will be scheduled for the production rollout window.
+

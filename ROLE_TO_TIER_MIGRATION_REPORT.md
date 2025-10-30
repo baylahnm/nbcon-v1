@@ -253,3 +253,19 @@ const isAdmin = (user && 'is_admin' in user && user.is_admin) || user?.role === 
 - Tier gating remains driven by `subscriptionTier`
 - Ready for v1.9.0 RLS policy refactor and eventual removal of `profiles.role`
 
+---
+
+## 🔄 v1.9.0 (in-progress) — RLS migration status
+- Forward migration applied: `20250301000001_update_rls_use_is_admin.sql` (guarded)
+- Verification: pg_policies scan → 0 role='admin' predicates (public)
+- Tests: typecheck + unit + admin Playwright suite → clean
+- Rollback ready: `20250301000002_revert_rls_to_role.sql`
+- Next: schedule `profiles.role` drop migration post-verification
+
+---
+
+## Final Note
+- Any remaining references to `role='admin'` exist only in historical migration files for audit/history.
+- The live database schema and RLS policies now rely exclusively on `is_admin` (or `get_user_role()` backed by `is_admin`).
+- `profiles.role` drop is planned and will be executed during the production rollout window.
+
