@@ -127,8 +127,9 @@ export function AppLayout({
             <Suspense fallback={<div className="hidden" />}>
               {(() => {
                 const tier = user?.subscriptionTier || 'free';
-                // Admin role check (keep separate from subscription tiers)
-                if (user?.role === 'admin') {
+                // Admin check (use is_admin flag, fallback to role for backward compatibility)
+                const isAdmin = (user && 'is_admin' in user && user.is_admin) || user?.role === 'admin';
+                if (isAdmin) {
                   return (
                     <AdminAiDrawer
                       isOpen={isAiDrawerOpen}

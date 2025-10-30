@@ -10,7 +10,8 @@ export interface AuthenticatedUser {
   id: string;
   email: string;
   name: string;
-  role: 'engineer' | 'client' | 'enterprise' | 'admin';
+  role: 'engineer' | 'client' | 'enterprise' | 'admin'; // DEPRECATED: Use is_admin flag instead, kept for backward compatibility
+  is_admin?: boolean; // New: Admin access flag (replaces role === 'admin')
   isVerified: boolean;
   sceNumber?: string;
   company?: string;

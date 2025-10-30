@@ -15,6 +15,7 @@ export interface TestUser {
   password: string;
   tier: SubscriptionTier;
   role: UserRole;
+  is_admin?: boolean; // Admin flag (optional, default false)
   expectedDashboard: string;
 }
 

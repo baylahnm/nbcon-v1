@@ -23,7 +23,9 @@ export interface AuthenticatedUser {
   id: string;
   email: string;
   name: string;
-  role: UserRole;
+  role: UserRole; // DEPRECATED: Use is_admin flag instead, kept for backward compatibility
+  is_admin?: boolean; // New: Admin access flag (replaces role === 'admin')
+  subscriptionTier?: SubscriptionTier; // Current subscription tier
   isVerified: boolean;
   sceNumber?: string;
   company?: string;
