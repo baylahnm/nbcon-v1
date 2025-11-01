@@ -27,3 +27,6 @@ dist-ssr
 .cursor
 .vercel
 .env.vercel
+automation/
+docs/cursor_chats/
+database/

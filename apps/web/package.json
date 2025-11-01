@@ -1,0 +1,19 @@
+{
+  "name": "nbcon-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest",
+    "test:unit": "vitest --config vitest.config.ts",
+    "test:unit:watch": "vitest --config vitest.config.ts --watch",
+    "test:unit:ui": "vitest --config vitest.config.ts --ui",
+    "test:unit:coverage": "vitest --config vitest.config.ts --coverage",
+    "test:e2e": "playwright test --config playwright.config.ts",
+    "test:e2e:ui": "playwright test --config playwright.config.ts --ui"
+  }
+}

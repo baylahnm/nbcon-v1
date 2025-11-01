@@ -2,8 +2,13 @@
  * Subscription Service
  * Handles subscription tier resolution, feature gating, and quota enforcement
  * 
- * @version 1.0.0
+ * Updated for Phase B: Now reads subscription_tier directly from profiles table
+ * for fast access, with subscriptions table as secondary source.
+ * 
+ * @version 2.0.0
  * @created January 28, 2025
+ * @updated February 2, 2025 (Phase B)
+ * @see docs/nbcon-new-plan/2 4- 🔐 Phase B Access & Data Model (Section 4)
  */
 
 import { supabase } from '../supabase/client';
@@ -13,6 +18,7 @@ import type {
   UserSubscription as UserSubscriptionType,
   QuotaCheckResult as QuotaCheckType
 } from '@/shared/types/subscription';
+import { isSubscriptionTier } from '@/shared/types/subscription';
 
 // ============================================================================
 // RE-EXPORT TYPES FROM CENTRALIZED LOCATION
@@ -24,6 +30,59 @@ export type {
   SubscriptionTier,
   SubscriptionStatus
 } from '@/shared/types/subscription';
+
+// ============================================================================
+// TIER CACHE
+// ============================================================================
+
+/**
+ * In-memory cache for subscription tiers
+ * Key: userId, Value: { tier, timestamp }
+ */
+interface TierCacheEntry {
+  tier: SubscriptionTier;
+  timestamp: number;
+}
+
+const tierCache = new Map<string, TierCacheEntry>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+/**
+ * Get cached tier or null if expired/missing
+ */
+function getCachedTier(userId: string): SubscriptionTier | null {
+  const entry = tierCache.get(userId);
+  if (!entry) return null;
+  
+  const now = Date.now();
+  if (now - entry.timestamp > CACHE_TTL) {
+    tierCache.delete(userId);
+    return null;
+  }
+  
+  return entry.tier;
+}
+
+/**
+ * Set tier in cache
+ */
+function setCachedTier(userId: string, tier: SubscriptionTier): void {
+  tierCache.set(userId, {
+    tier,
+    timestamp: Date.now(),
+  });
+}
+
+/**
+ * Clear tier cache for a user (call after tier update)
+ */
+export function clearTierCache(userId?: string): void {
+  if (userId) {
+    tierCache.delete(userId);
+  } else {
+    tierCache.clear();
+  }
+}
 
 // ============================================================================
 // TIER MAPPING
@@ -51,13 +110,191 @@ const TIER_HIERARCHY: Record<SubscriptionTier, number> = {
 };
 
 // ============================================================================
-// SUBSCRIPTION FETCHING
+// SUBSCRIPTION TIER FETCHING (Phase B - Direct from profiles)
+// ============================================================================
+
+/**
+ * Get user's subscription tier directly from profiles table (fast lookup)
+ * 
+ * Phase B: Reads from profiles.subscription_tier column for quick access.
+ * Falls back to subscriptions table if profile tier is missing.
+ * 
+ * @param userId - Optional user ID (defaults to current authenticated user)
+ * @returns User's subscription tier (defaults to 'free')
+ */
+export async function getUserSubscriptionTier(userId?: string): Promise<SubscriptionTier> {
+  try {
+    // Get current user if no userId provided
+    const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;
+    
+    if (!targetUserId) {
+      console.warn('[SubscriptionService] No user ID available - defaulting to free');
+      return 'free';
+    }
+
+    // Check cache first
+    const cachedTier = getCachedTier(targetUserId);
+    if (cachedTier) {
+      return cachedTier;
+    }
+
+    // Fetch from profiles table (new Phase B column)
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('subscription_tier, is_admin')
+      .eq('user_id', targetUserId)
+      .single();
+
+    if (!profileError && profile?.subscription_tier) {
+      const tier = profile.subscription_tier as string;
+      
+      // Validate tier value
+      if (isSubscriptionTier(tier)) {
+        setCachedTier(targetUserId, tier);
+        return tier;
+      } else {
+        console.warn(`[SubscriptionService] Invalid tier value in profiles: ${tier}, defaulting to free`);
+      }
+    }
+
+    // Fallback: Try subscriptions table (legacy/secondary source)
+    console.log('[SubscriptionService] Profile tier not found, checking subscriptions table...');
+    const subscription = await getUserSubscription(targetUserId);
+    
+    if (subscription?.tier) {
+      // Cache the tier from subscription for future lookups
+      setCachedTier(targetUserId, subscription.tier);
+      return subscription.tier;
+    }
+
+    // Default to free tier
+    const defaultTier: SubscriptionTier = 'free';
+    setCachedTier(targetUserId, defaultTier);
+    return defaultTier;
+  } catch (error) {
+    console.error('[SubscriptionService] Error fetching subscription tier:', error);
+    return 'free';
+  }
+}
+
+/**
+ * Update user's subscription tier in profiles table
+ * 
+ * Phase B: Persists tier changes to profiles.subscription_tier column.
+ * Also clears cache to ensure fresh data on next fetch.
+ * 
+ * @param tier - New subscription tier
+ * @param userId - Optional user ID (defaults to current authenticated user)
+ * @returns true if update succeeded, false otherwise
+ */
+export async function updateSubscriptionTier(
+  tier: SubscriptionTier,
+  userId?: string
+): Promise<boolean> {
+  try {
+    // Get current user if no userId provided
+    const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;
+    
+    if (!targetUserId) {
+      console.warn('[SubscriptionService] No user ID available for tier update');
+      return false;
+    }
+
+    // Validate tier
+    if (!isSubscriptionTier(tier)) {
+      console.error(`[SubscriptionService] Invalid tier value: ${tier}`);
+      return false;
+    }
+
+    // Update profiles table
+    const { error } = await supabase
+      .from('profiles')
+      .update({ subscription_tier: tier })
+      .eq('user_id', targetUserId);
+
+    if (error) {
+      console.error('[SubscriptionService] Failed to update subscription tier:', error);
+      return false;
+    }
+
+    // Clear cache to force fresh fetch on next access
+    clearTierCache(targetUserId);
+    
+    console.log(`[SubscriptionService] Successfully updated tier to ${tier} for user ${targetUserId}`);
+    return true;
+  } catch (error) {
+    console.error('[SubscriptionService] Unexpected error updating tier:', error);
+    return false;
+  }
+}
+
+/**
+ * Get user profile with subscription tier and admin status
+ * 
+ * Phase B: Fetches both subscription_tier and is_admin from profiles table
+ * for use in usePortalAccess hook.
+ * 
+ * @param userId - Optional user ID (defaults to current authenticated user)
+ * @returns Profile data with tier and admin flag
+ */
+export async function getUserProfileWithTier(userId?: string): Promise<{
+  subscriptionTier: SubscriptionTier;
+  isAdmin: boolean;
+} | null> {
+  try {
+    const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;
+    
+    if (!targetUserId) {
+      return null;
+    }
+
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('subscription_tier, is_admin')
+      .eq('user_id', targetUserId)
+      .single();
+
+    if (error || !profile) {
+      console.warn('[SubscriptionService] Profile not found, defaulting to free tier');
+      return {
+        subscriptionTier: 'free',
+        isAdmin: false,
+      };
+    }
+
+    const tier = (profile.subscription_tier as SubscriptionTier) || 'free';
+    const isAdmin = profile.is_admin === true;
+
+    // Cache tier
+    if (isSubscriptionTier(tier)) {
+      setCachedTier(targetUserId, tier);
+    }
+
+    return {
+      subscriptionTier: isSubscriptionTier(tier) ? tier : 'free',
+      isAdmin,
+    };
+  } catch (error) {
+    console.error('[SubscriptionService] Error fetching profile with tier:', error);
+    return {
+      subscriptionTier: 'free',
+      isAdmin: false,
+    };
+  }
+}
+
+// ============================================================================
+// SUBSCRIPTION FETCHING (Detailed subscription data)
 // ============================================================================
 
 /**
  * Get user's active subscription with plan details
+ * 
+ * This fetches from the subscriptions table for detailed subscription info
+ * (billing periods, Stripe IDs, features, limits). For tier-only lookups,
+ * use getUserSubscriptionTier() which reads from profiles.subscription_tier.
  */
-export async function getUserSubscription(userId?: string): Promise<UserSubscription | null> {
+export async function getUserSubscription(userId?: string): Promise<UserSubscriptionType | null> {
   try {
     // Get current user if no userId provided
     const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;
@@ -93,7 +330,7 @@ export async function getUserSubscription(userId?: string): Promise<UserSubscrip
     }
 
     // Map to UserSubscription interface
-    return {
+    const subscription: UserSubscriptionType = {
       id: data.id,
       userId: data.user_id,
       planId: data.plan_id,
@@ -107,18 +344,19 @@ export async function getUserSubscription(userId?: string): Promise<UserSubscrip
       stripeSubscriptionId: data.stripe_subscription_id,
       stripeCustomerId: data.stripe_customer_id,
     };
+
+    // Sync tier to profiles table if it differs (one-way sync from subscriptions → profiles)
+    const currentTier = await getUserSubscriptionTier(targetUserId);
+    if (subscription.tier !== currentTier) {
+      console.log(`[SubscriptionService] Syncing tier ${subscription.tier} to profiles table`);
+      await updateSubscriptionTier(subscription.tier, targetUserId);
+    }
+
+    return subscription;
   } catch (error) {
     console.error('[SubscriptionService] Unexpected error:', error);
     return null;
   }
-}
-
-/**
- * Get user's subscription tier only (fast lookup)
- */
-export async function getUserSubscriptionTier(userId?: string): Promise<SubscriptionTier> {
-  const subscription = await getUserSubscription(userId);
-  return subscription?.tier || 'free';
 }
 
 // ============================================================================
@@ -160,6 +398,11 @@ async function isFreeFeature(feature: string): Promise<boolean> {
 
 /**
  * Check if user's tier meets requirement
+ * 
+ * Phase B: Updated to use centralized tierUtils for consistency.
+ * This function is kept for backward compatibility but delegates to tierUtils.
+ * 
+ * @deprecated Use tierMeetsRequirement from '@/shared/utils/tierUtils' instead
  */
 export function tierMeetsRequirement(
   userTier: SubscriptionTier,
@@ -187,7 +430,7 @@ export function tierMeetsRequirement(
 export async function checkUsageQuota(
   feature: string,
   userId?: string
-): Promise<QuotaCheckResult> {
+): Promise<QuotaCheckType> {
   try {
     const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;
     

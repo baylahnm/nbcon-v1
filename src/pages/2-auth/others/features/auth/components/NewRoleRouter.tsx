@@ -3,10 +3,10 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/pages/2-auth/others/stores/auth";
 import { getLandingPage, getEffectiveRole, hasRolePermission } from "../lib/role-resolution";
 import { UserRole } from "../../../../../1-HomePage/others/lib/auth/role";
-import EngineerLayout from "../../../layouts/EngineerLayout";
-import ClientLayout from "../../../layouts/ClientLayout";
 import React from "react";
-const EnterpriseLayout = React.lazy(() => import("../../../layouts/EnterpriseLayout"));
+import { Outlet } from "react-router-dom";
+import { AppLayout } from "../../../../../1-HomePage/others/components/layout/AppLayout";
+import { useAiStoreHydration } from "@/shared/hooks/useAiStoreHydration";
 import AdminLayout from "../../../layouts/AdminLayout";
 import EngineerDashboard from "../../../../../5-engineer/1-DashboardPage";
 import ClientDashboardPage from "../../../../../4-free/1-DashboardPage";
@@ -148,6 +148,16 @@ function LegacyRedirects({ fallback }: LegacyRedirectsProps = {}) {
   return null;
 }
 
+// Unified layout wrapper (replaces role-based layouts)
+function UnifiedLayoutWrapper() {
+  useAiStoreHydration();
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  );
+}
+
 export default function NewRoleRouter() {
   const role = useActiveRole();
   const { user, profile, isLoading, isInitialized } = useAuthStore();
@@ -184,7 +194,7 @@ export default function NewRoleRouter() {
           <Route path="/" element={<Navigate to={getLandingPage(effectiveRole)} replace />} />
 
           {/* Engineer Routes */}
-          <Route path="/engineer" element={<EngineerLayout />}>
+          <Route path="/engineer" element={<UnifiedLayoutWrapper />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<EngineerDashboard />} />
             <Route path="jobs" element={<JobsList />} />
@@ -219,7 +229,7 @@ export default function NewRoleRouter() {
           </Route>
 
           {/* Free Tier Routes */}
-          <Route path="/free" element={<ClientLayout />}>
+          <Route path="/free" element={<UnifiedLayoutWrapper />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<ClientDashboardPage />} />
             <Route path="browse" element={<BrowseEngineers />} />
@@ -293,7 +303,7 @@ export default function NewRoleRouter() {
           </Route>
 
           {/* Enterprise Routes */}
-          <Route path="/enterprise" element={<EnterpriseLayout />}>
+          <Route path="/enterprise" element={<UnifiedLayoutWrapper />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<EnterpriseDashboardPage />} />
             <Route path="calendar" element={<EnterpriseCalendarPage />} />

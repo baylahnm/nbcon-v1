@@ -2,7 +2,11 @@
 import { persist } from 'zustand/middleware';
 import type { SubscriptionTier, SubscriptionStatus } from '@/shared/types/subscription';
 import { supabase } from '@/shared/supabase/client';
-import { getUserSubscription } from '@/shared/services/subscriptionService';
+import { 
+  getUserSubscription, 
+  getUserProfileWithTier,
+  getUserSubscriptionTier 
+} from '@/shared/services/subscriptionService';
 
 const STORAGE_KEY = 'nbcon_user';
 
@@ -53,6 +57,10 @@ export interface UserProfile extends AuthenticatedUser {
   engineer_profiles?: EngineerProfileDetails | null;
   created_at?: string;
   updated_at?: string;
+  // Phase B: Subscription tier from profiles table
+  subscription_tier?: SubscriptionTier;
+  // Phase B: Admin flag from profiles table
+  is_admin?: boolean;
 }
 
 
@@ -268,37 +276,48 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           console.log('[Auth Store] Loading subscription data for user:', currentUser.id);
+          
+          // Phase B: Fetch tier directly from profiles table (fast lookup)
+          const profileWithTier = await getUserProfileWithTier(currentUser.id);
+          const tier = profileWithTier?.subscriptionTier || 'free';
+          
+          // Also fetch detailed subscription data (for billing periods, Stripe IDs, etc.)
           const subscription = await getUserSubscription(currentUser.id);
           
-          if (subscription) {
-            const updatedUser: AuthenticatedUser = {
-              ...currentUser,
-              subscriptionTier: subscription.tier,
-              subscriptionStatus: subscription.status,
-              subscriptionPeriodEnd: subscription.periodEnd,
-              subscriptionFeatures: subscription.features,
-              subscriptionLimits: subscription.limits,
-            };
-            
-            const normalizedUser = normalizeUser(updatedUser);
-            const currentProfile = get().profile;
-            const baseProfile = createProfileFromUser(normalizedUser);
-            const updatedProfile: UserProfile = {
-              ...baseProfile,
-              ...currentProfile,
-            };
-            
-            set({ user: normalizedUser, profile: updatedProfile });
-            safeLocalStorageSet(normalizedUser);
-            
-            console.log('[Auth Store] Subscription loaded:', {
-              tier: subscription.tier,
-              status: subscription.status,
-              features: subscription.features.length,
-            });
-          } else {
-            // No active subscription - default to free
-            console.log('[Auth Store] No subscription found - defaulting to free tier');
+          // Build updated user with tier and subscription details
+          const updatedUser: AuthenticatedUser = {
+            ...currentUser,
+            subscriptionTier: tier,
+            subscriptionStatus: subscription?.status || 'active',
+            subscriptionPeriodEnd: subscription?.periodEnd,
+            subscriptionFeatures: subscription?.features || [],
+            subscriptionLimits: subscription?.limits || {},
+            is_admin: profileWithTier?.isAdmin || currentUser.is_admin || false,
+          };
+          
+          const normalizedUser = normalizeUser(updatedUser);
+          const currentProfile = get().profile;
+          const baseProfile = createProfileFromUser(normalizedUser);
+          const updatedProfile: UserProfile = {
+            ...baseProfile,
+            ...currentProfile,
+            subscription_tier: tier, // Add to profile for usePortalAccess
+          };
+          
+          set({ user: normalizedUser, profile: updatedProfile });
+          safeLocalStorageSet(normalizedUser);
+          
+          console.log('[Auth Store] Subscription loaded:', {
+            tier,
+            status: subscription?.status || 'active',
+            features: subscription?.features?.length || 0,
+            isAdmin: profileWithTier?.isAdmin || false,
+          });
+        } catch (error) {
+          console.error('[Auth Store] Failed to load subscription:', error);
+          // Fail gracefully - keep user logged in with free tier
+          const currentUser = get().user;
+          if (currentUser && !currentUser.subscriptionTier) {
             const updatedUser: AuthenticatedUser = {
               ...currentUser,
               subscriptionTier: 'free',
@@ -306,21 +325,10 @@ export const useAuthStore = create<AuthState>()(
               subscriptionFeatures: [],
               subscriptionLimits: {},
             };
-            
             const normalizedUser = normalizeUser(updatedUser);
-            const currentProfile = get().profile;
-            const baseProfile = createProfileFromUser(normalizedUser);
-            const updatedProfile: UserProfile = {
-              ...baseProfile,
-              ...currentProfile,
-            };
-            
-            set({ user: normalizedUser, profile: updatedProfile });
+            set({ user: normalizedUser });
             safeLocalStorageSet(normalizedUser);
           }
-        } catch (error) {
-          console.error('[Auth Store] Failed to load subscription:', error);
-          // Fail gracefully - keep user logged in with free tier
         }
       },
     }),

@@ -3,8 +3,15 @@ import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
 import "./index.css";
 import { initializeAuth } from "@/pages/2-auth/others/stores/auth";
+import posthog from "posthog-js";
 import { useThemeStore } from "@/pages/1-HomePage/others/stores/theme";
 import "./pages/1-HomePage/others/lib/i18n/i18n";
+
+// Initialize PostHog analytics early
+posthog.init(import.meta.env.VITE_POSTHOG_KEY as string, {
+  api_host: import.meta.env.VITE_POSTHOG_HOST as string,
+  person_profiles: "identified_only",
+});
 
 // Initialize authentication
 initializeAuth();

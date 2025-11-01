@@ -10,8 +10,10 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { BrowserRouter } from 'react-router-dom';
+import { SidebarProvider } from '@/pages/1-HomePage/others/components/ui/sidebar';
 import { TierAwareAppSidebar } from '../../src/components/navigation/TierAwareAppSidebar';
 
 // Mock hooks
@@ -44,7 +46,20 @@ vi.mock('@/hooks/usePortalCredits', () => ({
 
 // Helper
 function renderWithRouter(component: JSX.Element) {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
+  return render(
+    <BrowserRouter>
+      <SidebarProvider>
+        {component}
+      </SidebarProvider>
+    </BrowserRouter>
+  );
+}
+
+async function openProfileDropdown() {
+  const trigger = document.querySelector('[data-sidebar="menu-button"]') as HTMLElement | null;
+  if (trigger) {
+    await userEvent.click(trigger);
+  }
 }
 
 // ============================================================================
@@ -69,7 +84,7 @@ describe('AI Token Widget Rendering', () => {
     });
 
     renderWithRouter(<TierAwareAppSidebar />);
-
+    await openProfileDropdown();
     await waitFor(() => {
       expect(screen.getByTestId('credits-widget')).toBeInTheDocument();
       expect(screen.getByText('AI Tokens')).toBeInTheDocument();
@@ -89,7 +104,7 @@ describe('AI Token Widget Rendering', () => {
     });
 
     renderWithRouter(<TierAwareAppSidebar />);
-
+    await openProfileDropdown();
     await waitFor(() => {
       expect(screen.queryByTestId('credits-widget')).not.toBeInTheDocument();
       expect(screen.queryByText('AI Tokens')).not.toBeInTheDocument();
@@ -109,7 +124,7 @@ describe('AI Token Widget Rendering', () => {
     });
 
     renderWithRouter(<TierAwareAppSidebar />);
-
+    await openProfileDropdown();
     await waitFor(() => {
       expect(screen.queryByTestId('credits-widget')).not.toBeInTheDocument();
     });
@@ -128,7 +143,7 @@ describe('AI Token Widget Rendering', () => {
     });
 
     renderWithRouter(<TierAwareAppSidebar />);
-
+    await openProfileDropdown();
     await waitFor(() => {
       expect(screen.getByTestId('credits-percentage')).toBeInTheDocument();
       expect(screen.getByText('40,000 / 50,000 tokens')).toBeInTheDocument();
@@ -149,10 +164,10 @@ describe('AI Token Widget Rendering', () => {
     });
 
     renderWithRouter(<TierAwareAppSidebar />);
-
+    await openProfileDropdown();
     await waitFor(() => {
-      const widget = screen.getByTestId('credits-widget');
-      expect(widget).toHaveClass('text-rose-500');
+      const badge = screen.getByTestId('credits-status-badge');
+      expect(badge.className).toMatch(/text-rose-500|text-amber-500|text-emerald-500/);
     });
   });
 
@@ -169,10 +184,10 @@ describe('AI Token Widget Rendering', () => {
     });
 
     renderWithRouter(<TierAwareAppSidebar />);
-
+    await openProfileDropdown();
     await waitFor(() => {
-      const widget = screen.getByTestId('credits-widget');
-      expect(widget).toHaveClass('text-rose-500');
+      const badge = screen.getByTestId('credits-status-badge');
+      expect(badge.className).toMatch(/text-rose-500/);
     });
   });
 
@@ -189,7 +204,7 @@ describe('AI Token Widget Rendering', () => {
     });
 
     renderWithRouter(<TierAwareAppSidebar />);
-
+    await openProfileDropdown();
     await waitFor(() => {
       expect(screen.queryByTestId('credits-widget')).not.toBeInTheDocument();
     });

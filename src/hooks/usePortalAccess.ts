@@ -1,310 +1,283 @@
 /**
- * Portal Access Control Hook
+ * Portal Access Control Hook (Tier-Based)
  * 
- * Role-based access control and permission checking for unified portal system.
- * Integrates with Zustand auth store and feature flags to enforce page-level
- * permissions across Client, Engineer, and Enterprise portals.
+ * Unified access control hook based on subscription tiers (Free → Basic → Pro → Enterprise).
+ * Replaces role-based logic with tier-driven permissions and feature gating.
  * 
- * @version 1.0.0
- * @created January 27, 2025
+ * @version 2.0.0
+ * @created January 2025
+ * @see docs/nbcon-new-plan/2 4- 🔐 Phase B Access & Data Model (Section 4)
  */
 
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useAuthStore } from '@/pages/2-auth/others/stores/auth';
-import { getFeatureFlags } from '@/shared/config/featureFlags';
-import {
-  PORTAL_REGISTRY,
-  getPortalByRole,
-  getPagesByRole,
-  hasPageAccess as registryHasPageAccess,
-  getPageById,
-  getPageByPath,
-} from '@/config/portalRegistry';
-import type { UserRole } from '@/shared/types/auth';
+import { tierMeetsRequirement } from '@/shared/utils/tierUtils';
 import type { SubscriptionTier } from '@/shared/types/subscription';
-import type {
-  PageDefinition,
-  PortalDefinition,
-  PagePermissions,
-} from '@/config/portalTypes';
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+/**
+ * User permissions based on subscription tier
+ */
+export interface UserPermissions {
+  /** Current subscription tier */
+  subscriptionTier: SubscriptionTier;
+  /** Whether user has admin privileges */
+  isAdmin: boolean;
+  /** Feature access flags */
+  canAccessAITools: boolean;
+  canManageProjects: boolean;
+  canPostJobs: boolean;
+  canAccessFinance: boolean;
+  canAccessAnalytics: boolean;
+  canManageTeams: boolean;
+  /** Project limits based on tier */
+  maxProjects: number;
+  /** AI token quota based on tier */
+  aiTokenQuota: number;
+}
 
 /**
  * Portal access hook return type
  */
 export interface UsePortalAccessReturn {
-  // Core checks
-  canAccessPage: (pageId: string) => boolean;
-  canAccessPortal: (role: UserRole) => boolean;
-  
-  // Page queries
-  getAccessiblePages: () => PageDefinition[];
-  getCurrentPortal: () => PortalDefinition | undefined;
-  
-  // User info
-  userRole: UserRole | null;
-  userPermissions: {
-    canAccessAITools: boolean;
-    canManageProjects: boolean;
-    canPostJobs: boolean;
-    canAccessFinance: boolean;
-    canAccessAnalytics: boolean;
-    canManageTeams: boolean;
-    subscriptionTier?: SubscriptionTier;
-  };
-  
-  // Auth state
+  /** Current subscription tier */
+  subscriptionTier: SubscriptionTier;
+  /** Whether user is admin */
+  isAdmin: boolean;
+  /** User permissions object */
+  userPermissions: UserPermissions;
+  /** Check if user can access a specific tier */
+  canAccessTier: (requiredTier: SubscriptionTier) => boolean;
+  /** Auth state */
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
+// ============================================================================
+// TIER-BASED PERMISSIONS
+// ============================================================================
+
+/**
+ * Get tier-based feature permissions
+ */
+function getTierPermissions(tier: SubscriptionTier, isAdmin: boolean): Omit<UserPermissions, 'subscriptionTier' | 'isAdmin'> {
+  // Admin gets all permissions
+  if (isAdmin) {
+    return {
+      canAccessAITools: true,
+      canManageProjects: true,
+      canPostJobs: true,
+      canAccessFinance: true,
+      canAccessAnalytics: true,
+      canManageTeams: true,
+      maxProjects: -1, // Unlimited
+      aiTokenQuota: -1, // Unlimited
+    };
+  }
+
+  // Tier-based permissions
+  switch (tier) {
+    case 'enterprise':
+      return {
+        canAccessAITools: true,
+        canManageProjects: true,
+        canPostJobs: true,
+        canAccessFinance: true,
+        canAccessAnalytics: true,
+        canManageTeams: true,
+        maxProjects: -1, // Unlimited
+        aiTokenQuota: -1, // Unlimited + private AI
+      };
+    case 'pro':
+      return {
+        canAccessAITools: true,
+        canManageProjects: true,
+        canPostJobs: true,
+        canAccessFinance: true,
+        canAccessAnalytics: true,
+        canManageTeams: false,
+        maxProjects: -1, // Unlimited
+        aiTokenQuota: -1, // Unlimited
+      };
+    case 'basic':
+      return {
+        canAccessAITools: true, // Limited AI tools
+        canManageProjects: true,
+        canPostJobs: true,
+        canAccessFinance: false,
+        canAccessAnalytics: false,
+        canManageTeams: false,
+        maxProjects: 5,
+        aiTokenQuota: 500000, // 500k tokens
+      };
+    case 'free':
+    default:
+      return {
+        canAccessAITools: false, // Basic AI assistant only
+        canManageProjects: true,
+        canPostJobs: false,
+        canAccessFinance: false,
+        canAccessAnalytics: false,
+        canManageTeams: false,
+        maxProjects: 1,
+        aiTokenQuota: 100000, // 100k tokens
+      };
+  }
+}
+
+// ============================================================================
+// MAIN HOOK
+// ============================================================================
+
 /**
  * Portal access control hook
+ * 
+ * Provides tier-based access control and permissions.
+ * No longer uses role-based logic; everything is subscription-tier driven.
  * 
  * @example
  * ```tsx
  * function MyPage() {
- *   const { canAccessPage, userRole, isAuthenticated } = usePortalAccess();
+ *   const { subscriptionTier, isAdmin, canAccessTier, userPermissions } = usePortalAccess();
  *   
- *   if (!isAuthenticated) return <LoginPrompt />;
- *   if (!canAccessPage('engineer-profile')) return <AccessDenied />;
+ *   if (!canAccessTier('pro')) {
+ *     return <UpgradePrompt />;
+ *   }
  *   
- *   return <ProfileContent />;
+ *   return <ProFeatureContent />;
  * }
  * ```
  */
 export function usePortalAccess(): UsePortalAccessReturn {
   const user = useAuthStore((state) => state.user);
+  const profile = useAuthStore((state) => state.profile);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
   
-  const userRole = user?.role || null;
-  
-  // Memoized permission checks based on subscription tier
-  const userPermissions = useMemo(() => {
-    if (!user) {
-      return {
-        canAccessAITools: false,
-        canManageProjects: false,
-        canPostJobs: false,
-        canAccessFinance: false,
-        canAccessAnalytics: false,
-        canManageTeams: false,
-        subscriptionTier: 'free' as SubscriptionTier,
-      };
+  // Get subscription tier from user profile (Phase B: reads from profiles.subscription_tier)
+  const subscriptionTier = useMemo(() => {
+    if (!user && !profile) return 'free' as SubscriptionTier;
+    
+    // Priority 1: Check profile.subscription_tier (Phase B - direct from DB)
+    if (profile && 'subscription_tier' in profile && profile.subscription_tier) {
+      const tier = profile.subscription_tier as string;
+      if (['free', 'basic', 'pro', 'enterprise'].includes(tier)) {
+        return tier as SubscriptionTier;
+      }
     }
     
-    const tier = user.subscriptionTier || 'free';
+    // Priority 2: Check user.subscriptionTier (from auth store, cached)
+    if (user && 'subscriptionTier' in user && user.subscriptionTier) {
+      const tier = user.subscriptionTier as string;
+      if (['free', 'basic', 'pro', 'enterprise'].includes(tier)) {
+        return tier as SubscriptionTier;
+      }
+    }
+    
+    // Priority 3: Check user.subscription_tier (snake_case variant)
+    if (user && 'subscription_tier' in user && user.subscription_tier) {
+      const tier = user.subscription_tier as string;
+      if (['free', 'basic', 'pro', 'enterprise'].includes(tier)) {
+        return tier as SubscriptionTier;
+      }
+    }
+    
+    // Default to free
+    return 'free' as SubscriptionTier;
+  }, [user, profile]);
+  
+  // Get admin status (Phase B: reads from profiles.is_admin)
+  const isAdmin = useMemo(() => {
+    if (!user && !profile) return false;
+    
+    // Priority 1: Check profile.is_admin (Phase B - direct from DB)
+    if (profile && 'is_admin' in profile && profile.is_admin === true) {
+      return true;
+    }
+    
+    // Priority 2: Check user.is_admin or user.isAdmin (from auth store)
+    if (user) {
+      return (user.is_admin === true) || (user.isAdmin === true);
+    }
+    
+    return false;
+  }, [user, profile]);
+  
+  // Calculate tier-based permissions
+  const userPermissions = useMemo((): UserPermissions => {
+    const tierPerms = getTierPermissions(subscriptionTier, isAdmin);
     
     return {
-      canAccessAITools: ['basic', 'pro', 'enterprise'].includes(tier),
-      canManageProjects: ['pro', 'enterprise'].includes(tier),
-      canPostJobs: ['basic', 'pro', 'enterprise'].includes(tier),
-      canAccessFinance: ['pro', 'enterprise'].includes(tier),
-      canAccessAnalytics: tier === 'enterprise',
-      canManageTeams: tier === 'enterprise',
-      subscriptionTier: tier as SubscriptionTier,
+      subscriptionTier,
+      isAdmin,
+      ...tierPerms,
     };
-  }, [user]);
+  }, [subscriptionTier, isAdmin]);
   
   /**
-   * Check if user can access a specific page
+   * Check if user can access a specific tier
+   * 
+   * @param requiredTier - Minimum tier required
+   * @returns true if user's tier meets requirement or user is admin
    */
-  const canAccessPage = useMemo(() => {
-    return (pageId: string): boolean => {
-      if (!user) return false;
-      
-      const page = getPageById(pageId, user.role);
-      if (!page) return false;
-      
-      return checkPagePermissions(page, user.role, userPermissions.subscriptionTier);
-    };
-  }, [user, userPermissions]);
-  
-  /**
-   * Check if user can access a portal
-   */
-  const canAccessPortal = useMemo(() => {
-    return (role: UserRole): boolean => {
-      if (!user) return false;
-      return user.role === role;
-    };
-  }, [user]);
-  
-  /**
-   * Get all pages accessible by current user
-   */
-  const getAccessiblePages = useMemo(() => {
-    return (): PageDefinition[] => {
-      if (!user) return [];
-      
-      const allPages = getPagesByRole(user.role);
-      return filterPagesByAccess(allPages, user.role, userPermissions.subscriptionTier);
-    };
-  }, [user, userPermissions]);
-  
-  /**
-   * Get current user's portal
-   */
-  const getCurrentPortal = useMemo(() => {
-    return (): PortalDefinition | undefined => {
-      if (!user) return undefined;
-      return getPortalByRole(user.role);
-    };
-  }, [user]);
+  const canAccessTier = useCallback((requiredTier: SubscriptionTier): boolean => {
+    // Admins bypass all tier restrictions
+    if (isAdmin) return true;
+    
+    // Check tier hierarchy
+    return tierMeetsRequirement(subscriptionTier, requiredTier);
+  }, [subscriptionTier, isAdmin]);
   
   return {
-    canAccessPage,
-    canAccessPortal,
-    getAccessiblePages,
-    getCurrentPortal,
-    userRole,
+    subscriptionTier,
+    isAdmin,
     userPermissions,
+    canAccessTier,
     isAuthenticated,
     isLoading,
   };
 }
 
-/**
- * Check if user has permission to access a page
- * 
- * @param page - Page definition to check
- * @param userRole - User's role
- * @param subscription - User's subscription tier
- * @returns true if user can access page
- */
-export function checkPagePermissions(
-  page: PageDefinition,
-  userRole: UserRole,
-  subscription?: SubscriptionTier
-): boolean {
-  // Get enabled feature flags
-  const featureFlags = getFeatureFlags();
-  const enabledFeatures = Object.entries(featureFlags)
-    .filter(([_, value]) => value === true)
-    .map(([key]) => key);
-  
-  // Use registry's hasPageAccess with all context
-  return registryHasPageAccess(
-    page,
-    userRole,
-    subscription,
-    enabledFeatures
-  );
-}
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 
 /**
- * Get portal by user role
+ * Get current user's subscription tier from auth store
  * 
- * @param role - User role
- * @returns Portal definition or undefined
+ * @returns Subscription tier or 'free' if not available
  */
-export function getPortalForRole(role: UserRole | null): PortalDefinition | undefined {
-  if (!role) return undefined;
-  return getPortalByRole(role);
-}
-
-/**
- * Filter pages by access permissions
- * 
- * @param pages - Array of pages to filter
- * @param userRole - User's role
- * @param subscription - User's subscription tier
- * @returns Filtered array of accessible pages
- */
-export function filterPagesByAccess(
-  pages: PageDefinition[],
-  userRole: UserRole,
-  subscription?: SubscriptionTier
-): PageDefinition[] {
-  return pages.filter((page) => 
-    checkPagePermissions(page, userRole, subscription)
-  );
-}
-
-/**
- * Get current user role from auth store
- * 
- * @returns User role or null if not authenticated
- */
-export function getCurrentUserRole(): UserRole | null {
+export function getCurrentUserTier(): SubscriptionTier {
   const user = useAuthStore.getState().user;
-  return user?.role || null;
-}
-
-/**
- * Check if page requires specific subscription
- * 
- * @param page - Page definition
- * @returns true if subscription is required
- */
-export function requiresSubscription(page: PageDefinition): boolean {
-  return !!page.permissions.requiredSubscription;
-}
-
-/**
- * Check if page requires feature flags
- * 
- * @param page - Page definition
- * @returns true if feature flags are required
- */
-export function requiresFeatureFlags(page: PageDefinition): boolean {
-  return !!page.permissions.requiredFeatureFlags && 
-         page.permissions.requiredFeatureFlags.length > 0;
-}
-
-/**
- * Get missing requirements for page access
- * 
- * @param page - Page definition
- * @param userRole - User's role
- * @param subscription - User's subscription tier
- * @returns Object with missing requirements
- */
-export function getMissingRequirements(
-  page: PageDefinition,
-  userRole: UserRole,
-  subscription?: SubscriptionTier
-): {
-  missingRole: boolean;
-  missingSubscription: boolean;
-  missingFeatures: string[];
-} {
-  const result = {
-    missingRole: false,
-    missingSubscription: false,
-    missingFeatures: [] as string[],
-  };
+  if (!user) return 'free';
   
-  // Check role
-  if (!page.permissions.allowedRoles.includes(userRole)) {
-    result.missingRole = true;
-  }
-  
-  // Check subscription
-  if (page.permissions.requiredSubscription) {
-    const required = Array.isArray(page.permissions.requiredSubscription)
-      ? page.permissions.requiredSubscription
-      : [page.permissions.requiredSubscription];
-    
-    if (!subscription || !required.includes(subscription)) {
-      result.missingSubscription = true;
+  if ('subscription_tier' in user && user.subscription_tier) {
+    const tier = user.subscription_tier as string;
+    if (['free', 'basic', 'pro', 'enterprise'].includes(tier)) {
+      return tier as SubscriptionTier;
     }
   }
   
-  // Check feature flags
-  if (page.permissions.requiredFeatureFlags) {
-    const flags = getFeatureFlags();
-    const enabledFeatures = Object.entries(flags)
-      .filter(([_, value]) => value === true)
-      .map(([key]) => key);
-    
-    for (const requiredFlag of page.permissions.requiredFeatureFlags) {
-      if (!enabledFeatures.includes(requiredFlag)) {
-        result.missingFeatures.push(requiredFlag);
-      }
+  if ('subscriptionTier' in user && user.subscriptionTier) {
+    const tier = user.subscriptionTier as string;
+    if (['free', 'basic', 'pro', 'enterprise'].includes(tier)) {
+      return tier as SubscriptionTier;
     }
   }
   
-  return result;
+  return 'free';
 }
 
+/**
+ * Get current user's admin status
+ * 
+ * @returns true if user is admin
+ */
+export function getCurrentUserIsAdmin(): boolean {
+  const user = useAuthStore.getState().user;
+  if (!user) return false;
+  return (user.is_admin === true) || (user.isAdmin === true);
+}

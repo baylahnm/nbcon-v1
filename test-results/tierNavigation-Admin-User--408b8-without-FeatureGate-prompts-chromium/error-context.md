@@ -1,0 +1,124 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - generic [ref=e4]:
+    - generic [ref=e6]:
+      - button "Back" [ref=e8] [cursor=pointer]:
+        - img
+        - text: Back
+      - generic [ref=e10]:
+        - button "English" [ref=e11] [cursor=pointer]
+        - button "العربية" [ref=e12] [cursor=pointer]
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e17]:
+            - text: n.
+            - generic [ref=e18]: pro
+          - generic [ref=e19]: Welcome to nbcon
+          - paragraph [ref=e20]: Saudi Arabia's Professional Engineering Marketplace
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - tablist [ref=e24]:
+              - generic [ref=e25]:
+                - tab "Sign In" [selected] [ref=e26] [cursor=pointer]
+                - tab "Sign Up" [ref=e27] [cursor=pointer]
+            - tabpanel "Sign In" [ref=e28]:
+              - generic [ref=e29]:
+                - button "Google" [ref=e30] [cursor=pointer]:
+                  - img
+                  - generic [ref=e31]: Google
+                - button "Facebook" [ref=e32] [cursor=pointer]:
+                  - img
+                  - generic [ref=e33]: Facebook
+              - generic [ref=e35]: or
+              - generic [ref=e36]:
+                - generic [ref=e37]:
+                  - generic [ref=e38]: Email
+                  - generic [ref=e39]:
+                    - img [ref=e40]
+                    - textbox "Email" [ref=e43]:
+                      - /placeholder: Enter your email
+                      - text: admin@nbcon.org
+                - generic [ref=e44]:
+                  - generic [ref=e45]: Password
+                  - generic [ref=e46]:
+                    - img [ref=e47]
+                    - textbox "Password" [active] [ref=e50]:
+                      - /placeholder: Enter your password
+                      - text: Admin1234@
+                    - button [ref=e51] [cursor=pointer]:
+                      - img
+                - generic [ref=e52]:
+                  - generic [ref=e53]:
+                    - checkbox "Remember me" [ref=e54] [cursor=pointer]
+                    - checkbox
+                    - generic [ref=e55]: Remember me
+                  - button "Forgot password?" [ref=e56] [cursor=pointer]
+                - paragraph [ref=e57]: Invalid email or password. Don't have an account? Sign up below.
+                - button "Sign In" [ref=e58] [cursor=pointer]:
+                  - generic [ref=e59]:
+                    - text: Sign In
+                    - img
+          - generic [ref=e61]:
+            - img [ref=e62]
+            - generic [ref=e64]: Protected by enterprise-grade security
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - img [ref=e68]
+          - paragraph [ref=e71]: Job Opportunities
+        - generic [ref=e72]:
+          - img [ref=e74]
+          - paragraph [ref=e77]: SCE Verified
+        - generic [ref=e78]:
+          - img [ref=e80]
+          - paragraph [ref=e83]: Professional Network
+    - generic [ref=e88]:
+      - generic [ref=e89]:
+        - heading "The simplest way to manage your engineering workforce" [level=2] [ref=e90]
+        - paragraph [ref=e91]: Enter your credentials to access your account
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e99]: Dashboard
+          - generic [ref=e100]:
+            - img [ref=e102]
+            - generic [ref=e105]: Ahmad
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - generic [ref=e109]:
+                - generic [ref=e110]: Productive Time
+                - generic [ref=e113]: +28%
+              - generic [ref=e114]: 12.4 hr
+            - generic [ref=e121]:
+              - generic [ref=e122]:
+                - generic [ref=e123]: Projects
+                - generic [ref=e126]: +18%
+              - generic [ref=e127]: "8.5"
+              - generic [ref=e128]: 2 pending
+          - generic [ref=e129]:
+            - generic [ref=e130]:
+              - generic [ref=e131]: Team Utilization
+              - button "View All" [ref=e132] [cursor=pointer]
+            - generic [ref=e133]:
+              - generic [ref=e134]:
+                - generic [ref=e136]: "N"
+                - generic [ref=e138]: Nasser Baylah
+                - generic [ref=e141]: 65%
+              - generic [ref=e142]:
+                - generic [ref=e144]: K
+                - generic [ref=e146]: Khalid Al-Ali
+                - generic [ref=e149]: 85%
+              - generic [ref=e150]:
+                - generic [ref=e152]: F
+                - generic [ref=e154]: Fatima Ahmed
+                - generic [ref=e157]: 50%
+      - generic [ref=e158]:
+        - generic [ref=e159]: ARAMCO
+        - generic [ref=e160]: NEOM
+        - generic [ref=e161]: SABIC
+        - generic [ref=e162]: PIF
+```
